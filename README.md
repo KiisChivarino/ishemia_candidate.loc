@@ -791,15 +791,20 @@
 >
 > **Локации**
 
+| header | header |
+| ------ | ------ |
+| cell | cell |
+| cell | cell | 
+
 Страна
 
   ----------- ------------------- ------------------- ---------------------------
   country                                             
-  row\_name   type                обязательность      описание
-  id          integer (primary)   yes                 Ключ страны
-  name        string (30)         yes                 Название страны
-  shortcode   string(4)           yes                 Код страны в формате ISO
-  enabled     boolean             yes (default - 1)   Ограничение использования
+  | row\_name | type | обязательность | описание |
+  | id | integer (primary) | yes | Ключ страны |
+  | name | string (30) | yes | Название страны |
+  | shortcode | string(4) | yes | Код страны в формате ISO |
+  | enabled | boolean | yes (default - 1) | Ограничение использования |
   ----------- ------------------- ------------------- ---------------------------
 
 Регион
