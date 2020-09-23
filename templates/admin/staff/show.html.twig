@@ -1,0 +1,53 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.hospital }}</span>
+        <p>
+            {% if entity.hospital %}
+                <a href="{{ path('hospital_show', {'id': entity.hospital.id}) }}">{{ entity.hospital.name }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.phone }}</span>
+        <p>{{ entity.authUser.phone }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.lastName }}</span>
+        <p>{{ entity.authUser.lastName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.firstName }}</span>
+        <p>{{ entity.authUser.firstName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.patronymicName }}</span>
+        <p>{{ entity.authUser.patronymicName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.email }}</span>
+        <p>{{ entity.authUser.email }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.description }}</span>
+        <p>{{ entity.authUser.description }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.role }}</span>
+        <p>{{ roleTitle(entity.authUser) }}</p>
+    </li>
+{% endblock %}
+
+{% block custom_actions %}
+    <div class="buttons">
+        <button class="btn btn--list btn--show">Список
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a href="{{ path('prescription_list', {(prescriptionFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.prescriptions }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+    </div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.medicalHistory }}</span>
+        <p>
+            {% if entity.medicalHistory %}
+                <a href="{{ path('medical_history_show', {'id': entity.medicalHistory.id}) }}">
+                    {{ medicalHistoryTitle }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.medicalRecord }}</span>
+        <p>
+            {% if entity.medicalRecord %}
+                <a href="{{ path('medical_record_show', {'id': entity.medicalRecord.id}) }}">{{ medicalRecordTitle }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.staffFio }}</span>
+        <p>
+            {% if entity.staff %}
+                <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffFio }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.description }}</span>
+        <p>{{ entity.description }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.appointmentType }}</span>
+        <p>
+            {% if entity.appointmentType %}
+                <a href="{{ path('appointment_type_show', {'id': entity.appointmentType.id}) }}">
+                    {{ entity.appointmentType.name }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.appointmentTime }}</span>
+        <p>{{ entity.appointmentTime ? entity.appointmentTime|date('Y-m-d H:i:s') : '' }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.isPatientConfirmed }}</span>
+        <p>
+            {{ entity.isPatientConfirmed ?
+            template.items.show.content.trueValue :
+            template.items.show.content.falseValue }}
+        </p>
+    </li>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.medicalHistory }}</span>
+        <p>
+            {% if entity.medicalHistory %}
+                <a href="{{ path('medical_history_show', {'id': entity.medicalHistory.id}) }}">
+                    {{ medicalHistoryTitle }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.medicalRecord }}</span>
+        <p>
+            {% if entity.medicalRecord %}
+                <a href="{{ path('medical_record_show', {'id': entity.medicalRecord.id}) }}">{{ medicalRecordTitle }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.staffFio }}</span>
+        <p>
+            {% if entity.staff %}
+                <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staff }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.isCompleted }}</span>
+        <p>{{ entity.isCompleted ? template.items.show.content.trueValue : template.items.show.content.falseValue }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.isPatientConfirmed }}</span>
+        <p>
+            {{ entity.isPatientConfirmed ?
+            template.items.show.content.trueValue :
+            template.items.show.content.falseValue }}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.description }}</span>
+        <p>{{ entity.description }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.createdTime }}</span>
+        <p>{{ entity.createdTime ? entity.createdTime|date('Y-m-d H:i:s') : '' }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.completedTime }}</span>
+        <p>{{ entity.completedTime ? entity.completedTime|date('Y-m-d H:i:s') : '' }}</p>
+    </li>
+{% endblock %}
+{% block custom_actions %}
+    <div class="buttons">
+        {% if not entity.isCompleted %}
+            <button class="btn btn--add btn--show">Добавить
+                <ul class="sublist">
+                    <li class="sublist__item">
+                        <a href="{{ path('prescription_medicine_new',{'prescription_id': entity.id}) }}"
+                        >{{ template.items.show.content.addPrescriptionMedicine }}
+                        </a>
+                    </li>
+                    <li class="sublist__item">
+                        <a href="{{ path('prescription_testing_new', {'prescription_id': entity.id}) }}">
+                            {{ template.items.show.content.addPrescriptionTesting }}
+                        </a>
+                    </li>
+                </ul>
+            </button>
+        {% endif %}
+        <button class="btn btn--list btn--show">Список
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a href="{{ path('prescription_medicine_list', {(prescriptionMedicineFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.prescriptionMedicines }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('prescription_testing_list', {(prescriptionTestingFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.prescriptionTestings }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+    </div>
+{% endblock %}

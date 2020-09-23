@@ -1,0 +1,48 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.analysisGroup }}</span>
+        <p>
+            {% if entity.analysisGroup %}
+                <a href="{{ path('analysis_group_show', {'id': entity.analysisGroup.id}) }}">
+                    {{ entity.analysisGroup.name }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.analysisDate }}</span>
+        <p>{{ entity.analysisDate ? entity.analysisDate|date('Y-m-d') : '' }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dateBegin }}</span>
+        <p>{{ entity.dateBegin }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dateEnd }}</span>
+        <p>{{ entity.dateEnd }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.processed }}</span>
+        <p>{{ entity.processed ?
+            template.items.show.content.trueValue :
+            template.items.show.content.falseValue }}
+        </p>
+    </li>
+{% endblock %}
+{% block custom_actions %}
+    <div class="buttons">
+        <button class="btn btn--list btn--show">Список
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a href="{{ path(
+                        'patient_testing_result_list',
+                        {(patientTestingFilterName) : entity.id, (patientFilterName) : entity.medicalHistory.patient.id}
+                    ) }}">
+                        {{ template.items.show.content.analysisResultsLink }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+    </div>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.phone }}</span>
+        <p>{{ entity.authUser.phone }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.lastName }}</span>
+        <p>{{ entity.authUser.lastName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.firstName }}</span>
+        <p>{{ entity.authUser.firstName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.patronymicName }}</span>
+        <p>{{ entity.authUser.patronymicName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.email }}</span>
+        <p>{{ entity.authUser.email }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.description }}</span>
+        <p>{{ entity.authUser.description }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.snils }}</span>
+        <p>{{ entity.snils }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.insuranceNumber }}</span>
+        <p>{{ entity.insuranceNumber }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dateBirth }}</span>
+        <p>{{ entity.dateBirth ? entity.dateBirth|date('Y-m-d') : '' }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dateStartOfTreatment }}</span>
+        <p>{{ entity.dateStartOfTreatment ? entity.dateStartOfTreatment|date('Y-m-d') : '' }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.district }}</span>
+        <p>
+            {% if entity.district %}
+                <a href="{{ path('district_show', {'id': entity.district.id}) }}">{{ entity.district.name }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.city }}</span>
+        <p>
+            {% if entity.city %}
+                <a href="{{ path('city_show', {'id': entity.city.id}) }}">{{ entity.city.name }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.hospital }}</span>
+        <p>
+            {% if entity.hospital %}
+                <a href="{{ path('hospital_show', {'id': entity.hospital.id}) }}">{{ entity.hospital.name }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.address }}</span>
+        <p>{{ entity.address }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.smsInforming }}</span>
+        <p>{{ entity.smsInforming ?
+            template.items.show.content.trueValue :
+            template.items.show.content.falseValue }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.emailInforming }}</span>
+        <p>{{ entity.emailInforming ?
+            template.items.show.content.trueValue :
+            template.items.show.content.falseValue }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.importantComment }}</span>
+        <p>{{ entity.importantComment }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.passport }}</span>
+        <p>{{ entity.passport }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.weight }}</span>
+        <p>{{ entity.weight }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.height }}</span>
+        <p>{{ entity.height }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.name }}</span>
+        {% for diagnosis in entity.diagnosis %}
+            <p>
+                <a href="{{ path('diagnosis_show', {'id': diagnosis.id}) }}">
+                    {{ diagnosis.name }}
+                </a>
+            </p>
+        {% endfor %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.riskFactors }}</span>
+        {% for factor in entity.riskFactor %}
+            <p>
+                <a href="{{ path('risk_factor_show', {'id': factor.id}) }}">
+                    {{ factor.name }}
+                </a>
+            </p>
+        {% endfor %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.bodyMassIndex }}</span>
+        <p>
+            {{ bodyMassIndex }}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.enabled }}</span>
+        <p>{{ entity.authUser.enabled ?
+            template.items.show.content.trueValue :
+            template.items.show.content.falseValue }}
+        </p>
+    </li>
+{% endblock %}
+{% block custom_actions %}
+    <div class="buttons">
+        <button class="btn btn--list btn--show">Список
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a href="{{ path('medical_history_list', {(medicalHistoryFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.medicalHistories }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+        <button class="btn btn--add btn--show">Добавить
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a href="{{ path('medical_history_new', {'id': entity.id}) }}">
+                        {{ template.items.show.content.addMedicalHistory }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+    </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.patientTesting }}</span>
+        <p>
+            {% if entity.patientTesting %}
+                <a href="{{ path('patient_testing_show', {'id': entity.patientTesting.id}) }}">{{ patientTestingInfo }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.analysisRate }}</span>
+        <p>
+            {% if entity.analysisRate %}
+                <a href="{{ path('analysis_rate_show', {'id': entity.analysisRate.id}) }}">{{ analysisRateInfo }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.result }}</span>
+        <p>{{ entity.result }}</p>
+    </li>
+{% endblock %}

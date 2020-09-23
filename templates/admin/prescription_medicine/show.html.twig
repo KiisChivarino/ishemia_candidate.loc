@@ -1,0 +1,47 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.prescription }}</span>
+        <p>
+            {% if entity.prescription %}
+                <a href="{{ path('prescription_show', {'id': entity.prescription.id}) }}">
+                    {{ prescriptionTitle }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.staff }}</span>
+        <p>
+            {% if entity.staff %}
+                <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffTitle }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.medicine }}</span>
+        <p>
+            {% if entity.medicine %}
+                <a href="{{ path('medicine_show', {'id': entity.medicine.id}) }}">{{ entity.medicine.name }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.receptionMethod }}</span>
+        <p>
+            {% if entity.receptionMethod %}
+                <a href="{{ path('reception_method_show', {'id': entity.receptionMethod.id}) }}">
+                    {{ entity.receptionMethod.name }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.instruction }}</span>
+        <p>{{ entity.instruction }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.inclusionTime }}</span>
+        <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
+    </li>
+{% endblock %}

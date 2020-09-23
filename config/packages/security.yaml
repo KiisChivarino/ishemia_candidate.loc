@@ -1,0 +1,64 @@
+security:
+  # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+  providers:
+    users_in_memory: { memory: null }
+    # used to reload user from session & other features (e.g. switch_user)
+    app_user_provider:
+      entity:
+        class: App\Entity\AuthUser
+        property: phone
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    main:
+      remember_me:
+        secret:   '%kernel.secret%'
+        lifetime: 604800 # 1 week in seconds
+        path:     /
+      anonymous: lazy
+      provider: users_in_memory
+      guard:
+        authenticators:
+          - App\Security\LoginFormAuthenticator
+        # This allows the user to login by submitting a username and password
+      # Reference: https://symfony.com/doc/current/security/form_login_setup.html
+      # form_login:
+      #     # The route name that the login form submits to
+      #     check_path: security_login
+      #     # The name of the route where the login form lives
+      #     # When the user tries to access a protected page, they are redirected here
+      #     login_path: security_login
+      #     # Secure the login form against CSRF
+      #     # Reference: https://symfony.com/doc/current/security/csrf.html#csrf-protection-in-login-forms
+      #     csrf_token_generator: security.csrf.token_manager
+      #     # The page users are redirect to when there is no previous page stored in the
+      #     # session (for example when the users access directly to the login page).
+      #     default_target_path: app_admin
+      logout:
+        path: app_logout
+        # where to redirect after logout
+        # target: app_any_route
+
+      # activate different ways to authenticate
+      # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+      # https://symfony.com/doc/current/security/impersonating_user.html
+      # switch_user: true
+
+  # Easy way to control access for large sections of your site
+  # Note: Only the *first* access control that matches will be used
+  access_control:
+    - { path: ^/login$, roles: [IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER] }
+    - { path: ^/admin$, roles: [ROLE_ADMIN, ROLE_DEVELOPER] }
+    - { path: ^/doctor_office$, roles: [ROLE_DOCTOR_HOSPITAL, ROLE_DOCTOR_CONSULTANT, ROLE_DEVELOPER] }
+    - { path: ^/patient_office$, roles: [ROLE_PATIENT, ROLE_DEVELOPER] }
+  role_hierarchy:
+    ROLE_DEVELOPER: ROLE_ADMIN
+    ROLE_ADMIN: ROLE_DOCTOR_CONSULTANT
+    ROLE_DOCTOR_CONSULTANT: ROLE_DOCTOR_HOSPITAL
+    ROLE_DOCTOR_HOSPITAL: ROLE_USER
+  encoders:
+    App\Entity\AuthUser:
+      algorithm: sha256
+    

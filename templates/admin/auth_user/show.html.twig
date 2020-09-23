@@ -1,0 +1,35 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.email }}</span>
+        <p>{{ entity.email }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.role }}</span>
+        {% for role in roles %}
+            <p>
+                <a href="{{ path('role_show', {'id': role.id}) }}">{{ role.name }}</a>
+            </p>
+        {% endfor %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.phone }}</span>
+        <p>{{ entity.phone }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.lastName }}</span>
+        <p>{{ entity.lastName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.firstName }}</span>
+        <p>{{ entity.firstName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.patronymicName }}</span>
+        <p>{{ entity.patronymicName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.description }}</span>
+        <p>{{ entity.description }}</p>
+    </li>
+{% endblock %}

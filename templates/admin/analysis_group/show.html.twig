@@ -1,0 +1,24 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.name }}</span>
+        <p>{{ entity.name }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.fullName }}</span>
+        <p>{{ entity.fullName }}</p>
+    </li>
+{% endblock %}
+{% block custom_actions %}
+    <div class="buttons">
+        <button class="btn btn--list btn--show">Список
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a href="{{ path('analysis_list', {(analysisGroupFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.analyzesLink }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+    </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.name }}</span>
+        <p>
+            {% if entity.country %}
+                <a href="{{ path('country_show', {'id': entity.country.id}) }}">{{ entity.country.name }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.name }}</span>
+        <p>{{ entity.name }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.region_number }}</span>
+        <p>{{ entity.regionNumber }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.oktmoRegionId }}</span>
+        <p>{{ entity.oktmoRegionId }}</p>
+    </li>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.address }}</span>
+        <p>{{ entity.address }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.name }}</span>
+        <p>{{ entity.name }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.phone }}</span>
+        <p>{{ entity.phone }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.description }}</span>
+        <p>{{ entity.description }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.code }}</span>
+        <p>{{ entity.code }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.email }}</span>
+        <p>{{ entity.email }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.city }}</span>
+        <p>
+            {% if entity.city %}
+                <a href="{{ path('city_show', {'id': entity.city.id}) }}">{{ entity.city.name }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.region }}</span>
+        <p>
+            {% if entity.region %}
+                <a href="{{ path('region_show', {'id': entity.region.id}) }}">
+                    {{ entity.region.name }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+{% endblock %}

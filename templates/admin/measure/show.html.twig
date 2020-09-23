@@ -1,0 +1,15 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.nameRu }}</span>
+        <p>{{ entity.nameRu }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.nameEn }}</span>
+        <p>{{ entity.nameEn }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.measureTitle }}</span>
+        <p>{{ entity.title }}</p>
+    </li>
+{% endblock %}

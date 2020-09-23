@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('doctorOffice') }}
+{% endblock %}
+{% block title %}Список пациентов{% endblock %}
+{% block body %}
+    <header class="main-header">
+        <div class="main-header__logo"><a href="#">
+                <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" width="6" height="25" fill="white"/>
+                    <rect y="15" width="6" height="25" transform="rotate(-90 0 15)" fill="white"/>
+                </svg>
+                <span>Медицина</span></a></div>
+        <nav class="main-nav">
+            {{ knp_menu_render('doctorOfficeHeader') }}
+            <div class="main-nav__search">
+                <input type="text" name="search" placeholder="Search for a mail">
+            </div>
+            <div class="main-nav__avatar avatar">
+                <div class="avatar__name"><span class="avatar__title">Иванович М.С.</span><span
+                            class="avatar__subtitle">Врач-терапевт</span></div>
+                <div class="avatar__picture"><img src="" alt=""></div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <aside class="sidebar">
+            <div class="sidebar__nav">
+                {{ knp_menu_render('doctorOfficeSidebar') }}
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <a href="{{ path('app_logout') }}">Выйти</a>
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+{% endblock %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('datatables') }}
+    {{ encore_entry_script_tags('doctorOffice') }}
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'admin/index.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
+{% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            {% if template.items.list.isEnabled %}
+                <a href="{{ path(template.routes.list) }}"
+                   class="back-page">{{ template.items.show.content.toList }}</a>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="adm-users-edit adm-users-view">
+        <h2>{{ template.items.show.content.h1 }}</h2>
+        {{ include('flashmessages.html.twig') }}
+        <ul>
+            <li>
+                <span class="title">ID</span>
+                <p>{{ entity.id }}</p>
+            </li>
+            {% block show_content %}{% endblock %}
+            {% if entity.enabled is defined %}
+                <li>
+                    <span class="title">{{ template.items.show.content.enabled }}</span>
+                    <p>{{ entity.enabled ?
+                        template.items.show.content.trueValue :
+                        template.items.show.content.falseValue }}
+                    </p>
+                </li>
+            {% endif %}
+        </ul>
+        {{ include(template.items.delete.path~'_show_actions.html.twig') }}
+        {% block custom_actions %}{% endblock %}
+    </div>
+{% endblock %}

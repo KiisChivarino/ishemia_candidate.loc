@@ -1,0 +1,98 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.patientFio }}</span>
+        <p>
+            {% if entity.patient %}
+                <a href="{{ path('patient_show', {'id': entity.patient.id}) }}">{{ patientFio }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.staffFio }}</span>
+        <p>
+            {% if entity.staff %}
+                <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffFio }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dateBegin }}</span>
+        <p>{{ entity.dateBegin ? entity.dateBegin|date('Y-m-d') : '' }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dateEnd }}</span>
+        <p>{{ entity.dateEnd ? entity.dateEnd|date('Y-m-d') : '' }}</p>
+    </li>
+{% endblock %}
+{% block custom_actions %}
+    <div class="buttons">
+        <button class="btn btn--add btn--show">Добавить
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a href="{{ path('medical_record_new', {'medical_history_id': entity.id}) }}">
+                        {{ template.items.show.content.addMedicalRecord }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('patient_testing_new', {'medical_history_id': entity.id}) }}">
+                        {{ template.items.show.content.addPatientTesting }}
+                    </a>
+                </li>
+                {% if allPrescriptionsCompleted %}
+                    <li class="sublist__item">
+                        <a href="{{ path('prescription_new', {'medical_history_id': entity.id}) }}">
+                            {{ template.items.show.content.addPrescription }}
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="sublist__item">
+                    <a href="{{ path('patient_appointment_new', {'medical_history_id': entity.id}) }}">
+                        {{ template.items.show.content.addPatientAppointment }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('notification_new', {'medical_history_id': entity.id}) }}">
+                        {{ template.items.show.content.addNotification }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+
+        <button class="btn btn--list btn--show">Список
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a style="text-decoration: none;"
+                       href="{{ path('medical_record_list', {(medicalRecordFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.medicalRecords }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('patient_testing_list', {(patientTestingFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.patientTestings }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('prescription_list', {(prescriptionFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.prescriptions }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('patient_appointment_list', {(patientAppointmentFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.patientAppointments }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('patient_appointment_list', {(patientAppointmentFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.patientAppointments }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('notification_list', {(notificationFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.notifications }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+    </div>
+{% endblock %}

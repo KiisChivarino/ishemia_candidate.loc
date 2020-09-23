@@ -1,0 +1,8 @@
+parameters:
+  day: День
+  week: Неделя
+  month: Месяц
+  quarter: Квартал
+  trimester: Триместр
+  halfYear: Полугодие
+  year: Год

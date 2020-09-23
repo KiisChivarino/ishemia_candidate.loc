@@ -1,0 +1,51 @@
+{{ form_start(form) }}
+{% macro recursiveForm(form, entity) %}
+    {% if form.children is empty %}
+        {% if 'hidden' not in form.vars.block_prefixes %}
+            <li>
+                <span>{{ form_label(form) }}</span>
+                {{ form_widget(form) }}
+                <small>{{ form_help(form) }}</small>
+                <div class="form-error">
+                    {{ form_errors(form) }}
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {% for itemName, item in form %}
+            {% if itemName == 'onlyRole' and form.onlyRole.roles is defined %}
+                <li>
+                    <label class="required"
+                           for="{{ form.onlyRole.roles.vars.id }}">
+                        {{ form.onlyRole.roles.vars.label ?
+                        form.onlyRole.roles.vars.label :
+                        form.onlyRole.roles.vars.name|capitalize }}
+                    </label>
+                    <select
+                            id="{{ form.onlyRole.roles.vars.id }}"
+                            name="{{ form.onlyRole.roles.vars.full_name }}"
+                            class="form-control"
+                    >
+                        {% for choice in form.onlyRole.roles.vars.choices %}
+                            <option
+                                    value="{{ choice.value }}"
+                                    {{ choice.value == entity.AuthUser.roles[0] ? 'selected="selected"' : '' }}>
+                                {{ choice.label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </li>
+                {% do form.onlyRole.setRendered %}
+            {% else %}
+                {{ _self.recursiveForm(item) }}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+<ul>
+    {{ _self.recursiveForm(form, entity) }}
+</ul>
+<div class="buttons">
+    <button class="btn btn--mode">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
+</div>
+{{ form_end(form) }}

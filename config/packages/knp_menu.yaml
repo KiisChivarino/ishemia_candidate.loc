@@ -1,0 +1,15 @@
+knp_menu:
+    twig:
+        template: menu/admin_knp_menu.html.twig
+ 
+parameters:
+    knp_menu.renderer.twig.options:
+        currentClass: menu-class
+ 
+services:
+    app.knp.sidebar_menu:
+        class: Knp\Menu\MenuItem
+        factory: ['@App\AppBundle\Menu\MenuBuilder', createAdminMenu]
+        arguments: ["@request_stack"]
+        tags:
+            - { name: knp_menu.menu, alias: admin }

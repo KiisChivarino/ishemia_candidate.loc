@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('security') }}
+{% endblock %}
+{% block title %}Вход{% endblock %}
+{% block body %}
+    <div class="authorization-main">
+        <div class="authorization__left">
+            <div class="authorization__left-inner">
+                <h2 class="title">Вход</h2>
+                <form method="post">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="mb-3">
+                            Вы вошли как {{ app.user.username }}, <a href="{{ path('app_logout') }}">Выйти</a>
+                        </div>
+                    {% endif %}
+                    <div class="authorization__inputs">
+                        <label for="inputPhone">
+                            <span>Телефон</span>
+                            <input
+                                    type="text"
+                                    name="phone"
+                                    {# pattern="\d{10}" #}
+                                    id="inputPhone"
+                                    class="form-control phone_us"
+                                    required
+                            >
+                        </label>
+                        <label for="inputPassword">
+                            <span>Пароль</span>
+                            <input type="password" name="password" id="inputPassword" class="form-control" required>
+                        </label>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    </div>
+                    <div class="checkbox mb-3 authorization__remember">
+                        <input type="checkbox" id="remember" name="_remember_me" checked/>
+                        <label for="remember">Запомнить меня</label>
+                    </div>
+                    <div class="authorization__btn">
+                        <input class="main-button" type="submit" value="Войти">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="authorization__right"></div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('security') }}
+{% endblock %}

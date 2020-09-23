@@ -1,0 +1,8 @@
+parameters:
+  enabled: Включено
+  toList: Назад
+  toEdit: Изменить
+  trueValue: да
+  falseValue: нет
+  description: Описание
+  name: Название

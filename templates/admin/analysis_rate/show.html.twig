@@ -1,0 +1,41 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.analysisGroup }}</span>
+        <p>
+            {% if entity.analysis and entity.analysis.analysisGroup %}
+                <a href="{{ path('analysis_group_show', {'id': entity.analysis.analysisGroup.id}) }}">
+                    {{ entity.analysis.analysisGroup.name }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.analysis }}</span>
+        <p>
+            {% if entity.analysis %}
+                <a href="{{ path('analysis_show', {'id': entity.analysis.id}) }}">
+                    {{ entity.analysis.name }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.rateMin }}</span>
+        <p>{{ entity.rateMin }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.rateMax }}</span>
+        <p>{{ entity.rateMax }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.measure }}</span>
+        <p>
+            {% if entity.measure %}
+                <a href="{{ path('measure_show', {'id': entity.measure.id}) }}">
+                    {{ entity.measure.nameRu }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+{% endblock %}

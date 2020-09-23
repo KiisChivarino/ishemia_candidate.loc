@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('admin') }}
+{% endblock %}
+{% block title %}{% endblock %}
+{% block favicon %}{{ asset('build/images/adm-fav.ico') }}{% endblock %}
+{% block body %}
+    <header class="main-header main-header--admin">
+        <div class="main-header__logo"><a href="{{ path('index') }}">
+                <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" width="6" height="25" fill="white"/>
+                    <rect y="15" width="6" height="25" transform="rotate(-90 0 15)" fill="white"/>
+                </svg>
+                <span>Медицина</span></a></div>
+        <nav class="main-nav">
+            <div class="main-nav__search">
+                {# <input type="text" name="search" placeholder="Search for a mail"> #}
+            </div>
+            <div class="main-nav__avatar avatar">
+                <div class="avatar__name">
+                    <span class="avatar__title">{{ fio(app.user, true) }}
+                    </span>
+                    <span class="avatar__subtitle">{{ roleTitle(app.user) }}</span>
+                </div>
+                <div class="avatar__picture"><img src="" alt=""></div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <aside class="sidebar sidebar--admin">
+            <div class="sidebar__nav">
+                {{ knp_menu_render('admin') }}
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <a href="{{ path('app_logout') }}">Выйти</a>
+            {% block h1 %}{% endblock %}
+            {% block content %}
+                <h2>Процесс разработки</h2>
+                <hr/>
+                <h4>Планируемые изменения</h4>
+                {% for commit in blog.outstanding %}
+                    <p style="margin-bottom: 3px;">
+                        {{ commit.project }}: <span style="color:black;">{{ commit.title }}</span>
+                        {% if commit.description %}
+                            (<i>{{ commit.description }}</i>)
+                        {% endif %}
+                    </p>
+                {% endfor %}
+                <hr/>
+                <ul>
+                    <hr/>
+                    {% for item in blog.records %}
+                        <li>
+                            <h3>{% if item.record.version %}
+                                    Версия {{ item.record.version }}.
+                                {% endif %} Изменения c
+                                {{ item.record.dateBegin ? item.record.dateBegin|date('Y-m-d') : '' }} по
+                                {{ item.record.dateEnd ? item.record.dateEnd|date('Y-m-d') : '' }}:
+                            </h3>
+                            {% for commit in item.commits %}
+                                <p>{{ commit.project }}: <span style="color:black;">{{ commit.title }}</span></p>
+                            {% endfor %}
+                            <hr/>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endblock %}
+        </div>
+    </main>
+{% endblock %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('datatables') }}
+    {{ encore_entry_script_tags('admin') }}
+    {{ encore_entry_script_tags('select2entity') }}
+    {{ encore_entry_script_tags('security') }}
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.medicalHistory }}</span>
+        <p>
+            {% if entity.medicalHistory %}
+                <a href="{{ path('medical_history_show', {'id': entity.medicalHistory.id}) }}">
+                    {{ medicalHistoryTitle }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.prescription }}</span>
+        {% for prescription in entity.prescriptions %}
+            <p>
+                <a href="{{ path('prescription_show', {'id': prescription.id}) }}">
+                    {{ prescription.staff.AuthUser.lastName~' '
+                    ~prescription.staff.AuthUser.firstName~' '
+                    ~prescription.staff.AuthUser.patronymicName~': '
+                    ~prescription.completedTime|date('Y-m-d') }}
+                </a>
+            </p>
+        {% endfor %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.recordDate }}</span>
+        <p>{{ entity.recordDate ? entity.recordDate|date('Y-m-d') : '' }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.comment }}</span>
+        <p>{{ entity.comment }}</p>
+    </li>
+{% endblock %}
