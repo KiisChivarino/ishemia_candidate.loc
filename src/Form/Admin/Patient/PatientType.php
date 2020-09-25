@@ -8,7 +8,6 @@ use App\Entity\Diagnosis;
 use App\Entity\Hospital;
 use App\Entity\Patient;
 use App\Entity\District;
-use App\Entity\RiskFactor;
 use App\Repository\DistrictRepository;
 use App\Services\TemplateItems\FormTemplateItem;
 use Doctrine\ORM\EntityManagerInterface;
@@ -75,19 +74,9 @@ class PatientType extends AbstractType
                 ]
             )
             ->add('insuranceNumber', null, ['label' => $templateItem->getContentValue('insuranceNumber')])
-            ->add(
-                'dateStartOfTreatment',
-                DateType::class,
-                [
-                    'label' => $templateItem->getContentValue('dateStartOfTreatment'),
-                    'widget' => 'single_text',
-                    'format' => 'yyyy-MM-dd',
-                ]
-            )
             ->add('address', null, ['label' => $templateItem->getContentValue('address')])
             ->add('smsInforming', null, ['label' => $templateItem->getContentValue('smsInforming')])
             ->add('emailInforming', null, ['label' => $templateItem->getContentValue('emailInforming')])
-            ->add('importantComment', null, ['label' => $templateItem->getContentValue('importantComment')])
             ->add(
                 'passport', null, [
                     'label' => $templateItem->getContentValue('passport'),
@@ -163,18 +152,6 @@ class PatientType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('diagnosisPlaceholder'),
                     'attr' => ['class' => 'js-example-basic-single'],
-                ]
-            )
-            ->add(
-                'riskFactor', EntityType::class, [
-                    'label' => $templateItem->getContentValue('riskFactor'),
-                    'class' => RiskFactor::class,
-                    'choice_label' => 'name',
-                    'expanded' => true,
-                    'multiple' => true,
-                    'choice_attr' => function () {
-                        return ['class' => 'js-multiple-check'];
-                    },
                 ]
             );
     }

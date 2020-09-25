@@ -38,30 +38,16 @@ class Patient
     private $id;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\AuthUser", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $AuthUser;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Hospital", inversedBy="patients")
      * @ORM\JoinColumn(nullable=false)
      */
     private $hospital;
-
-    /**
-     * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="СНИЛС пациента"})
-     */
-    private $snils;
-
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true, options={"comment"="Номер страховки"})
-     */
-    private $insuranceNumber;
-
-    /**
-     * @ORM\Column(type="date", nullable=true, options={"comment"="Дата рождения"})
-     */
-    private $dateBirth;
-
-    /**
-     * @ORM\Column(type="date", options={"comment"="Дата начала лечения"})
-     */
-    private $dateStartOfTreatment;
 
     /**
      * @ORM\Column(type="string", length=255, options={"comment"="Адрес пациента"})
@@ -79,9 +65,19 @@ class Patient
     private $emailInforming;
 
     /**
-     * @ORM\Column(type="text", nullable=true, options={"comment"="Важный комментарий для вывода"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Diagnosis")
      */
-    private $importantComment;
+    private $diagnosis;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="СНИЛС пациента"})
+     */
+    private $snils;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true, options={"comment"="Номер страховки"})
+     */
+    private $insuranceNumber;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="Паспортный данные"})
@@ -89,10 +85,19 @@ class Patient
     private $passport;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\AuthUser", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="integer", nullable=true, columnDefinition="INTEGER CHECK (weight >= 28)", options={"comment"="Вес"})
      */
-    private $AuthUser;
+    private $weight;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true, columnDefinition="INTEGER CHECK (height >= 48)", options={"comment"="Рост"})
+     */
+    private $height;
+
+    /**
+     * @ORM\Column(type="date", nullable=true, options={"comment"="Дата рождения"})
+     */
+    private $dateBirth;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="patients")
@@ -106,29 +111,24 @@ class Patient
     private $district;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Diagnosis")
-     */
-    private $diagnosis;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\RiskFactor")
-     */
-    private $riskFactor;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true, columnDefinition="INTEGER CHECK (weight >= 28)", options={"comment"="Вес"})
-     */
-    private $weight;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true, columnDefinition="INTEGER CHECK (height >= 48)", options={"comment"="Рост"})
-     */
-    private $height;
-
-    /**
      * @ORM\OneToMany(targetEntity=MedicalHistory::class, mappedBy="patient", orphanRemoval=true)
      */
     private $medicalHistories;
+
+    /**
+     * @ORM\Column(type="date", nullable=true, options={"comment"="Дата выдачи паспорта"})
+     */
+    private $passportIssueDate;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true, options={"comment"="Орган, выдавший паспорт"})
+     */
+    private $passportIssuingAuthority;
+
+    /**
+     * @ORM\Column(type="string", length=7, options={"comment"="Код органа, выдавшего паспорт"})
+     */
+    private $passportIssuingAuthorityCode;
 
     /**
      * Patient constructor.
@@ -136,7 +136,6 @@ class Patient
     public function __construct()
     {
         $this->diagnosis = new ArrayCollection();
-        $this->riskFactor = new ArrayCollection();
         $this->medicalHistories = new ArrayCollection();
     }
 
@@ -226,25 +225,6 @@ class Patient
     }
 
     /**
-     * @return DateTimeInterface|null
-     */
-    public function getDateStartOfTreatment(): ?DateTimeInterface
-    {
-        return $this->dateStartOfTreatment;
-    }
-
-    /**
-     * @param DateTimeInterface|null $dateStartOfTreatment
-     *
-     * @return $this
-     */
-    public function setDateStartOfTreatment(?DateTimeInterface $dateStartOfTreatment): self
-    {
-        $this->dateStartOfTreatment = $dateStartOfTreatment;
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getAddress(): ?string
@@ -298,25 +278,6 @@ class Patient
     public function setEmailInforming(bool $emailInforming): self
     {
         $this->emailInforming = $emailInforming;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getImportantComment(): ?string
-    {
-        return $this->importantComment;
-    }
-
-    /**
-     * @param string|null $importantComment
-     *
-     * @return $this
-     */
-    public function setImportantComment(?string $importantComment): self
-    {
-        $this->importantComment = $importantComment;
         return $this;
     }
 
@@ -431,40 +392,6 @@ class Patient
     }
 
     /**
-     * @return Collection|RiskFactor[]
-     */
-    public function getRiskFactor(): Collection
-    {
-        return $this->riskFactor;
-    }
-
-    /**
-     * @param RiskFactor $riskFactor
-     *
-     * @return $this
-     */
-    public function addRiskFactor(RiskFactor $riskFactor): self
-    {
-        if (!$this->riskFactor->contains($riskFactor)) {
-            $this->riskFactor[] = $riskFactor;
-        }
-        return $this;
-    }
-
-    /**
-     * @param RiskFactor $riskFactor
-     *
-     * @return $this
-     */
-    public function removeRiskFactor(RiskFactor $riskFactor): self
-    {
-        if ($this->riskFactor->contains($riskFactor)) {
-            $this->riskFactor->removeElement($riskFactor);
-        }
-        return $this;
-    }
-
-    /**
      * @return int|null
      */
     public function getWeight(): ?int
@@ -538,6 +465,42 @@ class Patient
                 $medicalHistory->setPatient(null);
             }
         }
+        return $this;
+    }
+
+    public function getPassportIssueDate(): ?DateTimeInterface
+    {
+        return $this->passportIssueDate;
+    }
+
+    public function setPassportIssueDate(?DateTimeInterface $passportIssueDate): self
+    {
+        $this->passportIssueDate = $passportIssueDate;
+
+        return $this;
+    }
+
+    public function getPassportIssuingAuthority(): ?string
+    {
+        return $this->passportIssuingAuthority;
+    }
+
+    public function setPassportIssuingAuthority(?string $passportIssuingAuthority): self
+    {
+        $this->passportIssuingAuthority = $passportIssuingAuthority;
+
+        return $this;
+    }
+
+    public function getPassportIssuingAuthorityCode(): ?string
+    {
+        return $this->passportIssuingAuthorityCode;
+    }
+
+    public function setPassportIssuingAuthorityCode(string $passportIssuingAuthorityCode): self
+    {
+        $this->passportIssuingAuthorityCode = $passportIssuingAuthorityCode;
+
         return $this;
     }
 }

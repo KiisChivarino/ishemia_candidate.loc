@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\MedicalHistory;
 use App\Form\Admin\AuthUser\EditAuthUserType;
 use App\Form\Admin\AuthUser\NewAuthUserType;
 use App\Form\Admin\Patient\PatientStaffType;
@@ -89,8 +88,6 @@ class PatientController extends AdminAbstractController
                     'authUser' => $user,
                     'newAuthUser' => $user,
                     'patient' => $patient,
-                    'riskFactor' => $patient,
-
                 ]
             )
             ->add(
@@ -125,7 +122,7 @@ class PatientController extends AdminAbstractController
             $authUser = $data['authUser'];
             /** @var Patient $patient */
             $patient = $data['patient'];
-            $staff = $data['staff']['staff'];
+//            $staff = $data['staff']['staff'];
             $authUser->setRoles(self::PATIENT_ROLE);
             $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
             $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
@@ -137,16 +134,16 @@ class PatientController extends AdminAbstractController
                 $em->flush();
                 $patient->setAuthUser($authUser);
                 $em->persist($patient);
-                $result = $em->getRepository(MedicalHistory::class)->persistMedicalHistory($patient, $staff);
-                if (isset($result['error'])) {
-                    $this->addFlash('error', $result['error']);
-                    return $this->render(
-                        $this->templateService->getCommonTemplatePath().'new.html.twig', [
-                            'patient' => $patient,
-                            'form' => $form->createView(),
-                        ]
-                    );
-                }
+//                $result = $em->getRepository(MedicalHistory::class)->persistMedicalHistory($patient, $staff);
+//                if (isset($result['error'])) {
+//                    $this->addFlash('error', $result['error']);
+//                    return $this->render(
+//                        $this->templateService->getCommonTemplatePath().'new.html.twig', [
+//                            'patient' => $patient,
+//                            'form' => $form->createView(),
+//                        ]
+//                    );
+//                }
                 $em->flush();
                 $em->getConnection()->commit();
             } catch (Exception $e) {

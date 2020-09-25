@@ -37,10 +37,6 @@
         <p>{{ entity.dateBirth ? entity.dateBirth|date('Y-m-d') : '' }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.dateStartOfTreatment }}</span>
-        <p>{{ entity.dateStartOfTreatment ? entity.dateStartOfTreatment|date('Y-m-d') : '' }}</p>
-    </li>
-    <li>
         <span class="title">{{ template.items.show.content.district }}</span>
         <p>
             {% if entity.district %}
@@ -81,10 +77,6 @@
             template.items.show.content.falseValue }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.importantComment }}</span>
-        <p>{{ entity.importantComment }}</p>
-    </li>
-    <li>
         <span class="title">{{ template.items.show.content.passport }}</span>
         <p>{{ entity.passport }}</p>
     </li>
@@ -102,16 +94,6 @@
             <p>
                 <a href="{{ path('diagnosis_show', {'id': diagnosis.id}) }}">
                     {{ diagnosis.name }}
-                </a>
-            </p>
-        {% endfor %}
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.riskFactors }}</span>
-        {% for factor in entity.riskFactor %}
-            <p>
-                <a href="{{ path('risk_factor_show', {'id': factor.id}) }}">
-                    {{ factor.name }}
                 </a>
             </p>
         {% endfor %}

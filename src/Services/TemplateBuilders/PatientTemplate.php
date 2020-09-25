@@ -20,7 +20,6 @@ class PatientTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'insuranceNumber' => 'Номер страховки',
         'dateBirth' => 'Дата рождения',
-        'dateStartOfTreatment' => 'Начало гестации',
         'phone' => 'Телефон',
 
     ];
@@ -31,7 +30,6 @@ class PatientTemplate extends AdminTemplateBuilder
         'address' => 'Адрес',
         'smsInforming' => 'Информировать по смс',
         'emailInforming' => 'Информировать по email',
-        'importantComment' => 'Комментарий врача',
         'passport' => 'Паспорт',
         'weight' => 'Вес',
         'height' => 'Рост',
@@ -39,7 +37,6 @@ class PatientTemplate extends AdminTemplateBuilder
         'district' => 'Район',
         'hospital' => 'Больница',
         'diagnosis' => 'Диагнозы',
-        'riskFactor' => 'Факторы риска',
     ];
     /** @var string[] Common content for list, edit template */
     protected const FORM_CONTENT = [
@@ -65,7 +62,6 @@ class PatientTemplate extends AdminTemplateBuilder
     /** @var string[] Common SHOW_CONTENT */
     protected const SHOW_CONTENT = [
         'title' => 'Пациент',
-        'riskFactors' => 'Факторы риска',
         'bodyMassIndex' => 'Индекс массы тела',
         'addMedicalHistory' => 'Добавить историю болезни',
         'medicalHistories' => 'Истории болезни',
