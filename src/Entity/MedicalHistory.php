@@ -7,6 +7,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
 
 /**
  * @ORM\Entity(repositoryClass=MedicalHistoryRepository::class)
@@ -73,6 +74,43 @@ class MedicalHistory
     private $notifications;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Diagnosis::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $MainDisease;
+
+    /**
+     * Фоновые заболевания
+     * @ORM\ManyToMany(targetEntity=Diagnosis::class)
+     * @JoinTable(name="background_diseases")
+     */
+    private $backgroundDiseases;
+
+    /**
+     * Осложнения основного заболевания
+     * @ORM\ManyToMany(targetEntity=Diagnosis::class)
+     * @JoinTable(name="complications")
+     */
+    private $complications;
+
+    /**
+     * Сопутствующие заболевания
+     * @ORM\ManyToMany(targetEntity=Diagnosis::class)
+     * @JoinTable(name="concomitant_diseases")
+     */
+    private $concomitantDiseases;
+
+    /**
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Анамнез болезни"})
+     */
+    private $diseaseHistory;
+
+    /**
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Анамнез жизни"})
+     */
+    private $lifeHistory;
+
+    /**
      * MedicalHistory constructor.
      */
     public function __construct()
@@ -82,6 +120,9 @@ class MedicalHistory
         $this->patientTestings = new ArrayCollection();
         $this->patientAppointments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->backgroundDiseases = new ArrayCollection();
+        $this->complications = new ArrayCollection();
+        $this->concomitantDiseases = new ArrayCollection();
     }
 
     /**
@@ -380,6 +421,111 @@ class MedicalHistory
                 $notification->setMedicalHistory(null);
             }
         }
+        return $this;
+    }
+
+    public function getMainDisease(): ?Diagnosis
+    {
+        return $this->MainDisease;
+    }
+
+    public function setMainDisease(?Diagnosis $MainDisease): self
+    {
+        $this->MainDisease = $MainDisease;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Diagnosis[]
+     */
+    public function getBackgroundDiseases(): Collection
+    {
+        return $this->backgroundDiseases;
+    }
+
+    public function addBackgroundDisease(Diagnosis $backgroundDisease): self
+    {
+        if (!$this->backgroundDiseases->contains($backgroundDisease)) {
+            $this->backgroundDiseases[] = $backgroundDisease;
+        }
+        return $this;
+    }
+
+    public function removeBackgroundDisease(Diagnosis $backgroundDisease): self
+    {
+        if ($this->backgroundDiseases->contains($backgroundDisease)) {
+            $this->backgroundDiseases->removeElement($backgroundDisease);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection|Diagnosis[]
+     */
+    public function getComplications(): Collection
+    {
+        return $this->complications;
+    }
+
+    public function addComplication(Diagnosis $complication): self
+    {
+        if (!$this->complications->contains($complication)) {
+            $this->complications[] = $complication;
+        }
+        return $this;
+    }
+
+    public function removeComplication(Diagnosis $complication): self
+    {
+        if ($this->complications->contains($complication)) {
+            $this->complications->removeElement($complication);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection|Diagnosis[]
+     */
+    public function getConcomitantDiseases(): Collection
+    {
+        return $this->concomitantDiseases;
+    }
+
+    public function addConcomitantDisease(Diagnosis $concomitantDisease): self
+    {
+        if (!$this->concomitantDiseases->contains($concomitantDisease)) {
+            $this->concomitantDiseases[] = $concomitantDisease;
+        }
+        return $this;
+    }
+
+    public function removeConcomitantDisease(Diagnosis $concomitantDisease): self
+    {
+        if ($this->concomitantDiseases->contains($concomitantDisease)) {
+            $this->concomitantDiseases->removeElement($concomitantDisease);
+        }
+        return $this;
+    }
+
+    public function getDiseaseHistory(): ?string
+    {
+        return $this->diseaseHistory;
+    }
+
+    public function setDiseaseHistory(?string $diseaseHistory): self
+    {
+        $this->diseaseHistory = $diseaseHistory;
+        return $this;
+    }
+
+    public function getLifeHistory(): ?string
+    {
+        return $this->lifeHistory;
+    }
+
+    public function setLifeHistory(?string $lifeHistory): self
+    {
+        $this->lifeHistory = $lifeHistory;
         return $this;
     }
 }
