@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\PatientAppointmentRepository;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,15 +31,21 @@ class PatientAppointment
     private $medicalRecord;
 
     /**
+     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientAppointments")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $medicalHistory;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Staff::class, inversedBy="patientAppointments")
      * @ORM\JoinColumn(nullable=false)
      */
     private $staff;
 
     /**
-     * @ORM\Column(type="text", nullable=true, options={"comment"="Комментарий врача"})
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Рекомендации врача"})
      */
-    private $description;
+    private $recommendation;
 
     /**
      * @ORM\ManyToOne(targetEntity=AppointmentType::class)
@@ -56,15 +64,34 @@ class PatientAppointment
     private $enabled;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientAppointments")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $medicalHistory;
-
-    /**
      * @ORM\Column(type="boolean", options={"comment"="Подтверждение пользователем", "default"=false})
      */
     private $isConfirmed;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Complaint::class)
+     */
+    private $complaints;
+
+    /**
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Комментарий врача по жалобам"})
+     */
+    private $complaintsComment;
+
+    /**
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Объективный статус"})
+     */
+    private $objectiveStatus;
+
+    /**
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Терапия"})
+     */
+    private $therapy;
+
+    public function __construct()
+    {
+        $this->complaints = new ArrayCollection();
+    }
 
     /**
      * @return int|null
@@ -115,19 +142,19 @@ class PatientAppointment
     /**
      * @return string|null
      */
-    public function getDescription(): ?string
+    public function getRecommendation(): ?string
     {
-        return $this->description;
+        return $this->recommendation;
     }
 
     /**
-     * @param string|null $description
+     * @param string|null $recommendation
      *
      * @return $this
      */
-    public function setDescription(?string $description): self
+    public function setRecommendation(?string $recommendation): self
     {
-        $this->description = $description;
+        $this->recommendation = $recommendation;
         return $this;
     }
 
@@ -223,6 +250,63 @@ class PatientAppointment
     public function setIsConfirmed(bool $isConfirmed): self
     {
         $this->isConfirmed = $isConfirmed;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Complaint[]
+     */
+    public function getComplaints(): Collection
+    {
+        return $this->complaints;
+    }
+
+    public function addComplaint(Complaint $complaint): self
+    {
+        if (!$this->complaints->contains($complaint)) {
+            $this->complaints[] = $complaint;
+        }
+        return $this;
+    }
+
+    public function removeComplaint(Complaint $complaint): self
+    {
+        if ($this->complaints->contains($complaint)) {
+            $this->complaints->removeElement($complaint);
+        }
+        return $this;
+    }
+
+    public function getComplaintsComment(): ?string
+    {
+        return $this->complaintsComment;
+    }
+
+    public function setComplaintsComment(?string $complaintsComment): self
+    {
+        $this->complaintsComment = $complaintsComment;
+        return $this;
+    }
+
+    public function getObjectiveStatus(): ?string
+    {
+        return $this->objectiveStatus;
+    }
+
+    public function setObjectiveStatus(?string $objectiveStatus): self
+    {
+        $this->objectiveStatus = $objectiveStatus;
+        return $this;
+    }
+
+    public function getTherapy(): ?string
+    {
+        return $this->therapy;
+    }
+
+    public function setTherapy(?string $therapy): self
+    {
+        $this->therapy = $therapy;
         return $this;
     }
 }
