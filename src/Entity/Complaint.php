@@ -28,7 +28,7 @@ class Complaint
     private $description;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
      */
     private $enabled;
 
