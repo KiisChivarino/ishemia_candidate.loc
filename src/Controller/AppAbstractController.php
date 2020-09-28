@@ -120,4 +120,20 @@ abstract class AppAbstractController extends AbstractController
         }
         return $filters;
     }
+
+    /**
+     * Show entity info
+     *
+     * @param string $templatePath
+     * @param object $entity
+     * @param array $parameters
+     *
+     * @return Response
+     */
+    public function responseShow(string $templatePath, object $entity, array $parameters = []): Response
+    {
+        $this->templateService->show($entity);
+        $parameters['entity'] = $entity;
+        return $this->render($templatePath.'show.html.twig', $parameters);
+    }
 }

@@ -15,6 +15,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class DataTableService
@@ -24,23 +25,20 @@ use Omines\DataTablesBundle\DataTableFactory;
  */
 class PatientsListDataTableService extends AdminDatatableService
 {
-    /** @var DataTableFactory $dataTableFactory */
-    protected $dataTableFactory;
-
-    /** @var EntityManagerInterface $em */
-    private $em;
+    private $authUserInfoService;
 
     /**
      * DataTableService constructor.
      *
      * @param DataTableFactory $dataTableFactory
+     * @param UrlGeneratorInterface $router
      * @param EntityManagerInterface $em
+     * @param AuthUserInfoService $authUserInfoService
      */
-    public function __construct(DataTableFactory $dataTableFactory, EntityManagerInterface $em)
+    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $em, AuthUserInfoService $authUserInfoService)
     {
-        parent::__construct($dataTableFactory);
-        $this->dataTableFactory = $dataTableFactory;
-        $this->em = $em;
+        parent::__construct($dataTableFactory, $router, $em);
+        $this->authUserInfoService = $authUserInfoService;
     }
 
     /**
@@ -60,9 +58,10 @@ class PatientsListDataTableService extends AdminDatatableService
             ->add(
                 'fio', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('fio'),
-                    'data' => function ($value) {
-                        return (new AuthUserInfoService())->getFIO($value->getAuthUser(), true);
-                    }
+                    'render' => function (string $data, Patient $patient){
+                        return
+                            $patient ? $this->getLink($this->authUserInfoService->getFIO($patient->getAuthUser()), $patient->getId(), 'medical_history_show') : '';
+                    },
                 ]
             )
             ->add(

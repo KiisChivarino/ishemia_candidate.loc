@@ -32,22 +32,6 @@ abstract class AdminAbstractController extends AppAbstractController
     protected const RESPONSE_FORM_TYPE_EDIT = 'edit';
 
     /**
-     * Show entity info
-     *
-     * @param string $templatePath
-     * @param object $entity
-     * @param array $parameters
-     *
-     * @return Response
-     */
-    public function responseShow(string $templatePath, object $entity, array $parameters = []): Response
-    {
-        $this->templateService->show($entity);
-        $parameters['entity'] = $entity;
-        return $this->render($templatePath.'show.html.twig', $parameters);
-    }
-
-    /**
      * Response new form
      *
      * @param Request $request
