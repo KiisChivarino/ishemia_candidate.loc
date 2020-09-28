@@ -85,4 +85,17 @@ class AuthUserInfoService
     {
         return ltrim(preg_replace('/[^0-9]/', '', $phone), '7');
     }
+
+    /**
+     * Return user phone for layout
+     *
+     * @param AuthUser $authUser
+     *
+     * @return string
+     */
+    public function getPhone(AuthUser $authUser)
+    {
+        $phone = $authUser->getPhone();
+        return '+7 ('.substr($phone, 0, 3).') '.substr($phone, 3, 3).'-'.substr($phone, 6, 4);
+    }
 }

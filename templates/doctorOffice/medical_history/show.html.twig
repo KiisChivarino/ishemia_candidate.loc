@@ -7,67 +7,81 @@
         </ul>
     </div>
     <div class="statement acc">
-        <h2 class="title accordion">Выписка из электронного журнала ведения пациента</h2>
+        <h2 class="title accordion">{{ template.items.show.content.personalData }}</h2>
         <div class="statement__wrapper panel">
             <div class="statement__head">
-                <h3 class="subtitle">Данные пациента</h3>
+                <h3 class="subtitle">{{ template.items.show.content.personalData }}</h3>
                 <span class="statement__edit">Редактировать</span>
             </div>
             <div class="statement__content">
                 <div class="statement__info">
                     <div class="statement__info-block">
-                        <p>ФИО</p>
-                        <p>Иванова Татьяна Ивановна</p>
+                        <p>{{ template.items.show.content.fio }}</p>
+                        <p>{{ fio(entity.AuthUser) }}</p>
                     </div>
                     <div class="statement__info-block">
-                        <p>Возраст</p>
-                        <p>32 года</p></div>
+                        <p>{{ template.items.show.content.age }}</p>
+                        <p>{{ age }}</p></div>
                     <div class="statement__info-block">
-                        <p>Адрес проживания</p>
-                        <p>Железногорск, Ленина, 24 – 56 </p>
-                    </div>
-                    <div class="statement__info-block"><p>Приклипление к женской консультации</p>
-                        <p>Женская консультация № 2 </p>
+                        <p>{{ template.items.show.content.address }}</p>
+                        <p>{{ entity.address }}</p>
                     </div>
                     <div class="statement__info-block">
-                        <p>Телефон</p>
-                        <p>+7 920 345 54 56</p>
+                        <p>{{ template.items.show.content.insuranceNumber }}</p>
+                        <p>{{ entity.insuranceNumber }}</p>
                     </div>
                     <div class="statement__info-block">
-                        <ul>
-                            <li>
-                                <p>Вес</p>
-                                <p>56 кг</p>
-                            </li>
-                            <li>
-                                <p>Рост</p>
-                                <p>167см</p>
-                            </li>
-                            <li><p>ИМТ</p>
-                                <p>12%</p>
-                            </li>
-                        </ul>
+                        <p>{{ template.items.show.content.SNILS }}</p>
+                        <p>{{ entity.snils }}</p>
+                    </div>
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.phone }}</p>
+                        <p>{{ phone(entity.AuthUser) }}</p>
+                    </div>
+                    {% if(entity.AuthUser.email) %}
+                        <div class="statement__info-block">
+                            <p>{{ template.items.show.content.email }}</p>
+                            <p>{{ entity.AuthUser.email }}</p>
+                        </div>
+                    {% endif %}
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.passport }}</p>
+                        <p>{{ entity.passport }}</p>
+                        {% if (entity.passportIssuingAuthority) %}
+                            <p>{{ entity.passportIssuingAuthority }} {{ entity.passportIssueDate }} {{ entity.passportIssuingAuthorityCode }}</p>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="statement__info">
                     <div class="statement__info-block">
-                        <p>Беременность по счету</p>
-                        <p>3 Беременность (1 выкидыш, 1 медаборт). </p>
+                        <ul>
+                            <li>
+                                <p>{{ template.items.show.content.weight }}</p>
+                                <p>{{ entity.weight }} кг</p>
+                            </li>
+                            <li>
+                                <p>{{ template.items.show.content.height }}</p>
+                                <p>{{ entity.height }} см</p>
+                            </li>
+                            <li><p>{{ template.items.show.content.imt }}</p>
+                                <p>{{ bodyMassIndex(entity) }}%</p>
+                            </li>
+                        </ul>
                     </div>
+                    {% if (entity.smsInforming or entity.emailInforming) %}
+                        <div class="statement__info-block">
+                            <p>Информирование: </p>
+                            {% if(entity.smsInforming) %}
+                                <p>{{ template.items.show.content.bySms }}</p>
+                            {% endif %}
+                            {% if(entity.emailInforming) %}
+                                <p>{{ template.items.show.content.byEmail }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                     <div class="statement__info-block">
-                        <p>Расчетный срок беременности</p>
-                        <p>24 недели</p>
-                    </div>
-                    <div class="statement__info-block">
-                        <p>Сопутсвующие патологии</p>
-                        <p>
-                            <span>Носитель тромбогенной мутации Лейден F5 в гетерозиготной форме</span>
-                            <span>Носитель тромбогенный полиморфизмов MTHFR, PAI-1в гомозиготной форме</span>
-                            <span>Хронический пиелонефрит. Варикозная болезнь</span>
-                        </p>
-                    </div>
-                    <div class="statement__info-block"><p>Оценка риска ВТЭО во время беременности</p>
-                        <p>1 балл</p>
+                        <p>{{ template.items.show.content.hospital }}</p>
+                        <p>{{ entity.hospital.name }}</p>
                     </div>
                 </div>
             </div>
