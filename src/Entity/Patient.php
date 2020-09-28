@@ -126,7 +126,7 @@ class Patient
     private $passportIssuingAuthority;
 
     /**
-     * @ORM\Column(type="string", length=7, options={"comment"="Код органа, выдавшего паспорт"})
+     * @ORM\Column(type="string", length=7, nullable=true, options={"comment"="Код органа, выдавшего паспорт"})
      */
     private $passportIssuingAuthorityCode;
 
@@ -497,7 +497,7 @@ class Patient
         return $this->passportIssuingAuthorityCode;
     }
 
-    public function setPassportIssuingAuthorityCode(string $passportIssuingAuthorityCode): self
+    public function setPassportIssuingAuthorityCode(?string $passportIssuingAuthorityCode): self
     {
         $this->passportIssuingAuthorityCode = $passportIssuingAuthorityCode;
 

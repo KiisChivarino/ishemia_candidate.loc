@@ -53,13 +53,6 @@ class PatientDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'dateStartOfTreatment', DateTimeColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('dateStartOfTreatment'),
-                    'format' => 'd.m.Y',
-                    'searchable' => false
-                ]
-            )
-            ->add(
                 'phone', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('phone'),
                     'data' => function ($value) {
