@@ -49,7 +49,6 @@ class AuthUserType extends AbstractType
                     'required' => false,
                 ]
             )
-            ->add('description', null, ['label' => $templateItem->getContentValue('description')])
             ->add(
                 'enabled', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('enabled'),

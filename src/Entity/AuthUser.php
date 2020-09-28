@@ -56,11 +56,6 @@ class AuthUser implements UserInterface
     private $patronymicName;
 
     /**
-     * @ORM\Column(type="text", nullable=true, options={"comment"="Описание/комментарий"})
-     */
-    private $description;
-
-    /**
      * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
      */
     private $enabled;
@@ -234,25 +229,6 @@ class AuthUser implements UserInterface
     public function setPatronymicName(?string $patronymicName): self
     {
         $this->patronymicName = $patronymicName;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string|null $description
-     *
-     * @return $this
-     */
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
         return $this;
     }
 
