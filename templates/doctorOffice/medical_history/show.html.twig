@@ -1,7 +1,235 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Hello DoctorOfficeHelpController!{% endblock %}
-
-{% block body %}
-    <h2>Test</h2>
+{% extends 'doctorOffice/index.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
+{% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            <li><a class="back-page" href="{{ path('patients_list') }}">Назад</a></li>
+        </ul>
+    </div>
+    <div class="statement acc">
+        <h2 class="title accordion">Выписка из электронного журнала ведения пациента</h2>
+        <div class="statement__wrapper panel">
+            <div class="statement__head">
+                <h3 class="subtitle">Данные пациента</h3>
+                <span class="statement__edit">Редактировать</span>
+            </div>
+            <div class="statement__content">
+                <div class="statement__info">
+                    <div class="statement__info-block">
+                        <p>ФИО</p>
+                        <p>Иванова Татьяна Ивановна</p>
+                    </div>
+                    <div class="statement__info-block">
+                        <p>Возраст</p>
+                        <p>32 года</p></div>
+                    <div class="statement__info-block">
+                        <p>Адрес проживания</p>
+                        <p>Железногорск, Ленина, 24 – 56 </p>
+                    </div>
+                    <div class="statement__info-block"><p>Приклипление к женской консультации</p>
+                        <p>Женская консультация № 2 </p>
+                    </div>
+                    <div class="statement__info-block">
+                        <p>Телефон</p>
+                        <p>+7 920 345 54 56</p>
+                    </div>
+                    <div class="statement__info-block">
+                        <ul>
+                            <li>
+                                <p>Вес</p>
+                                <p>56 кг</p>
+                            </li>
+                            <li>
+                                <p>Рост</p>
+                                <p>167см</p>
+                            </li>
+                            <li><p>ИМТ</p>
+                                <p>12%</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="statement__info">
+                    <div class="statement__info-block">
+                        <p>Беременность по счету</p>
+                        <p>3 Беременность (1 выкидыш, 1 медаборт). </p>
+                    </div>
+                    <div class="statement__info-block">
+                        <p>Расчетный срок беременности</p>
+                        <p>24 недели</p>
+                    </div>
+                    <div class="statement__info-block">
+                        <p>Сопутсвующие патологии</p>
+                        <p>
+                            <span>Носитель тромбогенной мутации Лейден F5 в гетерозиготной форме</span>
+                            <span>Носитель тромбогенный полиморфизмов MTHFR, PAI-1в гомозиготной форме</span>
+                            <span>Хронический пиелонефрит. Варикозная болезнь</span>
+                        </p>
+                    </div>
+                    <div class="statement__info-block"><p>Оценка риска ВТЭО во время беременности</p>
+                        <p>1 балл</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="statement acc">
+        <h2 class="title accordion">Выписка из электронного журнала ведения пациента</h2>
+        <div class="statement__wrapper panel">
+            <div class="statement__head">
+                <h3 class="subtitle">Данные пациента</h3>
+                <span class="statement__edit">Редактировать</span>
+            </div>
+            <div class="statement__content">
+                <div class="statement__info">
+                    <div class="statement__info-block">
+                        <p>ФИО</p>
+                        <p>Иванова Татьяна Ивановна</p>
+                    </div>
+                    <div class="statement__info-block">
+                        <p>Возраст</p>
+                        <p>32 года</p>
+                    </div>
+                </div>
+                <div class="statement__info">
+                    <div class="statement__info-block">
+                        <p>Беременность по счету</p>
+                        <p>3 Беременность (1 выкидыш, 1 медаборт). </p>
+                    </div>
+                    <div class="statement__info-block">
+                        <p>Расчетный срок беременности</p>
+                        <p>24 недели</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="history">
+        <h2 class="title">Электронная история ведения беременности </h2>
+        <div class="history__head">
+            <div class="select"><span>Период</span>
+                <input class="js-datepicker" type="text" value="15.03.2020">
+                <input class="js-datepicker" type="text" value="15.03.2020">
+            </div>
+            <button class="button main-button">Назначить лечение</button>
+        </div>
+    </div>
+    <div class="table-wrapper table-history">
+        <table>
+            <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Переданное значение</th>
+                <th>Назначение консультаций смежных специалистов</th>
+                <th>Лечение</th>
+                <th>Комментарий</th>
+            </tr>
+            </thead>
+            <tr>
+                <th><span>20.02.2020</span></th>
+                <th>
+                    <div class="th-inner"><span class="mode">Антитела к β2 гликопротеину 24 ЕД  </span></div>
+                    <div class="th-inner"><span class="mode-2">D-димер 845 нг/мл</span></div>
+                    <div class="th-inner"><span>УЗИ, степень зрелости плаценты 1ст. </span></div>
+                    <div class="th-inner">
+                        <span class="table__small-text">
+                            Данные переданы <br> через личный <br> кабинет
+                        </span>
+                    </div>
+                </th>
+                <th>Для согласования лечения назначена консультация врача -гематолога</th>
+                <th>
+                    <div class="th-inner">
+                        <span class="table__min-title">Принимать</span>
+                        <span>Ангиовит 1 таблетка в суткиКурантил 25 мг по 1 таблетки 3 раза в день. </span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__min-title">Вводить подкожно</span>
+                        <span>Фраксипарин 0,3 один раз.</span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__min-title">Сдать анализы </span>
+                        <span>D-димер через 2 недели </span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__small-text">
+                            Рекомендации направлены <br> на согласование врачу гематологу
+                        </span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__small-text">Врач</span>
+                        <span>Иванов И. И.</span>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th><span class="green">3.04.2020 </span></th>
+                <th>
+                    <div class="th-inner">
+                        <span class="mode">Показатели коагулограммы  </span>
+                        <span>АПТВ – 26, ПТИ – 76%, Фибриноген – 3,4 </span>
+                    </div>
+                    <div class="th-inner"><span class="mode-2">D-димер 845 нг/мл </span></div>
+                    <div class="th-inner"><span>Фото ОАК </span></div>
+                    <a class="button table-button" href="#">Открыть фото</a>
+                    <div class="th-inner">
+                        <span class="table__small-text">Данные внесены <br> врачом-консультантом </span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__small-text">Врач</span>
+                        <span>Иванов И. И.</span></div>
+                </th>
+                <th>
+                    <div class="th-inner"><span>Выполнена консультация врача-гематолога</span></div>
+                    <div class="th-inner"><span class="green-check">Лечение согласовано</span></div>
+                    <div class="th-inner">
+                        <span class="table__small-text">Врач - гематолог</span>
+                        <span>Петров А. А.</span>
+                    </div>
+                </th>
+                <th>
+                    <div class="th-inner">
+                        <span class="table__min-title">Принимать</span>
+                        <span>Ангиовит 1 таблетка в суткиКурантил 25 мг по 1 таблетки 3 раза в день. </span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__min-title">Вводить подкожно</span>
+                        <span>Фраксипарин 0,3 один раз.</span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__min-title">Сдать анализы </span>
+                        <span>D-димер через 2 недели </span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__small-text">
+                            Рекомендации направлены <br> на согласование врачу гематологу
+                        </span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__small-text">Врач</span>
+                        <span>Иванов И. И.</span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__small-text">
+                            Рекомендации направлены в личный кабинет пациентки,
+                            дополнительно произведено информирование посредством SMS сообщения
+                        </span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__small-text">
+                            SMS – «Вам в личный кабинет отправлены новые рекомендации по лечению»
+                        </span>
+                    </div>
+                </th>
+                <th>
+                    <div class="th-inner">
+                        <span>
+                            С пациенткой произведен личный разговор по телефону. Каких-либо жалоб не предъявляет.
+                        </span>
+                    </div>
+                    <div class="th-inner"><span class="table__small-text">Врач</span><span>Иванов И. И.</span></div>
+                </th>
+            </tr>
+        </table>
+    </div>
 {% endblock %}

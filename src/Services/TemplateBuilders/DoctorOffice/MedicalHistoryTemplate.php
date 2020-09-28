@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\TemplateBuilders\PatientOffice;
+namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\TemplateBuilders\AdminTemplateBuilder;
 use Symfony\Component\Routing\RouteCollection;
@@ -12,6 +12,12 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class MedicalHistoryTemplate extends AdminTemplateBuilder
 {
+    /** @var string[] Common show content for staff templates */
+    protected const SHOW_CONTENT = [
+        'h1' => 'История болезни',
+        'title' => 'История болезни',
+    ];
+
     public function __construct(RouteCollection $routeCollection, string $className)
     {
         parent::__construct($routeCollection, $className);

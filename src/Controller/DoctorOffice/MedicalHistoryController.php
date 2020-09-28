@@ -3,7 +3,7 @@
 namespace App\Controller\DoctorOffice;
 
 use App\Entity\Patient;
-use App\Services\TemplateBuilders\PatientOffice\MedicalHistoryTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 use Symfony\Component\HttpFoundation\Response;
