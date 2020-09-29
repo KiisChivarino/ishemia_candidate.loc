@@ -11,7 +11,12 @@
         <div class="statement__wrapper panel">
             <div class="statement__head">
                 <h3 class="subtitle">{{ template.items.show.content.personalData }}</h3>
-                <span class="statement__edit">Редактировать</span>
+                <span class="statement__edit">
+                    <a class="back-page"
+                       href="{{ path('doctor_edit_personal_data', {'id': entity.id}) }}">
+                        Редактировать
+                    </a>
+                </span>
             </div>
             <div class="statement__content">
                 <div class="statement__info">

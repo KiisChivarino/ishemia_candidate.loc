@@ -1,0 +1,176 @@
+{% extends 'doctorOffice/index.html.twig' %}
+{# {% block title %}{{ template.items.edit.content.title }}{% endblock %} #}
+{% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            <li><a class="back-page" href="#">Назад</a></li>
+        </ul>
+    </div>
+    <div class="pacient-edit-wrapper">
+        <div class="popup__wrapper acc"><h2 class="title accordion active">{{ template.items.edit.content.h2 }}</h2>
+            <div class="popup__inner panel">
+                {{ include(template.items.form.path~'_form.html.twig') }}
+            </div>
+        </div>
+        {# <div class="popup__wrapper acc"><h2 class="title accordion">Данные по беременности</h2> #}
+        {# <div class="popup__inner panel"> #}
+        {# <form action="get"><p class="popup__row"><span class="label">Беременность по счету</span><input #}
+        {# type="text" placeholder="" value=""></p> #}
+        {# <p class="popup__row"><span class="label">Рсчетный срок беременности</span><input #}
+        {# class="js-datepicker" type="text" value="13.05.2020"></p> #}
+        {# <p class="popup__row"><label class="radio" for="gestation-check-1"><span #}
+        {# class="label">Анамнез</span><input type="radio" id="gestation-check-1" #}
+        {# name="gestation-name-1" #}
+        {# value="нормальные роды"><span #}
+        {# class="radio-text">Нормальные роды</span></label><label class="radio" #}
+        {# for="gestation-check-2"><input #}
+        {# type="radio" id="gestation-check-2" name="gestation-name-1" #}
+        {# value="наличие выкидышей"><span class="radio-text">Наличие выкидышей</span></label> #}
+        {# </p> #}
+        {# <p class="popup__row"><span class="label">Количество</span><input type="text" placeholder="" #}
+        {# value=""></p> #}
+        {# <p class="popup__row"><label class="radio" for="gestation-check-1"><span #}
+        {# class="label"></span><input type="radio" id="gestation-check-1" #}
+        {# name="gestation-name-1" #}
+        {# value="Наличие замерзших"><span class="radio-text">Наличие замерзших</span></label><label #}
+        {# class="radio" for="gestation-check-2"><input type="radio" id="gestation-check-2" #}
+        {# name="gestation-name-1" #}
+        {# value="Наличие мертворожденных"><span #}
+        {# class="radio-text">Наличие мертворожденных</span></label><label class="radio" #}
+        {# for="gestation-check-2"><input #}
+        {# type="radio" id="gestation-check-3" name="gestation-name-1" #}
+        {# value="Наличие медицинский адорт"><span #}
+        {# class="radio-text">Наличие медицинский адорт</span></label></p> #}
+        {# <p class="popup__row"><span class="label">Количество</span><input type="text" placeholder="" #}
+        {# value=""></p> #}
+        {# <p class="popup__row"><span class="label">Сроки</span><input class="js-datepicker" type="text" #}
+        {# value="13.05.2020"></p> #}
+        {# <p class="popup__row"><label class="radio" for="gestation-check-3"><input type="radio" #}
+        {# id="gestation-check-3" #}
+        {# name="gestation-name-2" #}
+        {# value="Наличие замерших"><span #}
+        {# class="radio-text">Тяжелая преэклампсия</span></label><label class="radio" #}
+        {# for="gestation-check-4"><input #}
+        {# type="radio" id="gestation-check-4" name="gestation-name-2" #}
+        {# value="Наличие мертворожденных"><span #}
+        {# class="radio-text">HELLP-синдром</span></label><label class="radio" #}
+        {# for="gestation-check-5"><input #}
+        {# type="radio" id="gestation-check-5" name="gestation-name-2" #}
+        {# value="Тяжелая преэклампсия"><span #}
+        {# class="radio-text">ВТЭО в анамнезе</span></label><label class="radio" #}
+        {# for="gestation-check-6"><input #}
+        {# type="radio" id="gestation-check-6" name="gestation-name-2" #}
+        {# value="HELLP-синдром"><span #}
+        {# class="radio-text">Инсульт ишемический</span></label><label class="radio" #}
+        {# for="gestation-check-7"><input #}
+        {# type="radio" id="gestation-check-7" name="gestation-name-2" #}
+        {# value="ВТЭО в анамнезе"><span #}
+        {# class="radio-text">Инсульт геморрагический</span></label><label class="radio" #}
+        {# for="gestation-check-8"><input #}
+        {# type="radio" id="gestation-check-7" name="gestation-name-2" value="Инфаркт"><span #}
+        {# class="radio-text">Инфаркт</span></label></p></form> #}
+        {# </div> #}
+        {# </div> #}
+        {# <div class="popup__wrapper acc"><h2 class="title accordion">Полиморфизмы/мутации</h2> #}
+        {# <div class="popup__inner panel"> #}
+        {# <form action="get"><p class="popup__row"><label class="radio" for="gestation-check-8"><input #}
+        {# type="checkbox" id="gestation-check-8" name="gestation-name-3" value="MTHFR 677 CT"><span #}
+        {# class="radio-text">MTHFR 677 CT</span></label><label class="radio" #}
+        {# for="gestation-check-9"><input #}
+        {# type="checkbox" id="gestation-check-9" name="gestation-name-3" value="MTHFR 677 ТT"><span #}
+        {# class="radio-text">MTHFR 677 ТT</span></label><label class="radio" #}
+        {# for="gestation-check-10"><input #}
+        {# type="checkbox" id="gestation-check-10" name="gestation-name-3" #}
+        {# value="MTHFR 1298 АC"><span #}
+        {# class="radio-text">MTHFR 1298 АC  </span></label><label class="radio" #}
+        {# for="gestation-check-11"><input #}
+        {# type="checkbox" id="gestation-check-11" name="gestation-name-3" #}
+        {# value="MTHFR 1298 СC"><span #}
+        {# class="radio-text">MTHFR 1298 СC</span></label><label class="radio" #}
+        {# for="gestation-check-12"><input #}
+        {# type="checkbox" id="gestation-check-12" name="gestation-name-3" #}
+        {# value="MTRR 66 AG"><span #}
+        {# class="radio-text">MTRR 66 AG</span></label><label class="radio" #}
+        {# for="gestation-check-13"><input #}
+        {# type="checkbox" id="gestation-check-13" name="gestation-name-3" #}
+        {# value="MTRR 66 GG"><span #}
+        {# class="radio-text">MTRR 66 GG</span></label><label class="radio" #}
+        {# for="gestation-check-14"><input #}
+        {# type="checkbox" id="gestation-check-14" name="gestation-name-3" #}
+        {# value="PAI-1: -675 5G4G"><span #}
+        {# class="radio-text">PAI-1: -675 5G4G</span></label><label #}
+        {# class="radio" for="gestation-check-15"><input type="checkbox" id="gestation-check-15" #}
+        {# name="gestation-name-3" #}
+        {# value="PAI-1: -675 4G4G"><span #}
+        {# class="radio-text">PAI-1: -675 4G4G</span></label><label class="radio" #}
+        {# for="gestation-check-16"><input #}
+        {# type="checkbox" id="gestation-check-16" name="gestation-name-3" value="F5: 1691 GA"><span #}
+        {# class="radio-text">F5: 1691 GA</span></label><label class="radio" #}
+        {# for="gestation-check-17"><input #}
+        {# type="checkbox" id="gestation-check-17" name="gestation-name-3" value="F5: 1691 АA"><span #}
+        {# class="radio-text">F5: 1691 АA</span></label><label class="radio" #}
+        {# for="gestation-check-18"><input #}
+        {# type="checkbox" id="gestation-check-18" name="gestation-name-3" #}
+        {# value="F2: 20210 GA"><span #}
+        {# class="radio-text">F2: 20210 GA</span></label><label class="radio" #}
+        {# for="gestation-check-19"><input #}
+        {# type="checkbox" id="gestation-check-19" name="gestation-name-3" #}
+        {# value="F2: 20210 АA"><span #}
+        {# class="radio-text">F2: 20210 АA</span></label></p> #}
+        {# <p class="popup__row"><span class="label">Другое</span><input type="text" placeholder="" #}
+        {# value=""></p> #}
+        {# <div class="button main-button">Сохранить</div> #}
+        {# </form> #}
+        {# </div> #}
+        {# </div> #}
+        {# <div class="popup__wrapper acc"><h2 class="title accordion">Оценка риска ВТЭО</h2> #}
+        {# <div class="popup__inner panel"> #}
+        {# <form action="get"><p class="popup__row"><label class="radio" for="gestation-check-20"><input #}
+        {# type="checkbox" id="gestation-check-20" name="gestation-name-4" value="текст1"><span #}
+        {# class="radio-text">Длительный прием антикоагулянтов, используемый до беременности для постоянных показаний </span></label><label #}
+        {# class="radio" for="gestation-check-21"><input type="checkbox" id="gestation-check-21" #}
+        {# name="gestation-name-4" #}
+        {# value="текст2"><span #}
+        {# class="radio-text">Предшествующие рецидивирующие ВТЭО </span></label><label #}
+        {# class="radio" #}
+        {# for="gestation-check-22"><input #}
+        {# type="checkbox" id="gestation-check-22" name="gestation-name-4" value="текст3"><span #}
+        {# class="radio-text">Предшествующее ВТЭО в сочетании с тромбофилией высокого риска (дефицит антитромбина, АФС ), без лечения антикоагулянтами до беременности</span></label><label #}
+        {# class="radio" for="gestation-check-23"><input type="checkbox" id="gestation-check-23" #}
+        {# name="gestation-name-4" #}
+        {# value="текст4"><span #}
+        {# class="radio-text">Предшествующие ВТЭО, ничем не спровоцированные или связанные с приемом эстрогенов или  беременностью</span></label><label #}
+        {# class="radio" for="gestation-check-24"><input type="checkbox" id="gestation-check-24" #}
+        {# name="gestation-name-4" #}
+        {# value="текст5"><span #}
+        {# class="radio-text">Предшествующие спровоцированные ВТЭО в сочетании с тромбофилией низкого риска</span></label><label #}
+        {# class="radio" for="gestation-check-25"><input type="checkbox" id="gestation-check-25" #}
+        {# name="gestation-name-4" #}
+        {# value="текст6"><span #}
+        {# class="radio-text">Бессимптомные тромбофилии омозиготы по фактору V Лейдена </span></label><label #}
+        {# class="radio" for="gestation-check-26"><input type="checkbox" id="gestation-check-26" #}
+        {# name="gestation-name-4" #}
+        {# value="текст7"><span #}
+        {# class="radio-text">Гомозиготы по протромбину G20210A </span></label><label #}
+        {# class="radio" #}
+        {# for="gestation-check-27"><input #}
+        {# type="checkbox" id="gestation-check-27" name="gestation-name-4" value="текст8"><span #}
+        {# class="radio-text">Дефицит антитромбина </span></label><label class="radio" #}
+        {# for="gestation-check-28"><input #}
+        {# type="checkbox" id="gestation-check-28" name="gestation-name-4" value="текст9"><span #}
+        {# class="radio-text">Строгий постельный режим 7 и более дней у женщин с ИМТ >25 кг/м2 </span></label><label #}
+        {# class="radio" for="gestation-check-29"><input type="checkbox" id="gestation-check-29" #}
+        {# name="gestation-name-4" #}
+        {# value="текст10"><span #}
+        {# class="radio-text">Неакушерское хирургическое вмешательство во время беременности </span></label> #}
+        {# </p> #}
+        {# <p class="popup__row"><span class="label--strong"> <b>Профилактические дозы НМГ в течение всей беременности и 6 нед. после родов </b></span><input #}
+        {# type="text" placeholder="1"></p> #}
+        {# <p class="popup__row"><span class="label--strong"><b>Профилактические дозы НМГ в течение всей беременности и 6 нед. после родов </b></span><input #}
+        {# type="text" placeholder="≥2"></p> #}
+        {# <div class="button main-button">Сохранить</div> #}
+        {# </form> #}
+    </div>
+    {# </div> #}
+    {# </div> #}
+{% endblock %}

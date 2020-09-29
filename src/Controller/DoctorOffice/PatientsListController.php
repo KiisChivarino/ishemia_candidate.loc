@@ -14,7 +14,7 @@ use Twig\Environment;
 
 /**
  * Class PatientsListController
- *
+ * @route ("/doctor_office")
  * @package App\Controller\DoctorOffice
  */
 class PatientsListController extends DoctorOfficeAbstractController
@@ -35,7 +35,7 @@ class PatientsListController extends DoctorOfficeAbstractController
 
     /**
      * List of patients
-     * @Route("/doctor_office/patients", name="patients_list", methods={"GET","POST"})
+     * @Route("/patients", name="patients_list", methods={"GET","POST"})
      *
      * @param Request $request
      * @param PatientsListDataTableService $dataTableService

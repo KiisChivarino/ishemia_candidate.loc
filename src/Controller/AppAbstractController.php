@@ -2,15 +2,22 @@
 
 namespace App\Controller;
 
+use App\Entity\AuthUser;
+use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\Template\TemplateService;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
+use Doctrine\DBAL\DBALException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Twig\Environment;
 
 /**
@@ -31,7 +38,7 @@ abstract class AppAbstractController extends AbstractController
         'HOSPITAL' => 'hospital',
         'MEDICAL_HISTORY' => 'medicalHistory',
         'STAFF' => 'staff',
-        'PRESCRIPTION'=>'prescription',
+        'PRESCRIPTION' => 'prescription',
     ];
 
     /** @var string Label of form option for adding formTemplateItem in form */
@@ -135,5 +142,94 @@ abstract class AppAbstractController extends AbstractController
         $this->templateService->show($entity);
         $parameters['entity'] = $entity;
         return $this->render($templatePath.'show.html.twig', $parameters);
+    }
+
+    /**
+     * Response form
+     *
+     * @param Request $request
+     * @param object $entity
+     * @param FormInterface $form
+     * @param string $responseFormType
+     * @param Closure|null $entityActions
+     *
+     * @return RedirectResponse|Response
+     */
+    public function responseFormTemplate(
+        Request $request,
+        object $entity,
+        FormInterface $form,
+        string $responseFormType,
+        ?Closure $entityActions = null
+    ) {
+        try {
+            $form->handleRequest($request);
+        } catch (Exception $e) {
+            $this->addFlash('error', 'Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...');
+            return $this->render(
+                $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+                    'staff' => $entity,
+                    'form' => $form->createView(),
+                ]
+            );
+        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $entityManager = $this->getDoctrine()->getManager();
+                if ($entityActions) {
+                    $entityActionsObject = new EntityActions($entity, $request, $entityManager);
+                    $entityActions($entityActionsObject);
+                }
+                $entityManager->persist($entity);
+                $entityManager->flush();
+            } catch (DBALException $e) {
+                $this->addFlash('error', 'Не удалось сохранить запись!');
+                return $this->render(
+                    $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+                        'entity' => $entity,
+                        'form' => $form->createView(),
+                    ]
+                );
+            } catch (Exception $e) {
+                $this->addFlash('error', 'Ошибка cохранения записи!');
+                return $this->render(
+                    $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+                        'entity' => $entity,
+                        'form' => $form->createView(),
+                    ]
+                );
+            }
+            $this->addFlash('success', 'Запись успешно сохранена!');
+            return $this->redirectToRoute($this->templateService->getRoute('list'));
+        }
+        return $this->render(
+            $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+                'entity' => $entity,
+                'form' => $form->createView(),
+                'filters' => $this->templateService->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
+            ]
+        );
+    }
+
+    /**
+     * Edit password for AuthUser
+     *
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param AuthUser $authUser
+     * @param string $oldPassword
+     *
+     * @return AuthUser
+     */
+    protected function editPassword(UserPasswordEncoderInterface $passwordEncoder, AuthUser $authUser, string $oldPassword): AuthUser
+    {
+        $newPassword = $authUser->getPassword();
+        $authUser->setPassword($oldPassword);
+        if ($newPassword) {
+            $encodedPassword = $passwordEncoder->encodePassword($authUser, $newPassword);
+            if ($encodedPassword !== $oldPassword) {
+                $authUser->setPassword($encodedPassword);
+            }
+        }
+        return $authUser;
     }
 }

@@ -1,10 +1,17 @@
 import './app';
-require('datatables');
-import './select2'
 
+require('datatables');
+import './select2';
+import './select2entity';
+import '../css/select2.min.css'
+import './hospitalByCity';
 var acc = document.getElementsByClassName("accordion");
 var i;
 for (i = 0; i < acc.length; i++) {
+    if ($(acc[i]).hasClass('active')) {
+        let panel = acc[i].nextElementSibling;
+        panel.style.maxHeight = panel.scrollHeight + "px";
+    }
     acc[i].addEventListener("click", function () {
         this.classList.toggle("active");
         var panel = this.nextElementSibling;
@@ -18,6 +25,14 @@ for (i = 0; i < acc.length; i++) {
 
 // inicial select
 $(document).ready(function () {
+    $('label.radio').on('click', function () {
+        $(this).children('input').each(function (){
+            console.log(this);
+            if(this.checked){
+                $(this).val(true);
+            }
+        });
+    });
     let datatable = $('#datatable');
     datatable.initDataTables(datatable.data('table_settings'),
         {

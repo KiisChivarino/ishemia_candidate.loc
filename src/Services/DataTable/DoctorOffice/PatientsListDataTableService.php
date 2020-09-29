@@ -58,9 +58,9 @@ class PatientsListDataTableService extends AdminDatatableService
             ->add(
                 'fio', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('fio'),
-                    'render' => function (string $data, Patient $patient){
+                    'render' => function (string $data, Patient $patient) {
                         return
-                            $patient ? $this->getLink($this->authUserInfoService->getFIO($patient->getAuthUser()), $patient->getId(), 'medical_history_show') : '';
+                            $patient ? $this->getLink($this->authUserInfoService->getFIO($patient->getAuthUser()), $patient->getId(), 'doctor_medical_history') : '';
                     },
                 ]
             )

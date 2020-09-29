@@ -1,24 +1,22 @@
 <?php
 
-namespace App\Form\Admin\AuthUser;
+namespace App\Form\Doctor;
 
 use App\Controller\AppAbstractController;
 use App\Entity\AuthUser;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class AuthUserType
- * edit/create form of AuthUser controller
+ * Class PatientPersonalData
  *
- * @package App\Form\Admin\AuthUser
+ * @package App\Form\Doctor
  */
-class AuthUserType extends AbstractType
+class AuthUserPersonalDataType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -46,12 +44,6 @@ class AuthUserType extends AbstractType
                 EmailType::class,
                 [
                     'label' => $templateItem->getContentValue('email'),
-                    'required' => false,
-                ]
-            )
-            ->add(
-                'enabled', CheckboxType::class, [
-                    'label' => $templateItem->getContentValue('enabled'),
                     'required' => false,
                 ]
             );

@@ -3,6 +3,8 @@
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\TemplateBuilders\AdminTemplateBuilder;
+use App\Services\TemplateItems\EditTemplateItem;
+use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -12,27 +14,58 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class MedicalHistoryTemplate extends AdminTemplateBuilder
 {
-    /** @var string[] Common show content for staff templates */
+    /** @var string[] Common show content for medical history templates */
     protected const SHOW_CONTENT = [
         'h1' => 'История болезни',
         'title' => 'История болезни',
         'personalData' => 'Личные данные',
         'fio' => 'ФИО',
         'age' => 'Возраст',
-        'address' => 'Адрес проживания',
-        'insuranceNumber' => 'Страховой полис',
-        'phone' => 'Телефон',
-        'weight' => 'Вес',
-        'height' => 'Рост',
         'imt' => 'ИМТ',
-        'SNILS' => 'СНИЛС',
-        'passport' => 'Паспортные данные',
-        'email' => 'Email',
         'bySms' => 'Информируется по смс',
         'byEmail' => 'Информируется по email',
-        'hospital' => 'Больница',
     ];
 
+    /** @var string[] Common form and show content for medical history templates */
+    protected const FORM_SHOW_CONTENT = [
+        'address' => 'Адрес проживания',
+        'insuranceNumber' => 'Страховой полис',
+        'weight' => 'Вес',
+        'height' => 'Рост',
+        'hospital' => 'Больница',
+        'SNILS' => 'СНИЛС',
+        'phone' => 'Телефон',
+        'email' => 'Email',
+        'passport' => 'Паспортные данные',
+        'city' => 'Город',
+        'district' => 'Район',
+        'diagnosis' => 'Диагнозы',
+    ];
+
+    /** @var string[] Common form content for medical history templates */
+    protected const FORM_CONTENT = [
+        'lastName' => 'Фамилия',
+        'firstName' => 'Имя',
+        'patronymicName' => 'Отчество',
+        'smsInforming' => 'Информировать по смс',
+        'emailInforming' => 'Информировать по email',
+        'dateBirth' => 'Дата рождения',
+        'hospitalPlaceholder' => 'Выберите больницу',
+        'cityPlaceholder' => 'Выберите город',
+    ];
+
+    /** @var string[] Common form content for edit templates */
+    protected const EDIT_PERSONAL_DATA = [
+        'h2' => 'Редактирование персональных данных',
+        'title' => 'Редактирование персональных данных',
+    ];
+
+    /**
+     * MedicalHistoryTemplate constructor.
+     *
+     * @param RouteCollection $routeCollection
+     * @param string $className
+     */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
         parent::__construct($routeCollection, $className);
@@ -46,5 +79,19 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
             self::COMMON_CONTENT,
             self::FILTER_CONTENT
         );
+    }
+
+    /**
+     * @param object|null $entity
+     *
+     * @return $this|AdminTemplateBuilder
+     */
+    public function edit(?object $entity = null): AdminTemplateBuilder
+    {
+        parent::edit();
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+            ->setPath($this->getTemplatePath());
+        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setContents(self::EDIT_PERSONAL_DATA);
+        return $this;
     }
 }

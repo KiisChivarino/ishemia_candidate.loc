@@ -6,6 +6,7 @@ import './select2';
 import './tabs';
 import '../css/admin.scss'
 import './mask';
+import './hospitalByCity';
 
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
@@ -31,16 +32,6 @@ $(document).ready(function () {
             hospitals.removeAttr('required');
         }
     });
-    //begin управление пациентом: добавление фильтра по городу в выбор больниц
-    if ($('select').is('#form_patient_city')) {
-        let city = $('#form_patient_city');
-        setCity(city.val());
-        city.on('change', (function () {
-            setCity(city.val());
-            $('#form_patient_hospital').select2entity();
-        }));
-    }
-    //end управление пациентом: добавление фильтра по городу в выбор больниц
 
     let datatable = $('#datatable');
     datatable.initDataTables(datatable.data('table_settings'),
@@ -78,10 +69,3 @@ $(document).ready(function () {
     //добавляет стили для чекбоксов множественного выбора
     $('.js-multiple-check').parent('div.form-check').addClass('check-row');
 });
-
-//set city value
-function setCity(cityValue) {
-    let formPatientHospital = $('#form_patient_hospital');
-    let hospitalUrlString = formPatientHospital.data('ajax--url');
-    formPatientHospital.data('ajax--url', hospitalUrlString.replace(/city=\d*/, "city=" + cityValue));
-}
