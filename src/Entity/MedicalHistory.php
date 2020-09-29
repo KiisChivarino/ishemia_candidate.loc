@@ -77,7 +77,7 @@ class MedicalHistory
      * @ORM\ManyToOne(targetEntity=Diagnosis::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private $MainDisease;
+    private $mainDisease;
 
     /**
      * Фоновые заболевания
@@ -424,14 +424,22 @@ class MedicalHistory
         return $this;
     }
 
+    /**
+     * @return Diagnosis|null
+     */
     public function getMainDisease(): ?Diagnosis
     {
-        return $this->MainDisease;
+        return $this->mainDisease;
     }
 
+    /**
+     * @param Diagnosis|null $MainDisease
+     *
+     * @return $this
+     */
     public function setMainDisease(?Diagnosis $MainDisease): self
     {
-        $this->MainDisease = $MainDisease;
+        $this->mainDisease = $MainDisease;
         return $this;
     }
 

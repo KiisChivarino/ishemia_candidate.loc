@@ -23,6 +23,19 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'staffFio' => 'ФИО врача',
         'dateBegin' => 'Дата создания',
         'dateEnd' => 'Дата завершения',
+        'mainDisease' => 'Основное заболевание',
+    ];
+
+    protected const FORM_SHOW_CONTENT = [
+        'mainDiseasePlaceholder' => 'Выберите заболевание',
+        'backgroundDiseases' => 'Фоновые заболевания',
+        'backgroundDiseasesPlaceholder' => 'Выберите фоновые заболевания',
+        'complications' => 'Осложнения',
+        'complicationsPlaceholder' => 'Выберите осложнения',
+        'concomitantDiseases' => 'Сопутствующие заболевания',
+        'concomitantDiseasesPlaceholder' => 'Выберите сопутствующие заболевания',
+        'diseaseHistory' => 'Анамнез заболевания',
+        'lifeHistory' => 'Анамнез жизни',
     ];
 
     /** @var string[] Common LIST_CONTENT */

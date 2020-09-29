@@ -3,6 +3,7 @@
 namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
+use App\Entity\Diagnosis;
 use App\Entity\MedicalHistory;
 use App\Entity\Staff;
 use App\Repository\StaffRepository;
@@ -15,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 /**
  * Class MedicalHistoryType
@@ -56,12 +58,81 @@ class MedicalHistoryType extends AbstractType
                 ]
             )
             ->add(
-                'dateEnd', DateType::class, [
-                    'label' => $templateItem->getContentValue('dateEnd'),
-                    'widget' => 'single_text',
-                    'format' => 'yyyy-MM-dd',
-                    'required' => false,
+                'mainDisease', Select2EntityType::class, [
+                    'label' => $templateItem->getContentValue('mainDisease'),
+                    'method' => 'POST',
+                    'remote_route' => 'find_diagnosis_ajax',
+                    'class' => Diagnosis::class,
+                    'primary_key' => 'id',
+                    'text_property' => 'name',
+                    'minimum_input_length' => 3,
+                    'page_limit' => 1,
+                    'allow_clear' => true,
+                    'delay' => 250,
+                    'language' => 'ru',
+                    'placeholder' => $templateItem->getContentValue('mainDiseasePlaceholder'),
+                    'attr' => ['class' => 'js-example-basic-single'],
                 ]
+            )
+            ->add(
+                'backgroundDiseases', Select2EntityType::class, [
+                    'label' => $templateItem->getContentValue('backgroundDiseases'),
+                    'method' => 'POST',
+                    'multiple' => true,
+                    'remote_route' => 'find_diagnosis_ajax',
+                    'class' => Diagnosis::class,
+                    'primary_key' => 'id',
+                    'text_property' => 'name',
+                    'minimum_input_length' => 3,
+                    'page_limit' => 1,
+                    'allow_clear' => true,
+                    'delay' => 250,
+                    'language' => 'ru',
+                    'placeholder' => $templateItem->getContentValue('backgroundDiseasesPlaceholder'),
+                    'attr' => ['class' => 'js-example-basic-single'],
+                ]
+            )
+            ->add(
+                'complications', Select2EntityType::class, [
+                    'label' => $templateItem->getContentValue('complications'),
+                    'method' => 'POST',
+                    'multiple' => true,
+                    'remote_route' => 'find_diagnosis_ajax',
+                    'class' => Diagnosis::class,
+                    'primary_key' => 'id',
+                    'text_property' => 'name',
+                    'minimum_input_length' => 3,
+                    'page_limit' => 1,
+                    'allow_clear' => true,
+                    'delay' => 250,
+                    'language' => 'ru',
+                    'placeholder' => $templateItem->getContentValue('complicationsPlaceholder'),
+                    'attr' => ['class' => 'js-example-basic-single'],
+                ]
+            )
+            ->add(
+                'concomitantDiseases', Select2EntityType::class, [
+                    'label' => $templateItem->getContentValue('concomitantDiseases'),
+                    'method' => 'POST',
+                    'multiple' => true,
+                    'remote_route' => 'find_diagnosis_ajax',
+                    'class' => Diagnosis::class,
+                    'primary_key' => 'id',
+                    'text_property' => 'name',
+                    'minimum_input_length' => 3,
+                    'page_limit' => 1,
+                    'allow_clear' => true,
+                    'delay' => 250,
+                    'language' => 'ru',
+                    'placeholder' => $templateItem->getContentValue('concomitantDiseasesPlaceholder'),
+                    'attr' => ['class' => 'js-example-basic-single'],
+                ]
+            )
+            ->add(
+                'diseaseHistory', null, ['label' => $templateItem->getContentValue('diseaseHistory')]
+            )
+            ->add(
+                'lifeHistory', null, ['label' => $templateItem->getContentValue('lifeHistory')]
             )
             ->add(
                 'enabled', CheckboxType::class, [
