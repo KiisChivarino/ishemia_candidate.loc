@@ -5,6 +5,8 @@ import './select2';
 import './select2entity';
 import '../css/select2.min.css'
 import './hospitalByCity';
+import '../css/doctorOffice.css';
+
 var acc = document.getElementsByClassName("accordion");
 var i;
 for (i = 0; i < acc.length; i++) {
@@ -26,9 +28,9 @@ for (i = 0; i < acc.length; i++) {
 // inicial select
 $(document).ready(function () {
     $('label.radio').on('click', function () {
-        $(this).children('input').each(function (){
+        $(this).children('input').each(function () {
             console.log(this);
-            if(this.checked){
+            if (this.checked) {
                 $(this).val(true);
             }
         });

@@ -4,11 +4,6 @@ namespace App\Repository;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
-use App\Entity\PatientTesting;
-use App\Entity\PlanTesting;
-use App\Entity\Staff;
-use App\Services\InfoService\PatientInfoService;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -34,12 +29,30 @@ class MedicalHistoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Patient $patient
-     * @param Staff $staff
+     * Returns current open medical history
      *
-     * @return bool|string[]
-     * @throws ORMException
+     * @param Patient $patient
+     *
+     * @return MedicalHistory|null
      */
+    public function getCurrentMedicalHistory(Patient $patient)
+    {
+        return $this->findOneBy(
+            [
+                'patient' => $patient,
+                'enabled' => true,
+                'dateEnd' => null
+            ]
+        );
+    }
+
+//    /**
+//     * @param Patient $patient
+//     * @param Staff $staff
+//     *
+//     * @return bool|string[]
+//     * @throws ORMException
+//     */
 //    public function persistMedicalHistory(Patient $patient, Staff $staff)
 //    {
 //        $gestationWeeks = (new PatientInfoService())->getGestationWeeks($patient->getDateStartOfTreatment());

@@ -18,12 +18,15 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     protected const SHOW_CONTENT = [
         'h1' => 'История болезни',
         'title' => 'История болезни',
-        'personalData' => 'Личные данные',
         'fio' => 'ФИО',
         'age' => 'Возраст',
         'imt' => 'ИМТ',
         'bySms' => 'Информируется по смс',
         'byEmail' => 'Информируется по email',
+        'personalData' => 'Личные данные',
+        'documentaryData' => 'Документальные данные',
+        'addDocumentaryData' => 'Внести документальные данные',
+        'addPersonalData' => 'Внести личные данные',
     ];
 
     /** @var string[] Common form and show content for medical history templates */
@@ -40,6 +43,20 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'city' => 'Город',
         'district' => 'Район',
         'diagnosis' => 'Диагнозы',
+        'dateBegin' => 'Дата начала лечения',
+        'dateEnd' => 'Дата окончания лечения',
+        'mainDiseaseNotFound' => 'Основное заболевание не найдено!',
+        'mainDisease' => 'Основное заболевание',
+        'backgroundDiseases' => 'Фоновые заболевания',
+        'backgroundDiseasesNotFound' => 'Фоновые заболевания отсутствуют',
+        'complications' => 'Осложнения',
+        'complicationsNotFound' => 'Осложнения отсутствуют',
+        'concomitantDiseases' => 'Сопутствующие заболевания',
+        'concomitantDiseasesNotFound' => 'Сопутствующие заболевания отсутствуют',
+        'diseaseHistory' => 'Анамнез болезни',
+        'diseaseHistoryNotFound' => 'Анамнез болезни отсутствует',
+        'lifeHistory' => 'Анамнез жизни',
+        'lifeHistoryNotFound' => 'Анамнез жизни отсутствует',
     ];
 
     /** @var string[] Common form content for medical history templates */

@@ -2,6 +2,7 @@
 
 namespace App\Controller\DoctorOffice;
 
+use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Form\Doctor\AuthUserPersonalDataType;
 use App\Form\Doctor\PatientPersonalDataType;
@@ -71,6 +72,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             $patient,
             [
                 'age' => $this->patientInfoService->getAge($patient),
+                'medicalHistory' => $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient),
             ]
         );
     }
@@ -124,5 +126,19 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    /**
+     * @param Request $request
+     * @param Patient $patient
+     * @Route("/{id}/edit_documentary_data", name="doctor_edit_documentary_data", methods={"GET","POST"}, requirements={"id"="\d+"})
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function editDocumentaryData(
+        Request $request,
+        Patient $patient
+    ) {
+        return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
     }
 }

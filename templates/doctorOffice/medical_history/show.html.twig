@@ -11,12 +11,10 @@
         <div class="statement__wrapper panel">
             <div class="statement__head">
                 <h3 class="subtitle">{{ template.items.show.content.personalData }}</h3>
-                <span class="statement__edit">
-                    <a class="back-page"
-                       href="{{ path('doctor_edit_personal_data', {'id': entity.id}) }}">
-                        Редактировать
-                    </a>
-                </span>
+                <a class="back-page"
+                   href="{{ path('doctor_edit_personal_data', {'id': entity.id}) }}">
+                    <span class="statement__edit">{{ template.items.show.content.addPersonalData }}</span>
+                </a>
             </div>
             <div class="statement__content">
                 <div class="statement__info">
@@ -93,31 +91,89 @@
         </div>
     </div>
     <div class="statement acc">
-        <h2 class="title accordion">Выписка из электронного журнала ведения пациента</h2>
+        <h2 class="title accordion">{{ template.items.show.content.documentaryData }}</h2>
         <div class="statement__wrapper panel">
             <div class="statement__head">
-                <h3 class="subtitle">Данные пациента</h3>
-                <span class="statement__edit">Редактировать</span>
+                <h3 class="subtitle">{{ template.items.show.content.documentaryData }}</h3>
+                <a class="back-page"
+                   href="{{ path('doctor_edit_documentary_data', {'id': entity.id}) }}">
+                    <span class="statement__edit">{{ template.items.show.content.addDocumentaryData }}</span>
+                </a>
             </div>
             <div class="statement__content">
                 <div class="statement__info">
                     <div class="statement__info-block">
-                        <p>ФИО</p>
-                        <p>Иванова Татьяна Ивановна</p>
+                        <p>{{ template.items.show.content.dateBegin }}</p>
+                        <p>{{ medicalHistory.dateBegin ? medicalHistory.dateBegin|date('d.m.Y') : '' }}</p>
+                    </div>
+                    {% if medicalHistory.dateEnd %}
+                        <div class="statement__info-block">
+                            <p>{{ template.items.show.content.dateEnd }}</p>
+                            <p>
+                                {{ medicalHistory.dateEnd ? medicalHistory.dateEnd|date('d.m.Y') : '' }}
+                            </p>
+                        </div>
+                    {% endif %}
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.mainDisease }}</p>
+                        <p>
+                            {% if (medicalHistory.mainDisease) %}
+                                {{ medicalHistory.mainDisease.name }}
+                            {% else %}
+                                {{ template.items.show.content.mainDiseaseNotFound }}
+                            {% endif %}
+                        </p>
                     </div>
                     <div class="statement__info-block">
-                        <p>Возраст</p>
-                        <p>32 года</p>
+                        <p>{{ template.items.show.content.backgroundDiseases }}</p>
+                        {% if not medicalHistory.backgroundDiseases %}
+                            <p>{{ template.items.show.content.backgroundDiseasesNotFound }}</p>
+                        {% endif %}
+                        {% for backgroundDisease in medicalHistory.backgroundDiseases %}
+                            <p>{{ backgroundDisease.name }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.complications }}</p>
+                        {% if not medicalHistory.complications %}
+                            <p>{{ template.items.show.content.complicationsNotFound }}</p>
+                        {% endif %}
+                        {% for complication in medicalHistory.complications %}
+                            <p>{{ complication.name }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.concomitantDiseases }}</p>
+                        {% if not medicalHistory.concomitantDiseases %}
+                            <p>{{ template.items.show.content.concomitantDiseasesNotFound }}</p>
+                        {% endif %}
+                        {% for concomitantDisease in medicalHistory.concomitantDiseases %}
+                            <p>{{ concomitantDisease.name }}</p>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="statement__info">
                     <div class="statement__info-block">
-                        <p>Беременность по счету</p>
-                        <p>3 Беременность (1 выкидыш, 1 медаборт). </p>
+                        <p>{{ template.items.show.content.diseaseHistory }}</p>
+                        <p>
+                            {% if medicalHistory.diseaseHistory %}
+                                {{ medicalHistory.diseaseHistory }}
+                            {% else %}
+                                {{ template.items.show.content.diseaseHistoryNotFound }}
+                            {% endif %}
+                        </p>
                     </div>
+                </div>
+                <div class="statement__info">
                     <div class="statement__info-block">
-                        <p>Расчетный срок беременности</p>
-                        <p>24 недели</p>
+                        <p>{{ template.items.show.content.lifeHistory }}</p>
+                        <p>
+                            {% if medicalHistory.lifeHistory %}
+                                {{ medicalHistory.lifeHistory }}
+                            {% else %}
+                                {{ template.items.show.content.lifeHistoryNotFound }}
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>
