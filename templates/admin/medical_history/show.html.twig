@@ -1,20 +1,25 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
-    {% if entity.patient %}
-        <li>
-            <span class="title">{{ template.items.show.content.patientFio }}</span>
-            <p>
+    <li>
+        <span class="title">{{ template.items.show.content.patientFio }}</span>
+        <p>
+            {% if entity.patient %}
                 <a href="{{ path('patient_show', {'id': entity.patient.id}) }}">{{ patientFio }}</a>
-
-            </p>
-        </li>
-    {% endif %}
-    {% if entity.dateBegin %}
-        <li>
-            <span class="title">{{ template.items.show.content.dateBegin }}</span>
-            <p>{{ entity.dateBegin ? entity.dateBegin|date('Y-m-d') : '' }}</p>
-        </li>
-    {% endif %}
+            {% else %}
+                Пациент не найден!
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dateBegin }}</span>
+        <p>
+            {% if entity.dateBegin %}
+                {{ entity.dateBegin ? entity.dateBegin|date('Y-m-d') : '' }}
+            {% else %}
+                Дата начала лечения не найдена!
+            {% endif %}
+        </p>
+    </li>
     <li>
         <span class="title">{{ template.items.show.content.dateEnd }}</span>
         <p>
@@ -22,6 +27,77 @@
                 {{ entity.dateEnd ? entity.dateEnd|date('Y-m-d') : '' }}
             {% else %}
                 Лечение не завершено
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.mainDisease }}</span>
+        <p>
+            {% if (entity.mainDisease) %}
+                <a href="{{ path('diagnosis_show', {'id': entity.mainDisease.id}) }}">
+                    {{ entity.mainDisease.name }}
+                </a>
+            {% else %}
+                Основное заболевание не найдено!
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.backgroundDiseases }}</span>
+        {% if entity.backgroundDiseases%}
+            Фоновые заболевания отсутствуют
+        {% endif %}
+        {% for backgroundDisease in entity.backgroundDiseases %}
+            <p>
+                <a href="{{ path('diagnosis_show', {'id': backgroundDisease.id}) }}">
+                    {{ backgroundDisease.name }}
+                </a>
+            </p>
+        {% endfor %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.complications }}</span>
+        {% if entity.complications%}
+            Осложнения основной болезни отсутствуют
+        {% endif %}
+        {% for complication in entity.complications %}
+            <p>
+                <a href="{{ path('diagnosis_show', {'id': complication.id}) }}">
+                    {{ complication.name }}
+                </a>
+            </p>
+        {% endfor %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.concomitantDiseases }}</span>
+        {% if entity.concomitantDiseases%}
+            Сопутствующие заболевания отсутствуют
+        {% endif %}
+        {% for concomitantDisease in entity.concomitantDiseases %}
+            <p>
+                <a href="{{ path('diagnosis_show', {'id': concomitantDisease.id}) }}">
+                    {{ concomitantDisease.name }}
+                </a>
+            </p>
+        {% endfor %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.diseaseHistory }}</span>
+        <p>
+            {% if entity.diseaseHistory %}
+                {{ entity.diseaseHistory }}
+            {% else %}
+                Отсутствует
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.lifeHistory }}</span>
+        <p>
+            {% if entity.lifeHistory %}
+                {{ entity.lifeHistory }}
+            {% else %}
+                Отсутствует
             {% endif %}
         </p>
     </li>
@@ -59,7 +135,6 @@
                 </li>
             </ul>
         </button>
-
         <button class="btn btn--list btn--show">Список
             <ul class="sublist">
                 <li class="sublist__item">
