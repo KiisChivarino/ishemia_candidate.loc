@@ -8,6 +8,7 @@ use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\Template\TemplateService;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\DBAL\DBALException;
@@ -43,6 +44,9 @@ abstract class AppAbstractController extends AbstractController
 
     /** @var string Label of form option for adding formTemplateItem in form */
     public const FORM_TEMPLATE_ITEM_OPTION_TITLE = 'formTemplateItem';
+
+    /** @var string "edit" type of form */
+    protected const RESPONSE_FORM_TYPE_EDIT = 'edit';
 
     /**
      * Отображает действия с записью в таблице datatables
@@ -203,7 +207,7 @@ abstract class AppAbstractController extends AbstractController
             return $this->redirectToRoute($this->templateService->getRoute('list'));
         }
         return $this->render(
-            $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+            $this->templateService->getTemplatePath().$responseFormType.'.html.twig', [
                 'entity' => $entity,
                 'form' => $form->createView(),
                 'filters' => $this->templateService->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
@@ -231,5 +235,30 @@ abstract class AppAbstractController extends AbstractController
             }
         }
         return $authUser;
+    }
+
+    /**
+     * Response edit form
+     *
+     * @param Request $request
+     * @param object $entity
+     * @param string $typeClass
+     * @param array $customFormOptions
+     * @param Closure|null $entityActions
+     *
+     * @return RedirectResponse|Response
+     */
+    public function responseEdit(Request $request, object $entity, string $typeClass, array $customFormOptions = [], ?Closure $entityActions = null)
+    {
+        return $this->responseFormTemplate(
+            $request,
+            $entity,
+            $this->createForm(
+                $typeClass, $entity,
+                array_merge($customFormOptions, [self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),])
+            ),
+            self::RESPONSE_FORM_TYPE_EDIT,
+            $entityActions
+        );
     }
 }

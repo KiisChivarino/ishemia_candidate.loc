@@ -56,34 +56,6 @@ class DiagnosisController extends AdminAbstractController
     }
 
     /**
-     * Find diagnoses
-     * @Route("/find_diagnosis_ajax", name="find_diagnosis_ajax", methods={"GET"})
-     *
-     * @param Request $request
-     *
-     * @return false|string
-     */
-    public function findDiagnosisAjax(Request $request)
-    {
-        $string = $request->query->get('q');
-        $entityManager = $this->getDoctrine()->getManager();
-        $diagnoses = $entityManager->getRepository(Diagnosis::class)->findDiagnoses($string);
-        $resultArray = [];
-        /** @var Diagnosis $diagnosis */
-        foreach ($diagnoses as $diagnosis) {
-            $resultArray[] = [
-                'id' => $diagnosis->getId(),
-                'text' => $diagnosis->getName()
-            ];
-        }
-        return new Response(
-            json_encode(
-                $resultArray
-            )
-        );
-    }
-
-    /**
      * Show diagnosis info
      * @Route("/{id}", name="diagnosis_show", methods={"GET"}, requirements={"id"="\d+"})
      *

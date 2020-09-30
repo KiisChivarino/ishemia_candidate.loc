@@ -5,12 +5,7 @@ namespace App\Form\Admin;
 use App\Controller\AppAbstractController;
 use App\Entity\Diagnosis;
 use App\Entity\MedicalHistory;
-use App\Entity\Staff;
-use App\Repository\StaffRepository;
-use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
-use DateTime;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -38,7 +33,6 @@ class MedicalHistoryType extends AbstractType
             ->add(
                 'dateBegin', DateType::class, [
                     'label' => $templateItem->getContentValue('dateBegin'),
-                    'data' => new DateTime(),
                     'widget' => 'single_text',
                     'format' => 'yyyy-MM-dd',
                 ]

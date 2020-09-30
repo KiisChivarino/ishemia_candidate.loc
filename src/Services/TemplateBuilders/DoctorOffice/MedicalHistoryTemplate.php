@@ -47,16 +47,20 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'dateEnd' => 'Дата окончания лечения',
         'mainDiseaseNotFound' => 'Основное заболевание не найдено!',
         'mainDisease' => 'Основное заболевание',
-        'backgroundDiseases' => 'Фоновые заболевания',
         'backgroundDiseasesNotFound' => 'Фоновые заболевания отсутствуют',
-        'complications' => 'Осложнения',
         'complicationsNotFound' => 'Осложнения отсутствуют',
-        'concomitantDiseases' => 'Сопутствующие заболевания',
         'concomitantDiseasesNotFound' => 'Сопутствующие заболевания отсутствуют',
-        'diseaseHistory' => 'Анамнез болезни',
         'diseaseHistoryNotFound' => 'Анамнез болезни отсутствует',
-        'lifeHistory' => 'Анамнез жизни',
         'lifeHistoryNotFound' => 'Анамнез жизни отсутствует',
+        'mainDiseasePlaceholder' => 'Выберите заболевание',
+        'backgroundDiseases' => 'Фоновые заболевания',
+        'backgroundDiseasesPlaceholder' => 'Выберите фоновые заболевания',
+        'complications' => 'Осложнения',
+        'complicationsPlaceholder' => 'Выберите осложнения',
+        'concomitantDiseases' => 'Сопутствующие заболевания',
+        'concomitantDiseasesPlaceholder' => 'Выберите сопутствующие заболевания',
+        'diseaseHistory' => 'Анамнез заболевания',
+        'lifeHistory' => 'Анамнез жизни',
     ];
 
     /** @var string[] Common form content for medical history templates */
@@ -106,8 +110,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     public function edit(?object $entity = null): AdminTemplateBuilder
     {
         parent::edit();
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath());
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)->setPath($this->getTemplatePath());
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setContents(self::EDIT_PERSONAL_DATA);
         return $this;
     }
