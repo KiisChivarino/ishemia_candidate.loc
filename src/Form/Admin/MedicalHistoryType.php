@@ -36,20 +36,6 @@ class MedicalHistoryType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'staff', EntityType::class, [
-                    'label' => $templateItem->getContentValue('staffFio'),
-                    'class' => Staff::class,
-                    'choice_label' => function ($staff) {
-                        return (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true);
-                    },
-                    'query_builder' => function (StaffRepository $er) {
-                        return $er->createQueryBuilder('s')
-                            ->leftJoin('s.AuthUser', 'a')
-                            ->where('a.enabled = true');
-                    },
-                ]
-            )
-            ->add(
                 'dateBegin', DateType::class, [
                     'label' => $templateItem->getContentValue('dateBegin'),
                     'data' => new DateTime(),

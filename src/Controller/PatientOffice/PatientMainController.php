@@ -3,9 +3,11 @@
 namespace App\Controller\PatientOffice;
 
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class PatientMainController
+ * @IsGranted("ROLE_PATIENT")
  *
  * @package App\Controller\PatientOffice
  * @Route("/patient_office")

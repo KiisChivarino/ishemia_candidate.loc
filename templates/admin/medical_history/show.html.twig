@@ -1,28 +1,29 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
-    <li>
-        <span class="title">{{ template.items.show.content.patientFio }}</span>
-        <p>
-            {% if entity.patient %}
+    {% if entity.patient %}
+        <li>
+            <span class="title">{{ template.items.show.content.patientFio }}</span>
+            <p>
                 <a href="{{ path('patient_show', {'id': entity.patient.id}) }}">{{ patientFio }}</a>
-            {% endif %}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.staffFio }}</span>
-        <p>
-            {% if entity.staff %}
-                <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffFio }}</a>
-            {% endif %}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.dateBegin }}</span>
-        <p>{{ entity.dateBegin ? entity.dateBegin|date('Y-m-d') : '' }}</p>
-    </li>
+
+            </p>
+        </li>
+    {% endif %}
+    {% if entity.dateBegin %}
+        <li>
+            <span class="title">{{ template.items.show.content.dateBegin }}</span>
+            <p>{{ entity.dateBegin ? entity.dateBegin|date('Y-m-d') : '' }}</p>
+        </li>
+    {% endif %}
     <li>
         <span class="title">{{ template.items.show.content.dateEnd }}</span>
-        <p>{{ entity.dateEnd ? entity.dateEnd|date('Y-m-d') : '' }}</p>
+        <p>
+            {% if entity.dateEnd %}
+                {{ entity.dateEnd ? entity.dateEnd|date('Y-m-d') : '' }}
+            {% else %}
+                Лечение не завершено
+            {% endif %}
+        </p>
     </li>
 {% endblock %}
 {% block custom_actions %}

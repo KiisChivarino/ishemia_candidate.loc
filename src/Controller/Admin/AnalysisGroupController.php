@@ -12,10 +12,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Контроллеры сущности "Группа анализов"
  * @Route("/admin/analysis_group")
+ * @IsGranted("ROLE_ADMIN")
  */
 class AnalysisGroupController extends AdminAbstractController
 {

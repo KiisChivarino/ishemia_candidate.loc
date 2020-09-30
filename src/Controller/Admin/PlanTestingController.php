@@ -11,11 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class PlanTestingController
  * Контроллеры стандартного плана анализов для пациента
  * @Route("/admin/plan_testing")
+ * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
  */

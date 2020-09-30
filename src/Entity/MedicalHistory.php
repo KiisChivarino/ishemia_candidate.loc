@@ -29,11 +29,6 @@ class MedicalHistory
     private $patient;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Staff::class, inversedBy="medicalHistories")
-     */
-    private $staff;
-
-    /**
      * @ORM\Column(type="date", options={"comment"="Дата открытия"})
      */
     private $dateBegin;
@@ -42,36 +37,6 @@ class MedicalHistory
      * @ORM\Column(type="date", nullable=true, options={"comment"="Дата закрытия"})
      */
     private $dateEnd;
-
-    /**
-     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
-     */
-    private $enabled;
-
-    /**
-     * @ORM\OneToMany(targetEntity=MedicalRecord::class, mappedBy="medicalHistory", orphanRemoval=true)
-     */
-    private $medicalRecords;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Prescription::class, mappedBy="medicalHistory", orphanRemoval=true)
-     */
-    private $prescriptions;
-
-    /**
-     * @ORM\OneToMany(targetEntity=PatientTesting::class, mappedBy="medicalHistory", orphanRemoval=true)
-     */
-    private $patientTestings;
-
-    /**
-     * @ORM\OneToMany(targetEntity=PatientAppointment::class, mappedBy="medicalHistory", orphanRemoval=true)
-     */
-    private $patientAppointments;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="medicalHistory", orphanRemoval=true)
-     */
-    private $notifications;
 
     /**
      * @ORM\ManyToOne(targetEntity=Diagnosis::class)
@@ -109,6 +74,36 @@ class MedicalHistory
      * @ORM\Column(type="text", nullable=true, options={"comment"="Анамнез жизни"})
      */
     private $lifeHistory;
+
+    /**
+     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
+     */
+    private $enabled;
+
+    /**
+     * @ORM\OneToMany(targetEntity=MedicalRecord::class, mappedBy="medicalHistory", orphanRemoval=true)
+     */
+    private $medicalRecords;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Prescription::class, mappedBy="medicalHistory", orphanRemoval=true)
+     */
+    private $prescriptions;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PatientTesting::class, mappedBy="medicalHistory", orphanRemoval=true)
+     */
+    private $patientTestings;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PatientAppointment::class, mappedBy="medicalHistory", orphanRemoval=true)
+     */
+    private $patientAppointments;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="medicalHistory", orphanRemoval=true)
+     */
+    private $notifications;
 
     /**
      * MedicalHistory constructor.
@@ -149,25 +144,6 @@ class MedicalHistory
     public function setPatient(?Patient $patient): self
     {
         $this->patient = $patient;
-        return $this;
-    }
-
-    /**
-     * @return Staff|null
-     */
-    public function getStaff(): ?Staff
-    {
-        return $this->staff;
-    }
-
-    /**
-     * @param Staff|null $staff
-     *
-     * @return $this
-     */
-    public function setStaff(?Staff $staff): self
-    {
-        $this->staff = $staff;
         return $this;
     }
 

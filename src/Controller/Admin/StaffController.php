@@ -21,10 +21,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Twig\Environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class StaffController
  * @Route("/staff")
+ * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
  */

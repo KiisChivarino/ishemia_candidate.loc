@@ -70,9 +70,9 @@ class AppExtension extends AbstractExtension
      *
      * @return string
      */
-    public function getFio(AuthUser $authUser, bool $initials = false): string
+    public function getFio(?AuthUser $authUser, bool $initials = false): string
     {
-        return (new AuthUserInfoService())->getFIO($authUser, $initials);
+        return $authUser ? (new AuthUserInfoService())->getFIO($authUser, $initials) : '';
     }
 
     /**
@@ -82,9 +82,9 @@ class AppExtension extends AbstractExtension
      *
      * @return string
      */
-    public function getRoleTitle(AuthUser $authUser): string
+    public function getRoleTitle(?AuthUser $authUser): string
     {
-        return (!in_array('ROLE_DEVELOPER', $authUser->getRoles())) ?
+        return ($authUser && !in_array('ROLE_DEVELOPER', $authUser->getRoles())) ?
             (new AuthUserInfoService())->getRoleNames($this->entityManager->getRepository(AuthUser::class)->getRoles($authUser)) : '';
     }
 

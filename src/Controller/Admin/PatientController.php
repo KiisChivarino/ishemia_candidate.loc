@@ -22,10 +22,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Twig\Environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Управление страницами пациентов
  * @Route("/admin/patient")
+ * @IsGranted("ROLE_ADMIN")
  */
 class PatientController extends AdminAbstractController
 {

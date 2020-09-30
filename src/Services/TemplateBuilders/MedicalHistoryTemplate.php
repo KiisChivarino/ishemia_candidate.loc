@@ -20,7 +20,6 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
         'patientFio' => 'ФИО пациента',
-        'staffFio' => 'ФИО врача',
         'dateBegin' => 'Дата создания',
         'dateEnd' => 'Дата завершения',
         'mainDisease' => 'Основное заболевание',

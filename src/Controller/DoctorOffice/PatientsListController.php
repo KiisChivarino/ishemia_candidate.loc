@@ -11,10 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class PatientsListController
  * @route ("/doctor_office")
+ * @IsGranted("ROLE_DOCTOR_HOSPITAL")
+ *
  * @package App\Controller\DoctorOffice
  */
 class PatientsListController extends DoctorOfficeAbstractController

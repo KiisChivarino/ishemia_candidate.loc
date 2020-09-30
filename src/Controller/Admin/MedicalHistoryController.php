@@ -17,10 +17,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class MedicalHistoryController
  * @Route("/admin/medical_history")
+ * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
  */
@@ -103,7 +105,6 @@ class MedicalHistoryController extends AdminAbstractController
             $medicalHistory,
             [
                 'patientFio' => (new AuthUserInfoService())->getFIO($medicalHistory->getPatient()->getAuthUser(), true),
-                'staffFio' => (new AuthUserInfoService())->getFIO($medicalHistory->getStaff()->getAuthUser(), true),
                 'medicalRecordFilterName' => $filterService->generateFilterName('medical_record_list', MedicalHistory::class),
                 'patientTestingFilterName' => $filterService->generateFilterName('patient_testing_list', MedicalHistory::class),
                 'prescriptionFilterName' => $filterService->generateFilterName('prescription_list', MedicalHistory::class),

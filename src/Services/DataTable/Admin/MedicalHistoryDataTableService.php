@@ -49,19 +49,6 @@ class MedicalHistoryDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'staffFio', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('staffFio'),
-                    'render' => function ($dataString, $medicalHistory) {
-                        $staff = $medicalHistory->getStaff();
-                        return $staff ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true),
-                            $staff->getId(),
-                            'staff_show'
-                        ) : '';
-                    },
-                ]
-            )
-            ->add(
                 'dateBegin', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('dateBegin'),
                     'format' => 'd.m.Y',
