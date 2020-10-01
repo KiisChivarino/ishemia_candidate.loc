@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\Prescription;
+use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
@@ -12,6 +13,7 @@ use App\Services\DataTable\Admin\MedicalHistoryDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateBuilders\MedicalHistoryTemplate;
+use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -126,7 +128,38 @@ class MedicalHistoryController extends AdminAbstractController
      */
     public function edit(Request $request, MedicalHistory $medicalHistory): Response
     {
-        return $this->responseEdit($request, $medicalHistory, MedicalHistoryType::class);
+        $template = $this->templateService->edit();
+        $form = $this->createFormBuilder()
+            ->setData(
+                [
+                    'medicalHistory' => $medicalHistory,
+                    'dateEndMedicalHistory' => $medicalHistory,
+                ]
+            )
+            ->add(
+                'medicalHistory', MedicalHistoryType::class, [
+                    'label' => false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                ]
+            )
+            ->add(
+                'dateEndMedicalHistory', EditMedicalHistoryType::class, [
+                    'label' => false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                ]
+            )
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute($this->templateService->getRoute('list'));
+        }
+        return $this->render(
+            $this->templateService->getCommonTemplatePath().'edit.html.twig', [
+                'entity' => $medicalHistory,
+                'form' => $form->createView(),
+            ]
+        );
     }
 
     /**
