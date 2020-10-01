@@ -27,10 +27,6 @@
         </p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.description }}</span>
-        <p>{{ entity.description }}</p>
-    </li>
-    <li>
         <span class="title">{{ template.items.show.content.appointmentType }}</span>
         <p>
             {% if entity.appointmentType %}
@@ -42,14 +38,40 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.appointmentTime }}</span>
-        <p>{{ entity.appointmentTime ? entity.appointmentTime|date('Y-m-d H:i:s') : '' }}</p>
+        <p>{{ entity.appointmentTime ? entity.appointmentTime|date('d.m.Y H:i') : '' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.isPatientConfirmed }}</span>
         <p>
-            {{ entity.isPatientConfirmed ?
+            {{ entity.isConfirmed ?
             template.items.show.content.trueValue :
             template.items.show.content.falseValue }}
         </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.recommendation }}</span>
+        <p>{{ entity.recommendation }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.complaints }}</span>
+        {% for complaint in entity.complaints %}
+            <p>
+                <a href="{{ path('complaint_show', {'id': complaint.id}) }}">
+                    {{ complaint.name }}
+                </a>
+            </p>
+        {% endfor %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.complaintsComment }}</span>
+        <p>{{ entity.complaintsComment }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.objectiveStatus }}</span>
+        <p>{{ entity.objectiveStatus }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.therapy }}</span>
+        <p>{{ entity.therapy }}</p>
     </li>
 {% endblock %}

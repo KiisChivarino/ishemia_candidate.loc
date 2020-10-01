@@ -38,8 +38,16 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     protected const FORM_SHOW_CONTENT = [
         'appointmentTimeDateLabel' => 'Дата приема',
         'appointmentTimeTimeLabel' => 'Время приема',
+        'recommendation' => 'Рекомендации врача',
+        'complaints' => 'Жалобы',
+        'complaintsComment' => 'Комментарий к жалобам',
+        'objectiveStatus' => 'Объективный статус',
+        'therapy' => 'Терапия',
+        'medicalHistory' => 'История болезни',
     ];
-
+    protected const FORM_CONTENT = [
+        'complaintsPlaceholder' => 'Выберите жалобы',
+    ];
     /** @var string[] Common NEW_CONTENT */
     protected const NEW_CONTENT = [
         'h1' => 'Добавление приема пациета',
@@ -50,6 +58,8 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     protected const SHOW_CONTENT = [
         'h1' => 'Просмотр приема пациета',
         'title' => 'Просмотр приема пациета',
+        'staffFio' => 'ФИО врача',
+        'isPatientConfirmed' => 'Подтверждено пациентом',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
@@ -59,7 +69,7 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     ];
 
     protected const FILTER_CONTENT = [
-        'medicalHistory' => 'Фильтр по истории болезни',
+        'medicalHistoryFilter' => 'Фильтр по истории болезни',
     ];
 
     /**

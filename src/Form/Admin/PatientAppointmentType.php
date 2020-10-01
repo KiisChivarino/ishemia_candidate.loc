@@ -88,7 +88,7 @@ class PatientAppointmentType extends AbstractType
                     'allow_clear' => true,
                     'delay' => 250,
                     'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('backgroundDiseasesPlaceholder'),
+                    'placeholder' => $templateItem->getContentValue('complaintsPlaceholder'),
                     'attr' => ['class' => 'js-example-basic-single'],
                 ]
             )

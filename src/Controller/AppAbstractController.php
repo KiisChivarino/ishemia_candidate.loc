@@ -207,7 +207,7 @@ abstract class AppAbstractController extends AbstractController
             return $this->redirectToRoute($this->templateService->getRoute('list'));
         }
         return $this->render(
-            $this->templateService->getTemplatePath().$responseFormType.'.html.twig', [
+            $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
                 'entity' => $entity,
                 'form' => $form->createView(),
                 'filters' => $this->templateService->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
