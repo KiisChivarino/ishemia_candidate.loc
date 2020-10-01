@@ -23,4 +23,24 @@ class ComplaintRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Complaint::class);
     }
+
+    /**
+     * Returns complaints
+     *
+     * @param string $value
+     *
+     * @return array
+     */
+    public function findComplaints(string $value): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('LOWER(c.name) LIKE LOWER(:valName)')
+            ->andWhere('c.enabled = :valEnabled')
+            ->setParameter('valName', '%'.$value.'%')
+            ->setParameter('valEnabled', true)
+            ->orderBy('c.name', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
 }
