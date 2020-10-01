@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\MedicalHistory;
+use App\Entity\Patient;
 use App\Entity\PatientAppointment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,5 +28,22 @@ class PatientAppointmentRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PatientAppointment::class);
+    }
+
+    /**
+     * @param Patient $patient
+     *
+     * @return mixed
+     * @throws NonUniqueResultException
+     */
+    public function getFirstAppointment(Patient $patient)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.enabled = true and a.medicalHistory = :medicalHistory')
+            ->orderBy('a.appointmentTime', 'ASC')
+            ->setMaxResults(1)
+            ->setParameter('medicalHistory', $this->_em->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient))
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

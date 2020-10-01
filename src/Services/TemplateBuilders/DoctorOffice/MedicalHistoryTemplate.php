@@ -3,8 +3,12 @@
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\TemplateBuilders\AdminTemplateBuilder;
+use App\Services\TemplateBuilders\AuthUserTemplate;
+use App\Services\TemplateBuilders\PatientAppointmentTemplate;
+use App\Services\TemplateBuilders\PatientTemplate;
 use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
+use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -25,54 +29,27 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'byEmail' => 'Информируется по email',
         'personalData' => 'Личные данные',
         'documentaryData' => 'Документальные данные',
+        'objectiveData' => 'Объективные данные',
         'addDocumentaryData' => 'Внести документальные данные',
         'addPersonalData' => 'Внести личные данные',
+        'addObjectiveData' => 'Внести объективные данные',
+        'recommendationNotFound' => 'Рекомендации врача отсутствуют',
+        'mainDiseaseNotFound' => 'Основное заболевание не найдено!',
+        'backgroundDiseasesNotFound' => 'Фоновые заболевания отсутствуют',
+        'concomitantDiseasesNotFound' => 'Сопутствующие заболевания отсутствуют',
+        'appointmentTypeNotFound' => 'Вид приема пациента отсутствует',
+        'complicationsNotFound' => 'Осложнения отсутствуют',
+        'diseaseHistoryNotFound' => 'Анамнез болезни отсутствует',
+        'lifeHistoryNotFound' => 'Анамнез жизни отсутствует',
+        'complaintsCommentNotFound' => 'Комментарий врача по жалобам отсутствует',
+        'objectiveStatusNotFound' => 'Объективный статус отсутствует',
+        'therapyNotFound' => 'Терапия отсутствует',
     ];
 
     /** @var string[] Common form and show content for medical history templates */
     protected const FORM_SHOW_CONTENT = [
-        'address' => 'Адрес проживания',
-        'insuranceNumber' => 'Страховой полис',
-        'weight' => 'Вес',
-        'height' => 'Рост',
-        'hospital' => 'Больница',
-        'SNILS' => 'СНИЛС',
-        'phone' => 'Телефон',
-        'email' => 'Email',
-        'passport' => 'Паспортные данные',
-        'city' => 'Город',
-        'district' => 'Район',
-        'diagnosis' => 'Диагнозы',
         'dateBegin' => 'Дата начала лечения',
         'dateEnd' => 'Дата окончания лечения',
-        'mainDiseaseNotFound' => 'Основное заболевание не найдено!',
-        'mainDisease' => 'Основное заболевание',
-        'backgroundDiseasesNotFound' => 'Фоновые заболевания отсутствуют',
-        'complicationsNotFound' => 'Осложнения отсутствуют',
-        'concomitantDiseasesNotFound' => 'Сопутствующие заболевания отсутствуют',
-        'diseaseHistoryNotFound' => 'Анамнез болезни отсутствует',
-        'lifeHistoryNotFound' => 'Анамнез жизни отсутствует',
-        'mainDiseasePlaceholder' => 'Выберите заболевание',
-        'backgroundDiseases' => 'Фоновые заболевания',
-        'backgroundDiseasesPlaceholder' => 'Выберите фоновые заболевания',
-        'complications' => 'Осложнения',
-        'complicationsPlaceholder' => 'Выберите осложнения',
-        'concomitantDiseases' => 'Сопутствующие заболевания',
-        'concomitantDiseasesPlaceholder' => 'Выберите сопутствующие заболевания',
-        'diseaseHistory' => 'Анамнез заболевания',
-        'lifeHistory' => 'Анамнез жизни',
-    ];
-
-    /** @var string[] Common form content for medical history templates */
-    protected const FORM_CONTENT = [
-        'lastName' => 'Фамилия',
-        'firstName' => 'Имя',
-        'patronymicName' => 'Отчество',
-        'smsInforming' => 'Информировать по смс',
-        'emailInforming' => 'Информировать по email',
-        'dateBirth' => 'Дата рождения',
-        'hospitalPlaceholder' => 'Выберите больницу',
-        'cityPlaceholder' => 'Выберите город',
     ];
 
     /** @var string[] Common form content for edit templates */
@@ -112,6 +89,33 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         parent::edit();
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)->setPath($this->getTemplatePath());
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setContents(self::EDIT_PERSONAL_DATA);
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     *
+     * @return $this|AdminTemplateBuilder
+     */
+    public function show(?object $entity = null): AdminTemplateBuilder
+    {
+        parent::show();
+        $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->addContentArray(
+            array_merge(
+                PatientAppointmentTemplate::COMMON_CONTENT,
+                PatientAppointmentTemplate::FORM_SHOW_CONTENT,
+                PatientAppointmentTemplate::SHOW_CONTENT,
+                \App\Services\TemplateBuilders\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
+                \App\Services\TemplateBuilders\MedicalHistoryTemplate::COMMON_CONTENT,
+                AuthUserTemplate::COMMON_CONTENT,
+                AuthUserTemplate::FORM_CONTENT,
+                AuthUserTemplate::FORM_SHOW_CONTENT,
+                PatientTemplate::COMMON_CONTENT,
+                PatientTemplate::FORM_SHOW_CONTENT,
+                PatientTemplate::SHOW_CONTENT,
+                PatientTemplate::FORM_CONTENT
+            )
+        );
         return $this;
     }
 }

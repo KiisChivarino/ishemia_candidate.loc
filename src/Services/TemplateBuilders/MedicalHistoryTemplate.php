@@ -18,14 +18,14 @@ use Symfony\Component\Routing\RouteCollection;
 class MedicalHistoryTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for analysis templates */
-    protected const COMMON_CONTENT = [
+    public const COMMON_CONTENT = [
         'patientFio' => 'ФИО пациента',
         'dateBegin' => 'Дата создания',
         'dateEnd' => 'Дата завершения',
         'mainDisease' => 'Основное заболевание',
     ];
 
-    protected const FORM_SHOW_CONTENT = [
+    public const FORM_SHOW_CONTENT = [
         'mainDiseasePlaceholder' => 'Выберите заболевание',
         'backgroundDiseases' => 'Фоновые заболевания',
         'backgroundDiseasesPlaceholder' => 'Выберите фоновые заболевания',
@@ -50,7 +50,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     ];
 
     /** @var string[] Common SHOW_CONTENT */
-    protected const SHOW_CONTENT = [
+    public const SHOW_CONTENT = [
         'h1' => 'Просмотр истории болезни',
         'title' => 'Просмотр истории болезни',
         'medicalRecords' => 'Записи в историю болезни',

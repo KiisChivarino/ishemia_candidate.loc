@@ -4,6 +4,7 @@ namespace App\Controller\DoctorOffice;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
+use App\Entity\PatientAppointment;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\Doctor\AuthUserPersonalDataType;
 use App\Form\Doctor\PatientPersonalDataType;
@@ -75,6 +76,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             [
                 'age' => $this->patientInfoService->getAge($patient),
                 'medicalHistory' => $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient),
+                'firstAppointment' => $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($patient),
             ]
         );
     }

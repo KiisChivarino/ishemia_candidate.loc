@@ -20,7 +20,7 @@ use Symfony\Component\Routing\RouteCollection;
 class PatientAppointmentTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for analysis templates */
-    protected const COMMON_CONTENT = [
+    public const COMMON_CONTENT = [
         'medicalRecord' => 'Запись в историю',
         'staff' => 'Врач',
         'appointmentType' => 'Вид приема',
@@ -35,7 +35,7 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     ];
 
     /** @var string[]  FORM_SHOW COMMON CONTENT */
-    protected const FORM_SHOW_CONTENT = [
+    public const FORM_SHOW_CONTENT = [
         'appointmentTimeDateLabel' => 'Дата приема',
         'appointmentTimeTimeLabel' => 'Время приема',
         'recommendation' => 'Рекомендации врача',
@@ -55,11 +55,12 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     ];
 
     /** @var string[] Common SHOW_CONTENT */
-    protected const SHOW_CONTENT = [
+    public const SHOW_CONTENT = [
         'h1' => 'Просмотр приема пациета',
         'title' => 'Просмотр приема пациета',
         'staffFio' => 'ФИО врача',
         'isPatientConfirmed' => 'Подтверждено пациентом',
+        'complaintsNotFound' => 'Жалобы отсутствуют',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
