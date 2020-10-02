@@ -275,6 +275,12 @@ class MenuBuilder
                 'route' => 'measure_list'
             ]
         );
+        $menu['medical_guides']->addChild(
+            'complaintList', [
+                'label' => 'Жалобы',
+                'route' => 'complaint_list'
+            ]
+        );
         $menu->addChild(
             'locations', [
                 'label' => 'Управление локациями',

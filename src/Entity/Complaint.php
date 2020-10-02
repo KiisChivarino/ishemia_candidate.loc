@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ComplaintRepository::class)
+ * @ORM\Table(options={"comment":"Жалоба"});
  */
 class Complaint
 {
