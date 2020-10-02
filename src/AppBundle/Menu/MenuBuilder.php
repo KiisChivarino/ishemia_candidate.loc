@@ -133,118 +133,87 @@ class MenuBuilder
                 'route' => 'role_list'
             ]
         );
-        $menu->addChild(
-            'patients', [
-                'label' => 'Управление пациентами',
-            ]
-        )->setAttribute('class', 'sublist');
-        $menu['patients']->addChild(
+        $menu['users']->addChild(
             'patientsList', [
                 'label' => 'Пациенты',
                 'route' => 'patient_list'
             ]
         );
-        $menu['patients']->addChild(
-            'patientTestingList', [
-                'label' => 'Сдача анализов',
-                'route' => 'patient_testing_list'
-            ]
-        );
-        $menu['patients']->addChild(
-            'patientTestingResultList', [
-                'label' => 'Результаты анализов',
-                'route' => 'patient_testing_result_list'
-            ]
-        );
-        $menu->addChild(
-            'appointment', [
-                'label' => 'Управление приемами пациентов',
-            ]
-        )->setAttribute('class', 'sublist');
-        $menu['appointment']->addChild(
-            'appointmentTypeList', [
-                'label' => 'Виды приема',
-                'route' => 'appointment_type_list'
-            ]
-        );
-        $menu['appointment']->addChild(
-            'appointmentList', [
-                'label' => 'Приемы пациентов',
-                'route' => 'patient_appointment_list'
-            ]
-        );
-        $menu->addChild(
-            'medicalHistories', [
-                'label' => 'Управление историями болезни',
-            ]
-        )->setAttribute('class', 'sublist');
-        $menu['medicalHistories']->addChild(
-            'medicalHistoriesList', [
-                'label' => 'Истории болезни',
-                'route' => 'medical_history_list'
-            ]
-        );
-        $menu['medicalHistories']->addChild(
-            'medicalRecordsList', [
-                'label' => 'Записи в историю болезни',
-                'route' => 'medical_record_list'
-            ]
-        );
-        $menu->addChild(
-            'notification', [
-                'label' => 'Управление уведомлениями',
-            ]
-        )->setAttribute('class', 'sublist');
-        $menu['notification']->addChild(
-            'notificationTypeList', [
-                'label' => 'Виды уведомления',
-                'route' => 'notification_type_list'
-            ]
-        );
-        $menu['notification']->addChild(
-            'notificationList', [
-                'label' => 'Уведомления',
-                'route' => 'notification_list'
-            ]
-        );
-        $menu->addChild(
-            'prescriptions', [
-                'label' => 'Управление назначениями',
-            ]
-        )->setAttribute('class', 'sublist');
-        $menu['prescriptions']->addChild(
-            'prescriptionList', [
-                'label' => 'Назначения',
-                'route' => 'prescription_list'
-            ]
-        );
-        $menu['prescriptions']->addChild(
-            'prescriptionMedicineList', [
-                'label' => 'Назначения лекарств',
-                'route' => 'prescription_medicine_list'
-            ]
-        );
-        $menu['prescriptions']->addChild(
-            'prescriptionTestingList', [
-                'label' => 'Назначения на обследование',
-                'route' => 'prescription_testing_list'
-            ]
-        );
-        $menu->addChild(
-            'staffs', [
-                'label' => 'Управление персоналом',
-            ]
-        )->setAttribute('class', 'sublist');
-        $menu['staffs']->addChild(
+        $menu['users']->addChild(
             'staffList', [
                 'label' => 'Сотрудники',
                 'route' => 'staff_list'
             ]
         );
-        $menu['staffs']->addChild(
+        $menu['users']->addChild(
             'positionList', [
                 'label' => 'Должности',
                 'route' => 'position_list'
+            ]
+        );
+        $menu->addChild(
+            'medicalHistory', [
+                'label' => 'Управление историями болезни',
+            ]
+        )->setAttribute('class', 'sublist');
+        $menu['medicalHistory']->addChild(
+            'medicalHistoryList', [
+                'label' => 'Истории болезни',
+                'route' => 'medical_history_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'patientTestingList', [
+                'label' => 'Сдача анализов',
+                'route' => 'patient_testing_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'patientTestingResultList', [
+                'label' => 'Результаты анализов',
+                'route' => 'patient_testing_result_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'medicalRecordsList', [
+                'label' => 'Записи в историю болезни',
+                'route' => 'medical_record_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'appointmentList', [
+                'label' => 'Приемы пациентов',
+                'route' => 'patient_appointment_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'prescriptionList', [
+                'label' => 'Назначения',
+                'route' => 'prescription_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'prescriptionMedicineList', [
+                'label' => 'Назначения лекарств',
+                'route' => 'prescription_medicine_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'prescriptionTestingList', [
+                'label' => 'Назначения на обследование',
+                'route' => 'prescription_testing_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'notificationTypeList', [
+                'label' => 'Виды уведомления',
+                'route' => 'notification_type_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
+            'notificationList', [
+                'label' => 'Уведомления',
+                'route' => 'notification_list'
             ]
         );
         $menu->addChild(
@@ -270,36 +239,37 @@ class MenuBuilder
                 'route' => 'reception_method_list'
             ]
         );
-        $menu->addChild(
-            'analysis', [
-                'label' => 'Управление анализами',
+        $menu['medical_guides']->addChild(
+            'appointmentTypeList', [
+                'label' => 'Виды приема',
+                'route' => 'appointment_type_list'
             ]
-        )->setAttribute('class', 'sublist');
-        $menu['analysis']->addChild(
+        );
+        $menu['medical_guides']->addChild(
             'analysisGroupList', [
                 'label' => 'Группы анализов',
                 'route' => 'analysis_group_list'
             ]
         );
-        $menu['analysis']->addChild(
+        $menu['medical_guides']->addChild(
             'analysisList', [
                 'label' => 'Анализы',
                 'route' => 'analysis_list'
             ]
         );
-        $menu['analysis']->addChild(
+        $menu['medical_guides']->addChild(
             'analysisRateList', [
                 'label' => 'Референтные значения',
                 'route' => 'analysis_rate_list'
             ]
         );
-        $menu['analysis']->addChild(
+        $menu['medical_guides']->addChild(
             'planTestingList', [
                 'label' => 'План анализов',
                 'route' => 'plan_testing_list'
             ]
         );
-        $menu['analysis']->addChild(
+        $menu['medical_guides']->addChild(
             'measureList', [
                 'label' => 'Единицы измерения',
                 'route' => 'measure_list'
