@@ -6,6 +6,7 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
 use App\Form\Admin\MedicalHistoryType;
+use App\Form\Admin\PatientAppointmentType;
 use App\Form\Doctor\AuthUserPersonalDataType;
 use App\Form\Doctor\PatientPersonalDataType;
 use App\Services\InfoService\AuthUserInfoService;
@@ -166,6 +167,46 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         }
         return $this->render(
             self::TEMPLATE_PATH.'edit_documentary_data.html.twig', [
+                'entity' => $patient,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param Patient $patient
+     * @Route("/{id}/edit_objective_data", name="doctor_edit_objective_data", methods={"GET","POST"}, requirements={"id"="\d+"})
+     *
+     * @return RedirectResponse|Response
+     */
+    public function editObjectiveData(
+        Request $request,
+        Patient $patient
+    ) {
+        $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($patient);
+        $template = $this->templateService->edit();
+        $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
+        $form = $this->createFormBuilder()
+            ->setData(
+                [
+                    'firstAppointment' => $firstAppointment,
+                ]
+            )
+            ->add(
+                'firstAppointment', PatientAppointmentType::class, [
+                    'label' => false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                ]
+            )
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
+        }
+        return $this->render(
+            self::TEMPLATE_PATH.'edit_objective_data.html.twig', [
                 'entity' => $patient,
                 'form' => $form->createView(),
             ]

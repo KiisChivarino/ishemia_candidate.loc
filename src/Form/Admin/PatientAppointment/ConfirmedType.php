@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class EditPatientAppointmentType
  * @package App\Form\Admin\PatientAppointment
  */
-class EditPatientAppointmentType extends AbstractType
+class ConfirmedType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder

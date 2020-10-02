@@ -45,7 +45,7 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
         'therapy' => 'Терапия',
         'medicalHistory' => 'История болезни',
     ];
-    protected const FORM_CONTENT = [
+    public const FORM_CONTENT = [
         'complaintsPlaceholder' => 'Выберите жалобы',
     ];
     /** @var string[] Common NEW_CONTENT */

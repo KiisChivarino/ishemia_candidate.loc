@@ -87,7 +87,23 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     public function edit(?object $entity = null): AdminTemplateBuilder
     {
         parent::edit();
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)->setPath($this->getTemplatePath());
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+            ->setPath($this->getTemplatePath())
+            ->addContentArray(
+                array_merge(
+                    PatientAppointmentTemplate::COMMON_CONTENT,
+                    PatientAppointmentTemplate::FORM_SHOW_CONTENT,
+                    PatientAppointmentTemplate::FORM_CONTENT,
+                    \App\Services\TemplateBuilders\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
+                    \App\Services\TemplateBuilders\MedicalHistoryTemplate::COMMON_CONTENT,
+                    AuthUserTemplate::COMMON_CONTENT,
+                    AuthUserTemplate::FORM_CONTENT,
+                    AuthUserTemplate::FORM_SHOW_CONTENT,
+                    PatientTemplate::COMMON_CONTENT,
+                    PatientTemplate::FORM_SHOW_CONTENT,
+                    PatientTemplate::FORM_CONTENT
+                )
+            );
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setContents(self::EDIT_PERSONAL_DATA);
         return $this;
     }
