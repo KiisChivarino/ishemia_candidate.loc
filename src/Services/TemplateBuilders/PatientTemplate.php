@@ -35,7 +35,7 @@ class PatientTemplate extends AdminTemplateBuilder
         'city' => 'Город',
         'district' => 'Район',
         'hospital' => 'Больница',
-        'diagnosis' => 'Диагнозы',
+        'heartAttackDate' => 'Дата возникновения инфаркта',
     ];
     /** @var string[] Common content for list, edit template */
     public const FORM_CONTENT = [

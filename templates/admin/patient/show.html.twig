@@ -33,6 +33,10 @@
         <p>{{ entity.dateBirth ? entity.dateBirth|date('Y-m-d') : '' }}</p>
     </li>
     <li>
+        <span class="title">{{ template.items.show.content.heartAttackDate }}</span>
+        <p>{{ entity.heartAttackDate ? entity.heartAttackDate|date('d.m.Y') : '' }}</p>
+    </li>
+    <li>
         <span class="title">{{ template.items.show.content.district }}</span>
         <p>
             {% if entity.district %}
@@ -83,16 +87,6 @@
     <li>
         <span class="title">{{ template.items.show.content.height }}</span>
         <p>{{ entity.height }}</p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.name }}</span>
-        {% for diagnosis in entity.diagnosis %}
-            <p>
-                <a href="{{ path('diagnosis_show', {'id': diagnosis.id}) }}">
-                    {{ diagnosis.name }}
-                </a>
-            </p>
-        {% endfor %}
     </li>
     <li>
         <span class="title">{{ template.items.show.content.bodyMassIndex }}</span>

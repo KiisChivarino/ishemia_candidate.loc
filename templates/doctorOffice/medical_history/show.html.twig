@@ -24,7 +24,12 @@
                     </div>
                     <div class="statement__info-block">
                         <p>{{ template.items.show.content.age }}</p>
-                        <p>{{ age }}</p></div>
+                        <p>{{ age }}</p>
+                    </div>
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.heartAttackDate }}</p>
+                        <p>{{ entity.heartAttackDate ? entity.heartAttackDate|date('d.m.Y') : '' }}</p>
+                    </div>
                     <div class="statement__info-block">
                         <p>{{ template.items.show.content.address }}</p>
                         <p>{{ entity.address }}</p>
@@ -234,7 +239,6 @@
                         <p>{{ template.items.show.content.appointmentTime }}</p>
                         <p>{{ firstAppointment.appointmentTime ? firstAppointment.appointmentTime|date('d.m.Y H:i') : '' }}</p>
                     </div>
-
                 </div>
                 <div class="statement__info">
                     <div class="statement__info-block">

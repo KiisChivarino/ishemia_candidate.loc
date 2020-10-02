@@ -6,9 +6,9 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
 use App\Form\Admin\MedicalHistoryType;
+use App\Form\Admin\Patient\PatientType;
 use App\Form\Admin\PatientAppointmentType;
 use App\Form\Doctor\AuthUserPersonalDataType;
-use App\Form\Doctor\PatientPersonalDataType;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
@@ -111,7 +111,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
                 ]
             )
             ->add(
-                'patient', PatientPersonalDataType::class, [
+                'patient', PatientType::class, [
                     'label' => false,
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]

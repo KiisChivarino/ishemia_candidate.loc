@@ -4,7 +4,6 @@ namespace App\Form\Admin\Patient;
 
 use App\Controller\AppAbstractController;
 use App\Entity\City;
-use App\Entity\Diagnosis;
 use App\Entity\Hospital;
 use App\Entity\Patient;
 use App\Entity\District;
@@ -48,6 +47,15 @@ class PatientType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
+            ->add(
+                'heartAttackDate',
+                DateType::class,
+                [
+                    'label' => $templateItem->getContentValue('heartAttackDate'),
+                    'widget' => 'single_text',
+                    'format' => 'yyyy-MM-dd',
+                ]
+            )
             ->add(
                 'dateBirth',
                 DateType::class,
@@ -134,24 +142,6 @@ class PatientType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('hospitalPlaceholder'),
                     'remote_params' => ['city' => '0'],
-                ]
-            )
-            ->add(
-                'diagnosis', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('diagnosis'),
-                    'method' => 'POST',
-                    'multiple' => true,
-                    'remote_route' => 'find_diagnosis_ajax',
-                    'class' => Diagnosis::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 3,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('diagnosisPlaceholder'),
-                    'attr' => ['class' => 'js-example-basic-single'],
                 ]
             );
     }

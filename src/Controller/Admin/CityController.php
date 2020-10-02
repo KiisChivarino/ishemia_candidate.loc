@@ -104,30 +104,4 @@ class CityController extends AdminAbstractController
     {
         return $this->responseDelete($request, $city);
     }
-
-    /**
-     * @Route("/find_city_ajax", name="find_city_ajax", methods={"GET"})
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function findHospitalAjax(Request $request): Response
-    {
-        $string = $request->query->get('q');
-        $entityManager = $this->getDoctrine()->getManager();
-        $cities = $entityManager->getRepository(City::class)->findCities($string);
-        $resultArray = [];
-        /** @var City $city */
-        foreach ($cities as $city) {
-            $resultArray[] = [
-                'id' => $city->getId(),
-                'text' => $city->getName()
-            ];
-        }
-        return new Response(
-            json_encode(
-                $resultArray
-            )
-        );
-    }
 }

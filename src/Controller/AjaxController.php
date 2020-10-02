@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\City;
 use App\Entity\Complaint;
 use App\Entity\Diagnosis;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,6 +55,24 @@ class AjaxController extends AbstractController
         return new Response(
             json_encode(
                 $this->getAjaxResultArray($complaints)
+            )
+        );
+    }
+
+    /**
+     * @Route("/find_city_ajax", name="find_city_ajax", methods={"GET"})
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function findHospitalAjax(Request $request): Response
+    {
+        $string = $request->query->get('q');
+        $entityManager = $this->getDoctrine()->getManager();
+        $cities = $entityManager->getRepository(City::class)->findCities($string);
+        return new Response(
+            json_encode(
+                $this->getAjaxResultArray($cities)
             )
         );
     }

@@ -71,19 +71,6 @@ class PatientsListDataTableService extends AdminDatatableService
                         return $patientInfoService->getAge($value);
                     }
                 ]
-            )
-            ->add(
-                'diagnoses', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('diagnoses'),
-                    'data' => function ($value) {
-                        $diagnoses = '';
-                        foreach ($value->getDiagnosis() as $diagnosis) {
-                            $diagnoses .= $diagnosis->getName().'<br/>';
-                        }
-                        return $diagnoses;
-                    },
-                    'raw' => true
-                ]
             );
 //            ->add(
 //                'unprocessedTestings', TextColumn::class, [

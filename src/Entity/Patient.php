@@ -65,11 +65,6 @@ class Patient
     private $emailInforming;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Diagnosis")
-     */
-    private $diagnosis;
-
-    /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="СНИЛС пациента"})
      */
     private $snils;
@@ -131,11 +126,15 @@ class Patient
     private $passportIssuingAuthorityCode;
 
     /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $heartAttackDate;
+
+    /**
      * Patient constructor.
      */
     public function __construct()
     {
-        $this->diagnosis = new ArrayCollection();
         $this->medicalHistories = new ArrayCollection();
     }
 
@@ -358,40 +357,6 @@ class Patient
     }
 
     /**
-     * @return Collection|Diagnosis[]
-     */
-    public function getDiagnosis(): Collection
-    {
-        return $this->diagnosis;
-    }
-
-    /**
-     * @param Diagnosis $diagnosis
-     *
-     * @return $this
-     */
-    public function addDiagnosi(Diagnosis $diagnosis): self
-    {
-        if (!$this->diagnosis->contains($diagnosis)) {
-            $this->diagnosis[] = $diagnosis;
-        }
-        return $this;
-    }
-
-    /**
-     * @param Diagnosis $diagnosis
-     *
-     * @return $this
-     */
-    public function removeDiagnosi(Diagnosis $diagnosis): self
-    {
-        if ($this->diagnosis->contains($diagnosis)) {
-            $this->diagnosis->removeElement($diagnosis);
-        }
-        return $this;
-    }
-
-    /**
      * @return int|null
      */
     public function getWeight(): ?int
@@ -501,6 +466,25 @@ class Patient
     {
         $this->passportIssuingAuthorityCode = $passportIssuingAuthorityCode;
 
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getHeartAttackDate(): ?\DateTimeInterface
+    {
+        return $this->heartAttackDate;
+    }
+
+    /**
+     * @param DateTimeInterface|null $heartAttackDate
+     *
+     * @return $this
+     */
+    public function setHeartAttackDate(?\DateTimeInterface $heartAttackDate): self
+    {
+        $this->heartAttackDate = $heartAttackDate;
         return $this;
     }
 }
