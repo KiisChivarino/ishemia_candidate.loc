@@ -6,7 +6,6 @@ use App\Services\TemplateBuilders\AdminTemplateBuilder;
 use App\Services\TemplateBuilders\AuthUserTemplate;
 use App\Services\TemplateBuilders\PatientAppointmentTemplate;
 use App\Services\TemplateBuilders\PatientTemplate;
-use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
@@ -28,9 +27,9 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'bySms' => 'Информируется по смс',
         'byEmail' => 'Информируется по email',
         'personalData' => 'Личные данные',
-        'documentaryData' => 'Документальные данные',
+        'anamnesticData' => 'Анамнестические данные',
         'objectiveData' => 'Объективные данные',
-        'addDocumentaryData' => 'Внести документальные данные',
+        'addAnamnesticData' => 'Внести анамнестические данные',
         'addPersonalData' => 'Внести личные данные',
         'addObjectiveData' => 'Внести объективные данные',
         'recommendationNotFound' => 'Рекомендации врача отсутствуют',
@@ -38,7 +37,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'backgroundDiseasesNotFound' => 'Фоновые заболевания отсутствуют',
         'concomitantDiseasesNotFound' => 'Сопутствующие заболевания отсутствуют',
         'appointmentTypeNotFound' => 'Вид приема пациента отсутствует',
-        'complicationsNotFound' => 'Осложнения отсутствуют',
+        'complicationsNotFound' => 'Осложнения основного заболевания отсутствуют',
         'diseaseHistoryNotFound' => 'Анамнез болезни отсутствует',
         'lifeHistoryNotFound' => 'Анамнез жизни отсутствует',
         'complaintsCommentNotFound' => 'Комментарий врача по жалобам отсутствует',
@@ -53,9 +52,13 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     ];
 
     /** @var string[] Common form content for edit templates */
-    protected const EDIT_PERSONAL_DATA = [
-        'h2' => 'Редактирование персональных данных',
-        'title' => 'Редактирование персональных данных',
+    protected const EDIT_CONTENT = [
+        'personal_h2' => 'Редактирование персональных данных',
+        'personal_title' => 'Редактирование персональных данных',
+        'anamnestic_h2' => 'Редактирование анамнестических данных',
+        'anamnestic_title' => 'Редактирование анамнестических данных',
+        'objective_h2' => 'Редактирование объективных данных',
+        'objective_title' => 'Редактирование объективных данных',
     ];
 
     /**
@@ -104,7 +107,6 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
                     PatientTemplate::FORM_CONTENT
                 )
             );
-        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setContents(self::EDIT_PERSONAL_DATA);
         return $this;
     }
 

@@ -96,13 +96,13 @@
         </div>
     </div>
     <div class="statement acc">
-        <h2 class="title accordion">{{ template.items.show.content.documentaryData }}</h2>
+        <h2 class="title accordion">{{ template.items.show.content.anamnesticData }}</h2>
         <div class="statement__wrapper panel">
             <div class="statement__head">
-                <h3 class="subtitle">{{ template.items.show.content.documentaryData }}</h3>
+                <h3 class="subtitle">{{ template.items.show.content.anamnesticData }}</h3>
                 <a class="back-page"
-                   href="{{ path('doctor_edit_documentary_data', {'id': entity.id}) }}">
-                    <span class="statement__edit">{{ template.items.show.content.addDocumentaryData }}</span>
+                   href="{{ path('doctor_edit_anamnestic_data', {'id': entity.id}) }}">
+                    <span class="statement__edit">{{ template.items.show.content.addAnamnesticData }}</span>
                 </a>
             </div>
             <div class="statement__content">
@@ -131,7 +131,7 @@
                     </div>
                     <div class="statement__info-block">
                         <p>{{ template.items.show.content.backgroundDiseases }}</p>
-                        {% if not medicalHistory.backgroundDiseases %}
+                        {% if medicalHistory.backgroundDiseases is empty %}
                             <p>{{ template.items.show.content.backgroundDiseasesNotFound }}</p>
                         {% endif %}
                         {% for backgroundDisease in medicalHistory.backgroundDiseases %}
@@ -140,7 +140,7 @@
                     </div>
                     <div class="statement__info-block">
                         <p>{{ template.items.show.content.complications }}</p>
-                        {% if not medicalHistory.complications %}
+                        {% if medicalHistory.complications is empty %}
                             <p>{{ template.items.show.content.complicationsNotFound }}</p>
                         {% endif %}
                         {% for complication in medicalHistory.complications %}
@@ -149,7 +149,7 @@
                     </div>
                     <div class="statement__info-block">
                         <p>{{ template.items.show.content.concomitantDiseases }}</p>
-                        {% if not medicalHistory.concomitantDiseases %}
+                        {% if medicalHistory.concomitantDiseases is empty %}
                             <p>{{ template.items.show.content.concomitantDiseasesNotFound }}</p>
                         {% endif %}
                         {% for concomitantDisease in medicalHistory.concomitantDiseases %}
@@ -198,7 +198,7 @@
                 <div class="statement__info">
                     <div class="statement__info-block">
                         <p>{{ template.items.show.content.complaints }}</p>
-                        {% if not firstAppointment.complaints %}
+                        {% if firstAppointment.complaints is empty %}
                             <p>{{ template.items.show.content.complaintsNotFound }}</p>
                         {% endif %}
                         {% for complaint in firstAppointment.complaints %}

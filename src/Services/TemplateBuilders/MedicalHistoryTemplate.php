@@ -29,7 +29,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'mainDiseasePlaceholder' => 'Выберите заболевание',
         'backgroundDiseases' => 'Фоновые заболевания',
         'backgroundDiseasesPlaceholder' => 'Выберите фоновые заболевания',
-        'complications' => 'Осложнения',
+        'complications' => 'Осложнения основного заболевания',
         'complicationsPlaceholder' => 'Выберите осложнения',
         'concomitantDiseases' => 'Сопутствующие заболевания',
         'concomitantDiseasesPlaceholder' => 'Выберите сопутствующие заболевания',

@@ -136,11 +136,11 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     /**
      * @param Request $request
      * @param Patient $patient
-     * @Route("/{id}/edit_documentary_data", name="doctor_edit_documentary_data", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/{id}/edit_anamnestic_data", name="doctor_edit_anamnestic_data", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @return RedirectResponse|Response
      */
-    public function editDocumentaryData(
+    public function editAnamnesticData(
         Request $request,
         Patient $patient
     ) {
@@ -166,7 +166,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
         }
         return $this->render(
-            self::TEMPLATE_PATH.'edit_documentary_data.html.twig', [
+            self::TEMPLATE_PATH.'edit_anamnestic_data.html.twig', [
                 'entity' => $patient,
                 'form' => $form->createView(),
             ]
