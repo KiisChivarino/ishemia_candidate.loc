@@ -6,6 +6,7 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
+use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
@@ -75,12 +76,33 @@ class MedicalHistoryController extends AdminAbstractController
      */
     public function new(Request $request): Response
     {
-        return $this->responseNew(
+        $template = $this->templateService->new();
+        $medicalHistory = new MedicalHistory();
+        return $this->responseFormTemplate(
             $request,
-            (new MedicalHistory()),
-            MedicalHistoryType::class,
-            null,
-            [],
+            $medicalHistory,
+            $this->createFormBuilder()
+                ->setData(
+                    [
+                        'mainDisease' => $medicalHistory,
+                        'medicalHistory' => $medicalHistory,
+                        'dateEndMedicalHistory' => $medicalHistory,
+                    ]
+                )
+                ->add(
+                    'mainDisease', MainDiseaseType::class, [
+                        'label' => false,
+                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                    ]
+                )
+                ->add(
+                    'medicalHistory', MedicalHistoryType::class, [
+                        'label' => false,
+                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                    ]
+                )
+                ->getForm(),
+            self::RESPONSE_FORM_TYPE_NEW,
             function (EntityActions $actions) {
                 /** @var Patient $patient */
                 $patient = $actions->getRequest()->query->get('id')
@@ -132,8 +154,15 @@ class MedicalHistoryController extends AdminAbstractController
         $form = $this->createFormBuilder()
             ->setData(
                 [
+                    'mainDisease' => $medicalHistory,
                     'medicalHistory' => $medicalHistory,
                     'dateEndMedicalHistory' => $medicalHistory,
+                ]
+            )
+            ->add(
+                'mainDisease', MainDiseaseType::class, [
+                    'label' => false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
             )
             ->add(

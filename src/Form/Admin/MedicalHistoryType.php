@@ -38,23 +38,6 @@ class MedicalHistoryType extends AbstractType
                 ]
             )
             ->add(
-                'mainDisease', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('mainDisease'),
-                    'method' => 'POST',
-                    'remote_route' => 'find_diagnosis_ajax',
-                    'class' => Diagnosis::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 3,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('mainDiseasePlaceholder'),
-                    'attr' => ['class' => 'js-example-basic-single'],
-                ]
-            )
-            ->add(
                 'backgroundDiseases', Select2EntityType::class, [
                     'label' => $templateItem->getContentValue('backgroundDiseases'),
                     'method' => 'POST',

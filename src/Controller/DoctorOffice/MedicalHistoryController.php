@@ -5,6 +5,7 @@ namespace App\Controller\DoctorOffice;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
+use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\Admin\Patient\PatientType;
 use App\Form\Admin\PatientAppointmentType;
@@ -151,6 +152,13 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             ->setData(
                 [
                     'medicalHistory' => $medicalHistory,
+                    'mainDisease' => $medicalHistory,
+                ]
+            )
+            ->add(
+                'mainDisease', MainDiseaseType::class, [
+                    'label' => false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
             )
             ->add(

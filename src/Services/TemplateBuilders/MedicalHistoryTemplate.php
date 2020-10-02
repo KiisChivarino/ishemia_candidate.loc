@@ -8,6 +8,7 @@ use App\Repository\PatientRepository;
 use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\NewTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -107,6 +108,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     public function list(?FilterService $filterService = null): AdminTemplateBuilder
     {
         parent::list();
+        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->setFilters(
                 $filterService,

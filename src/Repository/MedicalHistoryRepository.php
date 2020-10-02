@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Diagnosis;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -46,15 +48,15 @@ class MedicalHistoryRepository extends ServiceEntityRepository
         );
     }
 
-//    /**
-//     * @param Patient $patient
-//     * @param Staff $staff
-//     *
-//     * @return bool|string[]
-//     * @throws ORMException
-//     */
-//    public function persistMedicalHistory(Patient $patient, Staff $staff)
-//    {
+    /**
+     * @param Patient $patient
+     * @param Diagnosis $mainDisease
+     *
+     * @return bool|string[]
+     * @throws ORMException
+     */
+    public function persistMedicalHistory(Patient $patient, Diagnosis $mainDisease)
+    {
 //        $gestationWeeks = (new PatientInfoService())->getGestationWeeks($patient->getDateStartOfTreatment());
 //        if (!$gestationWeeks) {
 //            return [
@@ -63,14 +65,13 @@ class MedicalHistoryRepository extends ServiceEntityRepository
 //            ];
 //        }
 //        $planTesting = $this->_em->getRepository(PlanTesting::class)->getStandardPlanTesting($gestationWeeks);
-//        $medicalHistory = new MedicalHistory();
-//        $medicalHistory
-//            ->setPatient($patient)
-//            ->setStaff($staff)
-//            ->setEnabled(true)
-//            ->setDateBegin(new DateTime());
-//        $this->_em->persist($medicalHistory);
+        $medicalHistory = (new MedicalHistory())->setMainDisease($mainDisease);
+        $medicalHistory
+            ->setPatient($patient)
+            ->setEnabled(true)
+            ->setDateBegin(new DateTime());
+        $this->_em->persist($medicalHistory);
 //        $this->_em->getRepository(PatientTesting::class)->persistPatientTests($medicalHistory, $planTesting);
-//        return true;
-//    }
+        return true;
+    }
 }

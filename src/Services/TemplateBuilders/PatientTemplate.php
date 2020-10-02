@@ -108,7 +108,9 @@ class PatientTemplate extends AdminTemplateBuilder
                 array_merge(
                     AuthUserTemplate::COMMON_CONTENT,
                     AuthUserTemplate::FORM_CONTENT,
-                    AuthUserTemplate::FORM_SHOW_CONTENT
+                    AuthUserTemplate::FORM_SHOW_CONTENT,
+                    MedicalHistoryTemplate::FORM_SHOW_CONTENT,
+                    MedicalHistoryTemplate::COMMON_CONTENT
                 )
             );
         return $this;

@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\MedicalHistory;
 use App\Form\Admin\AuthUser\EditAuthUserType;
 use App\Form\Admin\AuthUser\NewAuthUserType;
+use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\Patient\PatientStaffType;
 use App\Form\Admin\Patient\PatientType;
 use App\Services\DataTable\Admin\PatientDataTableService;
@@ -116,6 +118,12 @@ class PatientController extends AdminAbstractController
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
             )
+            ->add(
+                'mainDisease', MainDiseaseType::class, [
+                    'label' =>false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                ]
+            )
             ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -124,7 +132,6 @@ class PatientController extends AdminAbstractController
             $authUser = $data['authUser'];
             /** @var Patient $patient */
             $patient = $data['patient'];
-//            $staff = $data['staff']['staff'];
             $authUser->setRoles(self::PATIENT_ROLE);
             $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
             $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
@@ -136,7 +143,7 @@ class PatientController extends AdminAbstractController
                 $em->flush();
                 $patient->setAuthUser($authUser);
                 $em->persist($patient);
-//                $result = $em->getRepository(MedicalHistory::class)->persistMedicalHistory($patient, $staff);
+                $em->getRepository(MedicalHistory::class)->persistMedicalHistory($patient, ($data['mainDisease'])->getMainDisease());
 //                if (isset($result['error'])) {
 //                    $this->addFlash('error', $result['error']);
 //                    return $this->render(
