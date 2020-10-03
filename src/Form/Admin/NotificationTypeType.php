@@ -27,7 +27,12 @@ class NotificationTypeType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add('name', null, ['label' => $templateItem->getContentValue('name')])
-            ->add('template', null, ['label' => $templateItem->getContentValue('template')])
+            ->add(
+                'template', null, [
+                    'label' => $templateItem->getContentValue('template'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
             ->add(
                 'enabled',
                 CheckboxType::class,

@@ -28,7 +28,12 @@ class MedicineType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add('name', null, ['label' => $templateItem->getContentValue('name')])
-            ->add('description', null, ['label' => $templateItem->getContentValue('description')])
+            ->add(
+                'description', null, [
+                    'label' => $templateItem->getContentValue('description'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
             ->add(
                 'enabled',
                 CheckboxType::class,

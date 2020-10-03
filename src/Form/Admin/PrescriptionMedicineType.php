@@ -51,18 +51,23 @@ class PrescriptionMedicineType extends AbstractType
                     'placeholder' => $templateItem->getContentValue('medicinePlaceholder'),
                 ]
             )
-            ->add('instruction', null, ['label' => $templateItem->getContentValue('instruction')])
+            ->add(
+                'instruction', null, [
+                    'label' => $templateItem->getContentValue('instruction'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
             ->add(
                 'receptionMethod', EntityType::class, [
-                'label' => $templateItem->getContentValue('receptionMethod'),
-                'class' => ReceptionMethod::class,
-                'choice_label' => 'name',
-                'required' => false,
-                'query_builder' => function (ReceptionMethodRepository $er) {
-                    return $er->createQueryBuilder('rm')
-                        ->where('rm.enabled = true');
-                },
-            ]
+                    'label' => $templateItem->getContentValue('receptionMethod'),
+                    'class' => ReceptionMethod::class,
+                    'choice_label' => 'name',
+                    'required' => false,
+                    'query_builder' => function (ReceptionMethodRepository $er) {
+                        return $er->createQueryBuilder('rm')
+                            ->where('rm.enabled = true');
+                    },
+                ]
             )
             ->add(
                 'staff', EntityType::class, [

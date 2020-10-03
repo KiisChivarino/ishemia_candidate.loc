@@ -25,7 +25,12 @@ class MedicalRecordType extends AbstractType
                     'required' => false
                 ]
             )
-            ->add('comment', null, ['label' => $templateItem->getContentValue('comment')])
+            ->add(
+                'comment', null, [
+                    'label' => $templateItem->getContentValue('comment'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
             ->add(
                 'enabled', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('enabled'),

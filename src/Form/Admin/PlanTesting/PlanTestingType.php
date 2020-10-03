@@ -10,8 +10,6 @@ use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,19 +30,20 @@ class PlanTestingType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add(
-                'period', TextType::class,
-                [
-                    'label' => $templateItem->getContentValue('period'),
-                ]
-            )
-            ->add(
-                'periodCount', IntegerType::class,
-                [
-                    'label' => $templateItem->getContentValue('periodCount'),
-                    'attr' => ['min' => '1']
-                ]
-            )
+            //todo изменить периоды на timeRanges
+//            ->add(
+//                'period', TextType::class,
+//                [
+//                    'label' => $templateItem->getContentValue('period'),
+//                ]
+//            )
+//            ->add(
+//                'periodCount', IntegerType::class,
+//                [
+//                    'label' => $templateItem->getContentValue('periodCount'),
+//                    'attr' => ['min' => '1']
+//                ]
+//            )
             ->add(
                 'enabled', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('enabled'),

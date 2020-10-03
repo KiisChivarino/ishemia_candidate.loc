@@ -92,10 +92,16 @@ class MedicalHistoryType extends AbstractType
                 ]
             )
             ->add(
-                'diseaseHistory', null, ['label' => $templateItem->getContentValue('diseaseHistory')]
+                'diseaseHistory', null, [
+                    'label' => $templateItem->getContentValue('diseaseHistory'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
             )
             ->add(
-                'lifeHistory', null, ['label' => $templateItem->getContentValue('lifeHistory')]
+                'lifeHistory', null, [
+                    'label' => $templateItem->getContentValue('lifeHistory'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
             )
             ->add(
                 'enabled', CheckboxType::class, [

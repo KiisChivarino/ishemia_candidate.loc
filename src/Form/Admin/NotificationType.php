@@ -42,7 +42,12 @@ class NotificationType extends AbstractType
                     },
                 ]
             )
-            ->add('text', null, ['label' => $templateItem->getContentValue('text'),])
+            ->add(
+                'text', null, [
+                    'label' => $templateItem->getContentValue('text'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
             ->add(
                 'enabled',
                 CheckboxType::class,

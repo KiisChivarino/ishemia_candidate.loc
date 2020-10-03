@@ -30,7 +30,12 @@ class BlogItemType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add('title', null, ['label' => $templateItem->getContentValue('itemTitle')])
-            ->add('description', null, ['label' => $templateItem->getContentValue('description')])
+            ->add(
+                'description', null, [
+                    'label' => $templateItem->getContentValue('description'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
             ->add('duration', null, ['label' => $templateItem->getContentValue('duration')])
             ->add('completed', null, ['label' => $templateItem->getContentValue('completed')])
             ->add(

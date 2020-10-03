@@ -33,7 +33,10 @@ class PatientAppointmentType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'recommendation', null, ['label' => $templateItem->getContentValue('recommendation'),]
+                'recommendation', null, [
+                    'label' => $templateItem->getContentValue('recommendation'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
             )
             ->add(
                 'appointmentTime', DateTimeType::class, [
@@ -76,13 +79,22 @@ class PatientAppointmentType extends AbstractType
                 ]
             )
             ->add(
-                'complaintsComment', null, ['label' => $templateItem->getContentValue('complaintsComment'),]
+                'complaintsComment', null, [
+                    'label' => $templateItem->getContentValue('complaintsComment'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
             )
             ->add(
-                'objectiveStatus', null, ['label' => $templateItem->getContentValue('objectiveStatus'),]
+                'objectiveStatus', null, [
+                    'label' => $templateItem->getContentValue('objectiveStatus'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
             )
             ->add(
-                'therapy', null, ['label' => $templateItem->getContentValue('therapy'),]
+                'therapy', null, [
+                    'label' => $templateItem->getContentValue('therapy'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
             )
             ->add(
                 'enabled',

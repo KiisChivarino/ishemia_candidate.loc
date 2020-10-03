@@ -61,7 +61,12 @@ class PrescriptionType extends AbstractType
                     },
                 ]
             )
-            ->add('description', null, ['label' => $templateItem->getContentValue('description')])
+            ->add(
+                'description', null, [
+                    'label' => $templateItem->getContentValue('description'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
             ->add(
                 'enabled', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('enabled'),

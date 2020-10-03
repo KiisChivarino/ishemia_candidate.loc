@@ -37,7 +37,12 @@ class HospitalType extends AbstractType
             ->add('address', null, ['label' => $templateItem->getContentValue('address')])
             ->add('name', null, ['label' => $templateItem->getContentValue('name')])
             ->add('phone', null, ['label' => $templateItem->getContentValue('phone')])
-            ->add('description', null, ['label' => $templateItem->getContentValue('description')])
+            ->add(
+                'description', null, [
+                'label' => $templateItem->getContentValue('description'),
+                'attr' => ['class' => 'tinymce'],
+            ]
+            )
             ->add(
                 'region', EntityType::class, [
                     'label' => $templateItem->getContentValue('region'),

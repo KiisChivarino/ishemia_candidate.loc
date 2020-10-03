@@ -7,7 +7,6 @@ use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
 use App\Entity\AnalysisRate;
 use App\Entity\Measure;
-use App\Entity\Period;
 use App\Repository\AnalysisRepository;
 use App\Repository\MeasureRepository;
 use App\Services\TemplateItems\FormTemplateItem;
@@ -17,7 +16,6 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 /**
  * Class AnalysisRateType
@@ -69,22 +67,6 @@ class AnalysisRateType extends AbstractType
                         return $er->createQueryBuilder('d')
                             ->where('d.enabled = true');
                     },
-                ]
-            )
-            ->add(
-                'period', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('period'),
-                    'multiple' => false,
-                    'remote_route' => 'find_period_ajax',
-                    'class' => Period::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'title',
-                    'minimum_input_length' => 2,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => 'Выберите период',
                 ]
             )
             ->add(

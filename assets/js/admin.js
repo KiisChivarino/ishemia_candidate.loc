@@ -8,10 +8,23 @@ import '../css/admin.scss'
 import './mask';
 import './hospitalByCity';
 
+require('../tinymce/langs/ru.js');
+import 'tinymce/tinymce.min'
+import "tinymce/themes/silver/theme"
+
+require('tinymce/skins/ui/oxide/content.css')
+require('tinymce/skins/ui/oxide/skin.css')
+require('tinymce/icons/default/icons.min')
+
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
 require('../images/operation-icon-3.svg');
 require('../images/favicons/adm-fav.ico');
+
+tinymce.init({
+    selector: '.tinymce',
+    language: 'ru',
+});
 
 $(document).ready(function () {
     //view hospitals for ROLE_DOCTOR_HOSPITAL
