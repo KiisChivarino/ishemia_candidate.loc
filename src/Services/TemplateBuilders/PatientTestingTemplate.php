@@ -55,6 +55,12 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование анализа пациента',
     ];
 
+    /** @var string[] Common form and show CONTENT */
+    public const FORM_SHOW_CONTENT = [
+        'dateBegin' => 'Дата начала обследования',
+        'dateEnd' => 'Дата завершения обследования',
+    ];
+
     /** @var string[] Common FILTER_CONTENT */
     protected const FILTER_CONTENT = [
         'patient' => 'Фильтр по пациенту',

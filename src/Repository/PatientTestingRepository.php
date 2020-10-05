@@ -2,10 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
 use App\Entity\PatientTestingResult;
-use App\Entity\PlanTesting;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -30,10 +28,9 @@ class PatientTestingRepository extends AppRepository
     /**
      * Возвращает тесты для пациента по плану
      *
-     * @param MedicalHistory $medicalHistory
-     * @param array $planTesting
+     * @param PatientTesting $patientTesting
      *
-     * @return array|bool
+     * @return void
      * @throws ORMException
      */
 //    public function persistPatientTests(MedicalHistory $medicalHistory, array $planTesting)
@@ -54,4 +51,26 @@ class PatientTestingRepository extends AppRepository
 //        }
 //        return $patientTests;
 //    }
+
+    /**
+     * Adds patient testing results for patient testing
+     *
+     * @param PatientTesting $patientTesting
+     *
+     * @throws ORMException
+     */
+    public function persistPatientTestingResults(PatientTesting $patientTesting): void
+    {
+        $analyses = $patientTesting->getAnalysisGroup()->getAnalyses();
+        foreach ($analyses as $analysis) {
+            if ($analysis->getEnabled()) {
+                $this->_em->persist(
+                    (new PatientTestingResult())
+                        ->setPatientTesting($patientTesting)
+                        ->setAnalysis($analysis)
+                        ->setEnabled(false)
+                );
+            }
+        }
+    }
 }

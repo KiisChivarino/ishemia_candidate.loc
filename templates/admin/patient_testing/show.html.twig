@@ -12,15 +12,15 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.analysisDate }}</span>
-        <p>{{ entity.analysisDate ? entity.analysisDate|date('Y-m-d') : '' }}</p>
+        <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : '' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.dateBegin }}</span>
-        <p>{{ entity.dateBegin }}</p>
+        <p>{{ entity.dateBegin ? entity.dateBegin|date('d.m.Y') : '' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.dateEnd }}</span>
-        <p>{{ entity.dateEnd }}</p>
+        <p>{{ entity.dateEnd ? entity.dateEnd|date('d.m.Y') : '' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.processed }}</span>

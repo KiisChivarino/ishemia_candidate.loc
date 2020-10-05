@@ -87,11 +87,13 @@ class PatientTestingController extends AdminAbstractController
             null,
             [],
             function (EntityActions $actions) {
+                $entityManager = $this->getDoctrine()->getManager();
                 /** @var MedicalHistory $medicalHistory */
                 $medicalHistory = $actions->getRequest()->query->get('medical_history_id')
-                    ? $this->getDoctrine()->getManager()->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
+                    ? $entityManager->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
                     : null;
                 $actions->getEntity()->setMedicalHistory($medicalHistory);
+                $entityManager->getRepository(PatientTesting::class)->persistPatientTestingResults($actions->getEntity());
             }
         );
     }
