@@ -7,14 +7,8 @@ import './tabs';
 import '../css/admin.scss'
 import './mask';
 import './hospitalByCity';
-
-require('../tinymce/langs/ru.js');
-import 'tinymce/tinymce.min'
-import "tinymce/themes/silver/theme"
-
-require('tinymce/skins/ui/oxide/content.css')
-require('tinymce/skins/ui/oxide/skin.css')
-require('tinymce/icons/default/icons.min')
+import './tinymce';
+import './initDatatable';
 
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
@@ -45,20 +39,6 @@ $(document).ready(function () {
             hospitals.removeAttr('required');
         }
     });
-
-    let datatable = $('#datatable');
-    datatable.initDataTables(datatable.data('table_settings'),
-        {
-            searching: true,
-            drawCallback: function (settings) {
-                this.api().rows({page: 'current'}).column(0, {
-                    search: 'applied',
-                    order: 'applied'
-                }).nodes().each(function (cell, i) {
-                    cell.innerHTML = settings._iDisplayStart + i + 1;
-                });
-            }
-        });
 
     //фильтр по выбору select
     $('*').filter(function () {

@@ -6,6 +6,8 @@ import './select2entity';
 import '../css/select2.min.css'
 import './hospitalByCity';
 import '../css/doctorOffice.css';
+import './tinymce';
+import './initDatatable';
 
 var acc = document.getElementsByClassName("accordion");
 var i;
@@ -35,19 +37,6 @@ $(document).ready(function () {
             }
         });
     });
-    let datatable = $('#datatable');
-    datatable.initDataTables(datatable.data('table_settings'),
-        {
-            searching: false,
-            drawCallback: function (settings) {
-                this.api().rows({page: 'current'}).column(0, {
-                    search: 'applied',
-                    order: 'applied'
-                }).nodes().each(function (cell, i) {
-                    cell.innerHTML = settings._iDisplayStart + i + 1;
-                });
-            }
-        });
 
     //фильтр по выбору больницы
     $('*').filter(function () {

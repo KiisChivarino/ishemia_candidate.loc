@@ -123,7 +123,7 @@
                         <p>{{ template.items.show.content.mainDisease }}</p>
                         <p>
                             {% if (medicalHistory.mainDisease) %}
-                                {{ medicalHistory.mainDisease.name }}
+                                {{ medicalHistory.mainDisease.name}}
                             {% else %}
                                 {{ template.items.show.content.mainDiseaseNotFound }}
                             {% endif %}
@@ -162,7 +162,7 @@
                         <p>{{ template.items.show.content.diseaseHistory }}</p>
                         <p>
                             {% if medicalHistory.diseaseHistory %}
-                                {{ medicalHistory.diseaseHistory }}
+                                {{ medicalHistory.diseaseHistory|raw }}
                             {% else %}
                                 {{ template.items.show.content.diseaseHistoryNotFound }}
                             {% endif %}
@@ -174,7 +174,7 @@
                         <p>{{ template.items.show.content.lifeHistory }}</p>
                         <p>
                             {% if medicalHistory.lifeHistory %}
-                                {{ medicalHistory.lifeHistory }}
+                                {{ medicalHistory.lifeHistory | raw }}
                             {% else %}
                                 {{ template.items.show.content.lifeHistoryNotFound }}
                             {% endif %}
@@ -209,7 +209,7 @@
                         <p>{{ template.items.show.content.complaintsComment }}</p>
                         <p>
                             {% if firstAppointment.complaintsComment %}
-                                {{ firstAppointment.complaintsComment }}
+                                {{ firstAppointment.complaintsComment|raw }}
                             {% else %}
                                 {{ template.items.show.content.complaintsCommentNotFound }}
                             {% endif %}
@@ -219,7 +219,7 @@
                         <p>{{ template.items.show.content.recommendation }}</p>
                         <p>
                             {% if firstAppointment.recommendation %}
-                                {{ firstAppointment.recommendation }}
+                                {{ firstAppointment.recommendation | raw }}
                             {% else %}
                                 {{ template.items.show.content.recommendationNotFound }}
                             {% endif %}
@@ -242,10 +242,10 @@
                 </div>
                 <div class="statement__info">
                     <div class="statement__info-block">
-                        <p>{{ template.items.show.content.lifeHistory }}</p>
+                        <p>{{ template.items.show.content.objectiveStatus }}</p>
                         <p>
                             {% if firstAppointment.objectiveStatus %}
-                                {{ firstAppointment.objectiveStatus }}
+                                {{ firstAppointment.objectiveStatus | raw }}
                             {% else %}
                                 {{ template.items.show.content.objectiveStatusNotFound }}
                             {% endif %}
@@ -257,7 +257,7 @@
                         <p>{{ template.items.show.content.therapy }}</p>
                         <p>
                             {% if firstAppointment.therapy %}
-                                {{ firstAppointment.therapy }}
+                                {{ firstAppointment.therapy | raw }}
                             {% else %}
                                 {{ template.items.show.content.therapyNotFound }}
                             {% endif %}
