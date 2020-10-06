@@ -97,25 +97,6 @@ class MenuBuilder
                 'route' => 'index'
             ]
         );
-        if (in_array('ROLE_DEVELOPER', $this->security->getUser()->getRoles())) {
-            $menu->addChild(
-                'blog', [
-                    'label' => 'Блог',
-                ]
-            )->setAttribute('class', 'sublist');
-            $menu['blog']->addChild(
-                'blogRecordList', [
-                    'label' => 'Записи в блог',
-                    'route' => 'blog_record_list'
-                ]
-            );
-            $menu['blog']->addChild(
-                'blogItemList', [
-                    'label' => 'Изменения',
-                    'route' => 'blog_item_list'
-                ]
-            );
-        }
         $menu->addChild(
             'users', [
                 'label' => 'Управление пользователями',

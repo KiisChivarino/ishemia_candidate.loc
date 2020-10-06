@@ -102,6 +102,9 @@
     "knplabs/knp-menu-bundle": {
         "version": "v3.0.0"
     },
+    "michelf/php-markdown": {
+        "version": "1.9.0"
+    },
     "nikic/php-parser": {
         "version": "v4.6.0"
     },
@@ -165,9 +168,6 @@
     "symfony/cache": {
         "version": "v5.0.10"
     },
-    "symfony/cache-contracts": {
-        "version": "v2.0.1"
-    },
     "symfony/config": {
         "version": "v5.0.10"
     },
@@ -184,9 +184,6 @@
             "./config/bootstrap.php"
         ]
     },
-    "symfony/contracts": {
-        "version": "v1.1.0"
-    },
     "symfony/dependency-injection": {
         "version": "v5.0.10"
     },
@@ -201,9 +198,6 @@
     },
     "symfony/event-dispatcher": {
         "version": "v5.0.10"
-    },
-    "symfony/event-dispatcher-contracts": {
-        "version": "v2.0.1"
     },
     "symfony/filesystem": {
         "version": "v5.0.10"
@@ -340,9 +334,6 @@
     },
     "symfony/security-http": {
         "version": "v5.0.10"
-    },
-    "symfony/service-contracts": {
-        "version": "v2.0.1"
     },
     "symfony/stopwatch": {
         "version": "v5.0.10"

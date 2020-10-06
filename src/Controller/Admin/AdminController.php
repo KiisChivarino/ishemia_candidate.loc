@@ -2,8 +2,9 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\BlogRecord;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Michelf\Markdown;
 
 /**
  * Class AdminController
@@ -21,7 +22,7 @@ class AdminController extends AdminAbstractController
         return $this->render(
             'admin/index.html.twig', [
                 'controller_name' => 'AdminController',
-                'blog' => $this->getDoctrine()->getRepository(BlogRecord::class)->getBlog()
+                'blog' => Markdown::defaultTransform(file_get_contents('../data/documents/changes.md'))
             ]
         );
     }

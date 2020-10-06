@@ -38,34 +38,7 @@
             {% block h1 %}{% endblock %}
             {% block content %}
                 <h2>Процесс разработки</h2>
-                <hr/>
-                <h4>Планируемые изменения</h4>
-                {% for commit in blog.outstanding %}
-                    <p style="margin-bottom: 3px;">
-                        {{ commit.project }}: <span style="color:black;">{{ commit.title }}</span>
-                        {% if commit.description %}
-                            (<i>{{ commit.description }}</i>)
-                        {% endif %}
-                    </p>
-                {% endfor %}
-                <hr/>
-                <ul>
-                    <hr/>
-                    {% for item in blog.records %}
-                        <li>
-                            <h3>{% if item.record.version %}
-                                    Версия {{ item.record.version }}.
-                                {% endif %} Изменения c
-                                {{ item.record.dateBegin ? item.record.dateBegin|date('Y-m-d') : '' }} по
-                                {{ item.record.dateEnd ? item.record.dateEnd|date('Y-m-d') : '' }}:
-                            </h3>
-                            {% for commit in item.commits %}
-                                <p>{{ commit.project }}: <span style="color:black;">{{ commit.title }}</span></p>
-                            {% endfor %}
-                            <hr/>
-                        </li>
-                    {% endfor %}
-                </ul>
+                {{ blog | raw }}
             {% endblock %}
         </div>
     </main>

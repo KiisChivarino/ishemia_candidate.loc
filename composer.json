@@ -7,6 +7,7 @@
     "ext-iconv": "*",
     "doctrine/annotations": "^1.8",
     "knplabs/knp-menu-bundle": "^3.0",
+    "michelf/php-markdown": "^1.9",
     "omines/datatables-bundle": "^0.4.2",
     "sensio/framework-extra-bundle": "^5.5",
     "symfony/apache-pack": "^1.0",
