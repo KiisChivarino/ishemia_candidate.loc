@@ -21,6 +21,14 @@
         </p>
     </li>
     <li>
+        <span class="title">{{ template.items.show.content.gender }}</span>
+        <p>
+            {% if entity.gender %}
+                {{ entity.gender.name }}
+            {% endif %}
+        </p>
+    </li>
+    <li>
         <span class="title">{{ template.items.show.content.rateMin }}</span>
         <p>{{ entity.rateMin }}</p>
     </li>

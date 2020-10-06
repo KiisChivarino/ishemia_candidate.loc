@@ -7,7 +7,6 @@ use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
 use App\Entity\AnalysisRate;
 use App\Entity\Measure;
-use App\Entity\Period;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
@@ -65,16 +64,6 @@ class AnalysisRateDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'period', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('period'),
-                    'render' => function (string $data, AnalysisRate $analysisRate) {
-                        /** @var Period $period */
-                        $period = $analysisRate->getPeriod();
-                        return $period ? $this->getLink($period->getTitle(), $period->getId(), 'period_show') : '';
-                    }
-                ]
-            )
-            ->add(
                 'rateMin', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('rateMin'),
                     'searchable' => false
@@ -84,6 +73,13 @@ class AnalysisRateDataTableService extends AdminDatatableService
                 'rateMax', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('rateMax'),
                     'searchable' => false
+                ]
+            )
+            ->add(
+                'gender', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('gender'),
+                    'field' => 'g.name',
+                    'searchable' => true
                 ]
             )
             ->add(
@@ -108,7 +104,8 @@ class AnalysisRateDataTableService extends AdminDatatableService
                     'query' => function (QueryBuilder $builder) use ($analysisGroup) {
                         $builder
                             ->select('ar')
-                            ->from(AnalysisRate::class, 'ar');
+                            ->from(AnalysisRate::class, 'ar')
+                            ->leftJoin('ar.gender', 'g');
                         if ($analysisGroup) {
                             $builder
                                 ->andWhere('a.analysisGroup = :valAnalysisGroup')

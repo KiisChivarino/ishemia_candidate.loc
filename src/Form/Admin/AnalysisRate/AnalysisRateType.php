@@ -6,6 +6,7 @@ use App\Controller\AppAbstractController;
 use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
 use App\Entity\AnalysisRate;
+use App\Entity\Gender;
 use App\Entity\Measure;
 use App\Repository\AnalysisRepository;
 use App\Repository\MeasureRepository;
@@ -67,6 +68,14 @@ class AnalysisRateType extends AbstractType
                         return $er->createQueryBuilder('d')
                             ->where('d.enabled = true');
                     },
+                ]
+            )
+            ->add(
+                'gender', EntityType::class, [
+                    'label' => $templateItem->getContentValue('gender'),
+                    'class' => Gender::class,
+                    'choice_label' => 'title',
+                    'required' => false,
                 ]
             )
             ->add(

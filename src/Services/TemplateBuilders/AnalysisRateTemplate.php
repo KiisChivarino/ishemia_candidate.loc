@@ -22,10 +22,10 @@ class AnalysisRateTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'analysis' => 'Анализ',
         'measure' => 'Единица измерения',
-        'period' => 'Период',
         'analysisGroup' => 'Группа анализов',
         'rateMin' => 'Минимальное значение',
-        'rateMax' => 'Максимальное значение'
+        'rateMax' => 'Максимальное значение',
+        'gender' => 'Пол',
     ];
 
     /** @var string[] Common form content for staff templates */
