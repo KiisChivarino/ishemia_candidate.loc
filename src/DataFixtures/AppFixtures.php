@@ -6,6 +6,7 @@ use App\AppBundle\DataSowing\DataSowing;
 use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
 use App\Entity\Diagnosis;
+use App\Entity\Gender;
 use App\Entity\LPU;
 use App\Entity\City;
 use App\Entity\Measure;
@@ -37,6 +38,12 @@ class AppFixtures extends Fixture
         $manager->getRepository(AuthUser::class)->addUserFromFixtures('8888888888', 'Admin', 'Admin', 'ROLE_ADMIN', '111111', true);
         $manager->getRepository(AuthUser::class)->addUserFromFixtures('0000000000', 'Developer', 'Developer', 'ROLE_DEVELOPER', '111111', true);
         /** end Админ */
+
+        /** begin Пол */
+        echo "Добавление пола\n";
+        $manager->getRepository(Gender::class)->addGenderFromFixtures('м', 'мужчина');
+        $manager->getRepository(Gender::class)->addGenderFromFixtures('ж', 'женщина');
+        /** end Пол */
 
         /** begin Роли*/
         echo "Внесение ролей\n";

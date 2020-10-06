@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Gender;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +20,21 @@ class GenderRepository extends ServiceEntityRepository
         parent::__construct($registry, Gender::class);
     }
 
-    // /**
-    //  * @return Gender[] Returns an array of Gender objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Adds gender from fixtures
+     *
+     * @param string $name
+     * @param string $title
+     *
+     * @return Gender|null
+     * @throws ORMException
+     */
+    public function addGenderFromFixtures(string $name, string $title): ?Gender
     {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $gender = (new Gender())
+            ->setName($name)
+            ->setTitle($title);
+        $this->_em->persist($gender);
+        return $gender;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Gender
-    {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
