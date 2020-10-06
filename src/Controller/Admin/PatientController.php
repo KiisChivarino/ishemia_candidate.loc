@@ -6,7 +6,6 @@ use App\Entity\MedicalHistory;
 use App\Form\Admin\AuthUser\EditAuthUserType;
 use App\Form\Admin\AuthUser\NewAuthUserType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
-use App\Form\Admin\Patient\PatientStaffType;
 use App\Form\Admin\Patient\PatientType;
 use App\Services\DataTable\Admin\PatientDataTableService;
 use App\Entity\AuthUser;
@@ -108,12 +107,6 @@ class PatientController extends AdminAbstractController
             )
             ->add(
                 'patient', PatientType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'staff', PatientStaffType::class, [
                     'label' => false,
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
