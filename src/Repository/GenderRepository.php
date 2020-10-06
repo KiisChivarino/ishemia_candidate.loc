@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Gender;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,7 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Gender[]    findAll()
  * @method Gender[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GenderRepository extends ServiceEntityRepository
+class GenderRepository extends AppRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -32,6 +31,7 @@ class GenderRepository extends ServiceEntityRepository
     public function addGenderFromFixtures(string $name, string $title): ?Gender
     {
         $gender = (new Gender())
+            ->setId($this->_em->getRepository(Gender::class)->getNextEntityId())
             ->setName($name)
             ->setTitle($title);
         $this->_em->persist($gender);

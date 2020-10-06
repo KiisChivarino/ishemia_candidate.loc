@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\AppBundle\DataSowing\DataSowing;
 use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
+use App\Entity\AnalysisRate;
 use App\Entity\Diagnosis;
 use App\Entity\Gender;
 use App\Entity\LPU;
@@ -42,7 +43,10 @@ class AppFixtures extends Fixture
         /** begin Пол */
         echo "Добавление пола\n";
         $manager->getRepository(Gender::class)->addGenderFromFixtures('м', 'мужчина');
+        $manager->flush();
         $manager->getRepository(Gender::class)->addGenderFromFixtures('ж', 'женщина');
+        $manager->flush();
+        $manager->getRepository(Gender::class)->addGenderFromFixtures('о', 'отсутствует');
         /** end Пол */
 
         /** begin Роли*/
@@ -207,23 +211,23 @@ class AppFixtures extends Fixture
         /** end Единицы измерения */
 
         /** begin Референтные значения */
-//        echo "Заполнение справочника \"Референтные значения\"\n";
-//        $this->dataSowing->setEntitiesFromCsv(
-//            $manager,
-//            self::PATH_TO_CSV.'analysis_rate.csv',
-//            AnalysisRate::class,
-//            '|',
-//            [
-//                'rate_min' => 'rateMin',
-//                'rate_max' => 'rateMax'
-//            ],
-//            ['enabled' => true],
-//            [
-//                'analysis' => Analysis::class,
-//                'measure' => Measure::class,
-//                'period' => Period::class,
-//            ]
-//        );
+        echo "Заполнение справочника \"Референтные значения\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV.'analysis_rate.csv',
+            AnalysisRate::class,
+            '|',
+            [
+                'rate_min' => 'rateMin',
+                'rate_max' => 'rateMax'
+            ],
+            ['enabled' => true],
+            [
+                'analysis' => Analysis::class,
+                'measure' => Measure::class,
+                'gender' => Gender::class,
+            ]
+        );
         /** end Референтные значения */
     }
 }

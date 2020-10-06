@@ -12,18 +12,18 @@ class Gender
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(type="integer", options={"comment"="Ключ пола"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=1)
+     * @ORM\Column(type="string", length=1, options={"comment"="Название пола"})
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true, options={"comment"="Заголовок пола"})
      */
     private $title;
 
@@ -33,6 +33,17 @@ class Gender
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**
