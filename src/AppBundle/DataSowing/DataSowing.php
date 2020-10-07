@@ -90,7 +90,6 @@ class DataSowing
     {
         $const = Yaml::parseFile('config/services/roles.yaml');
         foreach ($const['parameters'] as $roleData) {
-            if($roleData['techName']!=='ROLE_DEVELOPER'){
                 unset($roleData['route']);
                 $manager
                     ->getRepository(Role::class)
@@ -98,7 +97,6 @@ class DataSowing
                         $roleData,
                         (new Role())
                     );
-            }
         }
     }
 

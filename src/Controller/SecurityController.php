@@ -28,7 +28,7 @@ class SecurityController extends AbstractController
             foreach ($roles['parameters'] as $roleData) {
                 if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {
                     return $this->redirectToRoute($roleData['route']);
-                }elseif ($roleData['techName'] == 'ROLE_DEVELOPER' and array_search($roleData['techName'], $this->getUser()->getRoles()) !== false) {
+                }elseif (array_search($roleData['techName'], $this->getUser()->getRoles()) !== false) {
                     return $this->redirectToRoute($roleData['route']);
                 }
             }

@@ -37,7 +37,7 @@ class AppFixtures extends Fixture
         /** begin Админ */
         echo "Добавление админа\n";
         $manager->getRepository(AuthUser::class)->addUserFromFixtures('8888888888', 'Admin', 'Admin', 'ROLE_ADMIN', '111111', true);
-        $manager->getRepository(AuthUser::class)->addUserFromFixtures('0000000000', 'Developer', 'Developer', 'ROLE_DEVELOPER', '111111', true);
+        $manager->getRepository(AuthUser::class)->addUserFromFixtures('0000000000', 'DoctorFirstName', 'DoctorLastName', 'ROLE_DOCTOR_CONSULTANT', '111111', true);
         /** end Админ */
 
         /** begin Пол */

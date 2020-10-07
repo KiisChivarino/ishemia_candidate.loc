@@ -19,8 +19,3 @@ parameters:
     techName: ROLE_PATIENT
     route: patient_office_main
     description: Пациент
-  4:
-    name: Разработчик
-    techName: ROLE_DEVELOPER
-    route: admin
-    description: Разработчик сайта

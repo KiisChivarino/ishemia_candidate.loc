@@ -149,7 +149,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         foreach ($roles['parameters'] as $roleData) {
             if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {
                 return new RedirectResponse($this->urlGenerator->generate($roleData['route']));
-            } elseif ($roleData['techName'] == 'ROLE_DEVELOPER' and array_search($roleData['techName'], $authUser->getRoles()) !== false) {
+            } elseif (array_search($roleData['techName'], $authUser->getRoles()) !== false) {
                 return new RedirectResponse($this->urlGenerator->generate($roleData['route']));
             }
         }
