@@ -131,11 +131,17 @@ class Patient
     private $heartAttackDate;
 
     /**
+     * @ORM\OneToMany(targetEntity=PatientFile::class, mappedBy="patient", orphanRemoval=true)
+     */
+    private $patientFiles;
+
+    /**
      * Patient constructor.
      */
     public function __construct()
     {
         $this->medicalHistories = new ArrayCollection();
+        $this->patientFiles = new ArrayCollection();
     }
 
     /**
@@ -485,6 +491,37 @@ class Patient
     public function setHeartAttackDate(?\DateTimeInterface $heartAttackDate): self
     {
         $this->heartAttackDate = $heartAttackDate;
+        return $this;
+    }
+
+    /**
+     * @return Collection|PatientFile[]
+     */
+    public function getPatientFiles(): Collection
+    {
+        return $this->patientFiles;
+    }
+
+    public function addPatientFile(PatientFile $patientFile): self
+    {
+        if (!$this->patientFiles->contains($patientFile)) {
+            $this->patientFiles[] = $patientFile;
+            $patientFile->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removePatientFile(PatientFile $patientFile): self
+    {
+        if ($this->patientFiles->contains($patientFile)) {
+            $this->patientFiles->removeElement($patientFile);
+            // set the owning side to null (unless already changed)
+            if ($patientFile->getPatient() === $this) {
+                $patientFile->setPatient(null);
+            }
+        }
+
         return $this;
     }
 }

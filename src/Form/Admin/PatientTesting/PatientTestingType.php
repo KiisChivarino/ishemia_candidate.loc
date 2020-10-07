@@ -5,11 +5,13 @@ namespace App\Form\Admin\PatientTesting;
 use App\Controller\AppAbstractController;
 use App\Entity\AnalysisGroup;
 use App\Entity\PatientTesting;
+use App\Form\PatientFileType;
 use App\Repository\AnalysisGroupRepository;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -71,6 +73,17 @@ class PatientTestingType extends AbstractType
                         return $er->createQueryBuilder('d')
                             ->where('d.enabled = true');
                     },
+                ]
+            )
+            ->add(
+                'patientFiles', CollectionType::class, [
+                    'entry_type' => PatientFileType::class,
+                    'prototype' => true,
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
+                    'required' => false,
+                    'label' => false,
                 ]
             )
             ->add(

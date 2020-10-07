@@ -74,11 +74,17 @@ class PatientTesting
     private $dateEnd;
 
     /**
+     * @ORM\OneToMany(targetEntity=PatientFile::class, mappedBy="patientTesting")
+     */
+    private $patientFiles;
+
+    /**
      * PatientTesting constructor.
      */
     public function __construct()
     {
         $this->patientTestingResults = new ArrayCollection();
+        $this->patientFiles = new ArrayCollection();
     }
 
     /**
@@ -286,6 +292,37 @@ class PatientTesting
     public function setDateEnd(?\DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PatientFile[]
+     */
+    public function getPatientFiles(): Collection
+    {
+        return $this->patientFiles;
+    }
+
+    public function addPatientFile(PatientFile $patientFile): self
+    {
+        if (!$this->patientFiles->contains($patientFile)) {
+            $this->patientFiles[] = $patientFile;
+            $patientFile->setPatientTesting($this);
+        }
+
+        return $this;
+    }
+
+    public function removePatientFile(PatientFile $patientFile): self
+    {
+        if ($this->patientFiles->contains($patientFile)) {
+            $this->patientFiles->removeElement($patientFile);
+            // set the owning side to null (unless already changed)
+            if ($patientFile->getPatientTesting() === $this) {
+                $patientFile->setPatientTesting(null);
+            }
+        }
 
         return $this;
     }

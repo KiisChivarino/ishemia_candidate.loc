@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\VarDumper\VarDumper;
 use Twig\Environment;
 
 /**
@@ -206,6 +207,8 @@ abstract class AppAbstractController extends AbstractController
             $this->addFlash('success', 'Запись успешно сохранена!');
             return $this->redirectToRoute($this->templateService->getRoute('list'));
         }
+        VarDumper::dump($form);
+        exit;
         return $this->render(
             $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
                 'entity' => $entity,

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
+use App\Entity\PatientFile;
 use App\Entity\PatientTesting;
 use App\Form\Admin\PatientTesting\PatientTestingType;
 use App\Services\ControllerGetters\FilterLabels;
