@@ -93,9 +93,7 @@ class AuthUserDataTableService extends AdminDatatableService
                     'query' => function (QueryBuilder $builder) {
                         $builder
                             ->select('au')
-                            ->from(AuthUser::class, 'au')
-                            ->andWhere($builder->expr()->not('JSON_GET_TEXT(au.roles, 0) = :developer'))
-                            ->setParameter('developer', 'ROLE_DEVELOPER');
+                            ->from(AuthUser::class, 'au');
                     },
                 ]
             );

@@ -168,6 +168,9 @@
     "symfony/cache": {
         "version": "v5.0.10"
     },
+    "symfony/cache-contracts": {
+        "version": "v2.2.0"
+    },
     "symfony/config": {
         "version": "v5.0.10"
     },
@@ -184,6 +187,9 @@
             "./config/bootstrap.php"
         ]
     },
+    "symfony/contracts": {
+        "version": "v1.1.0"
+    },
     "symfony/dependency-injection": {
         "version": "v5.0.10"
     },
@@ -198,6 +204,9 @@
     },
     "symfony/event-dispatcher": {
         "version": "v5.0.10"
+    },
+    "symfony/event-dispatcher-contracts": {
+        "version": "v2.2.0"
     },
     "symfony/filesystem": {
         "version": "v5.0.10"
@@ -334,6 +343,9 @@
     },
     "symfony/security-http": {
         "version": "v5.0.10"
+    },
+    "symfony/service-contracts": {
+        "version": "v2.2.0"
     },
     "symfony/stopwatch": {
         "version": "v5.0.10"
