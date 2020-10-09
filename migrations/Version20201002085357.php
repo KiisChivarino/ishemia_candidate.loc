@@ -23,7 +23,7 @@ final class Version20201002085357 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE auth_user DROP description');
-        $this->addSql('ALTER TABLE medical_history DROP CONSTRAINT fk_61b89085d4d57cd');
+//        $this->addSql('ALTER TABLE medical_history DROP CONSTRAINT fk_61b89085d4d57cd');
         $this->addSql('DROP INDEX idx_61b89085d4d57cd');
         $this->addSql('ALTER TABLE medical_history DROP staff_id');
     }
