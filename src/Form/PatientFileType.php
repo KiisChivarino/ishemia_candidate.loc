@@ -24,7 +24,7 @@ class PatientFileType extends AbstractType
 //        $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'fileName', FileType::class, [
+                'file', FileType::class, [
 //                    'label' => $templateItem->getContentValue('fileName'),
                     'mapped' => false,
                     'required' => false,

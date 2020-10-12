@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\VarDumper\VarDumper;
 use Twig\Environment;
 
 /**
@@ -179,36 +178,43 @@ abstract class AppAbstractController extends AbstractController
             );
         }
         if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $entityManager = $this->getDoctrine()->getManager();
-                if ($entityActions) {
-                    $entityActionsObject = new EntityActions($entity, $request, $entityManager);
-                    $entityActions($entityActionsObject);
-                }
-                $entityManager->persist($entity);
-                $entityManager->flush();
-            } catch (DBALException $e) {
-                $this->addFlash('error', 'Не удалось сохранить запись!');
-                return $this->render(
-                    $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
-                        'entity' => $entity,
-                        'form' => $form->createView(),
-                    ]
-                );
-            } catch (Exception $e) {
-                $this->addFlash('error', 'Ошибка cохранения записи!');
-                return $this->render(
-                    $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
-                        'entity' => $entity,
-                        'form' => $form->createView(),
-                    ]
-                );
+            $entityManager = $this->getDoctrine()->getManager();
+            if ($entityActions) {
+                $entityActionsObject = new EntityActions($entity, $request, $entityManager);
+                $entityActions($entityActionsObject);
             }
+            $entityManager->persist($entity);
+            $entityManager->flush();
+//            try {
+//                $entityManager = $this->getDoctrine()->getManager();
+//                if ($entityActions) {
+//                    $entityActionsObject = new EntityActions($entity, $request, $entityManager);
+//                    $entityActions($entityActionsObject);
+//                }
+//                $entityManager->persist($entity);
+//                $entityManager->flush();
+//            } catch (DBALException $e) {
+//                $this->addFlash('error', 'Не удалось сохранить запись!');
+//                return $this->render(
+//                    $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+//                        'entity' => $entity,
+//                        'form' => $form->createView(),
+//                    ]
+//                );
+//            } catch (Exception $e) {
+//                $this->addFlash('error', 'Ошибка cохранения записи!');
+//                return $this->render(
+//                    $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+//                        'entity' => $entity,
+//                        'form' => $form->createView(),
+//                    ]
+//                );
+//            }
             $this->addFlash('success', 'Запись успешно сохранена!');
             return $this->redirectToRoute($this->templateService->getRoute('list'));
         }
-        VarDumper::dump($form);
-        exit;
+//        VarDumper::dump($form->createView());
+//        exit;
         return $this->render(
             $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
                 'entity' => $entity,

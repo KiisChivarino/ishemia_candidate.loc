@@ -11,6 +11,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -86,6 +87,14 @@ class PatientTestingTemplate extends AdminTemplateBuilder
             self::COMMON_CONTENT,
             self::FILTER_CONTENT
         );
+    }
+
+    public function new(?FilterService $filterService = null): AdminTemplateBuilder
+    {
+        parent::new();
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+            ->setPath($this->getTemplatePath());
+        return $this;
     }
 
     /**

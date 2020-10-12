@@ -74,7 +74,7 @@ class PatientTesting
     private $dateEnd;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientFile::class, mappedBy="patientTesting")
+     * @ORM\OneToMany(targetEntity=PatientFile::class, mappedBy="patientTesting", cascade={"persist", "remove"})
      */
     private $patientFiles;
 
@@ -272,24 +272,24 @@ class PatientTesting
         return $this;
     }
 
-    public function getDateBegin(): ?\DateTimeInterface
+    public function getDateBegin(): ?DateTimeInterface
     {
         return $this->dateBegin;
     }
 
-    public function setDateBegin(\DateTimeInterface $dateBegin): self
+    public function setDateBegin(DateTimeInterface $dateBegin): self
     {
         $this->dateBegin = $dateBegin;
 
         return $this;
     }
 
-    public function getDateEnd(): ?\DateTimeInterface
+    public function getDateEnd(): ?DateTimeInterface
     {
         return $this->dateEnd;
     }
 
-    public function setDateEnd(?\DateTimeInterface $dateEnd): self
+    public function setDateEnd(?DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
 
