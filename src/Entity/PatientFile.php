@@ -12,9 +12,11 @@ use Doctrine\ORM\Mapping\PostPersist;
 use Doctrine\ORM\Mapping\PostUpdate;
 use Doctrine\ORM\Mapping\PreRemove;
 use Doctrine\ORM\Mapping\PostRemove;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 
 /**
  * @ORM\Entity(repositoryClass=PatientFileRepository::class)
+ * @HasLifecycleCallbacks
  */
 class PatientFile
 {
@@ -55,13 +57,6 @@ class PatientFile
 
     private $tempFilename;
 
-    private $rootPath;
-
-    public function __construct($rootPath = null)
-    {
-        $this->rootPath = $rootPath;
-    }
-
     public function getFile()
     {
         return $this->file;
@@ -70,7 +65,6 @@ class PatientFile
     public function setFile(UploadedFile $file = null)
     {
         $this->file = $file;
-
         // Replacing a file ? Check if we already have a file for this entity
         if (null !== $this->extension)
         {
@@ -79,7 +73,7 @@ class PatientFile
 
             // Reset values
             $this->extension = null;
-            $this->name = null;
+            $this->fileName = null;
         }
     }
 
@@ -100,7 +94,7 @@ class PatientFile
         $this->extension = $this->file->guessExtension();
 
         // And we keep the original name
-        $this->name = $this->file->getClientOriginalName();
+        $this->fileName = $this->file->getClientOriginalName();
     }
 
     /**
@@ -118,7 +112,7 @@ class PatientFile
         // A file is present, remove it
         if (null !== $this->tempFilename)
         {
-            $oldFile = $this->getUploadRootDir().'/'.$this->id.'.'.$this->tempFilename;
+            $oldFile = $this->getUploadDir().'/'.$this->id.'.'.$this->tempFilename;
             if (file_exists($oldFile))
             {
                 unlink($oldFile);
@@ -127,7 +121,7 @@ class PatientFile
 
         // Move the file to the upload folder
         $this->file->move(
-            $this->getUploadRootDir(),
+            $this->getUploadDir(),
             $this->id.'.'.$this->extension
         );
     }
@@ -202,7 +196,7 @@ class PatientFile
     public function preRemoveUpload()
     {
         // Save the name of the file we would want to remove
-        $this->tempFilename = $this->getUploadRootDir().'/'.$this->id.'.'.$this->extension;
+        $this->tempFilename = $this->getUploadDir().'/'.$this->id.'.'.$this->extension;
     }
 
     /**
@@ -221,7 +215,7 @@ class PatientFile
     public function getUploadDir()
     {
         // Upload directory
-        return 'patient_files/';
+        return $this->getUploadRootDir().'/patient_files/';
         // This means /web/uploads/documents/
     }
 
@@ -229,7 +223,7 @@ class PatientFile
     {
         // On retourne le chemin relatif vers l'image pour notre code PHP
         // Image location (PHP)
-        return $this->rootPath.'/data/'.$this->getUploadDir();
+        return str_replace('src/Entity', 'data', __DIR__);
     }
 
     public function getUrl()

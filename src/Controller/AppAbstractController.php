@@ -180,7 +180,7 @@ abstract class AppAbstractController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             if ($entityActions) {
-                $entityActionsObject = new EntityActions($entity, $request, $entityManager);
+                $entityActionsObject = new EntityActions($entity, $request, $entityManager, $form);
                 $entityActions($entityActionsObject);
             }
             $entityManager->persist($entity);

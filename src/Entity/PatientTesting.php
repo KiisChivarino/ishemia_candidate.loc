@@ -74,7 +74,7 @@ class PatientTesting
     private $dateEnd;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientFile::class, mappedBy="patientTesting", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=PatientFile::class, mappedBy="patientTesting", cascade={"persist"}, orphanRemoval=true)
      */
     private $patientFiles;
 
@@ -304,16 +304,26 @@ class PatientTesting
         return $this->patientFiles;
     }
 
+    /**
+     * @param PatientFile $patientFile
+     *
+     * @return $this
+     */
     public function addPatientFile(PatientFile $patientFile): self
     {
         if (!$this->patientFiles->contains($patientFile)) {
-            $this->patientFiles[] = $patientFile;
             $patientFile->setPatientTesting($this);
+            $this->patientFiles[] = $patientFile;
         }
 
         return $this;
     }
 
+    /**
+     * @param PatientFile $patientFile
+     *
+     * @return $this
+     */
     public function removePatientFile(PatientFile $patientFile): self
     {
         if ($this->patientFiles->contains($patientFile)) {

@@ -27,7 +27,7 @@ class PatientFileType extends AbstractType
                 'file', FileType::class, [
 //                    'label' => $templateItem->getContentValue('fileName'),
                     'mapped' => false,
-                    'required' => false,
+                    'required' => true,
                     'constraints' => [
                         new File(
                             [
@@ -41,7 +41,8 @@ class PatientFileType extends AbstractType
                         )
                     ],
                 ]
-            );
+            )
+            ;
     }
 
     /**

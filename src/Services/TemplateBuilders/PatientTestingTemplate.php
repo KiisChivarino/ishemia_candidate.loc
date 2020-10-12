@@ -12,6 +12,7 @@ use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
+use App\Services\TemplateItems\NewTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -97,6 +98,14 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         return $this;
     }
 
+    public function edit(?object $entity = null): AdminTemplateBuilder
+    {
+        parent::edit();
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+            ->setPath($this->getTemplatePath());
+        return $this;
+    }
+
     /**
      * Builds list template settings of PatientTesting controller
      *
@@ -107,6 +116,8 @@ class PatientTestingTemplate extends AdminTemplateBuilder
     public function list(?FilterService $filterService = null): AdminTemplateBuilder
     {
         parent::list();
+        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
+            ->setIsEnabled(false);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->setFilters(
                 $filterService,

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
+use App\Entity\PatientFile;
 use App\Entity\PatientTesting;
 use App\Form\Admin\PatientTesting\PatientTestingType;
 use App\Services\ControllerGetters\FilterLabels;
@@ -11,7 +12,9 @@ use App\Services\DataTable\Admin\PatientTestingDataTableService;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\PatientTestingTemplate;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -95,6 +98,21 @@ class PatientTestingController extends AdminAbstractController
                     ? $entityManager->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
                     : null;
                 $actions->getEntity()->setMedicalHistory($medicalHistory);
+                $patient = $medicalHistory->getPatient();
+                $entityPatientFiles = $actions->getEntity()->getPatientFiles();
+                $formPatientFiles = $actions->getForm()->get('patientFiles')->all();;
+
+                /** @var PatientFile $patientFile */
+                foreach ($entityPatientFiles as $key =>$patientFile){
+                    /** @var UploadedFile $uploadedFile */
+                    $uploadedFile = $formPatientFiles[$key]->get('file')->getData();
+                    $patientFile->setFile($uploadedFile);
+                    $patientFile->setPatient($patient);
+                    $patientFile->setFileName($uploadedFile->getClientOriginalName());
+                    $patientFile->setUploadedDate(new DateTime());
+                    $patientFile->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
+                    $entityManager->persist($actions->getEntity());
+                }
                 $entityManager->getRepository(PatientTesting::class)->persistPatientTestingResults($actions->getEntity());
             }
         );

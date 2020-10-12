@@ -1,45 +1,67 @@
 {{ form_start(form) }}
-    {% if form.patientFiles is defined and not (form.patientFiles.rendered) %}
-        {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }}
-        {% do form.patientFiles.setRendered() %}
-    {% endif %}
+{# {% if form.patientFiles is defined and not (form.patientFiles.rendered) %} #}
+{# {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }} #}
+{# {% do form.patientFiles.setRendered() %} #}
+{# {% endif %} #}
 <div id="filesBox">
-</div>
-    {% macro recursiveForm(form) %}
-        {% if
-            form.vars.multiple is defined and form.vars.multiple
-            and form.vars.expanded is defined and form.vars.expanded %}
-            <li>
-            <span class="title">{{ form_label(form) }}</span>
-        {% endif %}
-        {% if form.children is empty %}
-            {% if form.parent and form.parent.vars.choices is not defined %}
-                <li>
-            {% endif %}
-            {% if 'hidden' not in form.vars.block_prefixes %}
-                <span class="title">{{ form_label(form) }}</span>
-                {{ form_widget(form) }}
-                <small>{{ form_help(form) }}</small>
-                <div class="form-error">
-                    {{ form_errors(form) }}
-                </div>
-            {% endif %}
-            {% if form.parent and form.parent.vars.choices is not defined %}
-                </li>
-            {% endif %}
-        {% else %}
-            {% for key, item in form %}
-                {% if key != 'patientFiles' %}
-                    {{ _self.recursiveForm(item) }}
+    {% set pos = 0 %}
+    {% for patientFile in form.patientFiles %}
+        <div class="row">
+            <div id="jsRemove{{ pos }}" style="">
+                <button
+                        type="button"
+                        class="btn btn-danger"
+                        onclick="removeFile($(this));"
+                >
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="col col-xs-11" id="jsPreview{{ pos }}">{{ patientFile.vars.value.fileName }}</div>
+            <div style="display:none">
+                {% if  not (patientFile.rendered) %}
+                    {# {{ form_widget(patientFile) }} #}
+                    {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }}
                 {% endif %}
-            {% endfor %}
+            </div>
+        </div>
+        {% set pos = pos + 1 %}
+    {% endfor %}
+</div>
+{% macro recursiveForm(form) %}
+    {% if
+        form.vars.multiple is defined and form.vars.multiple
+        and form.vars.expanded is defined and form.vars.expanded %}
+        <li>
+        <span class="title">{{ form_label(form) }}</span>
+    {% endif %}
+    {% if form.children is empty %}
+        {% if form.parent and form.parent.vars.choices is not defined %}
+            <li>
         {% endif %}
-        {% if
-            form.vars.multiple is defined and form.vars.multiple
-            and form.vars.expanded is defined and form.vars.expanded %}
+        {% if 'hidden' not in form.vars.block_prefixes %}
+            <span class="title">{{ form_label(form) }}</span>
+            {{ form_widget(form) }}
+            <small>{{ form_help(form) }}</small>
+            <div class="form-error">
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
+        {% if form.parent and form.parent.vars.choices is not defined %}
             </li>
         {% endif %}
-    {% endmacro %}
+    {% else %}
+        {% for key, item in form %}
+            {% if key != 'patientFiles' %}
+                {{ _self.recursiveForm(item) }}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if
+        form.vars.multiple is defined and form.vars.multiple
+        and form.vars.expanded is defined and form.vars.expanded %}
+        </li>
+    {% endif %}
+{% endmacro %}
 <ul>
     {{ _self.recursiveForm(form) }}
 </ul>
