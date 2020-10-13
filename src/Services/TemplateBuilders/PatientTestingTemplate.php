@@ -93,16 +93,14 @@ class PatientTestingTemplate extends AdminTemplateBuilder
     public function new(?FilterService $filterService = null): AdminTemplateBuilder
     {
         parent::new();
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath());
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)->setPath($this->getTemplatePath());
         return $this;
     }
 
     public function edit(?object $entity = null): AdminTemplateBuilder
     {
         parent::edit();
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath());
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)->setPath($this->getTemplatePath());
         return $this;
     }
 

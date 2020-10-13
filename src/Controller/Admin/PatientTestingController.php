@@ -98,21 +98,7 @@ class PatientTestingController extends AdminAbstractController
                     ? $entityManager->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
                     : null;
                 $actions->getEntity()->setMedicalHistory($medicalHistory);
-                $patient = $medicalHistory->getPatient();
-                $entityPatientFiles = $actions->getEntity()->getPatientFiles();
-                $formPatientFiles = $actions->getForm()->get('patientFiles')->all();;
-
-                /** @var PatientFile $patientFile */
-                foreach ($entityPatientFiles as $key =>$patientFile){
-                    /** @var UploadedFile $uploadedFile */
-                    $uploadedFile = $formPatientFiles[$key]->get('file')->getData();
-                    $patientFile->setFile($uploadedFile);
-                    $patientFile->setPatient($patient);
-                    $patientFile->setFileName($uploadedFile->getClientOriginalName());
-                    $patientFile->setUploadedDate(new DateTime());
-                    $patientFile->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
-                    $entityManager->persist($actions->getEntity());
-                }
+                $this->prepareFiles($medicalHistory, $actions);
                 $entityManager->getRepository(PatientTesting::class)->persistPatientTestingResults($actions->getEntity());
             }
         );
@@ -150,7 +136,15 @@ class PatientTestingController extends AdminAbstractController
      */
     public function edit(Request $request, PatientTesting $patientTesting): Response
     {
-        return $this->responseEdit($request, $patientTesting, PatientTestingType::class);
+        return $this->responseEdit(
+            $request,
+            $patientTesting,
+            PatientTestingType::class,
+            [],
+            function (EntityActions $actions) use ($patientTesting) {
+                $this->prepareFiles($patientTesting->getMedicalHistory(), $actions);
+            }
+        );
     }
 
     /**
@@ -165,5 +159,27 @@ class PatientTestingController extends AdminAbstractController
     public function delete(Request $request, PatientTesting $patientTesting): Response
     {
         return $this->responseDelete($request, $patientTesting);
+    }
+
+    /**
+     * @param MedicalHistory $medicalHistory
+     * @param EntityActions $actions
+     */
+    private function prepareFiles(MedicalHistory $medicalHistory, EntityActions $actions): void
+    {
+        $patient = $medicalHistory->getPatient();
+        $entityPatientFiles = $actions->getEntity()->getPatientFiles();
+        $formPatientFiles = $actions->getForm()->get('patientFiles')->all();
+        /** @var PatientFile $patientFile */
+        foreach ($entityPatientFiles as $key => $patientFile) {
+            /** @var UploadedFile $uploadedFile */
+            if ($uploadedFile = $formPatientFiles[$key]->get('file')->getData()) {
+                $patientFile->setFile($uploadedFile);
+                $patientFile->setPatient($patient);
+                $patientFile->setFileName($uploadedFile->getClientOriginalName());
+                $patientFile->setUploadedDate(new DateTime());
+                $patientFile->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
+            }
+        }
     }
 }

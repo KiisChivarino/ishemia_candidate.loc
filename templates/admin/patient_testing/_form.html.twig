@@ -1,32 +1,4 @@
 {{ form_start(form) }}
-{# {% if form.patientFiles is defined and not (form.patientFiles.rendered) %} #}
-{# {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }} #}
-{# {% do form.patientFiles.setRendered() %} #}
-{# {% endif %} #}
-<div id="filesBox">
-    {% set pos = 0 %}
-    {% for patientFile in form.patientFiles %}
-        <div class="row">
-            <div id="jsRemove{{ pos }}" style="">
-                <button
-                        type="button"
-                        class="btn btn-danger"
-                        onclick="removeFile($(this));"
-                >
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="col col-xs-11" id="jsPreview{{ pos }}">{{ patientFile.vars.value.fileName }}</div>
-            <div style="display:none">
-                {% if  not (patientFile.rendered) %}
-                    {# {{ form_widget(patientFile) }} #}
-                    {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }}
-                {% endif %}
-            </div>
-        </div>
-        {% set pos = pos + 1 %}
-    {% endfor %}
-</div>
 {% macro recursiveForm(form) %}
     {% if
         form.vars.multiple is defined and form.vars.multiple
@@ -63,8 +35,37 @@
     {% endif %}
 {% endmacro %}
 <ul>
+    <li>
+        <div id="filesBox">
+            {% set pos = 0 %}
+            {% if(form.patientFiles.count>0) %}
+                {% for patientFile in form.patientFiles %}
+                    <div class="file-group">
+                        <div id="jsRemove{{ pos }}" style="">
+                            <button type="button" class="js-remove-file">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="jsPreview{{ pos }}">{{ patientFile.vars.value.fileName }}</div>
+                    </div>
+                    {% if not (form.patientFiles.rendered) %}
+                        <div style="display: none;">
+                            {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }}
+                        </div>
+                    {% endif %}
+                    {% set pos = pos + 1 %}
+                {% endfor %}
+            {% elseif not (form.patientFiles.rendered) %}
+                <div style="display: none;">
+                    {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }}
+                </div>
+            {% endif %}
+            {% do form.patientFiles.setRendered() %}
+        </div>
+    </li>
     {{ _self.recursiveForm(form) }}
 </ul>
+
 <div class="buttons">
     <button class="btn btn--mode">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
 </div>
