@@ -46,7 +46,7 @@
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <div id="jsPreview{{ pos }}">{{ patientFile.vars.value.fileName }}</div>
+                        <div id="jsPreview{{ pos }}">{{ patientFile.vars.value ? patientFile.vars.value.fileName : '' }}</div>
                     </div>
                     {% if not (form.patientFiles.rendered) %}
                         <div style="display: none;">

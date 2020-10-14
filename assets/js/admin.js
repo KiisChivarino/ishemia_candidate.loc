@@ -14,6 +14,7 @@ require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
 require('../images/operation-icon-3.svg');
 require('../images/favicons/adm-fav.ico');
+require('fancybox')($);
 
 tinymce.init({
     selector: '.tinymce',
@@ -21,6 +22,29 @@ tinymce.init({
 });
 
 $(document).ready(function () {
+    $(document).ready(function () {
+        $('.fancybox').fancybox({
+            buttons : [
+                'close'
+            ],
+            helpers: {
+                title: null
+            },
+            tpl: {
+                closeBtn: '<a title="Close" class="fancybox-item fancybox-close"></a>'
+            },
+            afterShow: function () {
+                let click = 1;
+                $('.fancybox-wrap').click(function () {
+                    let n = 90 * ++click;
+                    $('.fancybox-skin')
+                        .css('webkitTransform', 'rotate(-' + n + 'deg)')
+                        .css('mozTransform', 'rotate(-' + n + 'deg)');
+                });
+            }
+        });
+    });
+
     //view hospitals for ROLE_DOCTOR_HOSPITAL
     let hospitals = $('#form_staff_hospital');
     let roles = $('#form_onlyRole_roles');

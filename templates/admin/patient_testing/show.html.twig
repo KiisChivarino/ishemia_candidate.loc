@@ -29,6 +29,18 @@
             template.items.show.content.falseValue }}
         </p>
     </li>
+    <li>
+        <span class="title">Сканкопии результатов обследования</span>
+        {% for patientFile in entity.patientFiles %}
+            <a target="_blank"
+               href="/patient_files/{{ patientFile.id }}.{{ patientFile.extension }}"
+               class="fancybox"
+               title="{{ patientFile.fileName }}">
+                <img src="/patient_files/{{ patientFile.id }}.{{ patientFile.extension }}"
+                     alt="{{ patientFile.fileName }}" />
+            </a>
+        {% endfor %}
+    </li>
 {% endblock %}
 {% block custom_actions %}
     <div class="buttons">
