@@ -31,7 +31,7 @@ class PatientFileType extends AbstractType
                     'constraints' => [
                         new File(
                             [
-                                'maxSize' => '1024k',
+                                'maxSize' => '5000ki',
                                 'mimeTypes' => [
                                     'image/jpeg',
                                     'image/pjpeg',

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PatientFileRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Spatie\ImageOptimizer\Optimizers\Jpegoptim;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\Mapping\PrePersist;
 use Doctrine\ORM\Mapping\PreUpdate;
@@ -13,6 +14,7 @@ use Doctrine\ORM\Mapping\PostUpdate;
 use Doctrine\ORM\Mapping\PreRemove;
 use Doctrine\ORM\Mapping\PostRemove;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 /**
  * @ORM\Entity(repositoryClass=PatientFileRepository::class)
@@ -53,6 +55,7 @@ class PatientFile
      */
     private $extension;
 
+    /** @var UploadedFile $file */
     private $file;
 
     private $tempFilename;
@@ -66,8 +69,7 @@ class PatientFile
     {
         $this->file = $file;
         // Replacing a file ? Check if we already have a file for this entity
-        if (null !== $this->extension)
-        {
+        if (null !== $this->extension) {
             // Save file extension so we can remove it later
             $this->tempFilename = $this->extension;
 
@@ -84,8 +86,7 @@ class PatientFile
     public function preUpload()
     {
         // If no file is set, do nothing
-        if (null === $this->file)
-        {
+        if (null === $this->file) {
             return;
         }
 
@@ -104,26 +105,26 @@ class PatientFile
     public function upload()
     {
         // If no file is set, do nothing
-        if (null === $this->file)
-        {
+        if (null === $this->file) {
             return;
         }
 
         // A file is present, remove it
-        if (null !== $this->tempFilename)
-        {
+        if (null !== $this->tempFilename) {
             $oldFile = $this->getUploadDir().'/'.$this->id.'.'.$this->tempFilename;
-            if (file_exists($oldFile))
-            {
+            if (file_exists($oldFile)) {
                 unlink($oldFile);
             }
         }
+        $optimizerChain = OptimizerChainFactory::create();
 
         // Move the file to the upload folder
         $this->file->move(
             $this->getUploadDir(),
             $this->id.'.'.$this->extension
         );
+        $optimizerChain
+            ->optimize($this->getUploadDir().$this->id.'.'.$this->extension);
     }
 
     public function getId(): ?int
@@ -205,8 +206,7 @@ class PatientFile
     public function removeUpload()
     {
         // PostRemove => We no longer have the entity's ID => Use the name we saved
-        if (file_exists($this->tempFilename))
-        {
+        if (file_exists($this->tempFilename)) {
             // Remove file
             unlink($this->tempFilename);
         }
