@@ -229,5 +229,12 @@ class AppFixtures extends Fixture
             ]
         );
         /** end Референтные значения */
+
+        /** begin Временной диапазон */
+        echo "Заполнение справочника \"Временной диапазон\"\n";
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'time_range.csv', '|');
+        /** end Временной диапазон */
+
+
     }
 }
