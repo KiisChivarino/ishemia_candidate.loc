@@ -40,6 +40,11 @@ class TimeRangeTemplate extends AdminTemplateBuilder
         'title' => 'Редакитрование временного диапазона',
     ];
 
+    /** @var string[] Common DIRECTORY_CONTENT */
+    public const DIRECTORY_CONTENT = [
+        'timeRange' => 'Временной диапазон',
+    ];
+
     /**
      * TimeRangeTemplate constructor.
      *

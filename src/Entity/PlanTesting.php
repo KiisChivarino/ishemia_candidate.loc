@@ -32,14 +32,15 @@ class PlanTesting
     private $enabled;
 
     /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $timeRange;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $timeRangeCount;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=TimeRange::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $timeRange;
 
     /**
      * @return int|null
@@ -88,25 +89,6 @@ class PlanTesting
     }
 
     /**
-     * @return string|null
-     */
-    public function getTimeRange(): ?string
-    {
-        return $this->timeRange;
-    }
-
-    /**
-     * @param string $timeRange
-     *
-     * @return $this
-     */
-    public function setTimeRange(string $timeRange): self
-    {
-        $this->timeRange = $timeRange;
-        return $this;
-    }
-
-    /**
      * @return int|null
      */
     public function getTimeRangeCount(): ?int
@@ -122,6 +104,25 @@ class PlanTesting
     public function setTimeRangeCount(int $timeRangeCount): self
     {
         $this->timeRangeCount = $timeRangeCount;
+        return $this;
+    }
+
+    /**
+     * @return TimeRange|null
+     */
+    public function getTimeRange(): ?TimeRange
+    {
+        return $this->timeRange;
+    }
+
+    /**
+     * @param TimeRange|null $timeRange
+     *
+     * @return $this
+     */
+    public function setTimeRange(?TimeRange $timeRange): self
+    {
+        $this->timeRange = $timeRange;
         return $this;
     }
 }

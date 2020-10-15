@@ -4,10 +4,13 @@ namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PlanAppointment;
+use App\Entity\TimeRange;
+use App\Repository\TimeRangeRepository;
 use App\Services\TemplateItems\FormTemplateItem;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -28,18 +31,22 @@ class PlanAppointmentType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'dateBegin', DateType::class, [
-                    'label' => $templateItem->getContentValue('dateBegin'),
-                    'widget' => 'single_text',
-                    'format' => 'yyyy-MM-dd',
+                'timeRange', EntityType::class,
+                [
+                    'label' => $templateItem->getContentValue('timeRange'),
+                    'class' => TimeRange::class,
+                    'choice_label' => 'title',
+                    'query_builder' => function (TimeRangeRepository $er) {
+                        return $er->createQueryBuilder('tr')
+                            ->where('tr.enabled = true');
+                    },
                 ]
             )
             ->add(
-                'dateEnd', DateType::class,
+                'timeRangeCount', IntegerType::class,
                 [
-                    'label' => $templateItem->getContentValue('dateEnd'),
-                    'widget' => 'single_text',
-                    'format' => 'yyyy-MM-dd',
+                    'label' => $templateItem->getContentValue('timeRangeCount'),
+                    'attr' => ['min' => '1']
                 ]
             )
             ->add(

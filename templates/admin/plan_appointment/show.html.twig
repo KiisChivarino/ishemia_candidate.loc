@@ -1,11 +1,17 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
     <li>
-        <span class="title">{{ template.items.show.content.dateBegin }}</span>
-        <p>{{ entity.dateBegin ? entity.dateBegin|date('d.m.Y') : '' }}</p>
+        <span class="title">{{ template.items.show.content.timeRangeCount }}</span>
+        <p>
+            {% if entity.timeRange %}
+                <a href="{{ path('analysis_group_show', {'id': entity.timeRange.id}) }}">
+                    {{ entity.timeRange.title }}
+                </a>
+            {% endif %}
+        </p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.dateEnd }}</span>
-        <p>{{ entity.dateEnd ? entity.dateEnd|date('d.m.Y') : '' }}</p>
+        <span class="title">{{ template.items.show.content.timeRange }}</span>
+        <p>{{ entity.timeRangeCount }}</p>
     </li>
 {% endblock %}

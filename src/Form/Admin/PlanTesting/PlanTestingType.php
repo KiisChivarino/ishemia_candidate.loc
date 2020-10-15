@@ -5,11 +5,14 @@ namespace App\Form\Admin\PlanTesting;
 use App\Controller\AppAbstractController;
 use App\Entity\AnalysisGroup;
 use App\Entity\PlanTesting;
+use App\Entity\TimeRange;
 use App\Repository\AnalysisGroupRepository;
+use App\Repository\TimeRangeRepository;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -30,24 +33,23 @@ class PlanTestingType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            //todo изменить периоды на timeRanges
-//            ->add(
-//                'period', TextType::class,
-//                [
-//                    'label' => $templateItem->getContentValue('period'),
-//                ]
-//            )
-//            ->add(
-//                'periodCount', IntegerType::class,
-//                [
-//                    'label' => $templateItem->getContentValue('periodCount'),
-//                    'attr' => ['min' => '1']
-//                ]
-//            )
             ->add(
-                'enabled', CheckboxType::class, [
-                    'label' => $templateItem->getContentValue('enabled'),
-                    'required' => false,
+                'timeRange', EntityType::class,
+                [
+                    'label' => $templateItem->getContentValue('timeRange'),
+                    'class' => TimeRange::class,
+                    'choice_label' => 'title',
+                    'query_builder' => function (TimeRangeRepository $er) {
+                        return $er->createQueryBuilder('tr')
+                            ->where('tr.enabled = true');
+                    },
+                ]
+            )
+            ->add(
+                'timeRangeCount', IntegerType::class,
+                [
+                    'label' => $templateItem->getContentValue('timeRangeCount'),
+                    'attr' => ['min' => '1']
                 ]
             )
             ->add(
@@ -59,6 +61,12 @@ class PlanTestingType extends AbstractType
                         return $er->createQueryBuilder('d')
                             ->where('d.enabled = true');
                     },
+                ]
+            )
+            ->add(
+                'enabled', CheckboxType::class, [
+                    'label' => $templateItem->getContentValue('enabled'),
+                    'required' => false,
                 ]
             );
     }

@@ -8,8 +8,8 @@ class PlanAppointmentTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
-        'dateBegin' => 'Дата начала приема',
-        'dateEnd' => 'Дата завершения приема',
+        'timeRangeCount' => 'Срок выполнения',
+        'timeRange' => TimeRangeTemplate::DIRECTORY_CONTENT['timeRange'],
     ];
 
     /** @var string[] Common LIST_CONTENT */
