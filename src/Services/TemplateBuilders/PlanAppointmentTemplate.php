@@ -2,43 +2,38 @@
 
 namespace App\Services\TemplateBuilders;
 
-use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
-/**
- * Class CountryTemplate
- *
- * @package App\Services\TemplateBuilders
- */
-class CountryTemplate extends AdminTemplateBuilder
+class PlanAppointmentTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
-        'shortcode' => 'Код'
+        'dateBegin' => 'Дата начала приема',
+        'dateEnd' => 'Дата завершения приема',
     ];
 
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
-        'h1' => 'Страны',
-        'title' => 'Список стран',
+        'h1' => 'Приемы по плану',
+        'title' => 'Приемы по плану',
     ];
 
     /** @var string[] Common NEW_CONTENT */
     protected const NEW_CONTENT = [
-        'h1' => 'Добавление страны',
-        'title' => 'Добавление страны',
+        'h1' => 'Новый прием в план',
+        'title' => 'Добавление приема в план',
     ];
 
     /** @var string[] Common SHOW_CONTENT */
     protected const SHOW_CONTENT = [
-        'h1' => 'Просмотр страны',
-        'title' => 'Просмотр страны',
+        'title' => 'Просмотр приема по плану',
+        'h1' => 'Просмотр приема по плану'
     ];
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование страны',
-        'title' => 'Редактрование страны',
+        'h1' => 'Редактрование приема по плану',
+        'title' => 'Редактрование приема по плану',
     ];
 
     /**
@@ -60,20 +55,5 @@ class CountryTemplate extends AdminTemplateBuilder
             self::COMMON_CONTENT,
             self::FILTER_CONTENT
         );
-    }
-
-    /**
-     * Builds Show template settings of Country controller
-     *
-     * @param object|null $entity
-     *
-     * @return $this|AdminTemplateBuilder
-     */
-    public function show(?object $entity = null): AdminTemplateBuilder
-    {
-        parent::show();
-        $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
-            ->setContent('h1', 'Просмотр страны '.$entity->getName());
-        return $this;
     }
 }

@@ -6,8 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class PlanTesting
- * Анализ по плану
  * @ORM\Entity(repositoryClass="App\Repository\PlanTestingRepository")
+ * @ORM\Table(options={"comment":"План обследований"});
  *
  * @package App\Entity
  */
