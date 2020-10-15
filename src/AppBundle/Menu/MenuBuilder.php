@@ -251,6 +251,12 @@ class MenuBuilder
             ]
         );
         $menu['medical_guides']->addChild(
+            'planAppointmentList', [
+                'label' => 'План приемов',
+                'route' => 'plan_appointment_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
             'measureList', [
                 'label' => 'Единицы измерения',
                 'route' => 'measure_list'
