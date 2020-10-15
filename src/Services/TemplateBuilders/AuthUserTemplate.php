@@ -60,7 +60,7 @@ class AuthUserTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common edit content for staff templates */
     public const EDIT_CONTENT = [
-        'title' => 'Редактрование пользователя',
+        'title' => 'Редактирование пользователя',
     ];
 
     /** @var string[] Common filter content for staff templates */
@@ -132,7 +132,7 @@ class AuthUserTemplate extends AdminTemplateBuilder
         parent::edit();
         $authUserInfoService = new AuthUserInfoService();
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
-            ->setContent('h1', 'Редактрование пользователя: '.$authUserInfoService->getFIO($entity, true));
+            ->setContent('h1', 'Редактирование пользователя: '.$authUserInfoService->getFIO($entity, true));
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
             ->setPath($this->getTemplatePath());
         return $this;

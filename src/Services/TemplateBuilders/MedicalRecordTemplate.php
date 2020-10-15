@@ -55,8 +55,8 @@ class MedicalRecordTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование записи в историю болезни',
-        'title' => 'Редактрование записи в историю болезни',
+        'h1' => 'Редактирование записи в историю болезни',
+        'title' => 'Редактирование записи в историю болезни',
     ];
 
     /** @var string[] Common FILTER_CONTENT */

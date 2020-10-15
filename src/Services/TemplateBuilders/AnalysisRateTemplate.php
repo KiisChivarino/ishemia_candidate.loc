@@ -59,8 +59,8 @@ class AnalysisRateTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common edit content for staff templates */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование референтных значений',
-        'title' => 'Редактрование референтных значений',
+        'h1' => 'Редактирование референтных значений',
+        'title' => 'Редактирование референтных значений',
     ];
 
     /** @var string[] Common filter content for staff templates */

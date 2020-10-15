@@ -86,7 +86,7 @@ class MeasureController extends AdminAbstractController
     }
 
     /**
-     * Редактрование единицы измерения
+     * Редактирование единицы измерения
      * @Route("/{id}/edit", name="measure_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @param Request $request

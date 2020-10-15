@@ -37,12 +37,12 @@ class CountryTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование страны',
-        'title' => 'Редактрование страны',
+        'h1' => 'Редактирование страны',
+        'title' => 'Редактирование страны',
     ];
 
     /**
-     * CityTemplate constructor.
+     * CountryTemplate constructor.
      *
      * @param RouteCollection $routeCollection
      * @param string $className

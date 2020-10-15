@@ -30,8 +30,8 @@ class ReceptionMethodTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование способа приема лекарства',
-        'title' => 'Редактрование способа приема лекарства',
+        'h1' => 'Редактирование способа приема лекарства',
+        'title' => 'Редактирование способа приема лекарства',
     ];
 
     /**

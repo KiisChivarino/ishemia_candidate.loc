@@ -34,38 +34,65 @@ class PlanAppointment
      */
     private $enabled;
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return DateTimeInterface|null
+     */
     public function getDateBegin(): ?DateTimeInterface
     {
         return $this->dateBegin;
     }
 
+    /**
+     * @param DateTimeInterface $dateBegin
+     *
+     * @return $this
+     */
     public function setDateBegin(DateTimeInterface $dateBegin): self
     {
         $this->dateBegin = $dateBegin;
         return $this;
     }
 
+    /**
+     * @return DateTimeInterface|null
+     */
     public function getDateEnd(): ?DateTimeInterface
     {
         return $this->dateEnd;
     }
 
+    /**
+     * @param DateTimeInterface|null $dateEnd
+     *
+     * @return $this
+     */
     public function setDateEnd(?DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;

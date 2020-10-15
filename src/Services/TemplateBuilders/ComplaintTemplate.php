@@ -30,8 +30,8 @@ class ComplaintTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование жалобы',
-        'title' => 'Редактрование жалобы',
+        'h1' => 'Редактирование жалобы',
+        'title' => 'Редактирование жалобы',
     ];
 
     /**

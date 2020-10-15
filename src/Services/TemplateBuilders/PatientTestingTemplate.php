@@ -53,7 +53,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование анализа пациента',
+        'h1' => 'Редактирование анализа пациента',
         'title' => 'Редактирование анализа пациента',
     ];
 

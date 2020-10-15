@@ -5,43 +5,43 @@ namespace App\Services\TemplateBuilders;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Class NotificationTypeTemplate
+ * Class TimeRangeTemplate
  *
  * @package App\Services\TemplateBuilders
  */
-class NotificationTypeTemplate extends AdminTemplateBuilder
+class TimeRangeTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for analysis templates */
-    protected const FORM_SHOW_CONTENT = [
-        'template' => 'Шаблон',
+    protected const COMMON_CONTENT = [
+        'rangeTitle' => 'Заголовок',
     ];
 
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
-        'h1' => 'Уведомления',
-        'title' => 'Список уведомлений',
+        'h1' => 'Временные диапазоны',
+        'title' => 'Список временных диапазонов',
     ];
 
     /** @var string[] Common NEW_CONTENT */
     protected const NEW_CONTENT = [
-        'h1' => 'Добавление уведомления',
-        'title' => 'Добавление уведомления',
+        'h1' => 'Добавление временного диапазона',
+        'title' => 'Добавление временного диапазона',
     ];
 
     /** @var string[] Common SHOW_CONTENT */
     protected const SHOW_CONTENT = [
-        'h1' => 'Просмотр уведомления',
-        'title' => 'Просмотр уведомления',
+        'h1' => 'Просмотр временного диапазона',
+        'title' => 'Просмотр временного диапазона',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактирование уведомления',
-        'title' => 'Редактирование уведомления',
+        'h1' => 'Редактирование временного диапазона',
+        'title' => 'Редакитрование временного диапазона',
     ];
 
     /**
-     * NotificationTypeTemplate constructor.
+     * TimeRangeTemplate constructor.
      *
      * @param RouteCollection $routeCollection
      * @param string $className

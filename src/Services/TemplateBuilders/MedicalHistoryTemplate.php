@@ -68,8 +68,8 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование истории болезни',
-        'title' => 'Редактрование истории болезни',
+        'h1' => 'Редактирование истории болезни',
+        'title' => 'Редактирование истории болезни',
     ];
 
     /** @var string[] Common FILTER_CONTENT */

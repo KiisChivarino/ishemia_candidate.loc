@@ -268,6 +268,12 @@ class MenuBuilder
                 'route' => 'complaint_list'
             ]
         );
+        $menu['medical_guides']->addChild(
+            'timeRangeList', [
+                'label' => 'Временные диапазоны',
+                'route' => 'time_range_list'
+            ]
+        );
         $menu->addChild(
             'locations', [
                 'label' => 'Управление локациями',

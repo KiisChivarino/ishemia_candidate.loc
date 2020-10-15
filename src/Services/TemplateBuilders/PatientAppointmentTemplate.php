@@ -65,8 +65,8 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование приема пациета',
-        'title' => 'Редактрование приема пациета',
+        'h1' => 'Редактирование приема пациета',
+        'title' => 'Редактирование приема пациета',
     ];
 
     protected const FILTER_CONTENT = [

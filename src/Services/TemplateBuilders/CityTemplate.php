@@ -39,8 +39,8 @@ class CityTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование города',
-        'title' => 'Редактрование города',
+        'h1' => 'Редактирование города',
+        'title' => 'Редактирование города',
     ];
 
     /**

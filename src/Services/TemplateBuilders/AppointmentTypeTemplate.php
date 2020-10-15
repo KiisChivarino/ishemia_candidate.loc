@@ -31,8 +31,8 @@ class AppointmentTypeTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование вида приема',
-        'title' => 'Редактрование вида приема',
+        'h1' => 'Редактирование вида приема',
+        'title' => 'Редактирование вида приема',
     ];
 
     /**

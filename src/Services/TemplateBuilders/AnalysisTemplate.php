@@ -48,8 +48,8 @@ class AnalysisTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common edit content for staff templates */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование анализа',
-        'title' => 'Редактрование анализа',
+        'h1' => 'Редактирование анализа',
+        'title' => 'Редактирование анализа',
     ];
 
     /** @var string[] Common filter content for staff templates */

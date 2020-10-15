@@ -41,56 +41,87 @@ class PlanTesting
      */
     private $timeRangeCount;
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return AnalysisGroup|null
+     */
     public function getAnalysisGroup(): ?AnalysisGroup
     {
         return $this->analysisGroup;
     }
 
+    /**
+     * @param AnalysisGroup|null $analysisGroup
+     *
+     * @return $this
+     */
     public function setAnalysisGroup(?AnalysisGroup $analysisGroup): self
     {
         $this->analysisGroup = $analysisGroup;
-
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getTimeRange(): ?string
     {
         return $this->timeRange;
     }
 
+    /**
+     * @param string $timeRange
+     *
+     * @return $this
+     */
     public function setTimeRange(string $timeRange): self
     {
         $this->timeRange = $timeRange;
-
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getTimeRangeCount(): ?int
     {
         return $this->timeRangeCount;
     }
 
+    /**
+     * @param int $timeRangeCount
+     *
+     * @return $this
+     */
     public function setTimeRangeCount(int $timeRangeCount): self
     {
         $this->timeRangeCount = $timeRangeCount;
-
         return $this;
     }
 }

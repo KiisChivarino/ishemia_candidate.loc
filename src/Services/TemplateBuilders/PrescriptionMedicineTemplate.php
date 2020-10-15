@@ -46,8 +46,8 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование назначения лекарства',
-        'title' => 'Редактрование назначения лекарства',
+        'h1' => 'Редактирование назначения лекарства',
+        'title' => 'Редактирование назначения лекарства',
     ];
 
     /** @var string[] Common FORM_CONTENT */

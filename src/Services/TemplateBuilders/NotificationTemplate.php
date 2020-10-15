@@ -52,8 +52,8 @@ class NotificationTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактрование уведомления',
-        'title' => 'Редактрование уведомления',
+        'h1' => 'Редактирование уведомления',
+        'title' => 'Редактирование уведомления',
     ];
 
     protected const FILTER_CONTENT = [

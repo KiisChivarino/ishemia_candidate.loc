@@ -35,7 +35,7 @@ class RegionTemplate extends AdminTemplateBuilder
     ];
     /** @var string[] Common edit content for staff templates */
     public const EDIT_CONTENT = [
-        'title' => 'Редактрование региона',
+        'title' => 'Редактирование региона',
         'h1' => 'Редактирование региона',
     ];
 
