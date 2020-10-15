@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\PlanAppointmentRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PlanAppointmentRepository::class)
+ * @ORM\Table(options={"comment":"План приемов"});
  */
 class PlanAppointment
 {
@@ -37,27 +39,25 @@ class PlanAppointment
         return $this->id;
     }
 
-    public function getDateBegin(): ?\DateTimeInterface
+    public function getDateBegin(): ?DateTimeInterface
     {
         return $this->dateBegin;
     }
 
-    public function setDateBegin(\DateTimeInterface $dateBegin): self
+    public function setDateBegin(DateTimeInterface $dateBegin): self
     {
         $this->dateBegin = $dateBegin;
-
         return $this;
     }
 
-    public function getDateEnd(): ?\DateTimeInterface
+    public function getDateEnd(): ?DateTimeInterface
     {
         return $this->dateEnd;
     }
 
-    public function setDateEnd(?\DateTimeInterface $dateEnd): self
+    public function setDateEnd(?DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
-
         return $this;
     }
 
@@ -69,7 +69,6 @@ class PlanAppointment
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 }
