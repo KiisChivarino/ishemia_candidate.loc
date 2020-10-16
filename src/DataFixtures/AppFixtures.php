@@ -13,6 +13,7 @@ use App\Entity\City;
 use App\Entity\Measure;
 use App\Entity\OKSM;
 use App\Entity\Oktmo;
+use App\Entity\PlanAppointment;
 use App\Entity\PlanTesting;
 use App\Entity\Region;
 use App\Entity\Country;
@@ -175,7 +176,7 @@ class AppFixtures extends Fixture
         $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'time_range.csv', '|');
         /** end Временной диапазон */
 
-        /** begin Стандартный план анализвов (тестирования)*/
+        /** begin Стандартный план тестирования */
         echo "Заполнение справочника \"Стандартный план тестирования\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
@@ -189,7 +190,22 @@ class AppFixtures extends Fixture
                 'timeRange' => TimeRange::class,
             ]
         );
-        /** end Стандартный план анализвов (тестирования) */
+        /** end Стандартный план приемов */
+
+        /** begin Стандартный план тестирования */
+        echo "Заполнение справочника \"Стандартный план приемов\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV.'plan_appointment.csv',
+            PlanAppointment::class,
+            '|',
+            [],
+            ['enabled' => true],
+            [
+                'timeRange' => TimeRange::class,
+            ]
+        );
+        /** end Стандартный план приемов */
 
         /** begin Анализы */
         echo "Заполнение справочника \"Анализы\"\n";
