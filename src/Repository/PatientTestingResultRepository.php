@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\AnalysisRate;
 use App\Entity\PatientTesting;
 use App\Entity\PatientTestingResult;
 use Doctrine\ORM\ORMException;
@@ -53,14 +52,14 @@ class PatientTestingResultRepository extends AppRepository
      *
      * @throws ORMException
      */
-    public function persistTestingResultsForTesting(PatientTesting $patientTesting)
-    {
-        foreach ($this->getAnalyzes($patientTesting) as $analysis) {
-            $analysisTestingResult = new PatientTestingResult();
-            $analysisTestingResult->setPatientTesting($patientTesting);
-            $analysisTestingResult->setAnalysis($analysis);
-            $analysisTestingResult->setEnabled(false);
-            $this->_em->persist($analysisTestingResult);
-        }
-    }
+//    public function persistTestingResultsForTesting(PatientTesting $patientTesting)
+//    {
+//        foreach ($this->getAnalyzes($patientTesting) as $analysis) {
+//            $analysisTestingResult = new PatientTestingResult();
+//            $analysisTestingResult->setPatientTesting($patientTesting);
+//            $analysisTestingResult->setAnalysis($analysis);
+//            $analysisTestingResult->setEnabled(false);
+//            $this->_em->persist($analysisTestingResult);
+//        }
+//    }
 }

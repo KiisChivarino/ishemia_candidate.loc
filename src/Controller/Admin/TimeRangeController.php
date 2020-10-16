@@ -61,7 +61,14 @@ class TimeRangeController extends AdminAbstractController
      */
     public function new(Request $request): Response
     {
-        return $this->responseNew($request, (new TimeRange()), TimeRangeType::class);
+        return $this->responseNew(
+            $request,
+            (new TimeRange()),
+            TimeRangeType::class,
+            null,
+            [],
+            $this->setNextEntityIdFunction()
+        );
     }
 
     /**

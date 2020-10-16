@@ -13,11 +13,13 @@ use App\Entity\City;
 use App\Entity\Measure;
 use App\Entity\OKSM;
 use App\Entity\Oktmo;
+use App\Entity\PlanTesting;
 use App\Entity\Region;
 use App\Entity\Country;
 use App\Entity\AuthUser;
 use App\Entity\District;
 use App\Entity\Hospital;
+use App\Entity\TimeRange;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -168,23 +170,26 @@ class AppFixtures extends Fixture
         $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'analysis_group.csv', AnalysisGroup::class, '|', [], ['enabled' => true]);
         /** end Группы анализов (тестирования) */
 
-        /** begin Стандартный план анализвов (тестирования)*/
-//        echo "Заполнение справочника \"Стандартный план тестирования\"\n";
-//        $this->dataSowing->setEntitiesFromCsv(
-//            $manager,
-//            self::PATH_TO_CSV.'plan_testing.csv',
-//            PlanTesting::class,
-//            '|',
-//            [],
-//            ['enabled' => true],
-//            ['analysisGroup' => AnalysisGroup::class]
-//        );
-        /** end Стандартный план анализвов (тестирования) */
+        /** begin Временной диапазон */
+        echo "Заполнение справочника \"Временной диапазон\"\n";
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'time_range.csv', '|');
+        /** end Временной диапазон */
 
-        /** begin Периоды*/
-//        echo "Заполнение справочника \"Периоды\"\n";
-//        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'period.csv', Period::class, '|', [], ['enabled' => true]);
-        /** end Периоды */
+        /** begin Стандартный план анализвов (тестирования)*/
+        echo "Заполнение справочника \"Стандартный план тестирования\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV.'plan_testing.csv',
+            PlanTesting::class,
+            '|',
+            [],
+            ['enabled' => true],
+            [
+                'analysisGroup' => AnalysisGroup::class,
+                'timeRange' => TimeRange::class,
+            ]
+        );
+        /** end Стандартный план анализвов (тестирования) */
 
         /** begin Анализы */
         echo "Заполнение справочника \"Анализы\"\n";
@@ -229,11 +234,6 @@ class AppFixtures extends Fixture
             ]
         );
         /** end Референтные значения */
-
-        /** begin Временной диапазон */
-        echo "Заполнение справочника \"Временной диапазон\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'time_range.csv', '|');
-        /** end Временной диапазон */
 
 
     }

@@ -41,8 +41,6 @@ class PatientTestingRepository extends AppRepository
 //            $patientTest = new PatientTesting();
 //            $patientTest->setMedicalHistory($medicalHistory);
 //            $patientTest->setAnalysisGroup($test->getAnalysisGroup());
-//            $patientTest->setGestationalMinAge($test->getGestationalMinAge());
-//            $patientTest->setGestationalMaxAge($test->getGestationalMaxAge());
 //            $patientTest->setProcessed(false);
 //            $patientTest->setEnabled(true);
 //            $patientTest->setAnalysisDate(null);
