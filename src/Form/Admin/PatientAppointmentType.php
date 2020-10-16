@@ -3,12 +3,9 @@
 namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
-use App\Entity\AppointmentType;
 use App\Entity\Complaint;
 use App\Entity\PatientAppointment;
-use App\Repository\AppointmentTypeRepository;
 use App\Services\TemplateItems\FormTemplateItem;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -45,19 +42,6 @@ class PatientAppointmentType extends AbstractType
                     'date_label' => $templateItem->getContentValue('appointmentTimeDateLabel'),
                     'time_widget' => 'single_text',
                     'time_label' => $templateItem->getContentValue('appointmentTimeTimeLabel'),
-                ]
-            )
-            ->add(
-                'appointmentType', EntityType::class, [
-                    'label' => $templateItem->getContentValue('appointmentType'),
-                    'class' => AppointmentType::class,
-                    'choice_label' => function (AppointmentType $appointmentType) {
-                        return $appointmentType->getName();
-                    },
-                    'query_builder' => function (AppointmentTypeRepository $er) {
-                        return $er->createQueryBuilder('at')
-                            ->where('at.enabled = true');
-                    },
                 ]
             )
             ->add(

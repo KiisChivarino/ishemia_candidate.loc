@@ -96,7 +96,7 @@ class MedicalHistory
     private $patientTestings;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientAppointment::class, mappedBy="medicalHistory", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PatientAppointment::class, mappedBy="medicalHistory", orphanRemoval=true,cascade={"persist"})
      */
     private $patientAppointments;
 

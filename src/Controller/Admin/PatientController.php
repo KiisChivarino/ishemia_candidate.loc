@@ -3,10 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
+use App\Entity\PatientAppointment;
 use App\Form\Admin\AuthUser\EditAuthUserType;
 use App\Form\Admin\AuthUser\NewAuthUserType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\Patient\PatientType;
+use App\Form\Admin\PatientAppointment\AppointmentTypeType;
+use App\Form\Admin\PatientAppointment\StaffType;
 use App\Services\DataTable\Admin\PatientDataTableService;
 use App\Entity\AuthUser;
 use App\Entity\Patient;
@@ -82,15 +85,19 @@ class PatientController extends AdminAbstractController
     public function new(Request $request, AuthUserInfoService $authUserInfoService): Response
     {
         $template = $this->templateService->new();
-        $user = (new AuthUser())->setEnabled(true);
-        $patient = (new Patient())->setAuthUser($user);
-
+        $authUser = (new AuthUser())->setEnabled(true);
+        $patient = (new Patient())->setAuthUser($authUser);
+        $medicalHistory = (new MedicalHistory)->setPatient($patient);
+        $patientAppointment = (new PatientAppointment())->setMedicalHistory($medicalHistory);
         $form = $this->createFormBuilder()
             ->setData(
                 [
-                    'authUser' => $user,
-                    'newAuthUser' => $user,
+                    'authUser' => $authUser,
+                    'newAuthUser' => $authUser,
                     'patient' => $patient,
+                    'medicalHistory' => $medicalHistory,
+                    'patientAppointmentStaff' => $patientAppointment,
+                    'patientAppointmentType' => $patientAppointment,
                 ]
             )
             ->add(
@@ -112,19 +119,26 @@ class PatientController extends AdminAbstractController
                 ]
             )
             ->add(
-                'mainDisease', MainDiseaseType::class, [
-                    'label' =>false,
+                'medicalHistory', MainDiseaseType::class, [
+                    'label' => false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                ]
+            )
+            ->add(
+                'patientAppointmentStaff', StaffType::class, [
+                    'label' => false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                ]
+            )
+            ->add(
+                'patientAppointmentType', AppointmentTypeType::class, [
+                    'label' => false,
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
             )
             ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            /** @var AuthUser $authUser */
-            $authUser = $data['authUser'];
-            /** @var Patient $patient */
-            $patient = $data['patient'];
             $authUser->setRoles(self::PATIENT_ROLE);
             $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
             $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
@@ -135,17 +149,9 @@ class PatientController extends AdminAbstractController
                 $em->persist($authUser);
                 $em->flush();
                 $patient->setAuthUser($authUser);
+                $em->getRepository(MedicalHistory::class)->persistMedicalHistory($medicalHistory);
+                $em->getRepository(PatientAppointment::class)->persistPatientAppointment($patientAppointment);
                 $em->persist($patient);
-                $em->getRepository(MedicalHistory::class)->persistMedicalHistory($patient, ($data['mainDisease'])->getMainDisease());
-//                if (isset($result['error'])) {
-//                    $this->addFlash('error', $result['error']);
-//                    return $this->render(
-//                        $this->templateService->getCommonTemplatePath().'new.html.twig', [
-//                            'patient' => $patient,
-//                            'form' => $form->createView(),
-//                        ]
-//                    );
-//                }
                 $em->flush();
                 $em->getConnection()->commit();
             } catch (Exception $e) {

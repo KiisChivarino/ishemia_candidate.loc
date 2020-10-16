@@ -30,7 +30,7 @@ class MedicalRecordRepository extends AppRepository
     }
 
     /**
-     * Set OneToOne for prescription and medical record
+     * Find or create medical record for current date
      *
      * @param MedicalHistory $medicalHistory
      *

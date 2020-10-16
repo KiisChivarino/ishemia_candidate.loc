@@ -25,13 +25,13 @@ class PatientAppointment
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientAppointments")
+     * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientAppointments",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $medicalRecord;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientAppointments")
+     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientAppointments",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $medicalHistory;

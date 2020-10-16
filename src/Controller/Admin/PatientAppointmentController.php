@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
 use App\Entity\PatientAppointment;
+use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\ConfirmedType;
 use App\Form\Admin\PatientAppointment\StaffType;
 use App\Form\Admin\PatientAppointmentType;
@@ -98,6 +99,7 @@ class PatientAppointmentController extends AdminAbstractController
                         'patientAppointment' => $patientAppointment,
                         'confirmed' => $patientAppointment,
                         'staff' => $patientAppointment,
+                        'appointmentType' => $patientAppointment,
                     ]
                 )
                 ->add(
@@ -108,6 +110,12 @@ class PatientAppointmentController extends AdminAbstractController
                 )
                 ->add(
                     'staff', StaffType::class, [
+                        'label' => false,
+                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                    ]
+                )
+                ->add(
+                    'appointmentType', AppointmentTypeType::class, [
                         'label' => false,
                         self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                     ]

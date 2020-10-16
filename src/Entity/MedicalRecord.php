@@ -51,7 +51,7 @@ class MedicalRecord
     private $patientTestings;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientAppointment::class, mappedBy="medicalRecord")
+     * @ORM\OneToMany(targetEntity=PatientAppointment::class, mappedBy="medicalRecord", cascade={"persist"})
      */
     private $patientAppointments;
 

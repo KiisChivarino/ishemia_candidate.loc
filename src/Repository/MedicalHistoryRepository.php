@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Diagnosis;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use DateTime;
@@ -49,29 +48,16 @@ class MedicalHistoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Patient $patient
-     * @param Diagnosis $mainDisease
+     * @param MedicalHistory $medicalHistory
      *
-     * @return bool|string[]
+     * @return void
      * @throws ORMException
      */
-    public function persistMedicalHistory(Patient $patient, Diagnosis $mainDisease)
+    public function persistMedicalHistory(MedicalHistory $medicalHistory): void
     {
-//        $gestationWeeks = (new PatientInfoService())->getGestationWeeks($patient->getDateStartOfTreatment());
-//        if (!$gestationWeeks) {
-//            return [
-//                'error',
-//                'Некорректное количество недель беременности!'
-//            ];
-//        }
-//        $planTesting = $this->_em->getRepository(PlanTesting::class)->getStandardPlanTesting($gestationWeeks);
-        $medicalHistory = (new MedicalHistory())->setMainDisease($mainDisease);
         $medicalHistory
-            ->setPatient($patient)
             ->setEnabled(true)
             ->setDateBegin(new DateTime());
         $this->_em->persist($medicalHistory);
-//        $this->_em->getRepository(PatientTesting::class)->persistPatientTests($medicalHistory, $planTesting);
-        return true;
     }
 }

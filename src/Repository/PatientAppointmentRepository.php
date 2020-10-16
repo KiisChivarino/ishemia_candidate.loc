@@ -3,10 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\MedicalHistory;
+use App\Entity\MedicalRecord;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -45,5 +48,22 @@ class PatientAppointmentRepository extends ServiceEntityRepository
             ->setParameter('medicalHistory', $this->_em->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient))
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param PatientAppointment $patientAppointment
+     *
+     * @throws ORMException
+     */
+    public function persistPatientAppointment(PatientAppointment $patientAppointment): void
+    {
+        $patientAppointment
+            ->setEnabled(true)
+            ->setMedicalRecord(
+               $this->_em->getRepository(MedicalRecord::class)->getMedicalRecord($patientAppointment->getMedicalHistory())
+            )
+            ->setIsConfirmed(false)
+            ->setAppointmentTime(new DateTime());
+        $this->_em->persist($patientAppointment);
     }
 }

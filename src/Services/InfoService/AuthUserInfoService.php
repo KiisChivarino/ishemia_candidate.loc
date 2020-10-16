@@ -83,7 +83,7 @@ class AuthUserInfoService
      */
     public function clearUserPhone(string $phone)
     {
-        return ltrim(preg_replace('/[^0-9]/', '', $phone), '7');
+        return preg_replace('/[^0-9]/', '', ltrim($phone, '+7'));
     }
 
     /**
