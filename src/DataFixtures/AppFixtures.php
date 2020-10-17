@@ -171,6 +171,11 @@ class AppFixtures extends Fixture
         $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'analysis_group.csv', AnalysisGroup::class, '|', [], ['enabled' => true]);
         /** end Группы анализов (тестирования) */
 
+        /** begin Интервал даты */
+        echo "Заполнение справочника \"Интервал даты\"\n";
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'date_interval.csv', '|');
+        /** end Интервал даты */
+
         /** begin Временной диапазон */
         echo "Заполнение справочника \"Временной диапазон\"\n";
         $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'time_range.csv', '|');
