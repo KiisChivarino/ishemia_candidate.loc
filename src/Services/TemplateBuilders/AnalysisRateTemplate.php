@@ -106,8 +106,8 @@ class AnalysisRateTemplate extends AdminTemplateBuilder
                             'required' => false,
                             'choice_label' => 'name',
                             'query_builder' => function (AnalysisGroupRepository $er) {
-                                return $er->createQueryBuilder('d')
-                                    ->where('d.enabled = true');
+                                return $er->createQueryBuilder('ag')
+                                    ->where('ag.enabled = true');
                             },
                         ]
                     ),
@@ -133,8 +133,8 @@ class AnalysisRateTemplate extends AdminTemplateBuilder
                             'required' => false,
                             'choice_label' => 'name',
                             'query_builder' => function (AnalysisGroupRepository $er) {
-                                return $er->createQueryBuilder('d')
-                                    ->where('d.enabled = true');
+                                return $er->createQueryBuilder('ag')
+                                    ->where('ag.enabled = true');
                             },
                         ]
                     ),

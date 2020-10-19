@@ -26,6 +26,7 @@ class PatientTestingInfoService
                 ?
                 $patientTesting->getMedicalHistory()->getPatient()->getAuthUser()->getLastName()
                 .', '.$patientTesting->getAnalysisGroup()->getName()
+                .', '.$patientTesting->getPlannedDate()->format('d.m.Y')
                 :
                 $patientTesting->getMedicalHistory()->getPatient()->getAuthUser()->getLastName()
                 .', '.$patientTesting->getAnalysisGroup()->getName()

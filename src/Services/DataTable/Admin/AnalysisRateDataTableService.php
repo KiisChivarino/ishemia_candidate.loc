@@ -105,7 +105,8 @@ class AnalysisRateDataTableService extends AdminDatatableService
                         $builder
                             ->select('ar')
                             ->from(AnalysisRate::class, 'ar')
-                            ->leftJoin('ar.gender', 'g');
+                            ->leftJoin('ar.gender', 'g')
+                            ->leftJoin('ar.analysis', 'a');
                         if ($analysisGroup) {
                             $builder
                                 ->andWhere('a.analysisGroup = :valAnalysisGroup')

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
+use App\Entity\PatientTestingResult;
 use App\Entity\PlanTesting;
 use DateInterval;
 use DateTime;
@@ -34,7 +35,6 @@ class PatientTestingRepository extends AppRepository
      * Возвращает тесты для пациента по плану
      *
      * @param MedicalHistory $medicalHistory
-     * @param array $planTesting
      *
      * @return array
      * @throws ORMException
@@ -54,33 +54,11 @@ class PatientTestingRepository extends AppRepository
                 $patientTest->setPlannedDate($this->getPlannedDate($test));
                 $this->_em->persist($patientTest);
                 $patientTests[] = $patientTest;
-//                $this->_em->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($patientTest);
+                $this->_em->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($patientTest);
             }
         }
         return $patientTests;
     }
-
-//    /**
-//     * Adds patient testing results for patient testing
-//     *
-//     * @param PatientTesting $patientTesting
-//     *
-//     * @throws ORMException
-//     */
-//    public function persistPatientTestingResults(PatientTesting $patientTesting): void
-//    {
-//        $analyses = $patientTesting->getAnalysisGroup()->getAnalyses();
-//        foreach ($analyses as $analysis) {
-//            if ($analysis->getEnabled()) {
-//                $this->_em->persist(
-//                    (new PatientTestingResult())
-//                        ->setPatientTesting($patientTesting)
-//                        ->setAnalysis($analysis)
-//                        ->setEnabled(false)
-//                );
-//            }
-//        }
-//    }
 
     /**
      * Get testing planned date
