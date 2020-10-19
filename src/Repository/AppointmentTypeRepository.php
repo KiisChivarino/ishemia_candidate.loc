@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\AppointmentType;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * @package App\Repository
  */
-class AppointmentTypeRepository extends ServiceEntityRepository
+class AppointmentTypeRepository extends AppRepository
 {
     /**
      * AppointmentTypeRepository constructor.

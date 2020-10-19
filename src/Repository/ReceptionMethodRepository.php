@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\ReceptionMethod;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ReceptionMethod[]    findAll()
  * @method ReceptionMethod[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ReceptionMethodRepository extends ServiceEntityRepository
+class ReceptionMethodRepository extends AppRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

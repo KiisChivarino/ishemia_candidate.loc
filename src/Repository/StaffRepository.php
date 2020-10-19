@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Staff;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +11,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Staff[]    findAll()
  * @method Staff[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class StaffRepository extends ServiceEntityRepository
+class StaffRepository extends AppRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

@@ -3,9 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Patient;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\PersistentCollection;
 
 /**
  * @method Patient|null find($id, $lockMode = null, $lockVersion = null)
@@ -13,7 +11,7 @@ use Doctrine\ORM\PersistentCollection;
  * @method Patient[]    findAll()
  * @method Patient[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PatientRepository extends ServiceEntityRepository
+class PatientRepository extends AppRepository
 {
     /**
      * PatientRepository constructor.

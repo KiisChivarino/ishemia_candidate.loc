@@ -6,11 +6,13 @@ use App\Entity\AuthUser;
 use App\Entity\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use function get_class;
 
 /**
  * @method AuthUser|null find($id, $lockMode = null, $lockVersion = null)
@@ -30,11 +32,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
+     *
+     * @param UserInterface $user
+     * @param string $newEncodedPassword
+     *
+     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
     {
         if (!$user instanceof AuthUser) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
 
         $user->setPassword($newEncodedPassword);
@@ -44,6 +52,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Добавление пользователя
+     *
+     * @param string $phone
+     * @param string $firstName
+     * @param string $lastName
+     * @param string $role
+     * @param string $password
+     * @param bool $enabled
+     *
+     * @return AuthUser|null
+     * @throws ORMException
      */
     public function addUserFromFixtures(
         string $phone,
@@ -72,7 +90,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $user;
     }
 
-    public function addUserFromAdmin(Form $form, AuthUser $user)
+    public function addUserFromAdmin(Form $form)
     {
         $data = $form->getData();
         /** @var AuthUser $authUser */

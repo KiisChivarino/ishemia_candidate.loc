@@ -7,8 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Группа анализов
  * @ORM\Entity(repositoryClass="App\Repository\AnalysisGroupRepository")
+ * @ORM\Table(options={"comment":"Группа анализов"});
  */
 class AnalysisGroup
 {

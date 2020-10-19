@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\AppBundle\DataSowing;
-
 
 use App\Entity\Role;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -27,6 +25,14 @@ class DataSowing
      * replaceFieldNameArr: ключ - имя поля в csv файле, значение - на какое имя свойства заменить; если значение null - не вносить данные этого поля
      * $persistArr: дополнительные свойства, которых нет в csv
      * $foreignKeyArr: массив [поле=>entity класс...] для получения объектов по внешнему ключу
+     *
+     * @param ObjectManager $manager
+     * @param string $file
+     * @param string $entityClass
+     * @param string $delimiter
+     * @param array $replaceFieldNameArr
+     * @param array $persistArr
+     * @param array $foreignkeyArr
      */
     public function setEntitiesFromCsv(
         ObjectManager $manager,
@@ -90,13 +96,13 @@ class DataSowing
     {
         $const = Yaml::parseFile('config/services/roles.yaml');
         foreach ($const['parameters'] as $roleData) {
-                unset($roleData['route']);
-                $manager
-                    ->getRepository(Role::class)
-                    ->setEntityData(
-                        $roleData,
-                        (new Role())
-                    );
+            unset($roleData['route']);
+            $manager
+                ->getRepository(Role::class)
+                ->setEntityData(
+                    $roleData,
+                    (new Role())
+                );
         }
     }
 

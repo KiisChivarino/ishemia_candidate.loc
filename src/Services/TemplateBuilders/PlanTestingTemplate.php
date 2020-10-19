@@ -15,7 +15,7 @@ class PlanTestingTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'analysisGroup' => 'Группа анализов',
         'timeRangeCount' => 'Срок выполнения',
-        'timeRange' => TimeRangeTemplate::DIRECTORY_CONTENT['timeRange'],
+        'timeRange' => TimeRangeTemplate::ENTITY_CONTENT['timeRange'],
     ];
 
     /** @var string[] Common LIST_CONTENT */

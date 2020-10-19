@@ -9,7 +9,7 @@ class PlanAppointmentTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
         'timeRangeCount' => 'Срок выполнения',
-        'timeRange' => TimeRangeTemplate::DIRECTORY_CONTENT['timeRange'],
+        'timeRange' => TimeRangeTemplate::ENTITY_CONTENT['timeRange'],
     ];
 
     /** @var string[] Common LIST_CONTENT */

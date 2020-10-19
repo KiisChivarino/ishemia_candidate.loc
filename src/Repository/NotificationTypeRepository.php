@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\NotificationType;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * @package App\Repository
  */
-class NotificationTypeRepository extends ServiceEntityRepository
+class NotificationTypeRepository extends AppRepository
 {
     /**
      * NotificationTypeRepository constructor.

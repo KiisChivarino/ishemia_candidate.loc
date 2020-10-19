@@ -7,7 +7,6 @@ use App\Entity\MedicalRecord;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
 use DateTime;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,7 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * @package App\Repository
  */
-class PatientAppointmentRepository extends ServiceEntityRepository
+class PatientAppointmentRepository extends AppRepository
 {
     /**
      * PatientAppointmentRepository constructor.

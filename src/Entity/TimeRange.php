@@ -19,11 +19,6 @@ class TimeRange
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=30, options={"comment"="Название временного диапазона"})
-     */
-    private $name;
-
-    /**
      * @ORM\Column(type="string", length=30, nullable=true, options={"comment"="Заголовок временного диапазона"})
      */
     private $title;
@@ -34,30 +29,33 @@ class TimeRange
     private $enabled;
 
     /**
+     * @ORM\Column(type="integer", options={"comment"="Множитель", "default"=1})
+     */
+    private $multiplier;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=DateInterval::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $dateInterval;
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-        return $this;
     }
 
     /**
@@ -95,6 +93,44 @@ class TimeRange
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getMultiplier(): ?int
+    {
+        return $this->multiplier;
+    }
+
+    /**
+     * @param int $multiplier
+     *
+     * @return $this
+     */
+    public function setMultiplier(int $multiplier): self
+    {
+        $this->multiplier = $multiplier;
+        return $this;
+    }
+
+    /**
+     * @return DateInterval|null
+     */
+    public function getDateInterval(): ?DateInterval
+    {
+        return $this->dateInterval;
+    }
+
+    /**
+     * @param DateInterval|null $dateInterval
+     *
+     * @return $this
+     */
+    public function setDateInterval(?DateInterval $dateInterval): self
+    {
+        $this->dateInterval = $dateInterval;
         return $this;
     }
 }

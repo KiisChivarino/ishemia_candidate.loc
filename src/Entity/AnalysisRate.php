@@ -7,13 +7,14 @@ use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * Предельные нормальные значения анализа
  * @ORM\Entity(repositoryClass="App\Repository\AnalysisRateRepository")
- * @Table(name="analysis_rate",
+ * @Table(
+ *     name="analysis_rate",
  *    uniqueConstraints={
  *        @UniqueConstraint(name="analysis_rate_unique",
  *            columns={"analysis_id", "measure_id", "gender_id"})
- *    }
+ *    },
+ *    options={"comment":"Референтные значения анализа"}
  * )
  */
 class AnalysisRate

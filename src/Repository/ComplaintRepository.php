@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Complaint;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Complaint[]    findAll()
  * @method Complaint[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ComplaintRepository extends ServiceEntityRepository
+class ComplaintRepository extends AppRepository
 {
     /**
      * ComplaintRepository constructor.

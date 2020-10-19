@@ -6,6 +6,7 @@ use App\AppBundle\DataSowing\DataSowing;
 use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
 use App\Entity\AnalysisRate;
+use App\Entity\DateInterval;
 use App\Entity\Diagnosis;
 use App\Entity\Gender;
 use App\Entity\LPU;
@@ -15,6 +16,7 @@ use App\Entity\OKSM;
 use App\Entity\Oktmo;
 use App\Entity\PlanAppointment;
 use App\Entity\PlanTesting;
+use App\Entity\Position;
 use App\Entity\Region;
 use App\Entity\Country;
 use App\Entity\AuthUser;
@@ -37,11 +39,11 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        /** begin Админ */
-        echo "Добавление админа\n";
+        /** begin Пользователи */
+        echo "Добавление пользователей\n";
         $manager->getRepository(AuthUser::class)->addUserFromFixtures('8888888888', 'Admin', 'Admin', 'ROLE_ADMIN', '111111', true);
-        $manager->getRepository(AuthUser::class)->addUserFromFixtures('0000000000', 'DoctorFirstName', 'DoctorLastName', 'ROLE_DOCTOR_CONSULTANT', '111111', true);
-        /** end Админ */
+        $manager->getRepository(AuthUser::class)->addUserFromFixtures('0000000000', 'Максим', 'Хруслов', 'ROLE_DOCTOR_CONSULTANT', '111111', true);
+        /** end Пользователи */
 
         /** begin Пол */
         echo "Добавление пола\n";
@@ -173,12 +175,16 @@ class AppFixtures extends Fixture
 
         /** begin Интервал даты */
         echo "Заполнение справочника \"Интервал даты\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'date_interval.csv', '|');
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'date_interval.csv', DateInterval::class, '|');
         /** end Интервал даты */
 
         /** begin Временной диапазон */
         echo "Заполнение справочника \"Временной диапазон\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'time_range.csv', '|');
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager, self::PATH_TO_CSV.'time_range.csv', TimeRange::class, '|', [], [], [
+            'dateInterval' => DateInterval::class,
+        ]
+        );
         /** end Временной диапазон */
 
         /** begin Стандартный план тестирования */
@@ -256,6 +262,9 @@ class AppFixtures extends Fixture
         );
         /** end Референтные значения */
 
-
+        /** begin Должности */
+        echo "Заполнение справочника \"Должности\"\n";
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'position.csv', Position::class, '|', [], ['enabled' => true]);
+        /** end Должности */
     }
 }

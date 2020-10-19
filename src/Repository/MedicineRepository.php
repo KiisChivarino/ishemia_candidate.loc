@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Medicine;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +11,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Medicine[]    findAll()
  * @method Medicine[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MedicineRepository extends ServiceEntityRepository
+class MedicineRepository extends AppRepository
 {
     /**
      * MedicineRepository constructor.

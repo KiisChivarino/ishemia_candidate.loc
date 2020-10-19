@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use DateTime;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Security;
@@ -19,7 +18,7 @@ use Symfony\Component\Security\Core\Security;
  *
  * @package App\Repository
  */
-class MedicalHistoryRepository extends ServiceEntityRepository
+class MedicalHistoryRepository extends AppRepository
 {
     private $security;
 

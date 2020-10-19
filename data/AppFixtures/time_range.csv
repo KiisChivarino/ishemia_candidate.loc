@@ -1,8 +1,7 @@
-id|name|title|enabled
-1|day|день|0
-2|week|неделя|1
-3|month|месяц|1
-4|trimester|триместр|0
-5|quarter|квартал|0
-6|half_year|полугодие|0
-7|year|год|1
+id|title|dateInterval|multiplier|enabled
+1|день|1|1|0
+2|неделя|2|1|1
+3|месяц|3|1|1
+4|квартал|3|3|0
+5|полугодие|3|6|0
+6|год|4|1|1

@@ -7,6 +7,7 @@ use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+use Omines\DataTablesBundle\Column\NumberColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 
@@ -28,13 +29,20 @@ class TimeRangeDataTableService extends AdminDatatableService
         $this->addSerialNumber();
         $this->dataTable
             ->add(
-                'name', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('name'),
+                'title', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('rangeTitle'),
                 ]
             )
             ->add(
-                'title', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('rangeTitle'),
+                'dateInterval', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('dateInterval'),
+                    'field' => 'di.title',
+                    'searchable' => true
+                ]
+            )
+            ->add(
+                'multiplier', NumberColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('multiplier'),
                 ]
             );
         $this->addEnabled($listTemplateItem);
@@ -46,7 +54,8 @@ class TimeRangeDataTableService extends AdminDatatableService
                     'query' => function (QueryBuilder $builder) {
                         $builder
                             ->select('c')
-                            ->from(TimeRange::class, 'c');
+                            ->from(TimeRange::class, 'c')
+                            ->leftJoin('c.dateInterval', 'di');
                     },
                 ]
             );

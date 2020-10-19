@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\DateInterval;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method DateInterval[]    findAll()
  * @method DateInterval[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DateIntervalRepository extends ServiceEntityRepository
+class DateIntervalRepository extends AppRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

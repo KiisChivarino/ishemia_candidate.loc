@@ -26,19 +26,14 @@ class PlanTestingRepository extends AppRepository
     /**
      * Получить стандартный план тестирования пациента
      *
-     * @param int $gestationWeeks Количество недель беременности
-     *
      * @return int|mixed|string
      */
-//    public function getStandardPlanTesting(int $gestationWeeks)
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.enabled = :enabledValue')
-//            ->andWhere('p.gestationalMaxAge >= :gestationalMinAgeValue')
-//            ->setParameter('enabledValue', true)
-//            ->setParameter('gestationalMinAgeValue', $gestationWeeks)
-//            ->orderBy('p.gestationalMinAge', 'ASC')
-//            ->getQuery()
-//            ->getResult();
-//    }
+    public function getStandardPlanTesting()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.enabled = :enabledValue')
+            ->setParameter('enabledValue', true)
+            ->getQuery()
+            ->getResult();
+    }
 }

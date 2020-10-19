@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\PatientFile;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method PatientFile[]    findAll()
  * @method PatientFile[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PatientFileRepository extends ServiceEntityRepository
+class PatientFileRepository extends AppRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
