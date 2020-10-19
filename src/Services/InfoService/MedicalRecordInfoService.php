@@ -18,11 +18,12 @@ class MedicalRecordInfoService
      *
      * @return string
      */
-    public function getMedicalRecordTitle(MedicalRecord $medicalRecord): string
+    public function getMedicalRecordTitle(?MedicalRecord $medicalRecord): string
     {
         return
-            (new MedicalHistoryInfoService())->getMedicalHistoryTitle($medicalRecord->getMedicalHistory())
-            .', '.
-            $medicalRecord->getRecordDate()->format('d.m.Y');
+            $medicalRecord ?
+                (new MedicalHistoryInfoService())->getMedicalHistoryTitle($medicalRecord->getMedicalHistory())
+                .', '.
+                $medicalRecord->getRecordDate()->format('d.m.Y') : '';
     }
 }

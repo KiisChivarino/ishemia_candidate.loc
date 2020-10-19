@@ -35,6 +35,10 @@ class AppointmentTypeTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование вида приема',
     ];
 
+    public const ENTITY_CONTENT = [
+        'appointmentType' => 'Вид приема',
+    ];
+
     /**
      * AppointmentTypeTemplate constructor.
      *

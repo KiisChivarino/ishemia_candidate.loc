@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
 use App\Entity\PatientAppointment;
-use App\Entity\PatientTesting;
 use App\Form\Admin\AuthUser\EditAuthUserType;
 use App\Form\Admin\AuthUser\NewAuthUserType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
@@ -149,11 +148,7 @@ class PatientController extends AdminAbstractController
             try {
                 $em->persist($authUser);
                 $em->flush();
-                $patient->setAuthUser($authUser);
-                $em->getRepository(MedicalHistory::class)->persistMedicalHistory($medicalHistory);
-                $em->getRepository(PatientAppointment::class)->persistPatientAppointment($patientAppointment);
-                $em->getRepository(PatientTesting::class)->persistPatientTests($medicalHistory);
-                $em->persist($patient);
+                $em->getRepository(Patient::class)->persistPatient($patient, $authUser, $medicalHistory, $patientAppointment);
                 $em->flush();
                 $em->getConnection()->commit();
             } catch (Exception $e) {

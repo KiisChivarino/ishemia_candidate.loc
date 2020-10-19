@@ -25,7 +25,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
         'medicalHistory' => 'История болезни',
-        'staffFio' => 'Врач',
+        'staffFio' => StaffTemplate::ENTITY_CONTENT['staffFio'],
         'createdTime' => 'Создано',
         'isCompleted' => 'Назначено',
         'isPatientConfirmed' => 'Подтверждено пациентом',
@@ -72,7 +72,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
     /** @var string[] Common FILTER_CONTENT */
     protected const FILTER_CONTENT = [
         'medicalHistory' => 'Фильтр по истории болезни',
-        'staff' => 'Фильтр по врачу',
+        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
     ];
 
     /**

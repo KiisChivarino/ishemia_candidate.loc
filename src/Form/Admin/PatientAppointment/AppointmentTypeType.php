@@ -32,6 +32,7 @@ class AppointmentTypeType extends AbstractType
                 'appointmentType', EntityType::class, [
                     'label' => $templateItem->getContentValue('appointmentType'),
                     'class' => AppointmentType::class,
+                    'required' => true,
                     'choice_label' => function (AppointmentType $appointmentType) {
                         return $appointmentType->getName();
                     },

@@ -144,7 +144,7 @@ class PatientAppointmentController extends AdminAbstractController
             self::TEMPLATE_PATH, $patientAppointment, [
                 'medicalHistoryTitle' => (new MedicalHistoryInfoService())->getMedicalHistoryTitle($patientAppointment->getMedicalHistory()),
                 'medicalRecordTitle' => (new MedicalRecordInfoService())->getMedicalRecordTitle($patientAppointment->getMedicalRecord()),
-                'staffFio' => (new AuthUserInfoService())->getFIO($patientAppointment->getStaff()->getAuthUser(), true),
+                'staffFio' => $patientAppointment->getStaff() ? (new AuthUserInfoService())->getFIO($patientAppointment->getStaff()->getAuthUser(), true) : '',
             ]
         );
     }

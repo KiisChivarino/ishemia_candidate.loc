@@ -79,6 +79,13 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
+                'plannedTime', DateTimeColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('plannedTime'),
+                    'searchable' => false,
+                    'format' => 'd.m.Y H:i'
+                ]
+            )
+            ->add(
                 'appointmentTime', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('appointmentTime'),
                     'searchable' => false,

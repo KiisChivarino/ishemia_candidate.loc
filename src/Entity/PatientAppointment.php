@@ -25,20 +25,20 @@ class PatientAppointment
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientAppointments",cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientAppointments", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $medicalRecord;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientAppointments",cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientAppointments", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $medicalHistory;
 
     /**
      * @ORM\ManyToOne(targetEntity=Staff::class, inversedBy="patientAppointments")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $staff;
 
@@ -49,12 +49,12 @@ class PatientAppointment
 
     /**
      * @ORM\ManyToOne(targetEntity=AppointmentType::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $appointmentType;
 
     /**
-     * @ORM\Column(type="datetime", options={"comment"="Дата и время приема"})
+     * @ORM\Column(type="datetime", nullable=true, options={"comment"="Фактические дата и время приема"})
      */
     private $appointmentTime;
 
@@ -88,6 +88,14 @@ class PatientAppointment
      */
     private $therapy;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=false, options={"comment"="Дата и время приема по плану"})
+     */
+    private $plannedTime;
+
+    /**
+     * PatientAppointment constructor.
+     */
     public function __construct()
     {
         $this->complaints = new ArrayCollection();
@@ -261,6 +269,11 @@ class PatientAppointment
         return $this->complaints;
     }
 
+    /**
+     * @param Complaint $complaint
+     *
+     * @return $this
+     */
     public function addComplaint(Complaint $complaint): self
     {
         if (!$this->complaints->contains($complaint)) {
@@ -269,6 +282,11 @@ class PatientAppointment
         return $this;
     }
 
+    /**
+     * @param Complaint $complaint
+     *
+     * @return $this
+     */
     public function removeComplaint(Complaint $complaint): self
     {
         if ($this->complaints->contains($complaint)) {
@@ -277,36 +295,79 @@ class PatientAppointment
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getComplaintsComment(): ?string
     {
         return $this->complaintsComment;
     }
 
+    /**
+     * @param string|null $complaintsComment
+     *
+     * @return $this
+     */
     public function setComplaintsComment(?string $complaintsComment): self
     {
         $this->complaintsComment = $complaintsComment;
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getObjectiveStatus(): ?string
     {
         return $this->objectiveStatus;
     }
 
+    /**
+     * @param string|null $objectiveStatus
+     *
+     * @return $this
+     */
     public function setObjectiveStatus(?string $objectiveStatus): self
     {
         $this->objectiveStatus = $objectiveStatus;
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getTherapy(): ?string
     {
         return $this->therapy;
     }
 
+    /**
+     * @param string|null $therapy
+     *
+     * @return $this
+     */
     public function setTherapy(?string $therapy): self
     {
         $this->therapy = $therapy;
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getPlannedTime(): ?DateTimeInterface
+    {
+        return $this->plannedTime;
+    }
+
+    /**
+     * @param DateTimeInterface $plannedTime
+     *
+     * @return $this
+     */
+    public function setPlannedTime(DateTimeInterface $plannedTime): self
+    {
+        $this->plannedTime = $plannedTime;
         return $this;
     }
 }

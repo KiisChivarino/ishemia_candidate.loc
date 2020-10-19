@@ -33,6 +33,7 @@ class StaffType extends AbstractType
                 'staff', EntityType::class, [
                     'label' => $templateItem->getContentValue('staff'),
                     'class' => Staff::class,
+                    'required' => true,
                     'choice_label' => function ($staff) {
                         return (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true);
                     },

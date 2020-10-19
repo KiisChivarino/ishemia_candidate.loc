@@ -50,6 +50,11 @@ class StaffTemplate extends AdminTemplateBuilder
         'title' => 'Изменение данных о сотруднике',
     ];
 
+    public const ENTITY_CONTENT = [
+        'staff' => 'Врач',
+        'staffFio' => 'ФИО врача',
+    ];
+
     /**
      * CountryTemplate constructor.
      *

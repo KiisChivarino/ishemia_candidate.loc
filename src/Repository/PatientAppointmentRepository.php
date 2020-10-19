@@ -6,10 +6,13 @@ use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
+use App\Entity\PlanAppointment;
+use App\Services\InfoService\MedicalHistoryInfoService;
 use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * Class PatientAppointmentRepository
@@ -22,17 +25,24 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PatientAppointmentRepository extends AppRepository
 {
+    /** @var MedicalHistoryInfoService $medicalHistoryInfoService */
+    private $medicalHistoryInfoService;
+
     /**
      * PatientAppointmentRepository constructor.
      *
      * @param ManagerRegistry $registry
+     * @param MedicalHistoryInfoService $medicalHistoryInfoService
      */
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, MedicalHistoryInfoService $medicalHistoryInfoService)
     {
         parent::__construct($registry, PatientAppointment::class);
+        $this->medicalHistoryInfoService = $medicalHistoryInfoService;
     }
 
     /**
+     * Получение первого приема пациента
+     *
      * @param Patient $patient
      *
      * @return mixed
@@ -50,6 +60,8 @@ class PatientAppointmentRepository extends AppRepository
     }
 
     /**
+     * Добавление приема пациента
+     *
      * @param PatientAppointment $patientAppointment
      *
      * @throws ORMException
@@ -59,10 +71,48 @@ class PatientAppointmentRepository extends AppRepository
         $patientAppointment
             ->setEnabled(true)
             ->setMedicalRecord(
-               $this->_em->getRepository(MedicalRecord::class)->getMedicalRecord($patientAppointment->getMedicalHistory())
+                $this->_em->getRepository(MedicalRecord::class)->getMedicalRecord($patientAppointment->getMedicalHistory())
             )
             ->setIsConfirmed(false)
-            ->setAppointmentTime(new DateTime());
+            ->setPlannedTime(new DateTime());
         $this->_em->persist($patientAppointment);
+    }
+
+    /**
+     * @param $medicalHistory
+     *
+     * @return array
+     * @throws ORMException
+     */
+    public function persistPatientAppointmentsByPlan($medicalHistory): array
+    {
+        $patientAppointments = [];
+        /** @var PlanAppointment $appointment */
+        foreach ($this->_em->getRepository(PlanAppointment::class)->getStandardPlanAppointment() as $appointment) {
+            $patientAppointment = (new PatientAppointment())
+                ->setMedicalHistory($medicalHistory)
+                ->setEnabled(true)
+                ->setPlannedTime($this->getPlannedDate($appointment))
+                ->setIsConfirmed(false);
+            $this->_em->persist($patientAppointment);
+            $patientAppointments[] = $patientAppointment;
+        }
+        return $patientAppointments;
+    }
+
+    /**
+     * @param PlanAppointment $planAppointment
+     *
+     * @return DateTime
+     * @throws Exception
+     */
+    protected function getPlannedDate(PlanAppointment $planAppointment)
+    {
+        return $this->medicalHistoryInfoService->getPlannedDate(
+            new DateTime(),
+            (int)$planAppointment->getTimeRangeCount(),
+            (int)$planAppointment->getTimeRange()->getMultiplier(),
+            $planAppointment->getTimeRange()->getDateInterval()->getFormat()
+        );
     }
 }

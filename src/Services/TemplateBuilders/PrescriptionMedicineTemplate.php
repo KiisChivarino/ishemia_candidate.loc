@@ -22,7 +22,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'prescription' => 'Назначение',
         'medicine' => 'Препарат',
-        'staff' => 'Врач',
+        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
     ];
 
     /** @var string[] Common LIST_CONTENT */

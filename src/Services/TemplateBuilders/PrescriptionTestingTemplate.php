@@ -24,7 +24,7 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'prescription' => 'Назначение',
         'patientTesting' => 'Обследование',
-        'staff' => 'Врач',
+        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
         'inclusionTime' => 'Дата и время назначения'
     ];
 

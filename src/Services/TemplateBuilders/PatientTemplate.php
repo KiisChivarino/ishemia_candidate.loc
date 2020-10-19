@@ -21,8 +21,10 @@ class PatientTemplate extends AdminTemplateBuilder
         'insuranceNumber' => 'Номер страховки',
         'dateBirth' => 'Дата рождения',
         'phone' => 'Телефон',
-
+        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
+        'appointmentType' => AppointmentTypeTemplate::ENTITY_CONTENT['appointmentType'],
     ];
+
     /** @var string[] Common content for form, show templates */
     public const FORM_SHOW_CONTENT = [
         'snils' => 'СНИЛС',
@@ -37,12 +39,13 @@ class PatientTemplate extends AdminTemplateBuilder
         'hospital' => 'Больница',
         'heartAttackDate' => 'Дата возникновения инфаркта',
     ];
+
     /** @var string[] Common content for list, edit template */
     public const FORM_CONTENT = [
         'hospitalPlaceholder' => 'Выберите больницу',
         'diagnosisPlaceholder' => 'Выберите диагноз',
         'cityPlaceholder' => 'Выберите город',
-        'staffFio' => 'Выберите врача',
+        'staffFio' => StaffTemplate::ENTITY_CONTENT['staffFio'],
     ];
 
     /** @var string[] Common LIST_CONTENT */

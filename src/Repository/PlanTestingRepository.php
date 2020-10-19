@@ -6,10 +6,13 @@ use App\Entity\PlanTesting;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class PlanTestingRepository
  * @method PlanTesting|null find($id, $lockMode = null, $lockVersion = null)
  * @method PlanTesting|null findOneBy(array $criteria, array $orderBy = null)
  * @method PlanTesting[]    findAll()
  * @method PlanTesting[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @package App\Repository
  */
 class PlanTestingRepository extends AppRepository
 {
@@ -30,9 +33,11 @@ class PlanTestingRepository extends AppRepository
      */
     public function getStandardPlanTesting()
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.enabled = :enabledValue')
+        return $this->createQueryBuilder('pt')
+            ->andWhere('pt.enabled = :enabledValue')
+            ->andWhere('pt.timeRangeCount > :timeRangeCount')
             ->setParameter('enabledValue', true)
+            ->setParameter('timeRangeCount', 0)
             ->getQuery()
             ->getResult();
     }

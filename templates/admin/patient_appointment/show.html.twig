@@ -37,6 +37,10 @@
         </p>
     </li>
     <li>
+        <span class="title">{{ template.items.show.content.plannedTime }}</span>
+        <p>{{ entity.plannedTime ? entity.plannedTime|date('d.m.Y H:i') : '' }}</p>
+    </li>
+    <li>
         <span class="title">{{ template.items.show.content.appointmentTime }}</span>
         <p>{{ entity.appointmentTime ? entity.appointmentTime|date('d.m.Y H:i') : '' }}</p>
     </li>

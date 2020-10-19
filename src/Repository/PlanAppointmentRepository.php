@@ -25,4 +25,20 @@ class PlanAppointmentRepository extends AppRepository
     {
         parent::__construct($registry, PlanAppointment::class);
     }
+
+    /**
+     * Get standard plan appointment
+     *
+     * @return int|mixed|string
+     */
+    public function getStandardPlanAppointment()
+    {
+        return $this->createQueryBuilder('pa')
+            ->andWhere('pa.enabled = :enabledValue')
+            ->andWhere('pa.timeRangeCount > :timeRangeCount')
+            ->setParameter('enabledValue', true)
+            ->setParameter('timeRangeCount', 0)
+            ->getQuery()
+            ->getResult();
+    }
 }
