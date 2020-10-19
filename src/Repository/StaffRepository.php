@@ -2,48 +2,95 @@
 
 namespace App\Repository;
 
+use App\Entity\AuthUser;
+use App\Entity\Position;
 use App\Entity\Staff;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * Class StaffRepository
  * @method Staff|null find($id, $lockMode = null, $lockVersion = null)
  * @method Staff|null findOneBy(array $criteria, array $orderBy = null)
  * @method Staff[]    findAll()
  * @method Staff[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @package App\Repository
  */
-class StaffRepository extends AppRepository
+class StaffRepository extends AppRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private $passwordEncoder;
+
+    public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder)
     {
         parent::__construct($registry, Staff::class);
+        $this->passwordEncoder = $passwordEncoder;
     }
 
-    // /**
-    //  * @return Staff[] Returns an array of Staff objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    /**
+     * Add staff from fixtures
+     *
+     * @param string $phone
+     * @param string $firstName
+     * @param string $lastName
+     * @param string $role
+     * @param string $password
+     * @param bool $enabled
+     * @param Position $position
+     *
+     * @throws ORMException
+     */
+    public function addStaffFromFixtures(
+        string $phone,
+        string $firstName,
+        string $lastName,
+        string $role,
+        string $password,
+        bool $enabled,
+        Position $position
+    ): void {
+        $user = (new AuthUser())
+            ->setPhone($phone)
+            ->setEnabled($enabled);
+        $user
+            ->setPassword(
+                $this->passwordEncoder->encodePassword(
+                    $user,
+                    $password
+                )
+            )
+            ->setFirstName($firstName)
+            ->setLastName($lastName)
+            ->setRoles($role);
+        $this->_em->persist($user);
+        $staff = (new Staff())
+            ->setAuthUser($user)
+            ->setPosition($position);
+        $this->_em->persist($staff);
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Staff
+    /**
+     * Used to upgrade (rehash) the user's password automatically over time.
+     *
+     * @param UserInterface $user
+     * @param string $newEncodedPassword
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if (!$user instanceof AuthUser) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
+        }
+        $user->setPassword($newEncodedPassword);
+        $this->_em->persist($user);
+        $this->_em->flush();
     }
-    */
 }

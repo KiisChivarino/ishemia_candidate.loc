@@ -15,12 +15,8 @@
         <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : '' }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.dateBegin }}</span>
-        <p>{{ entity.dateBegin ? entity.dateBegin|date('d.m.Y') : '' }}</p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.dateEnd }}</span>
-        <p>{{ entity.dateEnd ? entity.dateEnd|date('d.m.Y') : '' }}</p>
+        <span class="title">{{ template.items.show.content.plannedDate }}</span>
+        <p>{{ entity.plannedDate ? entity.plannedDate|date('d.m.Y') : '' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.processed }}</span>

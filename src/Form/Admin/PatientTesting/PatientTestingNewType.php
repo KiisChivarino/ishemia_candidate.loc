@@ -10,7 +10,6 @@ use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -31,15 +30,9 @@ class PatientTestingNewType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'dateBegin', DateType::class,
+                'plannedDate', DateType::class,
                 [
-                    'label' => $templateItem->getContentValue('dateBegin'),
-                ]
-            )
-            ->add(
-                'dateEnd', DateType::class,
-                [
-                    'label' => $templateItem->getContentValue('dateEnd'),
+                    'label' => $templateItem->getContentValue('plannedDate'),
                 ]
             )
             ->add(

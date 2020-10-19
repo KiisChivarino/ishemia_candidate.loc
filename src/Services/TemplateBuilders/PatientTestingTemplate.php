@@ -27,8 +27,9 @@ class PatientTestingTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for PatientTesting templates */
     public const COMMON_CONTENT = [
         'analysisGroup' => 'Группа анализов',
-        'analysisDate' => 'Дата проведения',
+        'analysisDate' => 'Проведено',
         'processed' => 'Обработано врачом',
+        'plannedDate' => 'Запланировано',
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -55,12 +56,6 @@ class PatientTestingTemplate extends AdminTemplateBuilder
     protected const EDIT_CONTENT = [
         'h1' => 'Редактирование анализа пациента',
         'title' => 'Редактирование анализа пациента',
-    ];
-
-    /** @var string[] Common form and show CONTENT */
-    public const FORM_SHOW_CONTENT = [
-        'dateBegin' => 'Дата начала обследования',
-        'dateEnd' => 'Дата завершения обследования',
     ];
 
     /** @var string[] Common FILTER_CONTENT */

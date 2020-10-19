@@ -13,7 +13,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -44,18 +43,10 @@ class PatientTestingType extends AbstractType
                 ]
             )
             ->add(
-                'dateBegin', DateType::class,
+                'plannedDate', DateType::class,
                 [
-                    'label' => $templateItem->getContentValue('dateBegin'),
+                    'label' => $templateItem->getContentValue('plannedDate'),
                     'widget' => 'single_text',
-                ]
-            )
-            ->add(
-                'dateEnd', DateType::class,
-                [
-                    'label' => $templateItem->getContentValue('dateEnd'),
-                    'widget' => 'single_text',
-                    'required' => false
                 ]
             )
             ->add(

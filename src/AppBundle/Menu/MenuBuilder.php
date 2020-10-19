@@ -186,12 +186,6 @@ class MenuBuilder
             ]
         );
         $menu['medicalHistory']->addChild(
-            'notificationTypeList', [
-                'label' => 'Виды уведомления',
-                'route' => 'notification_type_list'
-            ]
-        );
-        $menu['medicalHistory']->addChild(
             'notificationList', [
                 'label' => 'Уведомления',
                 'route' => 'notification_list'
@@ -272,6 +266,12 @@ class MenuBuilder
             'timeRangeList', [
                 'label' => 'Временные диапазоны',
                 'route' => 'time_range_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'notificationTypeList', [
+                'label' => 'Виды уведомления',
+                'route' => 'notification_type_list'
             ]
         );
         $menu->addChild(

@@ -72,12 +72,13 @@ class PatientTestingDataTableService extends AdminDatatableService
                     'searchable' => false
                 ]
             )
-//            ->add(
-//                'gestationalMinAge', TextColumn::class, ['label' => $listTemplateItem->getContentValue('gestationalMinAge'),]
-//            )
-//            ->add(
-//                'gestationalMaxAge', TextColumn::class, ['label' => $listTemplateItem->getContentValue('gestationalMaxAge'),]
-//            )
+            ->add(
+                'plannedDate', DateTimeColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('plannedDate'),
+                    'format' => 'd.m.Y',
+                    'searchable' => false
+                ]
+            )
             ->add(
                 'processed', BoolColumn::class, [
                     'label' => $listTemplateItem->getContentValue('processed'),

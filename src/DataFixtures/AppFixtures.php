@@ -6,6 +6,7 @@ use App\AppBundle\DataSowing\DataSowing;
 use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
 use App\Entity\AnalysisRate;
+use App\Entity\AppointmentType;
 use App\Entity\DateInterval;
 use App\Entity\Diagnosis;
 use App\Entity\Gender;
@@ -22,6 +23,7 @@ use App\Entity\Country;
 use App\Entity\AuthUser;
 use App\Entity\District;
 use App\Entity\Hospital;
+use App\Entity\Staff;
 use App\Entity\TimeRange;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -39,10 +41,22 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
+        /** begin Должности */
+        echo "Заполнение справочника \"Должности\"\n";
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'position.csv', Position::class, '|', [], ['enabled' => true]);
+        /** end Должности */
+
+        /** begin Виды приема */
+        echo "Заполнение справочника \"Вид приема\"\n";
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'appointment_type.csv', AppointmentType::class, '|', [], ['enabled' => true]);
+        /** end Виды приема */
+
         /** begin Пользователи */
         echo "Добавление пользователей\n";
         $manager->getRepository(AuthUser::class)->addUserFromFixtures('8888888888', 'Admin', 'Admin', 'ROLE_ADMIN', '111111', true);
-        $manager->getRepository(AuthUser::class)->addUserFromFixtures('0000000000', 'Максим', 'Хруслов', 'ROLE_DOCTOR_CONSULTANT', '111111', true);
+        /** @var Position $positionDoctor */
+        $positionDoctor = $manager->getRepository(Position::class)->findOneBy(['name'=>'Врач']);
+        $manager->getRepository(Staff::class)->addStaffFromFixtures('0000000000', 'Максим', 'Хруслов', 'ROLE_DOCTOR_CONSULTANT', '111111', true, $positionDoctor);
         /** end Пользователи */
 
         /** begin Пол */
@@ -201,9 +215,9 @@ class AppFixtures extends Fixture
                 'timeRange' => TimeRange::class,
             ]
         );
-        /** end Стандартный план приемов */
+        /** end Стандартный план тестирования */
 
-        /** begin Стандартный план тестирования */
+        /** begin Стандартный план приемов */
         echo "Заполнение справочника \"Стандартный план приемов\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
@@ -261,10 +275,5 @@ class AppFixtures extends Fixture
             ]
         );
         /** end Референтные значения */
-
-        /** begin Должности */
-        echo "Заполнение справочника \"Должности\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'position.csv', Position::class, '|', [], ['enabled' => true]);
-        /** end Должности */
     }
 }

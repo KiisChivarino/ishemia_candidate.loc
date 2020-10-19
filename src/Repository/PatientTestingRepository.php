@@ -2,10 +2,15 @@
 
 namespace App\Repository;
 
+use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
-use App\Entity\PatientTestingResult;
+use App\Entity\PlanTesting;
+use DateInterval;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method PatientTesting|null find($id, $lockMode = null, $lockVersion = null)
@@ -28,47 +33,72 @@ class PatientTestingRepository extends AppRepository
     /**
      * Возвращает тесты для пациента по плану
      *
-     * @param PatientTesting $patientTesting
+     * @param MedicalHistory $medicalHistory
+     * @param array $planTesting
      *
-     * @return void
+     * @return array
      * @throws ORMException
      */
-//    public function persistPatientTests(MedicalHistory $medicalHistory, array $planTesting)
+    public function persistPatientTests(MedicalHistory $medicalHistory): array
+    {
+        $patientTests = [];
+        /** @var PlanTesting $test */
+        foreach ($this->_em->getRepository(PlanTesting::class)->getStandardPlanTesting() as $test) {
+            if ($test->getEnabled() && $test->getTimeRangeCount() > 0) {
+                $patientTest = new PatientTesting();
+                $patientTest->setMedicalHistory($medicalHistory);
+                $patientTest->setAnalysisGroup($test->getAnalysisGroup());
+                $patientTest->setProcessed(false);
+                $patientTest->setEnabled(true);
+                $patientTest->setAnalysisDate(null);
+                $patientTest->setPlannedDate($this->getPlannedDate($test));
+                $this->_em->persist($patientTest);
+                $patientTests[] = $patientTest;
+//                $this->_em->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($patientTest);
+            }
+        }
+        return $patientTests;
+    }
+
+//    /**
+//     * Adds patient testing results for patient testing
+//     *
+//     * @param PatientTesting $patientTesting
+//     *
+//     * @throws ORMException
+//     */
+//    public function persistPatientTestingResults(PatientTesting $patientTesting): void
 //    {
-//        $patientTests = [];
-//        /** @var PlanTesting $test */
-//        foreach ($planTesting as $test) {
-//            $patientTest = new PatientTesting();
-//            $patientTest->setMedicalHistory($medicalHistory);
-//            $patientTest->setAnalysisGroup($test->getAnalysisGroup());
-//            $patientTest->setProcessed(false);
-//            $patientTest->setEnabled(true);
-//            $patientTest->setAnalysisDate(null);
-//            $this->_em->persist($test);
-//            $this->_em->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($patientTest);
+//        $analyses = $patientTesting->getAnalysisGroup()->getAnalyses();
+//        foreach ($analyses as $analysis) {
+//            if ($analysis->getEnabled()) {
+//                $this->_em->persist(
+//                    (new PatientTestingResult())
+//                        ->setPatientTesting($patientTesting)
+//                        ->setAnalysis($analysis)
+//                        ->setEnabled(false)
+//                );
+//            }
 //        }
-//        return $patientTests;
 //    }
 
     /**
-     * Adds patient testing results for patient testing
+     * Get testing planned date
      *
-     * @param PatientTesting $patientTesting
+     * @param PlanTesting $planTesting
      *
-     * @throws ORMException
+     * @return DateTimeInterface|null
+     * @throws Exception
      */
-    public function persistPatientTestingResults(PatientTesting $patientTesting): void
+    public function getPlannedDate(PlanTesting $planTesting): ?DateTimeInterface
     {
-        $analyses = $patientTesting->getAnalysisGroup()->getAnalyses();
-        foreach ($analyses as $analysis) {
-            if ($analysis->getEnabled()) {
-                $this->_em->persist(
-                    (new PatientTestingResult())
-                        ->setPatientTesting($patientTesting)
-                        ->setAnalysis($analysis)
-                        ->setEnabled(false)
-                );
-            }
-        }
+        $currDate = new DateTime();
+        return $currDate->add(
+            new DateInterval(
+                'P'.
+                (string)((int)$planTesting->getTimeRangeCount() * (int)$planTesting->getTimeRange()->getMultiplier()).
+                $planTesting->getTimeRange()->getDateInterval()->getFormat()
+            )
+        );
     }
 }

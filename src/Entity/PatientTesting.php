@@ -64,14 +64,9 @@ class PatientTesting
     private $medicalRecord;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", options={"comment"="Планируемая дата проведения тестирования"})
      */
-    private $dateBegin;
-
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private $dateEnd;
+    private $plannedDate;
 
     /**
      * @ORM\OneToMany(targetEntity=PatientFile::class, mappedBy="patientTesting", cascade={"persist"}, orphanRemoval=true)
@@ -130,6 +125,25 @@ class PatientTesting
     public function setAnalysisDate(?DateTimeInterface $analysisDate): self
     {
         $this->analysisDate = $analysisDate;
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getPlannedDate(): ?DateTimeInterface
+    {
+        return $this->plannedDate;
+    }
+
+    /**
+     * @param DateTimeInterface|null $plannedDate
+     *
+     * @return $this
+     */
+    public function setPlannedDate(?DateTimeInterface $plannedDate): self
+    {
+        $this->plannedDate = $plannedDate;
         return $this;
     }
 
@@ -269,30 +283,6 @@ class PatientTesting
     public function setMedicalRecord(?MedicalRecord $medicalRecord): self
     {
         $this->medicalRecord = $medicalRecord;
-        return $this;
-    }
-
-    public function getDateBegin(): ?DateTimeInterface
-    {
-        return $this->dateBegin;
-    }
-
-    public function setDateBegin(DateTimeInterface $dateBegin): self
-    {
-        $this->dateBegin = $dateBegin;
-
-        return $this;
-    }
-
-    public function getDateEnd(): ?DateTimeInterface
-    {
-        return $this->dateEnd;
-    }
-
-    public function setDateEnd(?DateTimeInterface $dateEnd): self
-    {
-        $this->dateEnd = $dateEnd;
-
         return $this;
     }
 
