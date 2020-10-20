@@ -59,7 +59,3 @@ services:
 
   App\Services\FilterService\FilterServie:
     autowire: true
-
-#  App\Entity\PatientFile:
-#    arguments:
-#      $rootPath : '%kernel.project_dir%'

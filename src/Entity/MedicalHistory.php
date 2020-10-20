@@ -106,6 +106,11 @@ class MedicalHistory
     private $notifications;
 
     /**
+     * @ORM\OneToOne(targetEntity=PatientDischargeEpicrisis::class, mappedBy="medicalHistory", cascade={"persist", "remove"})
+     */
+    private $patientDischargeEpicrisis;
+
+    /**
      * MedicalHistory constructor.
      */
     public function __construct()
@@ -427,6 +432,11 @@ class MedicalHistory
         return $this->backgroundDiseases;
     }
 
+    /**
+     * @param Diagnosis $backgroundDisease
+     *
+     * @return $this
+     */
     public function addBackgroundDisease(Diagnosis $backgroundDisease): self
     {
         if (!$this->backgroundDiseases->contains($backgroundDisease)) {
@@ -435,6 +445,11 @@ class MedicalHistory
         return $this;
     }
 
+    /**
+     * @param Diagnosis $backgroundDisease
+     *
+     * @return $this
+     */
     public function removeBackgroundDisease(Diagnosis $backgroundDisease): self
     {
         if ($this->backgroundDiseases->contains($backgroundDisease)) {
@@ -451,6 +466,11 @@ class MedicalHistory
         return $this->complications;
     }
 
+    /**
+     * @param Diagnosis $complication
+     *
+     * @return $this
+     */
     public function addComplication(Diagnosis $complication): self
     {
         if (!$this->complications->contains($complication)) {
@@ -459,6 +479,11 @@ class MedicalHistory
         return $this;
     }
 
+    /**
+     * @param Diagnosis $complication
+     *
+     * @return $this
+     */
     public function removeComplication(Diagnosis $complication): self
     {
         if ($this->complications->contains($complication)) {
@@ -475,6 +500,11 @@ class MedicalHistory
         return $this->concomitantDiseases;
     }
 
+    /**
+     * @param Diagnosis $concomitantDisease
+     *
+     * @return $this
+     */
     public function addConcomitantDisease(Diagnosis $concomitantDisease): self
     {
         if (!$this->concomitantDiseases->contains($concomitantDisease)) {
@@ -483,6 +513,11 @@ class MedicalHistory
         return $this;
     }
 
+    /**
+     * @param Diagnosis $concomitantDisease
+     *
+     * @return $this
+     */
     public function removeConcomitantDisease(Diagnosis $concomitantDisease): self
     {
         if ($this->concomitantDiseases->contains($concomitantDisease)) {
@@ -491,25 +526,64 @@ class MedicalHistory
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDiseaseHistory(): ?string
     {
         return $this->diseaseHistory;
     }
 
+    /**
+     * @param string|null $diseaseHistory
+     *
+     * @return $this
+     */
     public function setDiseaseHistory(?string $diseaseHistory): self
     {
         $this->diseaseHistory = $diseaseHistory;
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLifeHistory(): ?string
     {
         return $this->lifeHistory;
     }
 
+    /**
+     * @param string|null $lifeHistory
+     *
+     * @return $this
+     */
     public function setLifeHistory(?string $lifeHistory): self
     {
         $this->lifeHistory = $lifeHistory;
+        return $this;
+    }
+
+    /**
+     * @return PatientDischargeEpicrisis|null
+     */
+    public function getPatientDischargeEpicrisis(): ?PatientDischargeEpicrisis
+    {
+        return $this->patientDischargeEpicrisis;
+    }
+
+    /**
+     * @param PatientDischargeEpicrisis $patientDischargeEpicrisis
+     *
+     * @return $this
+     */
+    public function setPatientDischargeEpicrisis(PatientDischargeEpicrisis $patientDischargeEpicrisis): self
+    {
+        $this->patientDischargeEpicrisis = $patientDischargeEpicrisis;
+        // set the owning side of the relation if necessary
+        if ($patientDischargeEpicrisis->getMedicalHistory() !== $this) {
+            $patientDischargeEpicrisis->setMedicalHistory($this);
+        }
         return $this;
     }
 }

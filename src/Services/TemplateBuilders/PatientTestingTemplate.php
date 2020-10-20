@@ -85,6 +85,11 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         );
     }
 
+    /**
+     * @param FilterService|null $filterService
+     *
+     * @return $this|AdminTemplateBuilder
+     */
     public function new(?FilterService $filterService = null): AdminTemplateBuilder
     {
         parent::new();
@@ -92,6 +97,11 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         return $this;
     }
 
+    /**
+     * @param object|null $entity
+     *
+     * @return $this|AdminTemplateBuilder
+     */
     public function edit(?object $entity = null): AdminTemplateBuilder
     {
         parent::edit();

@@ -5,7 +5,7 @@ namespace App\Form\Admin\PatientTesting;
 use App\Controller\AppAbstractController;
 use App\Entity\AnalysisGroup;
 use App\Entity\PatientTesting;
-use App\Form\PatientFileType;
+use App\Form\PatientTestingFileType;
 use App\Repository\AnalysisGroupRepository;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -68,7 +68,7 @@ class PatientTestingType extends AbstractType
             )
             ->add(
                 'patientFiles', CollectionType::class, [
-                    'entry_type' => PatientFileType::class,
+                    'entry_type' => PatientTestingFileType::class,
                     'prototype' => true,
                     'allow_add' => true,
                     'allow_delete' => true,

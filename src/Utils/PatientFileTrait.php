@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Entity;
+namespace App\Utils;
 
-use App\Repository\PatientFileRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Spatie\ImageOptimizer\Optimizers\Jpegoptim;
@@ -16,25 +15,8 @@ use Doctrine\ORM\Mapping\PostRemove;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
-/**
- * @ORM\Entity(repositoryClass=PatientFileRepository::class)
- * @HasLifecycleCallbacks
- */
-class PatientFile
+trait PatientFileTrait
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="patientFiles")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $patient;
-
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -46,11 +28,6 @@ class PatientFile
     private $uploadedDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PatientTesting::class, inversedBy="patientFiles")
-     */
-    private $patientTesting;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $extension;
@@ -58,21 +35,27 @@ class PatientFile
     /** @var UploadedFile $file */
     private $file;
 
+    /** @var string $tempFilename */
     private $tempFilename;
 
-    public function getFile()
+    /**
+     * @return UploadedFile
+     */
+    public function getFile(): UploadedFile
     {
         return $this->file;
     }
 
-    public function setFile(UploadedFile $file = null)
+    /**
+     * @param UploadedFile|null $file
+     */
+    public function setFile(UploadedFile $file = null): void
     {
         $this->file = $file;
         // Replacing a file ? Check if we already have a file for this entity
         if (null !== $this->extension) {
             // Save file extension so we can remove it later
             $this->tempFilename = $this->extension;
-
             // Reset values
             $this->extension = null;
             $this->fileName = null;
@@ -89,11 +72,9 @@ class PatientFile
         if (null === $this->file) {
             return;
         }
-
         // The file name is the entity's ID
         // We also need to store the file extension
         $this->extension = $this->file->guessExtension();
-
         // And we keep the original name
         $this->fileName = $this->file->getClientOriginalName();
     }
@@ -108,7 +89,6 @@ class PatientFile
         if (null === $this->file) {
             return;
         }
-
         // A file is present, remove it
         if (null !== $this->tempFilename) {
             $oldFile = $this->getUploadDir().'/'.$this->id.'.'.$this->tempFilename;
@@ -127,74 +107,67 @@ class PatientFile
             ->optimize($this->getUploadDir().$this->id.'.'.$this->extension);
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getPatient(): ?Patient
-    {
-        return $this->patient;
-    }
-
-    public function setPatient(?Patient $patient): self
-    {
-        $this->patient = $patient;
-
-        return $this;
-    }
-
+    /**
+     * @return string|null
+     */
     public function getFileName(): ?string
     {
         return $this->fileName;
     }
 
+    /**
+     * @param string $fileName
+     *
+     * @return $this
+     */
     public function setFileName(string $fileName): self
     {
         $this->fileName = $fileName;
-
         return $this;
     }
 
+    /**
+     * @return DateTimeInterface|null
+     */
     public function getUploadedDate(): ?DateTimeInterface
     {
         return $this->uploadedDate;
     }
 
+    /**
+     * @param DateTimeInterface $uploadedDate
+     *
+     * @return $this
+     */
     public function setUploadedDate(DateTimeInterface $uploadedDate): self
     {
         $this->uploadedDate = $uploadedDate;
-
         return $this;
     }
 
-    public function getPatientTesting(): ?PatientTesting
-    {
-        return $this->patientTesting;
-    }
-
-    public function setPatientTesting(?PatientTesting $patientTesting): self
-    {
-        $this->patientTesting = $patientTesting;
-        return $this;
-    }
-
+    /**
+     * @return string|null
+     */
     public function getExtension(): ?string
     {
         return $this->extension;
     }
 
+    /**
+     * @param string $extension
+     *
+     * @return $this
+     */
     public function setExtension(string $extension): self
     {
         $this->extension = $extension;
-
         return $this;
     }
 
     /**
      * @ORM\PreRemove()
      */
-    public function preRemoveUpload()
+    public function preRemoveUpload(): void
     {
         // Save the name of the file we would want to remove
         $this->tempFilename = $this->getUploadDir().'/'.$this->id.'.'.$this->extension;
@@ -203,7 +176,7 @@ class PatientFile
     /**
      * @ORM\PostRemove()
      */
-    public function removeUpload()
+    public function removeUpload(): void
     {
         // PostRemove => We no longer have the entity's ID => Use the name we saved
         if (file_exists($this->tempFilename)) {
@@ -212,21 +185,30 @@ class PatientFile
         }
     }
 
-    public function getUploadDir()
+    /**
+     * @return string
+     */
+    public function getUploadDir(): string
     {
         // Upload directory
         return $this->getUploadRootDir().'/patient_files/';
         // This means /web/uploads/documents/
     }
 
-    protected function getUploadRootDir()
+    /**
+     * @return string|string[]
+     */
+    protected function getUploadRootDir(): string
     {
         // On retourne le chemin relatif vers l'image pour notre code PHP
         // Image location (PHP)
         return str_replace('src/Entity', 'data', __DIR__);
     }
 
-    public function getUrl()
+    /**
+     * @return string
+     */
+    public function getUrl(): string
     {
         return $this->id.'.'.$this->extension;
     }

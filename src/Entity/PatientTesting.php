@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Сдача анализов пациента
  * @ORM\Entity(repositoryClass="App\Repository\PatientTestingRepository")
- * @ORM\Table(options={"comment":"Сдача анализов (обследование) пациента"});
+ * @ORM\Table(options={"comment":"Обследования"});
  */
 class PatientTesting
 {
@@ -69,9 +69,9 @@ class PatientTesting
     private $plannedDate;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientFile::class, mappedBy="patientTesting", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PatientTestingFile::class, mappedBy="patientTesting", orphanRemoval=true)
      */
-    private $patientFiles;
+    private $patientTestingFiles;
 
     /**
      * PatientTesting constructor.
@@ -80,6 +80,7 @@ class PatientTesting
     {
         $this->patientTestingResults = new ArrayCollection();
         $this->patientFiles = new ArrayCollection();
+        $this->patientTestingFiles = new ArrayCollection();
     }
 
     /**
@@ -287,43 +288,41 @@ class PatientTesting
     }
 
     /**
-     * @return Collection|PatientFile[]
+     * @return Collection|PatientTestingFile[]
      */
-    public function getPatientFiles(): Collection
+    public function getPatientTestingFiles(): Collection
     {
-        return $this->patientFiles;
+        return $this->patientTestingFiles;
     }
 
     /**
-     * @param PatientFile $patientFile
+     * @param PatientTestingFile $patientTestingFile
      *
      * @return $this
      */
-    public function addPatientFile(PatientFile $patientFile): self
+    public function addPatientTestingFile(PatientTestingFile $patientTestingFile): self
     {
-        if (!$this->patientFiles->contains($patientFile)) {
-            $patientFile->setPatientTesting($this);
-            $this->patientFiles[] = $patientFile;
+        if (!$this->patientTestingFiles->contains($patientTestingFile)) {
+            $this->patientTestingFiles[] = $patientTestingFile;
+            $patientTestingFile->setPatientTesting($this);
         }
-
         return $this;
     }
 
     /**
-     * @param PatientFile $patientFile
+     * @param PatientTestingFile $patientTestingFile
      *
      * @return $this
      */
-    public function removePatientFile(PatientFile $patientFile): self
+    public function removePatientTestingFile(PatientTestingFile $patientTestingFile): self
     {
-        if ($this->patientFiles->contains($patientFile)) {
-            $this->patientFiles->removeElement($patientFile);
+        if ($this->patientTestingFiles->contains($patientTestingFile)) {
+            $this->patientTestingFiles->removeElement($patientTestingFile);
             // set the owning side to null (unless already changed)
-            if ($patientFile->getPatientTesting() === $this) {
-                $patientFile->setPatientTesting(null);
+            if ($patientTestingFile->getPatientTesting() === $this) {
+                $patientTestingFile->setPatientTesting(null);
             }
         }
-
         return $this;
     }
 }

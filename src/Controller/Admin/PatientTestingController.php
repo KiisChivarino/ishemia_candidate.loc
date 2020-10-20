@@ -4,8 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
-use App\Entity\PatientFile;
 use App\Entity\PatientTesting;
+use App\Entity\PatientTestingFile;
+use App\Entity\PatientTestingResult;
 use App\Form\Admin\PatientTesting\PatientTestingType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PatientTestingDataTableService;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\VarDumper\VarDumper;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -40,7 +42,6 @@ class PatientTestingController extends AdminAbstractController
      *
      * @param Environment $twig
      * @param RouterInterface $router
-     * @param EntityManagerInterface $entityManager
      */
     public function __construct(Environment $twig, RouterInterface $router)
     {
@@ -98,8 +99,8 @@ class PatientTestingController extends AdminAbstractController
                     ? $entityManager->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
                     : null;
                 $actions->getEntity()->setMedicalHistory($medicalHistory);
-                $this->prepareFiles($medicalHistory, $actions);
-                $entityManager->getRepository(PatientTesting::class)->persistPatientTestingResults($actions->getEntity());
+                $this->prepareFiles($actions);
+                $entityManager->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($actions->getEntity());
             }
         );
     }
@@ -142,7 +143,7 @@ class PatientTestingController extends AdminAbstractController
             PatientTestingType::class,
             [],
             function (EntityActions $actions) use ($patientTesting) {
-                $this->prepareFiles($patientTesting->getMedicalHistory(), $actions);
+                $this->prepareFiles($actions);
             }
         );
     }
@@ -162,21 +163,24 @@ class PatientTestingController extends AdminAbstractController
     }
 
     /**
-     * @param MedicalHistory $medicalHistory
      * @param EntityActions $actions
      */
-    private function prepareFiles(MedicalHistory $medicalHistory, EntityActions $actions): void
+    private function prepareFiles(EntityActions $actions): void
     {
-        $patient = $medicalHistory->getPatient();
-        $entityPatientFiles = $actions->getEntity()->getPatientFiles();
-        $formPatientFiles = $actions->getForm()->get('patientFiles')->all();
-        /** @var PatientFile $patientFile */
+        $entityPatientFiles = $actions->getEntity()->getPatientTestingFiles();
+        foreach($entityPatientFiles as $fileEntity){
+            VarDumper::dump($fileEntity);
+        }
+        VarDumper::dump($actions->getRequest()->files->get('patient_testing'));
+        exit;
+        $formPatientFiles = $actions->getForm()->get('patientTestingFiles')->all();
+        /** @var PatientTestingFile $patientFile */
         foreach ($entityPatientFiles as $key => $patientFile) {
             /** @var UploadedFile $uploadedFile */
             if ($uploadedFile = $formPatientFiles[$key]->get('file')->getData()) {
                 $patientFile->setFile($uploadedFile);
-                $patientFile->setPatient($patient);
                 $patientFile->setFileName($uploadedFile->getClientOriginalName());
+                $patientFile->setPatientTesting($actions->getEntity());
                 $patientFile->setUploadedDate(new DateTime());
                 $patientFile->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
             }

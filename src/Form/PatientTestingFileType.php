@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PatientFile;
+use App\Entity\PatientTestingFile;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints\File;
  *
  * @package App\Form
  */
-class PatientFileType extends AbstractType
+class PatientTestingFileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -51,7 +52,7 @@ class PatientFileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => PatientFile::class,])
+            ->setDefaults(['data_class' => PatientTestingFile::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

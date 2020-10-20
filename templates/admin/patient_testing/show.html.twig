@@ -27,13 +27,13 @@
     </li>
     <li>
         <span class="title">Сканкопии результатов обследования</span>
-        {% for patientFile in entity.patientFiles %}
+        {% for patientTestingFile in entity.patientTestingFiles %}
             <a target="_blank"
-               href="/patient_files/{{ patientFile.id }}.{{ patientFile.extension }}"
+               href="/patient_files/{{ patientTestingFile.patientFile.id }}.{{ patientTestingFile.extension }}"
                class="fancybox"
-               title="{{ patientFile.fileName }}">
-                <img src="/patient_files/{{ patientFile.id }}.{{ patientFile.extension }}"
-                     alt="{{ patientFile.fileName }}" />
+               title="{{ patientTestingFile.patientFile.fileName }}">
+                <img src="/patient_files/{{ patientTestingFile.patientFile.id }}.{{ patientTestingFile.patientFile.extension }}"
+                     alt="{{ patientTestingFile.patientFile.fileName }}" />
             </a>
         {% endfor %}
     </li>
