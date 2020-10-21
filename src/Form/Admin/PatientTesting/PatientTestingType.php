@@ -67,7 +67,7 @@ class PatientTestingType extends AbstractType
                 ]
             )
             ->add(
-                'patientFiles', CollectionType::class, [
+                'patientTestingFiles', CollectionType::class, [
                     'entry_type' => PatientTestingFileType::class,
                     'prototype' => true,
                     'allow_add' => true,

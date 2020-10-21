@@ -10,7 +10,7 @@
         {% if form.parent and form.parent.vars.choices is not defined %}
             <li>
         {% endif %}
-        {% if 'hidden' not in form.vars.block_prefixes %}
+        {% if 'hidden' not in form.vars.block_prefixes and not form.rendered %}
             <span class="title">{{ form_label(form) }}</span>
             {{ form_widget(form) }}
             <small>{{ form_help(form) }}</small>
@@ -23,9 +23,9 @@
         {% endif %}
     {% else %}
         {% for key, item in form %}
-            {% if key != 'patientFiles' %}
-                {{ _self.recursiveForm(item) }}
-            {% endif %}
+            {# {% if key != 'patientTestingFiles' %} #}
+            {{ _self.recursiveForm(item) }}
+            {# {% endif %} #}
         {% endfor %}
     {% endif %}
     {% if
@@ -38,29 +38,21 @@
     <li>
         <div id="filesBox">
             {% set pos = 0 %}
-            {% if(form.patientFiles.count>0) %}
-                {% for patientFile in form.patientFiles %}
-                    <div class="file-group">
-                        <div id="jsRemove{{ pos }}" style="">
-                            <button type="button" class="js-remove-file">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <div id="jsPreview{{ pos }}">{{ patientFile.vars.value ? patientFile.vars.value.fileName : '' }}</div>
+            {% for doc in form.patientTestingFiles %}
+
+                <div class="row">
+                    <div class="col col-xs-1" id="jsRemove{{ pos }}" style="">
+                        <button type="button" class="js-remove-file"><i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
                     </div>
-                    {% if not (form.patientFiles.rendered) %}
-                        <div style="display: none;">
-                            {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }}
-                        </div>
-                    {% endif %}
-                    {% set pos = pos + 1 %}
-                {% endfor %}
-            {% elseif not (form.patientFiles.rendered) %}
-                <div style="display: none;">
-                    {{ form_row(form.patientFiles, {'attr': {'data-filesCount' : form.patientFiles|length}}) }}
+                    <div class="col col-xs-11" id="jsPreview{{ pos }}">{{ doc.vars.value.fileName }}</div>
+                    <div style="display:none">
+                        {{ form_widget(doc) }}
+                    </div>
                 </div>
-            {% endif %}
-            {% do form.patientFiles.setRendered() %}
+
+                {% set pos = pos + 1 %}
+            {% endfor %}
         </div>
     </li>
     {{ _self.recursiveForm(form) }}

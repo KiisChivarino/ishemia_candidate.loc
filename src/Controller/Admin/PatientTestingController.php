@@ -14,13 +14,12 @@ use App\Services\ControllerGetters\EntityActions;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\PatientTestingTemplate;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\VarDumper\VarDumper;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -167,22 +166,20 @@ class PatientTestingController extends AdminAbstractController
      */
     private function prepareFiles(EntityActions $actions): void
     {
-        $entityPatientFiles = $actions->getEntity()->getPatientTestingFiles();
-        foreach($entityPatientFiles as $fileEntity){
-            VarDumper::dump($fileEntity);
-        }
-        VarDumper::dump($actions->getRequest()->files->get('patient_testing'));
-        exit;
-        $formPatientFiles = $actions->getForm()->get('patientTestingFiles')->all();
-        /** @var PatientTestingFile $patientFile */
-        foreach ($entityPatientFiles as $key => $patientFile) {
-            /** @var UploadedFile $uploadedFile */
-            if ($uploadedFile = $formPatientFiles[$key]->get('file')->getData()) {
-                $patientFile->setFile($uploadedFile);
-                $patientFile->setFileName($uploadedFile->getClientOriginalName());
-                $patientFile->setPatientTesting($actions->getEntity());
-                $patientFile->setUploadedDate(new DateTime());
-                $patientFile->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
+        /** @var Form $form */
+        $patientTestingFilesForm = $actions->getForm()->get('patientTestingFiles');
+        foreach ($patientTestingFilesForm->all() as $patientTestingFileForm) {
+            /** @var PatientTestingFile $fileEntity */
+            $fileEntity = $patientTestingFileForm->getData();
+            if ($fileEntity) {
+                /** @var UploadedFile $uploadedFile */
+                $uploadedFile = $patientTestingFileForm->get('file')->getData();
+                if ($uploadedFile) {
+                    $fileEntity->setFile($uploadedFile);
+                    $fileEntity->setFileName($uploadedFile->getClientOriginalName());
+                    $fileEntity->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
+                    $fileEntity->setUploadedDate(new DateTime());
+                }
             }
         }
     }

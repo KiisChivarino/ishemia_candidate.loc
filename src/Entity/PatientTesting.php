@@ -69,7 +69,7 @@ class PatientTesting
     private $plannedDate;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientTestingFile::class, mappedBy="patientTesting", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PatientTestingFile::class, mappedBy="patientTesting", orphanRemoval=true,cascade={"persist"})
      */
     private $patientTestingFiles;
 
@@ -79,7 +79,6 @@ class PatientTesting
     public function __construct()
     {
         $this->patientTestingResults = new ArrayCollection();
-        $this->patientFiles = new ArrayCollection();
         $this->patientTestingFiles = new ArrayCollection();
     }
 

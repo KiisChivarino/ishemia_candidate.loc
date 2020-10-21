@@ -29,11 +29,11 @@
         <span class="title">Сканкопии результатов обследования</span>
         {% for patientTestingFile in entity.patientTestingFiles %}
             <a target="_blank"
-               href="/patient_files/{{ patientTestingFile.patientFile.id }}.{{ patientTestingFile.extension }}"
+               href="/patient_files/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
                class="fancybox"
-               title="{{ patientTestingFile.patientFile.fileName }}">
-                <img src="/patient_files/{{ patientTestingFile.patientFile.id }}.{{ patientTestingFile.patientFile.extension }}"
-                     alt="{{ patientTestingFile.patientFile.fileName }}" />
+               title="{{ patientTestingFile.fileName }}">
+                <img src="/patient_files/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
+                     alt="{{ patientTestingFile.fileName }}"/>
             </a>
         {% endfor %}
     </li>

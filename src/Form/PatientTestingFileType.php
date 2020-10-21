@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Controller\AppAbstractController;
-use App\Entity\PatientFile;
 use App\Entity\PatientTestingFile;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;

@@ -15,7 +15,7 @@ class EntityActions
     private $request;
     /** @var ObjectManager|null $entityManager */
     private $entityManager;
-
+    /** @var FormInterface|null */
     private $form;
 
     /**
@@ -59,7 +59,7 @@ class EntityActions
     }
 
     /**
-     * @return Form|null
+     * @return FormInterface|null
      */
     public function getForm()
     {
