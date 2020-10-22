@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Controller\AppAbstractController;
-use App\Entity\PatientTestingFile;
+use App\Entity\DischargeEpicrisisFile;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints\File;
  *
  * @package App\Form
  */
-class PatientTestingFileType extends AbstractType
+class DischargeEpicrisisFileType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -50,7 +50,7 @@ class PatientTestingFileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => PatientTestingFile::class,])
+            ->setDefaults(['data_class' => DischargeEpicrisisFile::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

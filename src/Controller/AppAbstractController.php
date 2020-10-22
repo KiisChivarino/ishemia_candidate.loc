@@ -11,10 +11,12 @@ use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
+use DateTime;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -260,5 +262,27 @@ abstract class AppAbstractController extends AbstractController
             self::RESPONSE_FORM_TYPE_EDIT,
             $entityActions
         );
+    }
+
+    /**
+     * Prepare files, because preUpload and prePersist dont`t work...WHY???
+     *
+     * @param FormInterface $filesForm
+     */
+    protected function prepareFiles(FormInterface $filesForm): void
+    {
+        foreach ($filesForm->all() as $fileForm) {
+            $fileEntity = $fileForm->getData();
+            if ($fileEntity) {
+                /** @var UploadedFile $uploadedFile */
+                $uploadedFile = $fileForm->get('file')->getData();
+                if ($uploadedFile) {
+                    $fileEntity->setFile($uploadedFile);
+                    $fileEntity->setFileName($uploadedFile->getClientOriginalName());
+                    $fileEntity->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
+                    $fileEntity->setUploadedDate(new DateTime());
+                }
+            }
+        }
     }
 }

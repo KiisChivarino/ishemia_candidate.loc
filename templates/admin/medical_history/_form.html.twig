@@ -39,9 +39,9 @@
         <div id="fileBox">
             {% set pos = 0 %}
             <div id="jsFileWidgetExample" style="display: none;">
-                {{ form_widget(form.patientTestingFiles.vars.prototype) }}
+                {{ form_widget(form.patientDischargeEpicrisis.dischargeEpicrisisFiles.vars.prototype) }}
             </div>
-            {% for doc in form.patientTestingFiles %}
+            {% for doc in form.patientDischargeEpicrisis.dischargeEpicrisisFiles %}
                 <div class="jsFile" data-pos="{{ pos }}">
                     <div id="jsView{{ pos }}">
                         <span id="jsName{{ pos }}">

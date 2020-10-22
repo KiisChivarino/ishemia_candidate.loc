@@ -30,6 +30,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'analysisDate' => 'Проведено',
         'processed' => 'Обработано врачом',
         'plannedDate' => 'Запланировано',
+        'patientTestingFiles'=> 'Сканкопии результатов анализов'
     ];
 
     /** @var string[] Common LIST_CONTENT */

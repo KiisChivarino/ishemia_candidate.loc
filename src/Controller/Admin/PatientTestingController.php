@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Entity\PatientTestingFile;
 use App\Entity\PatientTestingResult;
 use App\Form\Admin\PatientTesting\PatientTestingType;
 use App\Services\ControllerGetters\FilterLabels;
@@ -13,9 +12,6 @@ use App\Services\DataTable\Admin\PatientTestingDataTableService;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\PatientTestingTemplate;
-use DateTime;
-use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,6 +31,9 @@ class PatientTestingController extends AdminAbstractController
 {
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/patient_testing/';
+
+    /** @var string Name of files collection of entity method */
+    protected const FILES_COLLECTION_PROPERTY_NAME = 'patientTestingFiles';
 
     /**
      * PatientTestingController constructor.
@@ -98,7 +97,7 @@ class PatientTestingController extends AdminAbstractController
                     ? $entityManager->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
                     : null;
                 $actions->getEntity()->setMedicalHistory($medicalHistory);
-                $this->prepareFiles($actions);
+                $this->prepareFiles($actions->getForm()->get(self::FILES_COLLECTION_PROPERTY_NAME));
                 $entityManager->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($actions->getEntity());
             }
         );
@@ -142,7 +141,7 @@ class PatientTestingController extends AdminAbstractController
             PatientTestingType::class,
             [],
             function (EntityActions $actions) use ($patientTesting) {
-                $this->prepareFiles($actions);
+                $this->prepareFiles($actions->getForm()->get(self::FILES_COLLECTION_PROPERTY_NAME));
             }
         );
     }
@@ -159,28 +158,5 @@ class PatientTestingController extends AdminAbstractController
     public function delete(Request $request, PatientTesting $patientTesting): Response
     {
         return $this->responseDelete($request, $patientTesting);
-    }
-
-    /**
-     * @param EntityActions $actions
-     */
-    private function prepareFiles(EntityActions $actions): void
-    {
-        /** @var Form $form */
-        $patientTestingFilesForm = $actions->getForm()->get('patientTestingFiles');
-        foreach ($patientTestingFilesForm->all() as $patientTestingFileForm) {
-            /** @var PatientTestingFile $fileEntity */
-            $fileEntity = $patientTestingFileForm->getData();
-            if ($fileEntity) {
-                /** @var UploadedFile $uploadedFile */
-                $uploadedFile = $patientTestingFileForm->get('file')->getData();
-                if ($uploadedFile) {
-                    $fileEntity->setFile($uploadedFile);
-                    $fileEntity->setFileName($uploadedFile->getClientOriginalName());
-                    $fileEntity->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
-                    $fileEntity->setUploadedDate(new DateTime());
-                }
-            }
-        }
     }
 }

@@ -8,6 +8,7 @@ use App\Repository\PatientRepository;
 use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -36,6 +37,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'concomitantDiseasesPlaceholder' => 'Выберите сопутствующие заболевания',
         'diseaseHistory' => 'Анамнез заболевания',
         'lifeHistory' => 'Анамнез жизни',
+        'dischargeEpicrisis' => 'Сканкопии выписных эпикризов',
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -96,6 +98,30 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
             self::COMMON_CONTENT,
             self::FILTER_CONTENT
         );
+    }
+
+    /**
+     * @param FilterService|null $filterService
+     *
+     * @return $this|AdminTemplateBuilder
+     */
+    public function new(?FilterService $filterService = null): AdminTemplateBuilder
+    {
+        parent::new();
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)->setPath($this->getTemplatePath());
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     *
+     * @return $this|AdminTemplateBuilder
+     */
+    public function edit(?object $entity = null): AdminTemplateBuilder
+    {
+        parent::edit();
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)->setPath($this->getTemplatePath());
+        return $this;
     }
 
     /**

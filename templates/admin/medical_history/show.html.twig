@@ -44,7 +44,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.backgroundDiseases }}</span>
-        {% if entity.backgroundDiseases%}
+        {% if entity.backgroundDiseases %}
             Фоновые заболевания отсутствуют
         {% endif %}
         {% for backgroundDisease in entity.backgroundDiseases %}
@@ -57,7 +57,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complications }}</span>
-        {% if entity.complications%}
+        {% if entity.complications %}
             Осложнения основной болезни отсутствуют
         {% endif %}
         {% for complication in entity.complications %}
@@ -70,7 +70,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.concomitantDiseases }}</span>
-        {% if entity.concomitantDiseases%}
+        {% if entity.concomitantDiseases %}
             Сопутствующие заболевания отсутствуют
         {% endif %}
         {% for concomitantDisease in entity.concomitantDiseases %}
@@ -100,6 +100,18 @@
                 Отсутствует
             {% endif %}
         </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dischargeEpicrisis }}</span>
+        {% for file in entity.patientDischargeEpicrisis.dischargeEpicrisisFiles %}
+            <a target="_blank"
+               href="/patient_files/{{ file.id }}.{{ file.extension }}"
+               class="fancybox"
+               title="{{ file.fileName }}">
+                <img src="/patient_files/{{ file.id }}.{{ file.extension }}"
+                     alt="{{ file.fileName }}"/>
+            </a>
+        {% endfor %}
     </li>
 {% endblock %}
 {% block custom_actions %}

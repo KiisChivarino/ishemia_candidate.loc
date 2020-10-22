@@ -27,7 +27,7 @@ class PatientDischargeEpicrisis
     private $medicalHistory;
 
     /**
-     * @ORM\OneToMany(targetEntity=DischargeEpicrisisFile::class, mappedBy="patientDischargeEpicrisis", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=DischargeEpicrisisFile::class, mappedBy="patientDischargeEpicrisis", orphanRemoval=true, cascade={"persist"})
      */
     private $dischargeEpicrisisFiles;
 
@@ -82,7 +82,6 @@ class PatientDischargeEpicrisis
             $this->dischargeEpicrisisFiles[] = $dischargeEpicrisisFile;
             $dischargeEpicrisisFile->setPatientDischargeEpicrisis($this);
         }
-
         return $this;
     }
 

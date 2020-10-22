@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=DischargeEpicrisisFileRepository::class)
  * @ORM\Table(options={"comment":"Файлы выписных эпикризов"});
+ * @ORM\HasLifecycleCallbacks
  */
 class DischargeEpicrisisFile
 {
@@ -22,7 +23,7 @@ class DischargeEpicrisisFile
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PatientDischargeEpicrisis::class, inversedBy="dischargeEpicrisisFiles")
+     * @ORM\ManyToOne(targetEntity=PatientDischargeEpicrisis::class, inversedBy="dischargeEpicrisisFiles", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $patientDischargeEpicrisis;

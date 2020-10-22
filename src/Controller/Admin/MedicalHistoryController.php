@@ -4,10 +4,12 @@ namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
+use App\Entity\PatientDischargeEpicrisis;
 use App\Entity\Prescription;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
+use App\Form\DischargeEpicrisisType;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\MedicalHistoryDataTableService;
@@ -33,6 +35,13 @@ class MedicalHistoryController extends AdminAbstractController
 {
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/medical_history/';
+
+    /** @var string Name of collection of files from entity method */
+    protected const FILES_COLLECTION_PROPERTY_NAME = 'dischargeEpicrisisFiles';
+
+    /** @var string Name of form of patient discharge epicrisis */
+    protected const PATIENT_DISCHARGE_EPICRISIS_FORM_NAME = 'patientDischargeEpicrisis';
+
 
     /**
      * CountryController constructor.
@@ -78,6 +87,9 @@ class MedicalHistoryController extends AdminAbstractController
     {
         $template = $this->templateService->new();
         $medicalHistory = new MedicalHistory();
+        $dischargeEpicrisis = (new PatientDischargeEpicrisis())->setMedicalHistory($medicalHistory);
+        $this->getDoctrine()->getManager()->persist($dischargeEpicrisis);
+        $this->getDoctrine()->getManager()->flush();
         return $this->responseFormTemplate(
             $request,
             $medicalHistory,
@@ -87,6 +99,7 @@ class MedicalHistoryController extends AdminAbstractController
                         'mainDisease' => $medicalHistory,
                         'medicalHistory' => $medicalHistory,
                         'dateEndMedicalHistory' => $medicalHistory,
+                        'dischargeEpicrisis' => $dischargeEpicrisis,
                     ]
                 )
                 ->add(
@@ -101,6 +114,12 @@ class MedicalHistoryController extends AdminAbstractController
                         self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                     ]
                 )
+                ->add(
+                    'dischargeEpicrisis', DischargeEpicrisisType::class, [
+                        'label' => false,
+                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                    ]
+                )
                 ->getForm(),
             self::RESPONSE_FORM_TYPE_NEW,
             function (EntityActions $actions) {
@@ -109,6 +128,7 @@ class MedicalHistoryController extends AdminAbstractController
                     ? $this->getDoctrine()->getManager()->getRepository(Patient::class)->find($actions->getRequest()->query->get('id'))
                     : null;
                 $actions->getEntity()->setPatient($patient);
+                $this->prepareFiles($actions->getForm()->get(self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME)->get(self::FILES_COLLECTION_PROPERTY_NAME));
             }
         );
     }
@@ -151,12 +171,18 @@ class MedicalHistoryController extends AdminAbstractController
     public function edit(Request $request, MedicalHistory $medicalHistory): Response
     {
         $template = $this->templateService->edit();
+        $patientDischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis() ? $medicalHistory->getPatientDischargeEpicrisis() : new PatientDischargeEpicrisis();
+        $medicalHistory->setPatientDischargeEpicrisis($patientDischargeEpicrisis);
+        $this->getDoctrine()->getManager()->persist($patientDischargeEpicrisis);
+        $this->getDoctrine()->getManager()->flush();
         $form = $this->createFormBuilder()
             ->setData(
                 [
                     'mainDisease' => $medicalHistory,
                     'medicalHistory' => $medicalHistory,
                     'dateEndMedicalHistory' => $medicalHistory,
+                    'patientDischargeEpicrisis' => $medicalHistory->getPatientDischargeEpicrisis() ? $medicalHistory->getPatientDischargeEpicrisis()
+                        : new PatientDischargeEpicrisis(),
                 ]
             )
             ->add(
@@ -177,10 +203,18 @@ class MedicalHistoryController extends AdminAbstractController
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
             )
+            ->add(
+                'patientDischargeEpicrisis', DischargeEpicrisisType::class, [
+                    'label' => false,
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                ]
+            )
             ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $this->prepareFiles($form->get(self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME)->get(self::FILES_COLLECTION_PROPERTY_NAME));
+            $entityManager->flush();
             return $this->redirectToRoute($this->templateService->getRoute('list'));
         }
         return $this->render(

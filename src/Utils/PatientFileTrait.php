@@ -202,7 +202,7 @@ trait PatientFileTrait
     {
         // On retourne le chemin relatif vers l'image pour notre code PHP
         // Image location (PHP)
-        return str_replace('src/Entity', 'data', __DIR__);
+        return str_replace('src/Utils', 'data', __DIR__);
     }
 
     /**

@@ -3,20 +3,19 @@
 namespace App\Form;
 
 use App\Controller\AppAbstractController;
-use App\Entity\PatientTestingFile;
+use App\Entity\PatientDischargeEpicrisis;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
 
 /**
- * Class PatientFileType
+ * Class DischargeEpicrisisType
  *
  * @package App\Form
  */
-class PatientTestingFileType extends AbstractType
+class DischargeEpicrisisType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -26,20 +25,14 @@ class PatientTestingFileType extends AbstractType
     {
         $builder
             ->add(
-                'file', FileType::class, [
-                    'mapped' => false,
-                    'required' => true,
-                    'constraints' => [
-                        new File(
-                            [
-                                'maxSize' => '5000ki',
-                                'mimeTypes' => [
-                                    'image/jpeg',
-                                    'image/pjpeg',
-                                ],
-                            ]
-                        )
-                    ],
+                'dischargeEpicrisisFiles', CollectionType::class, [
+                    'entry_type' => DischargeEpicrisisFileType::class,
+                    'prototype' => true,
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
+                    'required' => false,
+                    'label' => false,
                 ]
             );
     }
@@ -50,7 +43,7 @@ class PatientTestingFileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => PatientTestingFile::class,])
+            ->setDefaults(['data_class' => PatientDischargeEpicrisis::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }
