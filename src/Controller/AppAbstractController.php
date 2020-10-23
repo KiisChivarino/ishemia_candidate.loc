@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\AuthUser;
+use App\Entity\PatientTestingFile;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
@@ -11,7 +12,6 @@ use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
-use DateTime;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -277,10 +277,7 @@ abstract class AppAbstractController extends AbstractController
                 /** @var UploadedFile $uploadedFile */
                 $uploadedFile = $fileForm->get('file')->getData();
                 if ($uploadedFile) {
-                    $fileEntity->setFile($uploadedFile);
-                    $fileEntity->setFileName($uploadedFile->getClientOriginalName());
-                    $fileEntity->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
-                    $fileEntity->setUploadedDate(new DateTime());
+                    $this->getDoctrine()->getRepository(PatientTestingFile::class)->setFileProperties($fileEntity, $uploadedFile);
                 }
             }
         }

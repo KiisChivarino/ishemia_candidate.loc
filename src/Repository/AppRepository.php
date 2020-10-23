@@ -2,11 +2,11 @@
 
 namespace App\Repository;
 
-use LogicException;
-use App\Entity\Role;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use DateTime;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class AppRepository
@@ -23,7 +23,7 @@ class AppRepository extends ServiceEntityRepository
      * @param array $persistArr
      *
      * @return mixed
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     public function setEntityData(array $params, $entity, array $persistArr = [])
     {
@@ -50,7 +50,7 @@ class AppRepository extends ServiceEntityRepository
      * Возвращает последний id для сущности
      *
      * @return int
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function getNextEntityId(): int
     {
@@ -60,5 +60,19 @@ class AppRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
         return $lastEntity ? $lastEntity->getId() + 1 : 1;
+    }
+
+    /**
+     * Set property values for file entity
+     *
+     * @param object $fileEntity
+     * @param UploadedFile $uploadedFile
+     */
+    public function setFileProperties(object $fileEntity, UploadedFile $uploadedFile)
+    {
+        $fileEntity->setFile($uploadedFile);
+        $fileEntity->setFileName($uploadedFile->getClientOriginalName());
+        $fileEntity->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
+        $fileEntity->setUploadedDate(new DateTime());
     }
 }
