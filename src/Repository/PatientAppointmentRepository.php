@@ -43,18 +43,18 @@ class PatientAppointmentRepository extends AppRepository
     /**
      * Получение первого приема пациента
      *
-     * @param Patient $patient
+     * @param MedicalHistory $medicalHistory
      *
      * @return mixed
      * @throws NonUniqueResultException
      */
-    public function getFirstAppointment(Patient $patient)
+    public function getFirstAppointment(MedicalHistory $medicalHistory)
     {
         return $this->createQueryBuilder('a')
             ->where('a.enabled = true and a.medicalHistory = :medicalHistory')
             ->orderBy('a.appointmentTime', 'ASC')
             ->setMaxResults(1)
-            ->setParameter('medicalHistory', $this->_em->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient))
+            ->setParameter('medicalHistory', $medicalHistory)
             ->getQuery()
             ->getOneOrNullResult();
     }

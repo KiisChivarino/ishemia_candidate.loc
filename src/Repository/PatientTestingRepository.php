@@ -12,6 +12,7 @@ use DateTimeInterface;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Class PatientTestingRepository
@@ -82,5 +83,24 @@ class PatientTestingRepository extends AppRepository
             (int)$planTesting->getTimeRange()->getMultiplier(),
             $planTesting->getTimeRange()->getDateInterval()->getFormat()
         );
+    }
+
+    /**
+     * @param MedicalHistory $medicalHistory
+     *
+     * @return int|mixed|string
+     */
+    public function getFirstTestings(MedicalHistory $medicalHistory){
+        VarDumper::dump($medicalHistory->getDateBegin());
+        $firstTestings = $this->createQueryBuilder('pt')
+            ->leftJoin('pt.medicalHistory', 'mh')
+            ->where('pt.enabled= true')
+            ->andWhere('pt.medicalHistory = :medicalHistory')
+            ->andWhere('pt.plannedDate <= mh.dateBegin')
+            ->setParameter('medicalHistory', $medicalHistory)
+            ->getQuery()
+            ->getResult();
+        VarDumper::dump($firstTestings);
+        exit;
     }
 }

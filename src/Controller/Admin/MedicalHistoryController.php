@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\VarDumper\VarDumper;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -40,7 +41,7 @@ class MedicalHistoryController extends AdminAbstractController
     protected const FILES_COLLECTION_PROPERTY_NAME = 'dischargeEpicrisisFiles';
 
     /** @var string Name of form of patient discharge epicrisis */
-    protected const PATIENT_DISCHARGE_EPICRISIS_FORM_NAME = 'patientDischargeEpicrisis';
+    protected const PATIENT_DISCHARGE_EPICRISIS_FORM_NAME = 'dischargeEpicrisis';
 
 
     /**
@@ -88,8 +89,6 @@ class MedicalHistoryController extends AdminAbstractController
         $template = $this->templateService->new();
         $medicalHistory = new MedicalHistory();
         $dischargeEpicrisis = (new PatientDischargeEpicrisis())->setMedicalHistory($medicalHistory);
-        $this->getDoctrine()->getManager()->persist($dischargeEpicrisis);
-        $this->getDoctrine()->getManager()->flush();
         return $this->responseFormTemplate(
             $request,
             $medicalHistory,

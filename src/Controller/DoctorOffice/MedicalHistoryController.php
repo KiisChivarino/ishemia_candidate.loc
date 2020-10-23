@@ -5,6 +5,7 @@ namespace App\Controller\DoctorOffice;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
+use App\Entity\PatientTesting;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\Admin\Patient\PatientType;
@@ -72,13 +73,25 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
      */
     public function main(Patient $patient): Response
     {
+        /** @var MedicalHistory $medicalHistory */
+        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+        $firstAppointment = null;
+        $firstTestings = [];
+        $dischargeEpicrisis = null;
+        if($medicalHistory){
+            $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($medicalHistory);
+            $firstTestings = $this->getDoctrine()->getRepository(PatientTesting::class)->getFirstTestings($medicalHistory);
+            $dischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis();
+        }
         return $this->responseShow(
             self::TEMPLATE_PATH,
             $patient,
             [
                 'age' => $this->patientInfoService->getAge($patient),
-                'medicalHistory' => $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient),
-                'firstAppointment' => $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($patient),
+                'medicalHistory' => $medicalHistory,
+                'firstAppointment' => $firstAppointment,
+                'firstTestings' => $firstTestings,
+                'dischargeEpicrisis' => $dischargeEpicrisis,
             ]
         );
     }
