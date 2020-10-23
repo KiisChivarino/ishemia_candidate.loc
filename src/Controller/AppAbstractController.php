@@ -183,7 +183,7 @@ abstract class AppAbstractController extends AbstractController
             try {
                 $entityManager = $this->getDoctrine()->getManager();
                 if ($entityActions) {
-                    $entityActionsObject = new EntityActions($entity, $request, $entityManager);
+                    $entityActionsObject = new EntityActions($entity, $request, $entityManager, $form);
                     $entityActions($entityActionsObject);
                 }
                 $entityManager->persist($entity);

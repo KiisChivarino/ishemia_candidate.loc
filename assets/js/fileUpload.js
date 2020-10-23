@@ -38,7 +38,7 @@ function createAddFile(filePos) {
     fileInput.on('change', function () {
         let fileName = $(this).prop('files')[0].name;
         $('#' + FILE_NAME_ELEMENT_ID_PREFIX + filePos).append(fileName);
-        $('#' + FILE_ADD_ELEMENT_ID_PREFIX + filePos).hide(); // todo попробовать удалять
+        $('#' + FILE_ADD_ELEMENT_ID_PREFIX + filePos).remove();
         $('#' + FILE_VIEW_ELEMENT_ID_PREFIX + filePos).show();
         createAddFile(parseInt(filePos) + 1);
     });
@@ -47,11 +47,17 @@ function createAddFile(filePos) {
 $(document).ready(function () {
     const DEFAULT_FIRST_POSITION = 0;
     let fileBox = $("#fileBox");
+    let lastFile = fileBox.children('.' + FILE_ELEMENT_CLASS).last();
     if (fileBox.length) {
-        let lastFilePos = fileBox.children('.' + FILE_ELEMENT_CLASS).last().data('pos');
-        createAddFile(typeof lastFilePos === "undefined" ? DEFAULT_FIRST_POSITION : ++lastFilePos);
+        let nextFilePos = typeof lastFile.data('pos') === "undefined" ? DEFAULT_FIRST_POSITION : lastFile.data('pos') + 1;
+        createAddFile(nextFilePos);
         fileBox.on('click', '.' + FILE_REMOVE_BUTTON_CLASS, function removeFile() {
             $(this).closest('.' + FILE_ELEMENT_CLASS).remove();
         });
     }
+
+    $('form').submit(function (){
+        $('#' + FILE_EXAMPLE_ELEMENT_ID_PREFIX).remove();
+        fileBox.children('.' + FILE_ELEMENT_CLASS).last().remove();
+    });
 });
