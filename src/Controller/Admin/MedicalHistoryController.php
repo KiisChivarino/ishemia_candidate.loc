@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\VarDumper\VarDumper;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -41,9 +40,16 @@ class MedicalHistoryController extends AdminAbstractController
     protected const FILES_COLLECTION_PROPERTY_NAME = 'dischargeEpicrisisFiles';
 
     /** @var string Name of form of patient discharge epicrisis */
-    protected const PATIENT_DISCHARGE_EPICRISIS_FORM_NAME = 'dischargeEpicrisis';
+    protected const PATIENT_DISCHARGE_EPICRISIS_FORM_NAME = 'patientDischargeEpicrisis';
 
+    /** @var string Name of main disease form */
+    protected const MAIN_DISEASE_FORM_NAME = 'mainDisease';
 
+    /** @var string Name of medical history form */
+    protected const MEDICAL_HISTORY_FORM_NAME = 'medicalHistory';
+
+    /** @var string Name of date end medical history form */
+    protected const DATE_END_MEDICAL_HISTORY_FORM_NAME = 'dateEndMedicalHistory';
     /**
      * CountryController constructor.
      *
@@ -95,39 +101,39 @@ class MedicalHistoryController extends AdminAbstractController
             $this->createFormBuilder()
                 ->setData(
                     [
-                        'mainDisease' => $medicalHistory,
-                        'medicalHistory' => $medicalHistory,
-                        'dateEndMedicalHistory' => $medicalHistory,
-                        'dischargeEpicrisis' => $dischargeEpicrisis,
+                        self::MAIN_DISEASE_FORM_NAME => $medicalHistory,
+                        self::MEDICAL_HISTORY_FORM_NAME => $medicalHistory,
+                        self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME => $dischargeEpicrisis,
                     ]
                 )
                 ->add(
-                    'mainDisease', MainDiseaseType::class, [
+                    self::MAIN_DISEASE_FORM_NAME, MainDiseaseType::class, [
                         'label' => false,
                         self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                     ]
                 )
                 ->add(
-                    'medicalHistory', MedicalHistoryType::class, [
+                    self::MEDICAL_HISTORY_FORM_NAME, MedicalHistoryType::class, [
                         'label' => false,
                         self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                     ]
                 )
                 ->add(
-                    'dischargeEpicrisis', DischargeEpicrisisType::class, [
+                    self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME, DischargeEpicrisisType::class, [
                         'label' => false,
                         self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                     ]
                 )
                 ->getForm(),
             self::RESPONSE_FORM_TYPE_NEW,
-            function (EntityActions $actions) {
+            function (EntityActions $actions) use ($dischargeEpicrisis) {
                 /** @var Patient $patient */
                 $patient = $actions->getRequest()->query->get('id')
                     ? $this->getDoctrine()->getManager()->getRepository(Patient::class)->find($actions->getRequest()->query->get('id'))
                     : null;
                 $actions->getEntity()->setPatient($patient);
                 $this->prepareFiles($actions->getForm()->get(self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME)->get(self::FILES_COLLECTION_PROPERTY_NAME));
+                $actions->getEntityManager()->persist($dischargeEpicrisis);
             }
         );
     }
@@ -177,33 +183,33 @@ class MedicalHistoryController extends AdminAbstractController
         $form = $this->createFormBuilder()
             ->setData(
                 [
-                    'mainDisease' => $medicalHistory,
-                    'medicalHistory' => $medicalHistory,
-                    'dateEndMedicalHistory' => $medicalHistory,
-                    'patientDischargeEpicrisis' => $medicalHistory->getPatientDischargeEpicrisis() ? $medicalHistory->getPatientDischargeEpicrisis()
+                    self::MAIN_DISEASE_FORM_NAME => $medicalHistory,
+                    self::MEDICAL_HISTORY_FORM_NAME => $medicalHistory,
+                    self::DATE_END_MEDICAL_HISTORY_FORM_NAME => $medicalHistory,
+                    self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME => $medicalHistory->getPatientDischargeEpicrisis() ? $medicalHistory->getPatientDischargeEpicrisis()
                         : new PatientDischargeEpicrisis(),
                 ]
             )
             ->add(
-                'mainDisease', MainDiseaseType::class, [
+                self::MAIN_DISEASE_FORM_NAME, MainDiseaseType::class, [
                     'label' => false,
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
             )
             ->add(
-                'medicalHistory', MedicalHistoryType::class, [
+                self::MEDICAL_HISTORY_FORM_NAME, MedicalHistoryType::class, [
                     'label' => false,
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
             )
             ->add(
-                'dateEndMedicalHistory', EditMedicalHistoryType::class, [
+                self::DATE_END_MEDICAL_HISTORY_FORM_NAME, EditMedicalHistoryType::class, [
                     'label' => false,
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
             )
             ->add(
-                'patientDischargeEpicrisis', DischargeEpicrisisType::class, [
+                self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME, DischargeEpicrisisType::class, [
                     'label' => false,
                     self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
                 ]
