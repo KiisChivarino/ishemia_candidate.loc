@@ -35,9 +35,9 @@ class PlanTestingRepository extends AppRepository
     {
         return $this->createQueryBuilder('pt')
             ->andWhere('pt.enabled = :enabledValue')
-            ->andWhere('pt.timeRangeCount > :timeRangeCount')
+//            ->andWhere('pt.timeRangeCount > :timeRangeCount')
             ->setParameter('enabledValue', true)
-            ->setParameter('timeRangeCount', 0)
+//            ->setParameter('timeRangeCount', 0)
             ->getQuery()
             ->getResult();
     }

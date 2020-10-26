@@ -85,21 +85,21 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
+     * Get first testings
      * @param MedicalHistory $medicalHistory
+     * @return int|mixed|string
+     * @throws Exception
      */
-    public function getFirstTestings(MedicalHistory $medicalHistory): void
+    public function getFirstTestings(MedicalHistory $medicalHistory)
     {
-//        VarDumper::dump($medicalHistory->getDateBegin());
-//        $firstTestings = $this->createQueryBuilder('pt')
-//            ->leftJoin('pt.medicalHistory', 'mh')
-//            ->where('pt.enabled= true')
-//            ->andWhere('pt.medicalHistory = :medicalHistory')
-//            ->andWhere('pt.plannedDate <= mh.dateBegin')
-//            ->setParameter('medicalHistory', $medicalHistory)
-//            ->getQuery()
-//            ->getResult();
-
-//        VarDumper::dump($firstTestings);
-//        exit;
+        return $this->createQueryBuilder('pt')
+            ->leftJoin('pt.medicalHistory', 'mh')
+            ->where('pt.enabled= true')
+            ->andWhere('pt.medicalHistory = :medicalHistory')
+            ->andWhere('pt.plannedDate <= :dateBegin')
+            ->setParameter('medicalHistory', $medicalHistory)
+            ->setParameter('dateBegin', new DateTime($medicalHistory->getDateBegin()->format("Y-m-d") . " 23:59:59"))
+            ->getQuery()
+            ->getResult();
     }
 }
