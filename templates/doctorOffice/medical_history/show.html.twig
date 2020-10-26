@@ -161,28 +161,30 @@
                     <div class="statement__info">
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.diseaseHistory }}</p>
-                            <p>
-                                {% if medicalHistory.diseaseHistory %}
-                                    {{ medicalHistory.diseaseHistory|raw }}
-                                {% else %}
-                                    {{ template.items.show.content.diseaseHistoryNotFound }}
-                                {% endif %}
-                            </p>
                         </div>
+                        <p>
+                            {% if medicalHistory.diseaseHistory %}
+                                {{ medicalHistory.diseaseHistory|raw }}
+                            {% else %}
+                                {{ template.items.show.content.diseaseHistoryNotFound }}
+                            {% endif %}
+                        </p>
                     </div>
+                </div>
+                <div class="statement__content">
                     <div class="statement__info">
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.lifeHistory }}</p>
-                            <p>
-                                {% if medicalHistory.lifeHistory %}
-                                    {{ medicalHistory.lifeHistory | raw }}
-                                {% else %}
-                                    {{ template.items.show.content.lifeHistoryNotFound }}
-                                {% endif %}
-                            </p>
                         </div>
                     </div>
                 </div>
+                <p>
+                    {% if medicalHistory.lifeHistory %}
+                        {{ medicalHistory.lifeHistory | raw }}
+                    {% else %}
+                        {{ template.items.show.content.lifeHistoryNotFound }}
+                    {% endif %}
+                </p>
             </div>
         </div>
     {% endif %}
@@ -274,7 +276,7 @@
     {% endif %}
 
     <div class="history">
-        <h2 class="title">Электронная история ведения беременности </h2>
+        <h2 class="title">Электронная история болезни </h2>
         <div class="history__head">
             <div class="select"><span>Период</span>
                 <input class="js-datepicker" type="text" value="15.03.2020">
@@ -288,72 +290,40 @@
             <thead>
             <tr>
                 <th>Дата</th>
-                <th>Переданное значение</th>
-                <th>Назначение консультаций смежных специалистов</th>
-                <th>Лечение</th>
-                <th>Комментарий</th>
+                <th>Результаты анализов</th>
+                <th>Назначения обследований</th>
+                <th>Назначения лекарств</th>
+                <th>Приемы пациентов</th>
             </tr>
             </thead>
             <tr>
-                <th><span>20.02.2020</span></th>
+                <th><span>20.10.2020</span></th>
                 <th>
-                    <div class="th-inner"><span class="mode">Антитела к β2 гликопротеину 24 ЕД  </span></div>
-                    <div class="th-inner"><span class="mode-2">D-димер 845 нг/мл</span></div>
-                    <div class="th-inner"><span>УЗИ, степень зрелости плаценты 1ст. </span></div>
+                    <div class="th-inner"><span class="mode"> Липидный профиль  </span></div>
+                    <div class="th-inner"><span class="mode-2">Дата сдачи: 20.10.2020</span></div>
+                    <div class="th-inner"><span>Общий белок - 74 ммоль/л</span></div>
+                    <div class="th-inner"><span>Мочевина - 3,8 ммоль/л</span></div>
+                    <div class="th-inner"><span>Креатинин - 82 ммоль/л</span></div>
+                    <div class="th-inner"><span>Холестерин общий - 6,4 ммоль/л</span></div>
+                    <div class="th-inner"><span>Триглицериды - 0,7 ммоль/л</span></div>
+                    <a class="button table-button" href="#">Открыть фото</a>
                     <div class="th-inner">
                         <span class="table__small-text">
                             Данные переданы <br> через личный <br> кабинет
                         </span>
                     </div>
                 </th>
-                <th>Для согласования лечения назначена консультация врача -гематолога</th>
                 <th>
-                    <div class="th-inner">
-                        <span class="table__min-title">Принимать</span>
-                        <span>Ангиовит 1 таблетка в суткиКурантил 25 мг по 1 таблетки 3 раза в день. </span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__min-title">Вводить подкожно</span>
-                        <span>Фраксипарин 0,3 один раз.</span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__min-title">Сдать анализы </span>
-                        <span>D-димер через 2 недели </span>
-                    </div>
+                    <div class="th-inner"><span class="mode">Биохимия крови</span></div>
+                    <div class="th-inner"><span class="mode-2">Назначенная дата сдачи: 28.10.2020</span></div>
                     <div class="th-inner">
                         <span class="table__small-text">
-                            Рекомендации направлены <br> на согласование врачу гематологу
+                            Данные переданы <br> через личный <br> кабинет
                         </span>
                     </div>
                     <div class="th-inner">
                         <span class="table__small-text">Врач</span>
-                        <span>Иванов И. И.</span>
-                    </div>
-                </th>
-            </tr>
-            <tr>
-                <th><span class="green">3.04.2020 </span></th>
-                <th>
-                    <div class="th-inner">
-                        <span class="mode">Показатели коагулограммы  </span>
-                        <span>АПТВ – 26, ПТИ – 76%, Фибриноген – 3,4 </span>
-                    </div>
-                    <div class="th-inner"><span class="mode-2">D-димер 845 нг/мл </span></div>
-                    <div class="th-inner"><span>Фото ОАК </span></div>
-                    <a class="button table-button" href="#">Открыть фото</a>
-                    <div class="th-inner">
-                        <span class="table__small-text">Данные внесены <br> врачом-консультантом </span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__small-text">Врач</span>
-                        <span>Иванов И. И.</span></div>
-                </th>
-                <th>
-                    <div class="th-inner"><span>Выполнена консультация врача-гематолога</span></div>
-                    <div class="th-inner"><span class="green-check">Лечение согласовано</span></div>
-                    <div class="th-inner">
-                        <span class="table__small-text">Врач - гематолог</span>
-                        <span>Петров А. А.</span>
+                        <span>Иванович М. С.</span>
                     </div>
                 </th>
                 <th>
@@ -376,29 +346,94 @@
                     </div>
                     <div class="th-inner">
                         <span class="table__small-text">Врач</span>
-                        <span>Иванов И. И.</span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__small-text">
-                            Рекомендации направлены в личный кабинет пациентки,
-                            дополнительно произведено информирование посредством SMS сообщения
-                        </span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__small-text">
-                            SMS – «Вам в личный кабинет отправлены новые рекомендации по лечению»
-                        </span>
+                        <span>Иванов М. С.</span>
                     </div>
                 </th>
                 <th>
+                    <div class="th-inner"><span class="mode-2">Дата приема: 20.10.2020</span></div>
                     <div class="th-inner">
-                        <span>
-                            С пациенткой произведен личный разговор по телефону. Каких-либо жалоб не предъявляет.
-                        </span>
+                        <span class="table__small-text">Вид приема</span>
+                        <span>Очно</span>
                     </div>
-                    <div class="th-inner"><span class="table__small-text">Врач</span><span>Иванов И. И.</span></div>
+                    <div class="th-inner">
+                        <span class="table__small-text">Жалобы</span>
+                        <span>одышка, загрудная боль, перебои в работе сердца, нарушение ритма, слабость</span>
+                    </div>
+                    <div class="th-inner">
+                        <span class="table__small-text">Врач</span>
+                        <span>Иванов М. С.</span>
+                    </div>
                 </th>
             </tr>
+            {# <tr> #}
+            {# <th><span class="green">3.04.2020 </span></th> #}
+            {# <th> #}
+            {# <div class="th-inner"> #}
+            {# <span class="mode">Показатели коагулограммы  </span> #}
+            {# <span>АПТВ – 26, ПТИ – 76%, Фибриноген – 3,4 </span> #}
+            {# </div> #}
+            {# <div class="th-inner"><span class="mode-2">D-димер 845 нг/мл </span></div> #}
+            {# <div class="th-inner"><span>Фото ОАК </span></div> #}
+            {# <a class="button table-button" href="#">Открыть фото</a> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__small-text">Данные внесены <br> врачом-консультантом </span> #}
+            {# </div> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__small-text">Врач</span> #}
+            {# <span>Иванов И. И.</span> #}
+            {# </div> #}
+            {# </th> #}
+            {# <th> #}
+            {# <div class="th-inner"><span>Выполнена консультация врача-гематолога</span></div> #}
+            {# <div class="th-inner"><span class="green-check">Лечение согласовано</span></div> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__small-text">Врач - гематолог</span> #}
+            {# <span>Петров А. А.</span> #}
+            {# </div> #}
+            {# </th> #}
+            {# <th> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__min-title">Принимать</span> #}
+            {# <span>Ангиовит 1 таблетка в суткиКурантил 25 мг по 1 таблетки 3 раза в день. </span> #}
+            {# </div> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__min-title">Вводить подкожно</span> #}
+            {# <span>Фраксипарин 0,3 один раз.</span> #}
+            {# </div> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__min-title">Сдать анализы </span> #}
+            {# <span>D-димер через 2 недели </span> #}
+            {# </div> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__small-text"> #}
+            {# Рекомендации направлены <br> на согласование врачу гематологу #}
+            {# </span> #}
+            {# </div> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__small-text">Врач</span> #}
+            {# <span>Иванов И. И.</span> #}
+            {# </div> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__small-text"> #}
+            {# Рекомендации направлены в личный кабинет пациентки, #}
+            {# дополнительно произведено информирование посредством SMS сообщения #}
+            {# </span> #}
+            {# </div> #}
+            {# <div class="th-inner"> #}
+            {# <span class="table__small-text"> #}
+            {# SMS – «Вам в личный кабинет отправлены новые рекомендации по лечению» #}
+            {# </span> #}
+            {# </div> #}
+            {# </th> #}
+            {# <th> #}
+            {# <div class="th-inner"> #}
+            {# <span> #}
+            {# С пациенткой произведен личный разговор по телефону. Каких-либо жалоб не предъявляет. #}
+            {# </span> #}
+            {# </div> #}
+            {# <div class="th-inner"><span class="table__small-text">Врач</span><span>Иванов И. И.</span></div> #}
+            {# </th> #}
+            {# </tr> #}
         </table>
     </div>
 {% endblock %}

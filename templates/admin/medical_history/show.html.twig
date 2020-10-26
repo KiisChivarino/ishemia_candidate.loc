@@ -85,7 +85,7 @@
         <span class="title">{{ template.items.show.content.diseaseHistory }}</span>
         <p>
             {% if entity.diseaseHistory %}
-                {{ entity.diseaseHistory }}
+                {{ entity.diseaseHistory|raw }}
             {% else %}
                 Отсутствует
             {% endif %}
@@ -95,7 +95,7 @@
         <span class="title">{{ template.items.show.content.lifeHistory }}</span>
         <p>
             {% if entity.lifeHistory %}
-                {{ entity.lifeHistory }}
+                {{ entity.lifeHistory|raw }}
             {% else %}
                 Отсутствует
             {% endif %}
