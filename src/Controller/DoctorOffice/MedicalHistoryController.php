@@ -205,7 +205,8 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         Request $request,
         Patient $patient
     ) {
-        $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($patient);
+        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+        $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($medicalHistory);
         $template = $this->templateService->edit();
         $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
         $form = $this->createFormBuilder()
