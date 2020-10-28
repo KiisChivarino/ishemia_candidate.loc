@@ -275,6 +275,39 @@
         </div>
     {% endif %}
 
+    <div class="statement acc">
+        <h2 class="title accordion">{{ template.items.show.content.laboratoryData }}</h2>
+        <div class="statement__wrapper panel">
+            <div class="statement__head">
+                <h3 class="subtitle">{{ template.items.show.content.laboratoryData }}</h3>
+                <a class="back-page"
+                   href="{{ path('doctor_edit_objective_data', {'id': entity.id}) }}">
+                    <span class="statement__edit">{{ template.items.show.content.addLaboratoryData }}</span>
+                </a>
+            </div>
+            <div class="statement__content">
+                {% if not patientDischargeEpicrisis is empty %}
+                    <div class="statement__info">
+                        <div class="statement__info-block">
+                            <p>{{ template.items.show.content.dischargeEpicrisis }}</p>
+                            <p>
+                                {% for file in patientDischargeEpicrisis.dischargeEpicrisisFiles %}
+                                    <a target="_blank"
+                                       href="/patient_files/{{ file.id }}.{{ file.extension }}"
+                                       class="fancybox"
+                                       title="{{ file.fileName }}">
+                                        <img src="/patient_files/{{ file.id }}.{{ file.extension }}"
+                                             alt="{{ file.fileName }}"/>
+                                    </a>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
     <div class="history">
         <h2 class="title">Электронная история болезни </h2>
         <div class="history__head">
@@ -337,19 +370,19 @@
                         <span>Торасемид 5 мг утро</span>
                         <span>Спиронолактон 25 мг утро</span>
                     </div>
-{#                    <div class="th-inner">#}
-{#                        <span class="table__min-title">Рекоммендации врача</span>#}
-{#                        <span>Фраксипарин 0,3 один раз.</span>#}
-{#                    </div>#}
-{#                    <div class="th-inner">#}
-{#                        <span class="table__min-title">Сдать анализы </span>#}
-{#                        <span>D-димер через 2 недели </span>#}
-{#                    </div>#}
-{#                    <div class="th-inner">#}
-{#                        <span class="table__small-text">#}
-{#                            Рекомендации направлены <br> на согласование врачу гематологу#}
-{#                        </span>#}
-{#                    </div>#}
+                    {# <div class="th-inner"> #}
+                    {# <span class="table__min-title">Рекоммендации врача</span> #}
+                    {# <span>Фраксипарин 0,3 один раз.</span> #}
+                    {# </div> #}
+                    {# <div class="th-inner"> #}
+                    {# <span class="table__min-title">Сдать анализы </span> #}
+                    {# <span>D-димер через 2 недели </span> #}
+                    {# </div> #}
+                    {# <div class="th-inner"> #}
+                    {# <span class="table__small-text"> #}
+                    {# Рекомендации направлены <br> на согласование врачу гематологу #}
+                    {# </span> #}
+                    {# </div> #}
                     <div class="th-inner">
                         <span class="table__small-text">Врач</span>
                         <span>Иванов М. С.</span>

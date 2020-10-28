@@ -1,3 +1,5 @@
+@import "~fancybox/dist/css/jquery.fancybox.css";
+
 .statement__info-block p {
     margin-bottom: 5px;
 }

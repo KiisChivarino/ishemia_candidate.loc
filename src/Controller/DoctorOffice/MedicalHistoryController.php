@@ -91,7 +91,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
                 'medicalHistory' => $medicalHistory,
                 'firstAppointment' => $firstAppointment,
                 'firstTestings' => $firstTestings,
-                'dischargeEpicrisis' => $dischargeEpicrisis,
+                'patientDischargeEpicrisis' => $dischargeEpicrisis,
             ]
         );
     }

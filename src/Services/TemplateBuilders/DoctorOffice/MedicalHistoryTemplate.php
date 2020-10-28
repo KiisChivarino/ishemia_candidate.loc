@@ -43,6 +43,8 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'complaintsCommentNotFound' => 'Комментарий врача по жалобам отсутствует',
         'objectiveStatusNotFound' => 'Объективный статус отсутствует',
         'therapyNotFound' => 'Терапия отсутствует',
+        'laboratoryData' => 'Лабораторные данные',
+        'addLaboratoryData' => 'Внести лабораторные данные',
     ];
 
     /** @var string[] Common form and show content for medical history templates */
