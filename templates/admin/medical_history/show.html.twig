@@ -44,7 +44,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.backgroundDiseases }}</span>
-        {% if entity.backgroundDiseases %}
+        {% if not entity.backgroundDiseases %}
             Фоновые заболевания отсутствуют
         {% endif %}
         {% for backgroundDisease in entity.backgroundDiseases %}
