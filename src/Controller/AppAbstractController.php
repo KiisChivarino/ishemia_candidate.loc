@@ -42,6 +42,7 @@ abstract class AppAbstractController extends AbstractController
         'MEDICAL_HISTORY' => 'medicalHistory',
         'STAFF' => 'staff',
         'PRESCRIPTION' => 'prescription',
+        'TEMPLATE_TYPE' => 'templateType',
     ];
 
     /** @var string Label of form option for adding formTemplateItem in form */

@@ -24,6 +24,8 @@ use App\Entity\AuthUser;
 use App\Entity\District;
 use App\Entity\Hospital;
 use App\Entity\Staff;
+use App\Entity\TemplateParameter;
+use App\Entity\TemplateType;
 use App\Entity\TimeRange;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -275,5 +277,36 @@ class AppFixtures extends Fixture
             ]
         );
         /** end Референтные значения */
+
+        /** begin Типы шаблонов */
+        echo "Заполнение справочника \"Типы шаблонов\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV.'template_types.csv',
+            TemplateType::class,
+            ',',
+            [],
+            [
+                'enabled' => true
+            ]
+        );
+        /** end Типы шаблонов */
+
+        /** begin Параметры шаблонов */
+        echo "Заполнение справочника \"Параметры шаблонов\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV.'template_parameters.csv',
+            TemplateParameter::class,
+            ',',
+            [],
+            [
+                'enabled' => true
+            ],
+            [
+                'templateType' => TemplateType::class
+            ]
+        );
+        /** end Параметры шаблонов */
     }
 }
