@@ -24,7 +24,7 @@ class TextByTemplate
 
     /**
      * @ORM\ManyToOne(targetEntity=Template::class, inversedBy="textByTemplates")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $template;
 
@@ -33,6 +33,11 @@ class TextByTemplate
      * @ORM\JoinColumn(nullable=false)
      */
     private $templateType;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\PatientAppointment", mappedBy="objectiveStatus")
+     */
+    private $patient;
 
     public function getId(): ?int
     {
@@ -73,6 +78,29 @@ class TextByTemplate
         $this->templateType = $templateType;
 
         return $this;
+    }
+
+    public function getPatient(): ?PatientAppointment
+    {
+        return $this->patient;
+    }
+
+    public function setPatient(?PatientAppointment $patient): self
+    {
+        $this->patient = $patient;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newObjectiveStatus = null === $patient ? null : $this;
+        if ($patient->getObjectiveStatus() !== $newObjectiveStatus) {
+            $patient->setObjectiveStatus($newObjectiveStatus);
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getText();
     }
 
 }

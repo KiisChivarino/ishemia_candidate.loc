@@ -3,13 +3,9 @@
 {% block content %}
     {% include (template.templatePath~'content_wrapper_top.html.twig') %}
     <div class="pacient-edit-wrapper">
-        <div class="popup__wrapper acc"><h2 class="title accordion active">{{ template.items.edit.content.objective_h2 }}</h2>
+        <div class="popup__wrapper acc"><h2 class="title accordion active">Конструктор объективный статус</h2>
             <div class="popup__inner panel">
-
-                <a href="{{ path('doctor_edit_objective_data_objective_status', {id: entity.id}) }}" class="form-control">Собрать Объективный статус</a>
-                <a href="#" class="form-control">Выбрать из шаблона Объективный статус</a>
                 {{ include(template.items.form.path~'_form.html.twig') }}
-
             </div>
         </div>
     </div>

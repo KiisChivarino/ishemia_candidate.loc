@@ -6,11 +6,18 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
 use App\Entity\PatientTesting;
+use App\Entity\Template;
+use App\Entity\TemplateParameterText;
+use App\Entity\TextByTemplate;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\Admin\Patient\PatientType;
 use App\Form\Admin\PatientAppointmentType;
 use App\Form\Doctor\AuthUserPersonalDataType;
+use App\Form\TextByTemplateType;
+use App\Repository\TemplateParameterRepository;
+use App\Repository\TemplateTypeRepository;
+use App\Repository\TextByTemplateRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
@@ -207,6 +214,9 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     ) {
         $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
         $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($medicalHistory);
+        $objectiveStatus = $firstAppointment->getObjectiveStatus();
+//        dd($firstAppointment);
+//        dd($firstAppointment->getObjectiveStatus());
         $template = $this->templateService->edit();
         $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
         $form = $this->createFormBuilder()
@@ -229,6 +239,76 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         }
         return $this->render(
             self::TEMPLATE_PATH.'edit_objective_data.html.twig', [
+                'entity' => $patient,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param Patient $patient
+     * @param TemplateParameterRepository $templateParameterRepository
+     * @param TemplateTypeRepository $templateTypeRepository
+     * @param TextByTemplateRepository $textByTemplateRepository
+     * @return RedirectResponse|Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @Route("/{id}/edit_objective_data/objectiveStatus", name="doctor_edit_objective_data_objective_status", methods={"GET","POST"}, requirements={"id"="\d+"})
+     *
+     */
+    public function editObjectiveDataObjectiveStatus(
+        Request $request,
+        Patient $patient,
+        TemplateParameterRepository $templateParameterRepository,
+        TemplateTypeRepository $templateTypeRepository,
+        TextByTemplateRepository $textByTemplateRepository
+    ) {
+        $templateType = $templateTypeRepository->findOneBy([
+            'id' => 3
+        ]);
+        $parameters = $templateParameterRepository->findBy([
+            'templateType' => $templateType
+        ]);
+        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+        $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($medicalHistory);
+//        dd($firstAppointment);
+        $textBytemplate = new TextByTemplate();
+        $textBytemplate->setTemplateType($templateType);
+        $firstAppointment->setObjectiveStatus($textBytemplate);
+
+        $template = $this->templateService->edit();
+        $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
+        $form = $this->createForm(TextByTemplateType::class, $textBytemplate, ['parameters' => $parameters]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $data = $request->request->all();
+
+            foreach($data['text_by_template'] as $key => $value){
+                $exp_key = explode('-', $key);
+                if($exp_key[0] == 'parameter'){
+                    $arr_result[] = $value;
+                }
+            }
+            $res = '';
+            foreach ($arr_result as $item) {
+                $parameter = $entityManager->getRepository(TemplateParameterText::class)->findOneBy([
+                    'id' => $item
+                ]);
+                $res .= '<p><strong>'.$parameter->getTemplateParameter()->getName().'</strong>'. '. '. $parameter->getText() .'.</p>';
+            }
+            $textBytemplate->setText($res);
+
+            $entityManager->persist($textBytemplate);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('doctor_edit_objective_data', ['id' => $patient->getId()]);
+        }
+
+        return $this->render(
+            self::TEMPLATE_PATH.'edit_objective_data_objective_status.html.twig', [
                 'entity' => $patient,
                 'form' => $form->createView(),
             ]

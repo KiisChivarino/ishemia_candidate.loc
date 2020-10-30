@@ -79,7 +79,8 @@ class PatientAppointment
     private $complaintsComment;
 
     /**
-     * @ORM\Column(type="text", nullable=true, options={"comment"="Объективный статус"})
+     * @ORM\OneToOne(targetEntity="App\Entity\TextByTemplate", inversedBy="patient")
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $objectiveStatus;
 
@@ -317,25 +318,6 @@ class PatientAppointment
     /**
      * @return string|null
      */
-    public function getObjectiveStatus(): ?string
-    {
-        return $this->objectiveStatus;
-    }
-
-    /**
-     * @param string|null $objectiveStatus
-     *
-     * @return $this
-     */
-    public function setObjectiveStatus(?string $objectiveStatus): self
-    {
-        $this->objectiveStatus = $objectiveStatus;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getTherapy(): ?string
     {
         return $this->therapy;
@@ -370,4 +352,17 @@ class PatientAppointment
         $this->plannedTime = $plannedTime;
         return $this;
     }
+
+    public function getObjectiveStatus(): ?TextByTemplate
+    {
+        return $this->objectiveStatus;
+    }
+
+    public function setObjectiveStatus(?TextByTemplate $objectiveStatus): self
+    {
+        $this->objectiveStatus = $objectiveStatus;
+
+        return $this;
+    }
+
 }

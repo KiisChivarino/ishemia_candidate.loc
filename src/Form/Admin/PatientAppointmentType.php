@@ -9,6 +9,7 @@ use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -69,9 +70,11 @@ class PatientAppointmentType extends AbstractType
                 ]
             )
             ->add(
-                'objectiveStatus', null, [
+                'objectiveStatus', TextareaType::class, [
                     'label' => $templateItem->getContentValue('objectiveStatus'),
                     'attr' => ['class' => 'tinymce'],
+                    'data' => 13213213213,
+                    'mapped' => false
                 ]
             )
             ->add(
