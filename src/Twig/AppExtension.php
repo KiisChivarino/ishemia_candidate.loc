@@ -2,10 +2,15 @@
 
 namespace App\Twig;
 
+use App\Entity\AnalysisRate;
 use App\Entity\AuthUser;
 use App\Entity\Patient;
+use App\Entity\PatientTesting;
+use App\Entity\PatientTestingResult;
+use App\Services\InfoService\AnalysisRateInfoService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
+use App\Services\InfoService\PatientTestingInfoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -59,13 +64,31 @@ class AppExtension extends AbstractExtension
                     'getBodyMassIndex',
                 ]
             ),
+            new TwigFunction(
+                'patientTestingTitle', [
+                    $this,
+                    'getPatientTestingTitle',
+                ]
+            ),
+            new TwigFunction(
+                'analysisRate', [
+                    $this,
+                    'getAnalysisRate',
+                ]
+            ),
+            new TwigFunction(
+                'enabledTestingResults', [
+                    $this,
+                    'getEnabledTestingResults',
+                ]
+            )
         ];
     }
 
     /**
      * Returns name of user
      *
-     * @param AuthUser $authUser
+     * @param AuthUser|null $authUser
      * @param bool $initials
      *
      * @return string
@@ -78,7 +101,7 @@ class AppExtension extends AbstractExtension
     /**
      * Returns title of role
      *
-     * @param AuthUser $authUser
+     * @param AuthUser|null $authUser
      *
      * @return string
      */
@@ -110,5 +133,33 @@ class AppExtension extends AbstractExtension
     public function getBodyMassIndex(Patient $patient): string
     {
         return (new PatientInfoService())->getBodyMassIndex($patient);
+    }
+
+    /**
+     * Returns patient testing title
+     * @param PatientTesting $patientTesting
+     * @return string
+     */
+    public function getPatientTestingTitle(PatientTesting $patientTesting): string
+    {
+        return (new PatientTestingInfoService())->getPatientTestingInfoString($patientTesting);
+    }
+
+    /**
+     * @param AnalysisRate $analysisRate
+     * @return string
+     */
+    public function getAnalysisRate(AnalysisRate $analysisRate): string
+    {
+        return (new AnalysisRateInfoService())->getAnalysisRateInfoString($analysisRate);
+    }
+
+    /**
+     * @param PatientTesting $testing
+     * @return array
+     */
+    public function getEnabledTestingResults(PatientTesting $testing): array
+    {
+        return $this->entityManager->getRepository(PatientTestingResult::class)->getEnabledTestingResults($testing);
     }
 }

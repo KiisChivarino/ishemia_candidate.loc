@@ -279,43 +279,78 @@
         <h2 class="title accordion">{{ template.items.show.content.laboratoryData }}</h2>
         <div class="statement__wrapper panel">
             <div class="statement__head">
-                <h3 class="subtitle">{{ template.items.show.content.laboratoryData }}</h3>
+                <h3 class="subtitle">{{ template.items.show.content.dischargeEpicrisis }}</h3>
                 <a class="back-page"
                    href="{{ path('doctor_edit_objective_data', {'id': entity.id}) }}">
-                    <span class="statement__edit">{{ template.items.show.content.addLaboratoryData }}</span>
+                    <span class="statement__edit">{{ template.items.show.content.addDischargeEpicrises }}</span>
                 </a>
             </div>
             <div class="statement__content">
                 {% if not patientDischargeEpicrisis is empty %}
+                    <p>
+                        {% for file in patientDischargeEpicrisis.dischargeEpicrisisFiles %}
+                            <a target="_blank" style="display: inline-block;"
+                               href="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\DischargeEpicrisisFile::UPLOAD_DIR') }}/{{ file.id }}.{{ file.extension }}"
+                               class="fancybox"
+                               title="{{ file.fileName }}">
+                                <img src="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\DischargeEpicrisisFile::UPLOAD_DIR') }}/{{ file.id }}.{{ file.extension }}"
+                                     alt="{{ file.fileName }}" style="max-width: 400px;"/>
+                            </a>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+            {% for testing in firstTestings %}
+                <div class="statement__head">
+                    <h3 class="subtitle">Обследование: {{ patientTestingTitle(testing) }}</h3>
+                    <a class="back-page"
+                       href="{{ path('doctor_edit_objective_data', {'id': entity.id}) }}">
+                        <span class="statement__edit">{{ template.items.show.content.addPatientTestingResults }}</span>
+                    </a>
+                </div>
+                {% if testing.patientTestingFiles is empty and  enabledTestingResults(testing) is empty %}
+                    <p>Результаты обследования не внесены!</p>
+                {% endif %}
+                <div class="statement__content">
                     <div class="statement__info">
                         <div class="statement__info-block">
-                            <p>{{ template.items.show.content.dischargeEpicrisis }}</p>
                             <p>
-                                {% for file in patientDischargeEpicrisis.dischargeEpicrisisFiles %}
+                                {% for testingFile in testing.patientTestingFiles %}
                                     <a target="_blank"
-                                       href="/patient_files/{{ file.id }}.{{ file.extension }}"
+                                       href="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') }}/{{ testingFile.id }}.{{ testingFile.extension }}"
                                        class="fancybox"
-                                       title="{{ file.fileName }}">
-                                        <img src="/patient_files/{{ file.id }}.{{ file.extension }}"
-                                             alt="{{ file.fileName }}"/>
+                                       title="{{ testingFile.fileName }}">
+                                        <img src="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') }}/{{ testingFile.id }}.{{ testingFile.extension }}"
+                                             alt="{{ testingFile.fileName }}"/>
                                     </a>
                                 {% endfor %}
                             </p>
                         </div>
                     </div>
-                {% endif %}
-            </div>
-            <div class="statement__content">
-                <div class="statement__info">
-                    <div class="statement__info-block">
-                        <p>{{ template.items.show.content.firstTestings }}</p>
-                        <p></p>
+                    <div class="statement__info">
+                        <div class="statement__info-block">
+                            {% if not enabledTestingResults(testing) is empty %}
+                                <table>
+                                    <tr>
+                                        <th>Параметр</th>
+                                        <th>Значение</th>
+                                    </tr>
+                                    {% for result in testing.patientTestingResults %}
+                                        {% if(result.enabled) %}
+                                            <tr>
+                                                <td>{{ analysisRate(result.analysisRate) }}</td>
+                                                <td>{{ result.result }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </table>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
-
     <div class="history">
         <h2 class="title">Электронная история болезни </h2>
         <div class="history__head">

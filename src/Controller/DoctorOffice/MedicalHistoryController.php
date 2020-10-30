@@ -5,11 +5,13 @@ namespace App\Controller\DoctorOffice;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
+use App\Entity\PatientDischargeEpicrisis;
 use App\Entity\PatientTesting;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\Admin\Patient\PatientType;
 use App\Form\Admin\PatientAppointmentType;
+use App\Form\DischargeEpicrisisType;
 use App\Form\Doctor\AuthUserPersonalDataType;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
@@ -57,7 +59,8 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         AuthUserInfoService $authUserInfoService,
         PatientInfoService $patientInfoService,
         UserPasswordEncoderInterface $passwordEncoder
-    ) {
+    )
+    {
         $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
         $this->authUserInfoService = $authUserInfoService;
@@ -78,7 +81,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         $firstAppointment = null;
         $firstTestings = [];
         $dischargeEpicrisis = null;
-        if($medicalHistory){
+        if ($medicalHistory) {
             $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($medicalHistory);
             $firstTestings = $this->getDoctrine()->getRepository(PatientTesting::class)->getFirstTestings($medicalHistory);
             $dischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis();
@@ -108,7 +111,8 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         Request $request,
         Patient $patient,
         AuthUserInfoService $authUserInfoService
-    ): Response {
+    ): Response
+    {
         $template = $this->templateService->edit();
         $authUser = $patient->getAuthUser();
         $form = $this->createFormBuilder()
@@ -140,7 +144,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
         }
         return $this->render(
-            self::TEMPLATE_PATH.'edit_personal_data.html.twig', [
+            self::TEMPLATE_PATH . 'edit_personal_data.html.twig', [
                 'entity' => $patient,
                 'form' => $form->createView(),
             ]
@@ -157,7 +161,8 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     public function editAnamnesticData(
         Request $request,
         Patient $patient
-    ) {
+    )
+    {
         $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
         $template = $this->templateService->edit();
         $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
@@ -187,7 +192,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
         }
         return $this->render(
-            self::TEMPLATE_PATH.'edit_anamnestic_data.html.twig', [
+            self::TEMPLATE_PATH . 'edit_anamnestic_data.html.twig', [
                 'entity' => $patient,
                 'form' => $form->createView(),
             ]
@@ -204,7 +209,8 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     public function editObjectiveData(
         Request $request,
         Patient $patient
-    ) {
+    )
+    {
         $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
         $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($medicalHistory);
         $template = $this->templateService->edit();
@@ -228,10 +234,21 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
         }
         return $this->render(
-            self::TEMPLATE_PATH.'edit_objective_data.html.twig', [
+            self::TEMPLATE_PATH . 'edit_objective_data.html.twig', [
                 'entity' => $patient,
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    /**
+     *
+     * @param Request $request
+     * @param PatientDischargeEpicrisis $dischargeEpicrisis
+     * @return RedirectResponse|Response
+     */
+    public function editDischargeEpicrisis(Request $request, PatientDischargeEpicrisis $dischargeEpicrisis)
+    {
+        return $this->responseEdit($request, $dischargeEpicrisis, DischargeEpicrisisType::class);
     }
 }

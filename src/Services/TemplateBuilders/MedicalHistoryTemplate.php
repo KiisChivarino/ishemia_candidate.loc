@@ -37,7 +37,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'concomitantDiseasesPlaceholder' => 'Выберите сопутствующие заболевания',
         'diseaseHistory' => 'Анамнез заболевания',
         'lifeHistory' => 'Анамнез жизни',
-        'dischargeEpicrisis' => 'Сканкопии выписных эпикризов',
+        'dischargeEpicrisis' => 'Выписные эпикризы',
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -148,7 +148,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
                             'class' => Patient::class,
                             'required' => false,
                             'choice_label' => function ($value) {
-                                return $value->getAuthUser()->getLastName().' '.$value->getAuthUser()->getFirstName();
+                                return $value->getAuthUser()->getLastName() . ' ' . $value->getAuthUser()->getFirstName();
                             },
                             'query_builder' => function (PatientRepository $er) {
                                 return $er->createQueryBuilder('p')

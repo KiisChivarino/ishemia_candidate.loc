@@ -44,7 +44,9 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'objectiveStatusNotFound' => 'Объективный статус отсутствует',
         'therapyNotFound' => 'Терапия отсутствует',
         'laboratoryData' => 'Лабораторные данные',
-        'addLaboratoryData' => 'Внести лабораторные данные',
+        'addDischargeEpicrises' => 'Внести выписные эпикризы',
+        'addPatientTestingResults' => 'Внести результаты обследования',
+        'firstTestings' => 'Обследования',
     ];
 
     /** @var string[] Common form and show content for medical history templates */
