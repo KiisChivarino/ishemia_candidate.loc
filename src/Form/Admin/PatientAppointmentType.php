@@ -73,7 +73,7 @@ class PatientAppointmentType extends AbstractType
                 'objectiveStatus', TextareaType::class, [
                     'label' => $templateItem->getContentValue('objectiveStatus'),
                     'attr' => ['class' => 'tinymce'],
-                    'data' => 13213213213,
+                    'data' => $options['objectiveStatusText']->getText(),
                     'mapped' => false
                 ]
             )
@@ -99,7 +99,10 @@ class PatientAppointmentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => PatientAppointment::class,])
+            ->setDefaults([
+                'data_class' => PatientAppointment::class,
+                'objectiveStatusText' => null
+                ])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

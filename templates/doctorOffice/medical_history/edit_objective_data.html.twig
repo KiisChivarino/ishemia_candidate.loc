@@ -5,11 +5,21 @@
     <div class="pacient-edit-wrapper">
         <div class="popup__wrapper acc"><h2 class="title accordion active">{{ template.items.edit.content.objective_h2 }}</h2>
             <div class="popup__inner panel">
-
-                <a href="{{ path('doctor_edit_objective_data_objective_status', {id: entity.id}) }}" class="form-control">Собрать Объективный статус</a>
-                <a href="#" class="form-control">Выбрать из шаблона Объективный статус</a>
-                {{ include(template.items.form.path~'_form.html.twig') }}
-
+{#                {% include template.items.form.path~'_form_edit_objective_type.html.twig' with {'entityId': entity.id, 'firstAppointmentId': firstAppointment.id}  %}#}
+                {{ form_start(form) }}
+                {% for child in form.firstAppointment %}
+                <ul>
+                    <p class="popup__row">
+                        <span class="label">{{ form_label(child) }}</span>
+                        {%  if child.vars.name == 'objectiveStatus' %}
+                            <a href="{{ path('doctor_edit_objective_data_objective_status', { 'id': entity.id, 'appointmentID': firstAppointment.id }) }}" class="form-control">Собрать Объективный статус</a>
+                            <a href="{{ path('doctor_edit_objective_data_objective_status_by_template', { 'id': entity.id, 'appointmentID': firstAppointment.id }) }}" class="form-control">Выбрать из шаблона Объективный статус</a>
+                        {% endif %}
+                        {{ form_widget(child) }}
+                    </p>
+                </ul>
+                {% endfor %}
+                {{ form_end(form) }}
             </div>
         </div>
     </div>

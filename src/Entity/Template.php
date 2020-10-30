@@ -28,7 +28,7 @@ class Template
      * @ORM\ManyToOne(targetEntity=TemplateType::class, inversedBy="templates", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, onDelete="SET NULL")
      */
-    private $TemplateType;
+    private $templateType;
 
 //    /**
 //     * @ORM\ManyToMany(targetEntity=TemplateParameterText::class, inversedBy="templates")

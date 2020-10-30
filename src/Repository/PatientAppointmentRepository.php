@@ -52,7 +52,7 @@ class PatientAppointmentRepository extends AppRepository
     {
         return $this->createQueryBuilder('a')
             ->where('a.enabled = true and a.medicalHistory = :medicalHistory')
-            ->orderBy('a.appointmentTime', 'ASC')
+            ->orderBy('a.plannedTime', 'ASC')
             ->setMaxResults(1)
             ->setParameter('medicalHistory', $medicalHistory)
             ->getQuery()

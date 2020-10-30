@@ -68,18 +68,6 @@ class TextByTemplate
         return $this;
     }
 
-    public function getTemplateType(): ?TemplateType
-    {
-        return $this->templateType;
-    }
-
-    public function setTemplateType(?TemplateType $templateType): self
-    {
-        $this->templateType = $templateType;
-
-        return $this;
-    }
-
     public function getPatient(): ?PatientAppointment
     {
         return $this->patient;
@@ -101,6 +89,18 @@ class TextByTemplate
     public function __toString()
     {
         return $this->getText();
+    }
+
+    public function getTemplateType(): ?TemplateType
+    {
+        return $this->templateType;
+    }
+
+    public function setTemplateType(?TemplateType $templateType): self
+    {
+        $this->templateType = $templateType;
+
+        return $this;
     }
 
 }
