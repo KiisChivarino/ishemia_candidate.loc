@@ -19,6 +19,11 @@
                     </p>
                 </ul>
                 {% endfor %}
+                <ul>
+                    <div class="buttons">
+                        <button class="button main-button">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
+                    </div>
+                </ul>
                 {{ form_end(form) }}
             </div>
         </div>
