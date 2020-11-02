@@ -28,6 +28,12 @@ class PatientTestingFile
      */
     private $patientTesting;
 
+    private $fileName;
+
+    private $uploadedDate;
+
+    private $extension;
+
     /**
      * @return int|null
      */
@@ -52,6 +58,42 @@ class PatientTestingFile
     public function setPatientTesting(?PatientTesting $patientTesting): self
     {
         $this->patientTesting = $patientTesting;
+        return $this;
+    }
+
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(string $fileName): self
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    public function getUploadedDate(): ?\DateTimeInterface
+    {
+        return $this->uploadedDate;
+    }
+
+    public function setUploadedDate(\DateTimeInterface $uploadedDate): self
+    {
+        $this->uploadedDate = $uploadedDate;
+
+        return $this;
+    }
+
+    public function getExtension(): ?string
+    {
+        return $this->extension;
+    }
+
+    public function setExtension(string $extension): self
+    {
+        $this->extension = $extension;
+
         return $this;
     }
 }

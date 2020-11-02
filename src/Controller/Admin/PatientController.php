@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Logger\Logger;
 use App\Entity\MedicalHistory;
 use App\Entity\PatientAppointment;
 use App\Form\Admin\AuthUser\EditAuthUserType;
@@ -45,17 +46,24 @@ class PatientController extends AdminAbstractController
     private $passwordEncoder;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * PatientController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param Logger $logger
      */
-    public function __construct(Environment $twig, RouterInterface $router, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(Environment $twig, RouterInterface $router, UserPasswordEncoderInterface $passwordEncoder, Logger $logger)
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new PatientTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
+        $this->logger = $logger;
     }
 
     /**
@@ -154,6 +162,17 @@ class PatientController extends AdminAbstractController
             } catch (Exception $e) {
                 $em->getConnection()->rollBack();
                 throw $e;
+            }
+            $logger = $this->logger
+                ->setUser($this->getUser())
+                ->setDescription(
+                    'Patient with id: ' . $patient->getId() .
+                    ' and FIO: ' . (new AuthUserInfoService())->getFIO($patient->getAuthUser()).
+                    ' successfully created!')
+                ->logCreateEvent();
+            if (!$logger) {
+                dd($this->logger->getError());
+                // TODO:  when creating log fails
             }
             $this->addFlash('success', 'post.created_successfully');
             return $this->redirectToRoute($this->templateService->getRoute('list'));
