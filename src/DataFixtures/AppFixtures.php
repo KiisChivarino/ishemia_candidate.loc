@@ -25,8 +25,10 @@ use App\Entity\District;
 use App\Entity\Hospital;
 use App\Entity\Staff;
 use App\Entity\TemplateParameter;
+use App\Entity\TemplateParameterText;
 use App\Entity\TemplateType;
 use App\Entity\TimeRange;
+use App\Form\Admin\TemplateParameterTextType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -308,5 +310,22 @@ class AppFixtures extends Fixture
             ]
         );
         /** end Параметры шаблонов */
+
+        /** begin Тексты параметров шаблонов */
+        echo "Заполнение справочника \"Тексты параметров шаблонов\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV.'template_parameters_texts.csv',
+            TemplateParameterText::class,
+            ';',
+            [],
+            [
+                'enabled' => true
+            ],
+            [
+                'templateParameter' => TemplateParameter::class
+            ]
+        );
+        /** end Тексты параметров шаблонов */
     }
 }

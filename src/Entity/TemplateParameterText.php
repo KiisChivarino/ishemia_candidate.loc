@@ -20,7 +20,7 @@ class TemplateParameterText
     private $id;
 
     /**
-     * @ORM\Column(type="text", options={"comment"="Текст параметра шаблона"})
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Текст параметра шаблона"})
      */
     private $text;
 
@@ -59,18 +59,6 @@ class TemplateParameterText
     public function setId(int $id): self
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getText(): ?string
-    {
-        return $this->text;
-    }
-
-    public function setText(string $text): self
-    {
-        $this->text = $text;
 
         return $this;
     }
@@ -154,6 +142,18 @@ class TemplateParameterText
                 $templateManyToManyTemplateParameterText->setTemplateParameterText(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getText(): ?string
+    {
+        return $this->text;
+    }
+
+    public function setText(?string $text): self
+    {
+        $this->text = $text;
 
         return $this;
     }

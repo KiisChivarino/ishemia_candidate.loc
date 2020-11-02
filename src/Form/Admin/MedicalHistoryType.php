@@ -9,6 +9,7 @@ use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -98,9 +99,11 @@ class MedicalHistoryType extends AbstractType
                 ]
             )
             ->add(
-                'lifeHistory', null, [
+                'lifeHistory', TextareaType::class, [
                     'label' => $templateItem->getContentValue('lifeHistory'),
                     'attr' => ['class' => 'tinymce'],
+                    'data' => $options['anamnesOfLifeText'],
+                    'mapped' => false
                 ]
             )
             ->add(
@@ -117,7 +120,7 @@ class MedicalHistoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => MedicalHistory::class,])
+            ->setDefaults(['data_class' => MedicalHistory::class, 'anamnesOfLifeText'=>null])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

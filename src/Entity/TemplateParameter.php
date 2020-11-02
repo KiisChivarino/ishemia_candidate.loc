@@ -14,7 +14,7 @@ class TemplateParameter
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer", options={"comment"="Ключ параметра типа шаблона"})
      */
     private $id;

@@ -274,6 +274,30 @@ class MenuBuilder
                 'route' => 'notification_type_list'
             ]
         );
+        $menu['medical_guides']->addChild(
+            'templates', [
+                'label' => 'Шаблоны',
+                'route' => 'template_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'templatesTypes', [
+                'label' => 'Типы шаблонов',
+                'route' => 'template_type_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'templatesParametres', [
+                'label' => 'Параметры шаблонов',
+                'route' => 'template_parameter_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'templatesParametersTexts', [
+                'label' => 'Тексты параметров шаблонов',
+                'route' => 'template_parameter_text_list'
+            ]
+        );
         $menu->addChild(
             'locations', [
                 'label' => 'Управление локациями',

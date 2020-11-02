@@ -2,30 +2,17 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\AnalysisGroup;
 use App\Entity\Template;
 use App\Entity\TemplateManyToManyTemplateParameterText;
-use App\Entity\TemplateParameter;
 use App\Entity\TemplateParameterText;
-use App\Entity\TemplateType;
-use App\Form\Admin\AnalysisGroupType;
 use App\Form\Admin\TemplateEditType;
 use App\Form\Admin\TemplateNewType;
-use App\Form\Admin\TemplateParameterType;
-use App\Form\Admin\TemplateTypeType;
 use App\Repository\TemplateParameterRepository;
-use App\Repository\TemplateParameterTextRepository;
 use App\Repository\TemplateTypeRepository;
 use App\Services\ControllerGetters\EntityActions;
-use App\Services\DataTable\Admin\AnalysisGroupDataTableService;
 use App\Services\DataTable\Admin\TemplateDataTableService;
-use App\Services\DataTable\Admin\TemplateParameterDataTableService;
-use App\Services\DataTable\Admin\TemplateTypeDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\AnalysisGroupTemplate;
-use App\Services\TemplateBuilders\TemplateParameterTemplate;
 use App\Services\TemplateBuilders\TemplateTemplate;
-use App\Services\TemplateBuilders\TemplateTypeTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

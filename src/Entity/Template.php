@@ -94,17 +94,6 @@ class Template
         return $this;
     }
 
-    public function getTemplateType(): ?TemplateType
-    {
-        return $this->TemplateType;
-    }
-
-    public function setTemplateType(?TemplateType $TemplateType): self
-    {
-        $this->TemplateType = $TemplateType;
-
-        return $this;
-    }
 
     /**
      * @return Collection|TemplateParameterText[]
@@ -198,6 +187,18 @@ class Template
                 $templateManyToManyTemplateParameterText->setTemplate(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTemplateType(): ?TemplateType
+    {
+        return $this->templateType;
+    }
+
+    public function setTemplateType(?TemplateType $templateType): self
+    {
+        $this->templateType = $templateType;
 
         return $this;
     }

@@ -35,7 +35,7 @@ class TemplateType
     private $templateParameters;
 
     /**
-     * @ORM\OneToMany(targetEntity=Template::class, mappedBy="TemplateType")
+     * @ORM\OneToMany(targetEntity=Template::class, mappedBy="templateType")
      */
     private $templates;
 

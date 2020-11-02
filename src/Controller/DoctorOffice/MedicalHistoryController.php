@@ -167,6 +167,13 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         Patient $patient
     ) {
         $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+//        dd($medicalHistory);
+        if ($medicalHistory->getLifeHistory()) {
+            $anamnesOfLife = $medicalHistory->getLifeHistory()->getText();
+        } else {
+            $anamnesOfLife = null;
+        }
+
         $template = $this->templateService->edit();
         $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
         $form = $this->createFormBuilder()
@@ -185,7 +192,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             ->add(
                 'medicalHistory', MedicalHistoryType::class, [
                     'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME), 'anamnesOfLifeText' => $anamnesOfLife,
                 ]
             )
             ->getForm();
@@ -196,6 +203,135 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         }
         return $this->render(
             self::TEMPLATE_PATH.'edit_anamnestic_data.html.twig', [
+                'entity' => $patient,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param Patient $patient
+     * @Route("/{id}/edit_anamnestic_data_anamnesis_of_life", name="doctor_edit_anamnestic_data_anamnesis_of_life", methods={"GET","POST"}, requirements={"id"="\d+"})
+     *
+     * @return RedirectResponse|Response
+     */
+    public function editAnamnesticDataAnamnesisOfLife(
+        Request $request,
+        Patient $patient,
+        TemplateTypeRepository $templateTypeRepository,
+        TemplateParameterRepository $templateParameterRepository
+    ) {
+        $template = $this->templateService->edit(); // <-- это обязательно!
+        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+        $templateType = $templateTypeRepository->findOneBy([
+            'id' => 1
+        ]);
+        $parameters = $templateParameterRepository->findBy([
+            'templateType' => $templateType
+        ]);
+        if ($medicalHistory->getLifeHistory()) {
+            $textBytemplate = $medicalHistory->getLifeHistory();
+        } else {
+            $textBytemplate = new TextByTemplate();
+            $textBytemplate->setTemplateType($templateType);
+            $medicalHistory->setLifeHistory($textBytemplate);
+        }
+
+        $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
+        $form = $this->createForm(TextByTemplateType::class, $textBytemplate, ['parameters' => $parameters]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $data = $request->request->all();
+
+            foreach($data['text_by_template'] as $key => $value){
+                $exp_key = explode('-', $key);
+                if($exp_key[0] == 'parameter'){
+                    $arr_result[] = $value;
+                }
+            }
+            $res = '';
+            foreach ($arr_result as $item) {
+                $parameter = $entityManager->getRepository(TemplateParameterText::class)->findOneBy([
+                    'id' => $item
+                ]);
+                $res .= '<p><strong>'.$parameter->getTemplateParameter()->getName().'. '.'</strong>'.  $parameter->getText() .'.</p>';
+            }
+            $textBytemplate->setText($res);
+
+            $entityManager->persist($textBytemplate);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('doctor_edit_anamnestic_data', ['id' => $patient->getId()]);
+        }
+
+        return $this->render(
+            self::TEMPLATE_PATH.'edit_anamnestic_data_anamnesis_of_life.html.twig', [
+                'entity' => $patient,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param Patient $patient
+     * @Route("/{id}/edit_anamnestic_data_anamnesis_of_life_by_template", name="doctor_edit_anamnestic_data_anamnesis_of_life_by_template", methods={"GET","POST"}, requirements={"id"="\d+"})
+     *
+     * @return RedirectResponse|Response
+     */
+    public function editAnamnesticDataAnamnesisOfLifeByTemplate(
+        Request $request,
+        Patient $patient,
+        TemplateTypeRepository $templateTypeRepository,
+        TemplateParameterRepository $templateParameterRepository
+    ) {
+        $template = $this->templateService->edit(); // <-- это обязательно!
+        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+        $templateType = $templateTypeRepository->findOneBy([
+            'id' => 1
+        ]);
+
+        if ($medicalHistory->getLifeHistory()) {
+            $textBytemplate = $medicalHistory->getLifeHistory();
+        } else {
+            $textBytemplate = new TextByTemplate();
+            $textBytemplate->setTemplateType($templateType);
+            $medicalHistory->setLifeHistory($textBytemplate);
+        }
+
+        $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
+        $form = $this->createForm(TextBySelectingTemplateType::class, $textBytemplate, ['type' => $templateType->getId()]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $data = $request->request->all();
+
+            $templateEntity = $this->getDoctrine()->getRepository(Template::class)->findOneBy([
+                'id'=>$data['text_by_selecting_template']['template']
+            ]);
+            $textBytemplate->setTemplate($templateEntity);
+            $res = '';
+            foreach ($templateEntity->getTemplateManyToManyTemplateParameterTexts() as $item) {
+                $res .= '<p><strong>'.$item->getTemplateParameterText()->getTemplateParameter()->getName().'. '. '</strong>'. $item->getTemplateParameterText()->getText() .'.</p>';
+            }
+
+            $textBytemplate->setText($res);
+
+            $entityManager->persist($textBytemplate);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('doctor_edit_anamnestic_data', ['id' => $patient->getId()]);
+        }
+
+        return $this->render(
+            self::TEMPLATE_PATH.'edit_anamnestic_data_anamnesis_of_life.html.twig', [
                 'entity' => $patient,
                 'form' => $form->createView(),
             ]
@@ -266,6 +402,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         TemplateTypeRepository $templateTypeRepository,
         TextByTemplateRepository $textByTemplateRepository
     ) {
+        $template = $this->templateService->edit(); // <-- это обязательно!
         $templateType = $templateTypeRepository->findOneBy([
             'id' => 3
         ]);

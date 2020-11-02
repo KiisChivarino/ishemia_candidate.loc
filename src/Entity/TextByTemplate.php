@@ -39,6 +39,11 @@ class TextByTemplate
      */
     private $patient;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\MedicalHistory", mappedBy="lifeHistory")
+     */
+    private $lifeHistory;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -99,6 +104,24 @@ class TextByTemplate
     public function setTemplateType(?TemplateType $templateType): self
     {
         $this->templateType = $templateType;
+
+        return $this;
+    }
+
+    public function getLifeHistory(): ?MedicalHistory
+    {
+        return $this->lifeHistory;
+    }
+
+    public function setLifeHistory(?MedicalHistory $lifeHistory): self
+    {
+        $this->lifeHistory = $lifeHistory;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newLifeHistory = null === $lifeHistory ? null : $this;
+        if ($lifeHistory->getLifeHistory() !== $newLifeHistory) {
+            $lifeHistory->setLifeHistory($newLifeHistory);
+        }
 
         return $this;
     }
