@@ -93,7 +93,7 @@ class TemplateController extends AdminAbstractController
             ['parameters' => $parameters],
             function (EntityActions $actions) {
                 $entityManager = $this->getDoctrine()->getManager();
-//                /** @var MedicalHistory $medicalHistory */
+
                 $template = $actions->getEntity();
                 $data = $actions->getRequest()->request->all();
 
@@ -114,11 +114,6 @@ class TemplateController extends AdminAbstractController
                     $entityManager->persist($templateManyToManyParameterText);
                 }
                 $entityManager->flush();
-//                    ? $entityManager->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
-//                    : null;
-//                $actions->getEntity()->setMedicalHistory($medicalHistory);
-//                $this->prepareFiles($actions->getForm()->get(self::FILES_COLLECTION_PROPERTY_NAME));
-//                $entityManager->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($actions->getEntity());
             }
         );
     }
@@ -168,17 +163,10 @@ class TemplateController extends AdminAbstractController
      */
     public function edit(Request $request, Template $template, TemplateParameterRepository $templateParameterRepository): Response
     {
-//        dd($template->getTemplateManyToManyTemplateParameterTexts()[1]->getTemplateParameterText()->getText());
         $parameters = $templateParameterRepository->findBy([
             'templateType' => $template->getTemplateType()
         ]);
-//        foreach ($parameters as $parameter) {
-//            foreach ($template->getTemplateManyToManyTemplateParameterTexts() as $text) {
-//                if ($text->getTemplateParameterText()->getTemplateParameter()->getId() == $parameter->getId()) {
-//
-//                }
-//            }
-//        }
+
         return $this->responseEdit(
             $request,
             $template,
@@ -189,17 +177,17 @@ class TemplateController extends AdminAbstractController
             ],
             function (EntityActions $actions) {
                 $entityManager = $this->getDoctrine()->getManager();
-//                /** @var MedicalHistory $medicalHistory */
+
                 $template = $actions->getEntity();
                 $data = $actions->getRequest()->request->all();
-//                dd($data);
+
                 foreach($data['template_edit'] as $key => $value){
                     $exp_key = explode('-', $key);
                     if($exp_key[0] == 'parameter'){
                         $arr_result[] = ['id' => $exp_key[2], 'value' => $value];
                     }
                 }
-//                dd($arr_result);
+
                 foreach ($arr_result as $item) {
                     if ($item['id'] == 'new') {
                         $templateManyToManyParameterText = new TemplateManyToManyTemplateParameterText();
@@ -213,7 +201,7 @@ class TemplateController extends AdminAbstractController
                             ])
                         ;
                     }
-//                    dd($templateManyToManyParameterText);
+
                     $templateManyToManyParameterText->setTemplateParameterText(
                         $entityManager->getRepository(TemplateParameterText::class)->findOneBy([
                             'id' => $item['value']
@@ -222,11 +210,6 @@ class TemplateController extends AdminAbstractController
                     $entityManager->persist($templateManyToManyParameterText);
                 }
                 $entityManager->flush();
-//                    ? $entityManager->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
-//                    : null;
-//                $actions->getEntity()->setMedicalHistory($medicalHistory);
-//                $this->prepareFiles($actions->getForm()->get(self::FILES_COLLECTION_PROPERTY_NAME));
-//                $entityManager->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($actions->getEntity());
             }
         );
     }
