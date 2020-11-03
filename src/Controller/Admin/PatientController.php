@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Logger\Logger;
 use App\Entity\MedicalHistory;
 use App\Entity\PatientAppointment;
 use App\Form\Admin\AuthUser\EditAuthUserType;
@@ -18,11 +17,13 @@ use App\Form\Admin\AuthUser\AuthUserType;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
+use App\Services\LoggerService\LogService;
 use App\Services\TemplateBuilders\PatientTemplate;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Log\Logger;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -56,9 +57,9 @@ class PatientController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param Logger $logger
+     * @param LogService $logger
      */
-    public function __construct(Environment $twig, RouterInterface $router, UserPasswordEncoderInterface $passwordEncoder, Logger $logger)
+    public function __construct(Environment $twig, RouterInterface $router, UserPasswordEncoderInterface $passwordEncoder, LogService $logger)
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new PatientTemplate($router->getRouteCollection(), get_class($this));
@@ -73,6 +74,7 @@ class PatientController extends AdminAbstractController
      * @param Request $request
      * @param PatientDataTableService $dataTableService
      *
+     * @param LogService $logService
      * @return Response
      */
     public function list(Request $request, PatientDataTableService $dataTableService): Response
@@ -171,7 +173,7 @@ class PatientController extends AdminAbstractController
                     ' successfully created!')
                 ->logCreateEvent();
             if (!$logger) {
-                dd($this->logger->getError());
+                $this->logger->getError();
                 // TODO:  when creating log fails
             }
             $this->addFlash('success', 'post.created_successfully');
@@ -256,6 +258,17 @@ class PatientController extends AdminAbstractController
             $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
             $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
             $this->getDoctrine()->getManager()->flush();
+            $logger = $this->logger
+                ->setUser($this->getUser())
+                ->setDescription(
+                    'Patient with id: ' . $patient->getId() .
+                    ' and FIO: ' . (new AuthUserInfoService())->getFIO($patient->getAuthUser()).
+                    ' successfully updated!')
+                ->logUpdateEvent();
+            if (!$logger) {
+                $this->logger->getError();
+                // TODO:  when creating log fails
+            }
             return $this->redirectToRoute($this->templateService->getRoute('list'));
         }
         return $this->render(
@@ -277,6 +290,17 @@ class PatientController extends AdminAbstractController
      */
     public function delete(Request $request, Patient $patient): Response
     {
+        $logger = $this->logger
+            ->setUser($this->getUser())
+            ->setDescription(
+                'Patient with id: ' . $patient->getId() .
+                ' and FIO: ' . (new AuthUserInfoService())->getFIO($patient->getAuthUser()).
+                ' successfully updated!')
+            ->logDeleteEvent();
+        if (!$logger) {
+            $this->logger->getError();
+            // TODO:  when creating log fails
+        }
         return $this->responseDelete($request, $patient);
     }
 }

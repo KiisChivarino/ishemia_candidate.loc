@@ -28,7 +28,7 @@ class LogAction
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isActive = 1;
+    private $enabled = true;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Logger\Log", mappedBy="action")
@@ -53,18 +53,6 @@ class LogAction
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getIsActive(): ?bool
-    {
-        return $this->isActive;
-    }
-
-    public function setIsActive(bool $isActive): self
-    {
-        $this->isActive = $isActive;
 
         return $this;
     }
@@ -103,5 +91,17 @@ class LogAction
     public function __toString()
     {
         return $this->getName();
+    }
+
+    public function getEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): self
+    {
+        $this->enabled = $enabled;
+
+        return $this;
     }
 }

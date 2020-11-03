@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Entity\AuthUser;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Services\LoggerService\LogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -136,14 +137,24 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-            return new RedirectResponse($targetPath);
-        }
         $authUser = $this->entityManager->getRepository(AuthUser::class)->findOneBy(
             [
                 'phone' => (new AuthUserInfoService())->clearUserPhone($this->getCredentials($request)['phone'])
             ]
         );
+        $log = new LogService($this->entityManager);
+
+        $logger = $log
+            ->setUser($authUser)
+            ->logLoginEvent();
+        if (!$logger) {
+            $log->getError();
+            // TODO:  when creating log fails
+        }
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return new RedirectResponse($targetPath);
+        }
+
         $roleTechName = (new AuthUserInfoService())->getRoleNames($this->entityManager->getRepository(AuthUser::class)->getRoles($authUser), true);
         $roles = Yaml::parseFile('..//config/services/roles.yaml');
         foreach ($roles['parameters'] as $roleData) {

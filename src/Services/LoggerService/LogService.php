@@ -1,34 +1,23 @@
 <?php
 
 
-namespace App\Controller\Logger;
+namespace App\Services\LoggerService;
 
 use App\Entity\AuthUser;
 use App\Entity\Logger\Log;
 use App\Entity\Logger\LogAction;
 use App\Services\InfoService\AuthUserInfoService;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 
-class Logger
+class LogService
 {
     const
         DEFAULT_USER_LOGIN_DESCRIPTION = 'User successfully logged in.',
         DEFAULT_USER_LOGOUT_DESCRIPTION = 'User successfully logged out.'
     ;
 
-
-    /**
-     * @var LogAction
-     */
-    private $action;
-
-    /**
-     * @var DateTime
-     */
-    private $dateTime;
 
     /**
      * @var string
@@ -98,7 +87,7 @@ class Logger
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
                 'name' => 'login/logout',
-                'isActive' => true
+                'enabled' => true
             ]),
             $this->description ?? self::DEFAULT_USER_LOGOUT_DESCRIPTION,
             new \DateTime('now')
@@ -108,12 +97,13 @@ class Logger
     /**
      * @return bool
      */
-    public function logLoginEvent() {
+    public function logLoginEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
                 'name' => 'login/logout',
-                'isActive' => true
+                'enabled' => true
             ]),
             $this->description ?? self::DEFAULT_USER_LOGIN_DESCRIPTION,
             new \DateTime('now')
@@ -123,12 +113,12 @@ class Logger
     /**
      * @return bool
      */
-    public function logCreateEvent() {
+    public function logCreateEvent(): bool {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
                 'name' => 'create',
-                'isActive' => true
+                'enabled' => true
             ]),
             $this->description,
             new \DateTime('now')
@@ -138,12 +128,12 @@ class Logger
     /**
      * @return bool
      */
-    public function logUpdateEvent() {
+    public function logUpdateEvent(): bool {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
                 'name' => 'update',
-                'isActive' => true
+                'enabled' => true
             ]),
             $this->description,
             new \DateTime('now')
@@ -153,12 +143,12 @@ class Logger
     /**
      * @return bool
      */
-    public function logDeleteEvent() {
+    public function logDeleteEvent(): bool {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
                 'name' => 'delete',
-                'isActive' => true
+                'enabled' => true
             ]),
             $this->description,
             new \DateTime('now')
@@ -167,7 +157,7 @@ class Logger
 
     /**
      * @param $user
-     * @return Logger
+     * @return LogService
      */
     public function setUser(AuthUser $user) {
 
@@ -178,7 +168,7 @@ class Logger
 
     /**
      * @param $error
-     * @return Logger
+     * @return LogService
      */
     public function setError($error) {
         $this->error = $error;
@@ -186,7 +176,7 @@ class Logger
     }
 
     /**
-     * @return Logger
+     * @return LogService
      */
     public function getError() {
         return $this->error;
@@ -194,7 +184,7 @@ class Logger
 
     /**
      * @param $description
-     * @return Logger
+     * @return LogService
      */
     public function setDescription($description) {
         $this->description = $description;

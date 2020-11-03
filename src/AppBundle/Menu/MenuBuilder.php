@@ -309,6 +309,23 @@ class MenuBuilder
                 'route' => 'hospital_list'
             ]
         );
+        $menu->addChild(
+            'log', [
+                'label' => 'Логи',
+            ]
+        )->setAttribute('class', 'sublist');
+        $menu['log']->addChild(
+            'log', [
+                'label' => 'Лог',
+                'route' => 'log_list'
+            ]
+        );
+        $menu['log']->addChild(
+            'logAction', [
+                'label' => 'Типы логов',
+                'route' => 'log_action_list'
+            ]
+        );
         foreach ($menu->getChildren() as $item) {
             foreach ($item->getChildren() as $childrenItem) {
                 if ($childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()) {
