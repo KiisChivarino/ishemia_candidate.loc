@@ -6,12 +6,15 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\PatientTestingResult;
-use App\Form\Admin\PatientTesting\PatientTestingType;
+use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
+use App\Form\Admin\PatientTesting\PatientTestingRequiredType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PatientTestingDataTableService;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\PatientTestingTemplate;
+use App\Services\MultiFormService\FormData;
+use App\Services\MultiFormService\MultiFormService;
+use App\Services\TemplateBuilders\Admin\PatientTestingTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,7 +64,8 @@ class PatientTestingController extends AdminAbstractController
         Request $request,
         FilterService $filterService,
         PatientTestingDataTableService $dataTableService
-    ): Response {
+    ): Response
+    {
         return $this->responseList(
             $request, $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
@@ -84,21 +88,28 @@ class PatientTestingController extends AdminAbstractController
     public function new(Request $request): Response
     {
         $patientTesting = new PatientTesting();
-        return $this->responseNew(
+        return $this->responseNewMultiForm(
             $request,
             $patientTesting,
-            PatientTestingType::class,
-            null,
-            [],
+            [
+                new FormData($patientTesting, PatientTestingRequiredType::class),
+                new FormData($patientTesting, PatientTestingNotRequiredType::class),
+            ],
             function (EntityActions $actions) {
-                $entityManager = $this->getDoctrine()->getManager();
                 /** @var MedicalHistory $medicalHistory */
                 $medicalHistory = $actions->getRequest()->query->get('medical_history_id')
-                    ? $entityManager->getRepository(MedicalHistory::class)->find($actions->getRequest()->query->get('medical_history_id'))
+                    ? $actions->getEntityManager()
+                        ->getRepository(MedicalHistory::class)
+                        ->find($actions->getRequest()->query->get('medical_history_id'))
                     : null;
                 $actions->getEntity()->setMedicalHistory($medicalHistory);
-                $this->prepareFiles($actions->getForm()->get(self::FILES_COLLECTION_PROPERTY_NAME));
-                $entityManager->getRepository(PatientTestingResult::class)->persistTestingResultsForTesting($actions->getEntity());
+                $this->prepareFiles(
+                    $actions->getForm()
+                        ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
+                        ->get(self::FILES_COLLECTION_PROPERTY_NAME)
+                );
+                $actions->getEntityManager()->getRepository(PatientTestingResult::class)
+                    ->persistTestingResultsForTesting($actions->getEntity());
             }
         );
     }
@@ -118,8 +129,16 @@ class PatientTestingController extends AdminAbstractController
             self::TEMPLATE_PATH,
             $patientTesting,
             [
-                'patientTestingFilterName' => $filterService->generateFilterName('patient_testing_result_list', PatientTesting::class),
-                'patientFilterName' => $filterService->generateFilterName('patient_testing_result_list', Patient::class)
+                'patientTestingFilterName' =>
+                    $filterService->generateFilterName(
+                        'patient_testing_result_list',
+                        PatientTesting::class
+                    ),
+                'patientFilterName' =>
+                    $filterService->generateFilterName(
+                        'patient_testing_result_list',
+                        Patient::class
+                    )
             ]
         );
     }
@@ -135,13 +154,17 @@ class PatientTestingController extends AdminAbstractController
      */
     public function edit(Request $request, PatientTesting $patientTesting): Response
     {
-        return $this->responseEdit(
+        return $this->responseEditMultiForm(
             $request,
             $patientTesting,
-            PatientTestingType::class,
-            [],
+            [
+                new FormData($patientTesting, PatientTestingRequiredType::class),
+                new FormData($patientTesting, PatientTestingNotRequiredType::class),
+            ],
             function (EntityActions $actions) use ($patientTesting) {
-                $this->prepareFiles($actions->getForm()->get(self::FILES_COLLECTION_PROPERTY_NAME));
+                $this->prepareFiles($actions->getForm()
+                    ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
+                    ->get(self::FILES_COLLECTION_PROPERTY_NAME));
             }
         );
     }

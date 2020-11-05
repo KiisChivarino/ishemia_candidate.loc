@@ -2,8 +2,10 @@
 
 namespace App\Services\Template;
 
+use Exception;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class TemplateService
@@ -13,8 +15,8 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class TemplateService
 {
-    /** @var string Путь к общим шаблонам crud админки */
-    public const DEFAULT_COMMON_TEMPLATE_PATH = 'admin/common_template/';
+    /** @var string Path to routes config file */
+    private const YAML_ROUTES_PATH = '../config/services/template/routes.yaml';
 
     /** @var array $routes Массив с роутами контроллера */
     private $routes;
@@ -28,18 +30,27 @@ class TemplateService
     /** @var array $items Template items */
     private $items;
 
+    /** @var string $resirectRouteName Названия роута для редиректа */
+    private $redirectRouteName;
+
+    /** @var array $redirectRouteParameters Parameters of route for redirect */
+    private $redirectRouteParameters;
+
     /**
      * TemplateService constructor.
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     * @param string $commonTemplatePath
+     * @param string $redirectRouteName
      */
-    public function __construct(RouteCollection $routeCollection, string $className)
+    public function __construct(RouteCollection $routeCollection, string $className, string $commonTemplatePath, string $redirectRouteName)
     {
         $this->routes = $this->getRoutesFromRouteCollection($routeCollection, $className);
         $this->templatePath = $className::TEMPLATE_PATH;
-        $this->commonTemplatePath = self::DEFAULT_COMMON_TEMPLATE_PATH;
         $this->items = [];
+        $this->setCommonTemplatePath($commonTemplatePath);
+        $this->setRedirectRoute($this->getRoute($redirectRouteName) ? $this->getRoute($redirectRouteName) : $this->getRoute('index'));
     }
 
     /**
@@ -72,6 +83,10 @@ class TemplateService
             if ($routeInfo[0] == $className) {
                 $routes[$routeInfo[1]] = $key;
             }
+        }
+        $yaml = Yaml::parseFile(self::YAML_ROUTES_PATH);
+        if (isset($yaml['parameters'])) {
+            $routes['index'] = $yaml['parameters']['index'];
         }
         return $routes;
     }
@@ -110,6 +125,16 @@ class TemplateService
     }
 
     /**
+     * @param string $commonTemplatePath
+     * @return $this
+     */
+    public function setCommonTemplatePath(string $commonTemplatePath)
+    {
+        $this->commonTemplatePath = $commonTemplatePath;
+        return $this;
+    }
+
+    /**
      * Returns template items
      *
      * @return array
@@ -141,7 +166,7 @@ class TemplateService
      */
     public function getRoute(string $route)
     {
-        return array_key_exists($route, $this->getRoutes()) ? $this->getRoutes()[$route] : null;
+        return array_key_exists($route, $this->getRoutes()) ? $this->getRoutes()[$route] : $this->redirectRouteName;
     }
 
     /**
@@ -165,6 +190,57 @@ class TemplateService
     {
         foreach ($templateItems as $item) {
             $this->setTemplateItem($item);
+        }
+    }
+
+    /**
+     * @param string $redirectRouteName
+     * @param array $redirectRouteParameters
+     * @return TemplateService
+     */
+    public function setRedirectRoute(string $redirectRouteName, array $redirectRouteParameters = []): self
+    {
+        $this->redirectRouteParameters = $redirectRouteParameters;
+        $this->redirectRouteName = $redirectRouteName;
+
+        return $this;
+    }
+
+    /**
+     * Returns name of route for redirect
+     * @return string
+     */
+    public function getRedirectRouteName(): string
+    {
+        return $this->redirectRouteName;
+    }
+
+    /**
+     * Returns parameters of route for redirect
+     * @return array|null
+     */
+    public function getRedirectRouteParameters(): ?array
+    {
+        return $this->redirectRouteParameters;
+    }
+
+    /**
+     * Returns template file name with path
+     * @param string $templateName
+     * @param string $projectDir
+     * @return string
+     * @throws Exception
+     */
+    public function getTemplateFullName(string $templateName, string $projectDir): string
+    {
+        $templatePathFullName = $this->templatePath . $templateName . '.html.twig';
+        $commonPathFullName = $this->getCommonTemplatePath() . $templateName . '.html.twig';
+        if (is_file($projectDir . '/templates/' . $commonPathFullName)) {
+            return $commonPathFullName;
+        } elseif (is_file($projectDir . '/templates/' . $templatePathFullName)) {
+            return $templatePathFullName;
+        } else {
+            throw new Exception('Файл шаблона не найден! Искали по адресам: "' . $templatePathFullName . '", "' . $commonPathFullName . '"');
         }
     }
 }

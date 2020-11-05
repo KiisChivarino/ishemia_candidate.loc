@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
-use App\Form\Admin\PatientTesting\PatientTestingNewType;
+use App\Form\Admin\PatientTesting\PatientTestingRequiredType;
 use App\Form\Admin\PrescriptionTestingType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
@@ -13,8 +13,8 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
-use App\Services\TemplateBuilders\PrescriptionTestingTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
+use App\Services\MultiFormService\FormData;
+use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,7 +57,11 @@ class PrescriptionTestingController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, PrescriptionTestingDataTableService $dataTableService, FilterService $filterService): Response
+    public function list(
+        Request $request,
+        PrescriptionTestingDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
     {
         return $this->responseList(
             $request, $dataTableService,
@@ -81,46 +85,40 @@ class PrescriptionTestingController extends AdminAbstractController
     {
         if ($request->query->get('prescription_id')) {
             /** @var Prescription $prescription */
-            $prescription = $this->getDoctrine()->getManager()->getRepository(Prescription::class)->find($request->query->get('prescription_id'));
+            $prescription = $this->getDoctrine()->getManager()->getRepository(Prescription::class)
+                ->find($request->query->get('prescription_id'));
             if (!$prescription || !is_a($prescription, Prescription::class)) {
-                $this->addFlash('warning', 'Назначение на консультацию не может быть добавлено: назначение не найдено!');
+                $this->addFlash(
+                    'warning',
+                    'Назначение на консультацию не может быть добавлено: назначение не найдено!'
+                );
                 return $this->redirectToRoute($this->templateService->getRoute('new'));
-            }
-        }
-        $template = $this->templateService->new();
-        $patientTesting = (new PatientTesting())
-            ->setEnabled(true)
-            ->setProcessed(false)
-            ->setMedicalHistory($prescription->getMedicalHistory());
-        $prescriptionTesting = (new PrescriptionTesting())
-            ->setPrescription($prescription)
-            ->setEnabled(true)
-            ->setPatientTesting($patientTesting)
-            ->setInclusionTime(new DateTime());
-        return $this->responseFormTemplate(
-            $request, $prescriptionTesting,
-            $this->createFormBuilder()
-                ->setData(
+            } else {
+                $patientTesting = (new PatientTesting())
+                    ->setEnabled(true)
+                    ->setProcessed(false)
+                    ->setMedicalHistory($prescription->getMedicalHistory());
+                $prescriptionTesting = (new PrescriptionTesting())
+                    ->setPrescription($prescription)
+                    ->setEnabled(true)
+                    ->setPatientTesting($patientTesting)
+                    ->setInclusionTime(new DateTime());
+                return $this->responseNewMultiForm(
+                    $request,
+                    $prescriptionTesting,
                     [
-                        'prescriptionTesting' => $prescriptionTesting,
-                        'patientTesting' => $patientTesting
+                        new FormData($prescriptionTesting, PrescriptionTestingType::class),
+                        new FormData($patientTesting, PatientTestingRequiredType::class),
                     ]
-                )
-                ->add(
-                    'prescriptionTesting', PrescriptionTestingType::class, [
-                        'label' => 'Назначение обследования',
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->add(
-                    'patientTesting', PatientTestingNewType::class, [
-                        'label' => 'Новое обследование',
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->getForm(),
-            self::RESPONSE_FORM_TYPE_NEW
-        );
+                );
+            }
+        } else {
+            $this->addFlash(
+                'warning',
+                'Назначение на консультацию не может быть добавлено: необходим код назначения!'
+            );
+            return $this->redirectToRoute($this->templateService->getRoute('list'));
+        }
     }
 
     /**
@@ -135,10 +133,16 @@ class PrescriptionTestingController extends AdminAbstractController
     {
         return $this->responseShow(
             self::TEMPLATE_PATH, $prescriptionTesting, [
-            'prescriptionTitle' => (new PrescriptionInfoService())->getPrescriptionTitle($prescriptionTesting->getPrescription()),
-            'patientTestingInfo' => (new PatientTestingInfoService())->getPatientTestingInfoString($prescriptionTesting->getPatientTesting()),
-            'staffFio' => (new AuthUserInfoService())->getFIO($prescriptionTesting->getStaff()->getAuthUser(), true),
-        ]
+                'prescriptionTitle' =>
+                    (new PrescriptionInfoService())
+                        ->getPrescriptionTitle($prescriptionTesting->getPrescription()),
+                'patientTestingInfo' =>
+                    (new PatientTestingInfoService())
+                        ->getPatientTestingInfoString($prescriptionTesting->getPatientTesting()),
+                'staff' =>
+                    (new AuthUserInfoService())
+                        ->getFIO($prescriptionTesting->getStaff()->getAuthUser(), true),
+            ]
         );
     }
 

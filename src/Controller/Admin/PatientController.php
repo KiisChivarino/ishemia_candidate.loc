@@ -4,12 +4,12 @@ namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
 use App\Entity\PatientAppointment;
-use App\Form\Admin\AuthUser\EditAuthUserType;
-use App\Form\Admin\AuthUser\NewAuthUserType;
+use App\Form\Admin\AuthUser\AuthUserPasswordType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\Patient\PatientType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\StaffType;
+use App\Services\ControllerGetters\EntityActions;
 use App\Services\DataTable\Admin\PatientDataTableService;
 use App\Entity\AuthUser;
 use App\Entity\Patient;
@@ -17,8 +17,8 @@ use App\Form\Admin\AuthUser\AuthUserType;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
-use App\Services\TemplateBuilders\PatientTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
+use App\Services\MultiFormService\FormData;
+use App\Services\TemplateBuilders\Admin\PatientTemplate;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -84,85 +84,45 @@ class PatientController extends AdminAbstractController
      */
     public function new(Request $request, AuthUserInfoService $authUserInfoService): Response
     {
-        $template = $this->templateService->new();
         $authUser = (new AuthUser())->setEnabled(true);
         $patient = (new Patient())->setAuthUser($authUser);
         $medicalHistory = (new MedicalHistory)->setPatient($patient);
         $patientAppointment = (new PatientAppointment())->setMedicalHistory($medicalHistory);
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    'authUser' => $authUser,
-                    'newAuthUser' => $authUser,
-                    'patient' => $patient,
-                    'medicalHistory' => $medicalHistory,
-                    'patientAppointmentStaff' => $patientAppointment,
-                    'patientAppointmentType' => $patientAppointment,
-                ]
-            )
-            ->add(
-                'authUser', AuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'newAuthUser', NewAuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'patient', PatientType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'medicalHistory', MainDiseaseType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'patientAppointmentStaff', StaffType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'patientAppointmentType', AppointmentTypeType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $authUser->setRoles(self::PATIENT_ROLE);
-            $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
-            $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-            $authUser->setPassword($encodedPassword);
-            $em = $this->getDoctrine()->getManager();
-            $em->getConnection()->beginTransaction();
-            try {
-                $em->persist($authUser);
-                $em->flush();
-                $em->getRepository(Patient::class)->persistPatient($patient, $authUser, $medicalHistory, $patientAppointment);
-                $em->flush();
-                $em->getConnection()->commit();
-            } catch (Exception $e) {
-                $em->getConnection()->rollBack();
-                throw $e;
+        return $this->responseNewMultiForm(
+            $request,
+            $patient,
+            [
+                new FormData($authUser, AuthUserType::class),
+                new FormData(
+                    $authUser,
+                    AuthUserPasswordType::class,
+                    [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => true]
+                ),
+                new FormData($patient, PatientType::class),
+                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData($patientAppointment, StaffType::class),
+                new FormData($patientAppointment, AppointmentTypeType::class),
+            ],
+            function (EntityActions $actions)
+            use ($authUser, $patient, $authUserInfoService, $medicalHistory, $patientAppointment) {
+                $patient->getAuthUser()->setRoles(self::PATIENT_ROLE);
+                $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
+                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
+                $authUser->setPassword($encodedPassword);
+                $em = $actions->getEntityManager();
+                $em->getConnection()->beginTransaction();
+                try {
+                    $em->persist($authUser);
+                    $em->flush();
+                    $em->getRepository(Patient::class)
+                        ->persistPatient($patient, $authUser, $medicalHistory, $patientAppointment);
+                    $em->flush();
+                    $em->getConnection()->commit();
+                } catch (Exception $e) {
+                    $em->getConnection()->rollBack();
+                    throw $e;
+                }
             }
-            $this->addFlash('success', 'post.created_successfully');
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
-        }
-        return $this->render(
-            $this->templateService->getCommonTemplatePath().'new.html.twig', [
-                'patient' => $patient,
-                'form' => $form->createView(),
-            ]
         );
     }
 
@@ -182,7 +142,8 @@ class PatientController extends AdminAbstractController
             $patient,
             [
                 'bodyMassIndex' => (new PatientInfoService())->getBodyMassIndex($patient),
-                'medicalHistoryFilterName' => $filterService->generateFilterName('medical_history_list', Patient::class),
+                'medicalHistoryFilterName' =>
+                    $filterService->generateFilterName('medical_history_list', Patient::class),
             ]
         );
     }
@@ -201,49 +162,22 @@ class PatientController extends AdminAbstractController
         Request $request,
         Patient $patient,
         AuthUserInfoService $authUserInfoService
-    ): Response {
-        $template = $this->templateService->edit();
+    ): Response
+    {
         $authUser = $patient->getAuthUser();
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    'authUser' => $authUser,
-                    'editAuthUser' => $authUser,
-                    'patient' => $patient,
-                ]
-            )
-            ->add(
-                'authUser', AuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'editAuthUser', EditAuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'patient', PatientType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
         $oldPassword = $authUser->getPassword();
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
-            $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
-        }
-        return $this->render(
-            $this->templateService->getCommonTemplatePath().'edit.html.twig', [
-                'entity' => $patient,
-                'form' => $form->createView(),
-            ]
+        return $this->responseEditMultiForm(
+            $request,
+            $patient,
+            [
+                new FormData($authUser, AuthUserType::class),
+                new FormData($authUser, AuthUserPasswordType::class, ['isPasswordRequired' => false]),
+                new FormData($patient, PatientType::class),
+            ],
+            function () use ($authUser, $oldPassword, $authUserInfoService) {
+                $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
+                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
+            }
         );
     }
 

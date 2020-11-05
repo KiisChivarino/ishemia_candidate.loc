@@ -8,7 +8,6 @@ import './hospitalByCity';
 import '../css/doctorOffice.css';
 import './tinymce';
 import './initDatatable';
-
 import './fileUpload';
 
 require('../images/operation-icon-1.svg');

@@ -1,0 +1,12 @@
+{% extends 'doctorOffice/index.html.twig' %}
+{% block title %}{{ template.items.edit.content.discharge_epicrisis }}{% endblock %}
+{% block content %}
+    {% include (template.templatePath~'content_wrapper_top.html.twig') %}
+    <div class="patient-edit-wrapper">
+        <div class="popup__wrapper acc"><h2 class="title accordion active">{{ template.items.edit.content.discharge_epicrisis }}</h2>
+            <div class="popup__inner panel">
+                {{ include(template.items.form.path~'_form_discharge_epicrisis.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

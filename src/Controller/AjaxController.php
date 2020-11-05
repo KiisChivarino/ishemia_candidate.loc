@@ -1,12 +1,12 @@
 <?php
 
-
 namespace App\Controller;
-
 
 use App\Entity\City;
 use App\Entity\Complaint;
 use App\Entity\Diagnosis;
+use App\Entity\Hospital;
+use App\Entity\Medicine;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,7 +65,7 @@ class AjaxController extends AbstractController
      *
      * @return Response
      */
-    public function findHospitalAjax(Request $request): Response
+    public function findCityAjax(Request $request): Response
     {
         $string = $request->query->get('q');
         $entityManager = $this->getDoctrine()->getManager();
@@ -73,6 +73,47 @@ class AjaxController extends AbstractController
         return new Response(
             json_encode(
                 $this->getAjaxResultArray($cities)
+            )
+        );
+    }
+
+    /**
+     * Ищет аяксом больницы
+     * @Route("/find_hospital_ajax", name="find_hospital_ajax", methods={"GET"})
+     *
+     * @param Request $request
+     *
+     * @return false|string
+     */
+    public function findHospitalAjax(Request $request)
+    {
+        $city = $request->get('city');
+        $string = $request->query->get('q');
+        $entityManager = $this->getDoctrine()->getManager();
+        $hospitals = $entityManager->getRepository(Hospital::class)->findHospitals($string, $city);
+        return new Response(
+            json_encode(
+                $this->getAjaxResultArray($hospitals)
+            )
+        );
+    }
+
+    /**
+     * Find medicine by ajax
+     * @Route("/find_medicine_ajax", name="find_medicine_ajax", methods={"GET"})
+     *
+     * @param Request $request
+     *
+     * @return false|string
+     */
+    public function findMedicineAjax(Request $request)
+    {
+        $string = $request->query->get('q');
+        $entityManager = $this->getDoctrine()->getManager();
+        $medicines = $entityManager->getRepository(Medicine::class)->findMedicines($string);
+        return new Response(
+            json_encode(
+                $this->getAjaxResultArray($medicines)
             )
         );
     }

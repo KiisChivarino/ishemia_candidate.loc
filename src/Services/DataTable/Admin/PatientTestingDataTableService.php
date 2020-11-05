@@ -73,9 +73,9 @@ class PatientTestingDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'plannedDate', DateTimeColumn::class, [
+                'plannedTime', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('plannedDate'),
-                    'format' => 'd.m.Y',
+                    'format' => 'd.m.Y H:m',
                     'searchable' => false
                 ]
             )

@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Position;
 use App\Form\Admin\PositionType;
 use App\Services\DataTable\Admin\PositionDataTableService;
-use App\Services\TemplateBuilders\PositionTemplate;
+use App\Services\TemplateBuilders\Admin\PositionTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

@@ -1,0 +1,36 @@
+{% extends 'admin/index.html.twig' %}
+{% block title %}{{ template.items.list.content.title }}{% endblock %}
+{% block h1 %}<h1>{{ template.items.list.content.h1 }}</h1>{% endblock %}
+{% block content %}
+    <div class="tabs">
+        <ul class="content-wrapper__nav tabs__caption">
+        {% if template.items.filter.isEnabled %}
+            {{ include(
+                template.items.filter.path~'_filter_form.html.twig'
+            ) }}
+        {% endif %}
+        {% if template.items.new.isEnabled %}
+            <div class="content-wrapper__select">
+                <a style="text-decoration: none;" href="{{ path(template.routes.new) }}" class="main-button">{{ template.items.list.content.toNew }}</a>
+            </div>
+        {% endif %}
+        </ul>
+        {{ include('flashmessages.html.twig') }}
+        <div class="box-body table-responsive table-wrapper table-pacients tabs__content active">
+            <div
+                    id="datatable" class="dataTables_wrapper form-inline dt-bootstrap"
+                    data-table_settings='{{ datatable_settings(datatable) }}'
+            >
+            <span class="label label-info">
+                <i class="fa fa-sync-alt fa-spin fa-1x fa-fw"></i>
+                {{ template.items.list.content.loadTableData }}
+            </span>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatables') }}
+    {{ encore_entry_script_tags('initDatatable') }}
+{% endblock %}

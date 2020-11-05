@@ -196,7 +196,7 @@
                 <div class="statement__head">
                     <h3 class="subtitle">{{ template.items.show.content.objectiveData }}</h3>
                     <a class="back-page"
-                       href="{{ path('doctor_edit_objective_data', {'id': entity.id}) }}">
+                       href="{{ path('doctor_edit_objective_data', {'id': firstAppointment.id}) }}">
                         <span class="statement__edit">{{ template.items.show.content.addObjectiveData }}</span>
                     </a>
                 </div>
@@ -281,7 +281,7 @@
             <div class="statement__head">
                 <h3 class="subtitle">{{ template.items.show.content.dischargeEpicrisis }}</h3>
                 <a class="back-page"
-                   href="{{ path('doctor_edit_objective_data', {'id': entity.id}) }}">
+                   href="{{ path('doctor_edit_discharge_epicrisis', {'id': patientDischargeEpicrisis.id}) }}">
                     <span class="statement__edit">{{ template.items.show.content.addDischargeEpicrises }}</span>
                 </a>
             </div>

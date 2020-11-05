@@ -5,12 +5,13 @@ namespace App\Controller\Admin;
 use App\Entity\AuthUser;
 use App\Form\Admin\AuthUser\AuthUserRoleType;
 use App\Form\Admin\AuthUser\AuthUserType;
-use App\Form\Admin\AuthUser\EditAuthUserType;
+use App\Form\Admin\AuthUser\AuthUserPasswordType;
+use App\Services\ControllerGetters\EntityActions;
 use App\Services\DataTable\Admin\AuthUserDataTableService;
 use App\Services\InfoService\AuthUserInfoService;
-use App\Services\TemplateBuilders\AuthUserTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
-use Symfony\Component\Form\Form;
+use App\Services\MultiFormService\FormData;
+use App\Services\MultiFormService\MultiFormService;
+use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -76,7 +77,8 @@ class AuthUserController extends AdminAbstractController
             self::TEMPLATE_PATH,
             $authUser,
             [
-                'roles' => $this->getDoctrine()->getManager()->getRepository(AuthUser::class)->getRoles($authUser)
+                'roles' => $this->getDoctrine()->getManager()->getRepository(AuthUser::class)
+                    ->getRoles($authUser)
             ]
         );
     }
@@ -95,50 +97,37 @@ class AuthUserController extends AdminAbstractController
         Request $request,
         AuthUser $authUser,
         AuthUserInfoService $authUserInfoService
-    ): Response {
+    ): Response
+    {
         $oldPassword = $authUser->getPassword();
-
-        /** @var Form $form */
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    'authUser' => $authUser,
-                    'editAuthUser' => $authUser,
-                ]
-            )
-            ->add(
-                'authUser', AuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $this->templateService->edit($authUser)->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'editAuthUser', EditAuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $this->templateService->edit($authUser)->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'onlyRole', AuthUserRoleType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $this->templateService->edit($authUser)->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $authUserInfoService->updatePassword($this->passwordEncoder, $authUser, $oldPassword);
-            $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->getRepository(AuthUser::class)->addUserFromAdmin($form, $authUser);
-            $entityManager->flush();
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
-        }
-        return $this->render(
-            $this->templateService->getCommonTemplatePath().'edit.html.twig', [
-                'entity' => $authUser,
-                'form' => $form->createView(),
-            ]
+        return $this->responseEditMultiForm(
+            $request,
+            $authUser,
+            [
+                new FormData($authUser, AuthUserType::class),
+                new FormData(
+                    $authUser,
+                    AuthUserPasswordType::class,
+                    [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false]
+                ),
+                new FormData(
+                    $authUser,
+                    AuthUserRoleType::class,
+                    [],
+                    false
+                ),
+            ],
+            function (EntityActions $actions) use ($oldPassword, $authUserInfoService) {
+                /** @var AuthUser $authUser */
+                $authUser = $actions->getEntity();
+                $authUserInfoService->updatePassword($this->passwordEncoder, $authUser, $oldPassword);
+                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
+                $actions->getEntityManager()->getRepository(AuthUser::class)->addUserFromAdmin(
+                    $actions->getForm(),
+                    MultiFormService::getFormName(AuthUserType::class),
+                    MultiFormService::getFormName(AuthUserRoleType::class)
+                );
+            }
         );
     }
 

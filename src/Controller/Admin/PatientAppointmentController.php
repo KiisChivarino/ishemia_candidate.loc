@@ -16,8 +16,8 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\InfoService\MedicalRecordInfoService;
-use App\Services\TemplateBuilders\PatientAppointmentTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
+use App\Services\MultiFormService\FormData;
+use App\Services\TemplateBuilders\Admin\PatientAppointmentTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,6 +36,14 @@ class PatientAppointmentController extends AdminAbstractController
 {
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/patient_appointment/';
+
+    /** @var string Flash message stating that no medical history was found */
+    private const FLASH_ERROR_MEDICAL_HISTORY_NOT_FOUND =
+        'Прием пациента не может быть добавлен: история болезни не найдена!';
+    /** @var string Route for redirect after error "Medical history not found" */
+    private const FLASH_ERROR_REDIRECT_ROUTE = 'medical_history_list';
+    /** @var string Get parameter name of medical history id */
+    private const MEDICAL_HISTORY_ID_GET_PARAMETER = 'medical_history_id';
 
     /**
      * PatientAppointmentController constructor.
@@ -59,7 +67,11 @@ class PatientAppointmentController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, PatientAppointmentDataTableService $dataTableService, FilterService $filterService): Response
+    public function list(
+        Request $request,
+        PatientAppointmentDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
     {
         return $this->responseList(
             $request, $dataTableService,
@@ -81,51 +93,34 @@ class PatientAppointmentController extends AdminAbstractController
      */
     public function new(Request $request): Response
     {
-        if ($request->query->get('medical_history_id')) {
-            $medicalHistory = $this->getDoctrine()->getManager()->getRepository(MedicalHistory::class)->find($request->query->get('medical_history_id'));
+        if ($request->query->get(self::MEDICAL_HISTORY_ID_GET_PARAMETER)) {
+            $medicalHistory = $this->getDoctrine()->getManager()->getRepository(MedicalHistory::class)
+                ->find($request->query->get(self::MEDICAL_HISTORY_ID_GET_PARAMETER));
         }
         if (!isset($medicalHistory) || !is_a($medicalHistory, MedicalHistory::class)) {
-            $this->addFlash('warning', 'Прием пациента не может быть добавлен: история болезни не найдена!');
-            return $this->redirectToRoute('medical_history_list');
+            $this->addFlash('warning', self::FLASH_ERROR_MEDICAL_HISTORY_NOT_FOUND);
+            return $this->redirectToRoute(self::FLASH_ERROR_REDIRECT_ROUTE);
         }
-        $template = $this->templateService->new();
-        $patientAppointment = (new PatientAppointment())->setMedicalHistory($medicalHistory)->setIsConfirmed(true);
-        return $this->responseFormTemplate(
+        $patientAppointment = (new PatientAppointment())
+            ->setMedicalHistory($medicalHistory)->setIsConfirmed(true);
+        return $this->responseNewMultiForm(
             $request,
             $patientAppointment,
-            $this->createFormBuilder()
-                ->setData(
-                    [
-                        'patientAppointment' => $patientAppointment,
-                        'confirmed' => $patientAppointment,
-                        'staff' => $patientAppointment,
-                        'appointmentType' => $patientAppointment,
-                    ]
-                )
-                ->add(
-                    'patientAppointment', PatientAppointmentType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->add(
-                    'staff', StaffType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->add(
-                    'appointmentType', AppointmentTypeType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->getForm(),
-            self::RESPONSE_FORM_TYPE_NEW,
+            [
+                new FormData($patientAppointment, PatientAppointmentType::class),
+                new FormData($patientAppointment, StaffType::class),
+                new FormData($patientAppointment, AppointmentTypeType::class),
+            ],
             function (EntityActions $actions) use ($medicalHistory) {
                 /** @var PatientAppointment $patientAppointment */
                 $patientAppointment = $actions->getEntity();
-                $patientAppointment->setMedicalRecord($this->getDoctrine()->getRepository(MedicalRecord::class)->getMedicalRecord($medicalHistory));
+                $patientAppointment->setMedicalRecord(
+                    $this
+                        ->getDoctrine()
+                        ->getRepository(MedicalRecord::class)
+                        ->getMedicalRecord($medicalHistory)
+                );
+                $patientAppointment->setIsConfirmed(false);
             }
         );
     }
@@ -142,9 +137,13 @@ class PatientAppointmentController extends AdminAbstractController
     {
         return $this->responseShow(
             self::TEMPLATE_PATH, $patientAppointment, [
-                'medicalHistoryTitle' => (new MedicalHistoryInfoService())->getMedicalHistoryTitle($patientAppointment->getMedicalHistory()),
-                'medicalRecordTitle' => (new MedicalRecordInfoService())->getMedicalRecordTitle($patientAppointment->getMedicalRecord()),
-                'staffFio' => $patientAppointment->getStaff() ? (new AuthUserInfoService())->getFIO($patientAppointment->getStaff()->getAuthUser(), true) : '',
+                'medicalHistoryTitle' =>
+                    (new MedicalHistoryInfoService())->getMedicalHistoryTitle($patientAppointment->getMedicalHistory()),
+                'medicalRecordTitle' =>
+                    (new MedicalRecordInfoService())->getMedicalRecordTitle($patientAppointment->getMedicalRecord()),
+                'staffFio' => $patientAppointment->getStaff()
+                    ? (new AuthUserInfoService())->getFIO($patientAppointment->getStaff()->getAuthUser(), true)
+                    : '',
             ]
         );
     }
@@ -160,37 +159,15 @@ class PatientAppointmentController extends AdminAbstractController
      */
     public function edit(Request $request, PatientAppointment $patientAppointment): Response
     {
-        $template = $this->templateService->edit();
-        return $this->responseFormTemplate(
-            $request, $patientAppointment,
-            $this->createFormBuilder()
-                ->setData(
-                    [
-                        'patientAppointment' => $patientAppointment,
-                        'confirmed' => $patientAppointment,
-                        'staff' => $patientAppointment,
-                    ]
-                )
-                ->add(
-                    'patientAppointment', PatientAppointmentType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->add(
-                    'confirmed', ConfirmedType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->add(
-                    'staff', StaffType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->getForm(),
-            self::RESPONSE_FORM_TYPE_EDIT
+        return $this->responseEditMultiForm(
+            $request,
+            $patientAppointment,
+            [
+                new FormData($patientAppointment, PatientAppointmentType::class),
+                new FormData($patientAppointment, StaffType::class),
+                new FormData($patientAppointment, AppointmentTypeType::class),
+                new FormData($patientAppointment, ConfirmedType::class),
+            ]
         );
     }
 

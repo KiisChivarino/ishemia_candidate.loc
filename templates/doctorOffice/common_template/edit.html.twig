@@ -1,0 +1,30 @@
+{% extends 'admin/index.html.twig' %}
+{% block title %}{{ template.items.edit.content.title }}{% endblock %}
+{#{% block h1 %}<h1>{{ template.items.edit.content.h1 }}</h1>{% endblock %}#}
+{% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            {% if template.items.list.isEnabled %}
+                <a class="back-page" href="{{ path(template.routes.list) }}">{{ template.items.edit.content.toList }}</a>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="adm-users-edit">
+        <h2>{{ template.items.edit.content.h1 }}</h2>
+        {{ include('flashmessages.html.twig') }}
+        {% if template.items.filter.isEnabled %}
+            {{ include(template.items.filter.path~'_filter_form.html.twig') }}
+        {% endif %}
+        {% if template.items.form.isEnabled %}
+            {{ include(
+                template.items.form.path~'_form.html.twig',
+                {'button_label': template.items.form.content.formButtonLabel}
+            ) }}
+        {% endif %}
+        <div class="buttons">
+            {% if template.items.delete.isEnabled %}
+                {{ include(template.items.delete.path~'_delete_form.html.twig') }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

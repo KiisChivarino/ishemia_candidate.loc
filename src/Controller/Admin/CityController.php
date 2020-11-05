@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\City;
 use App\Form\Admin\CityType;
 use App\Services\DataTable\Admin\CityDataTableService;
-use App\Services\TemplateBuilders\CityTemplate;
+use App\Services\TemplateBuilders\Admin\CityTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

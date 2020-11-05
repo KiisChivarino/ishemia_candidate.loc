@@ -7,6 +7,7 @@ use App\Entity\PatientTestingFile;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Services\MultiFormService\MultiFormService;
 use App\Services\Template\TemplateService;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
@@ -50,6 +51,9 @@ abstract class AppAbstractController extends AbstractController
     /** @var string "edit" type of form */
     protected const RESPONSE_FORM_TYPE_EDIT = 'edit';
 
+    /** @var string "new" type of form */
+    protected const RESPONSE_FORM_TYPE_NEW = 'new';
+
     /**
      * Отображает действия с записью в таблице datatables
      *
@@ -59,7 +63,7 @@ abstract class AppAbstractController extends AbstractController
     {
         return function ($value) {
             return $this->render(
-                $this->templateService->getCommonTemplatePath().'tableActions.html.twig', [
+                $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig', [
                     'rowId' => $value,
                     'template' => $this->templateService
                 ]
@@ -91,7 +95,8 @@ abstract class AppAbstractController extends AbstractController
         Request $request,
         AdminDatatableService $dataTableService,
         ?FilterLabels $filterLabels = null
-    ): Response {
+    ): Response
+    {
         $template = $this->templateService->list($filterLabels ? $filterLabels->getFilterService() : null);
         if ($filterLabels) {
             $filters = $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray());
@@ -106,7 +111,7 @@ abstract class AppAbstractController extends AbstractController
             return $table->getResponse();
         }
         return $this->render(
-            $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath().'list.html.twig', [
+            $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath() . 'list.html.twig', [
                 'datatable' => $table,
                 'filters' => $template->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
             ]
@@ -147,7 +152,7 @@ abstract class AppAbstractController extends AbstractController
     {
         $this->templateService->show($entity);
         $parameters['entity'] = $entity;
-        return $this->render($templatePath.'show.html.twig', $parameters);
+        return $this->render($templatePath . 'show.html.twig', $parameters);
     }
 
     /**
@@ -156,67 +161,71 @@ abstract class AppAbstractController extends AbstractController
      * @param Request $request
      * @param object $entity
      * @param FormInterface $form
-     * @param string $responseFormType
+     * @param string $formName
      * @param Closure|null $entityActions
      *
      * @return RedirectResponse|Response
+     * @throws Exception
      */
     public function responseFormTemplate(
         Request $request,
         object $entity,
         FormInterface $form,
-        string $responseFormType,
+        string $formName,
         ?Closure $entityActions = null
-    ) {
+    )
+    {
         try {
             $form->handleRequest($request);
         } catch (Exception $e) {
             $this->addFlash('error', 'Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...');
             return $this->render(
-                $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+                $this->templateService->getCommonTemplatePath() . $formName . '.html.twig', [
                     'staff' => $entity,
                     'form' => $form->createView(),
                 ]
             );
         }
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            if ($entityActions) {
-                $entityActionsObject = new EntityActions($entity, $request, $entityManager, $form);
-                $entityActions($entityActionsObject);
+            try {
+                $entityManager = $this->getDoctrine()->getManager();
+                if ($entityActions) {
+                    $entityActionsObject = new EntityActions($entity, $request, $entityManager, $form);
+                    $actionsResult = $entityActions($entityActionsObject);
+                    if (is_a($actionsResult, Response::class)) {
+                        return $actionsResult;
+                    }
+                }
+                $entityManager->persist($entity);
+                $entityManager->flush();
+            } catch (DBALException $e) {
+                $this->addFlash('error', 'Не удалось сохранить запись!');
+                return $this->render(
+                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig', [
+                        'entity' => $entity,
+                        'form' => $form->createView(),
+                    ]
+                );
+            } catch (Exception $e) {
+                $this->addFlash('error', 'Ошибка cохранения записи!');
+                return $this->render(
+                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig', [
+                        'entity' => $entity,
+                        'form' => $form->createView(),
+                    ]
+                );
             }
-            $entityManager->persist($entity);
-            $entityManager->flush();
-//            try {
-//                $entityManager = $this->getDoctrine()->getManager();
-//                if ($entityActions) {
-//                    $entityActionsObject = new EntityActions($entity, $request, $entityManager, $form);
-//                    $entityActions($entityActionsObject);
-//                }
-//                $entityManager->persist($entity);
-//                $entityManager->flush();
-//            } catch (DBALException $e) {
-//                $this->addFlash('error', 'Не удалось сохранить запись!');
-//                return $this->render(
-//                    $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
-//                        'entity' => $entity,
-//                        'form' => $form->createView(),
-//                    ]
-//                );
-//            } catch (Exception $e) {
-//                $this->addFlash('error', 'Ошибка cохранения записи!');
-//                return $this->render(
-//                    $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
-//                        'entity' => $entity,
-//                        'form' => $form->createView(),
-//                    ]
-//                );
-//            }
             $this->addFlash('success', 'Запись успешно сохранена!');
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
+            return $this->redirectToRoute(
+                $this->templateService->getRoute(
+                    $this->templateService->getRedirectRouteName()),
+                $this->templateService->getRedirectRouteParameters() ?
+                    $this->templateService->getRedirectRouteParameters() :
+                    ['id' => $entity->getId()]
+            );
         }
         return $this->render(
-            $this->templateService->getCommonTemplatePath().$responseFormType.'.html.twig', [
+            $this->templateService->getTemplateFullName($formName, $this->getParameter('kernel.project_dir')), [
                 'entity' => $entity,
                 'form' => $form->createView(),
                 'filters' => $this->templateService->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
@@ -247,6 +256,85 @@ abstract class AppAbstractController extends AbstractController
     }
 
     /**
+     * Response edit form using multi form formBuilder
+     *
+     * @param Request $request
+     * @param object $entity
+     * @param array $formDataArray
+     * @param Closure|null $entityActions
+     *
+     * @param string $formName
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function responseEditMultiForm(
+        Request $request,
+        object $entity,
+        array $formDataArray,
+        ?Closure $entityActions = null,
+        string $formName = self::RESPONSE_FORM_TYPE_EDIT
+    )
+    {
+        $template = $this->templateService->edit($entity);
+        $formGeneratorService = new MultiFormService();
+        $formGeneratorService->mergeFormDataOptions(
+            $formDataArray,
+            [
+                'label' => false,
+                self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+            ]
+        );
+        return $this->responseFormTemplate(
+            $request,
+            $entity,
+            $formGeneratorService->generateForm($this->createFormBuilder(), $formDataArray),
+            $formName,
+            $entityActions
+        );
+    }
+
+    /**
+     * Response new form using multi form formBuilder
+     * @param Request $request
+     * @param object $entity
+     * @param array $formDataArray
+     * @param Closure|null $entityActions
+     * @param FilterLabels|null $filterLabels
+     * @param string $formName
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function responseNewMultiForm(
+        Request $request,
+        object $entity,
+        array $formDataArray,
+        ?Closure $entityActions = null,
+        ?FilterLabels $filterLabels = null,
+        string $formName = self::RESPONSE_FORM_TYPE_NEW
+    )
+    {
+        if (method_exists($entity, 'setEnabled')) {
+            $entity->setEnabled(true);
+        }
+        $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
+        $formGeneratorService = new MultiFormService();
+        $formGeneratorService->mergeFormDataOptions(
+            $formDataArray,
+            [
+                'label' => false,
+                self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+            ]
+        );
+        return $this->responseFormTemplate(
+            $request,
+            $entity,
+            $formGeneratorService->generateForm($this->createFormBuilder(), $formDataArray),
+            $formName,
+            $entityActions
+        );
+    }
+
+    /**
      * Response edit form
      *
      * @param Request $request
@@ -255,20 +343,104 @@ abstract class AppAbstractController extends AbstractController
      * @param array $customFormOptions
      * @param Closure|null $entityActions
      *
+     * @param string $formName
      * @return RedirectResponse|Response
+     * @throws Exception
      */
-    public function responseEdit(Request $request, object $entity, string $typeClass, array $customFormOptions = [], ?Closure $entityActions = null)
+    public function responseEdit(
+        Request $request,
+        object $entity,
+        string $typeClass,
+        array $customFormOptions = [],
+        ?Closure $entityActions = null,
+        string $formName = self::RESPONSE_FORM_TYPE_EDIT
+    )
     {
         return $this->responseFormTemplate(
             $request,
             $entity,
             $this->createForm(
                 $typeClass, $entity,
-                array_merge($customFormOptions, [self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),])
+                array_merge($customFormOptions, [self::FORM_TEMPLATE_ITEM_OPTION_TITLE =>
+                    $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),])
             ),
-            self::RESPONSE_FORM_TYPE_EDIT,
+            $formName,
             $entityActions
         );
+    }
+
+    /**
+     * Response new form
+     *
+     * @param Request $request
+     * @param object $entity
+     * @param string $typeClass
+     * @param FilterLabels|null $filterLabels
+     * @param array $customFormOptions
+     * @param Closure|null $entityActions
+     *
+     * @param string $formName
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function responseNew(
+        Request $request,
+        object $entity,
+        string $typeClass,
+        ?FilterLabels $filterLabels = null,
+        array $customFormOptions = [],
+        ?Closure $entityActions = null,
+        string $formName = self::RESPONSE_FORM_TYPE_NEW
+    )
+    {
+        if (method_exists($entity, 'setEnabled')) {
+            $entity->setEnabled(true);
+        }
+        $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
+        $options = array_merge(
+            $customFormOptions,
+            $filterLabels ? $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray()) : []
+        );
+        $options[self::FORM_TEMPLATE_ITEM_OPTION_TITLE] = $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME);
+        return $this->responseFormTemplate(
+            $request,
+            $entity,
+            $this->createForm($typeClass, $entity, $options),
+            $formName,
+            $entityActions
+        );
+    }
+
+    /**
+     * Delete entity and redirect
+     *
+     * @param Request $request
+     * @param object $entity
+     *
+     * @return RedirectResponse|Response
+     */
+    public function responseDelete(Request $request, object $entity)
+    {
+        if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            try {
+                $entityManager->remove($entity);
+                $entityManager->flush();
+            } catch (DBALException $e) {
+                if ($e->getPrevious()->getCode() == 23503) {
+                    $this->addFlash(
+                        'error',
+                        'Запись не удалена! Удалите все дочерние элементы!'
+                    );
+                    return $this->redirectToRoute($this->templateService->getRoute('list'));
+                } else {
+                    $this->addFlash('error', 'Ошибка! Запись не удалена. Обратитесь к администратору...');
+                    return $this->redirectToRoute($this->templateService->getRoute('list'));
+                }
+            }
+        }
+        $this->addFlash('success', 'Запись успешно удалена');
+        return $this->redirectToRoute($this->templateService->getRoute('list'));
     }
 
     /**
@@ -284,7 +456,8 @@ abstract class AppAbstractController extends AbstractController
                 /** @var UploadedFile $uploadedFile */
                 $uploadedFile = $fileForm->get('file')->getData();
                 if ($uploadedFile) {
-                    $this->getDoctrine()->getRepository(PatientTestingFile::class)->setFileProperties($fileEntity, $uploadedFile);
+                    $this->getDoctrine()->getRepository(PatientTestingFile::class)
+                        ->setFileProperties($fileEntity, $uploadedFile);
                 }
             }
         }

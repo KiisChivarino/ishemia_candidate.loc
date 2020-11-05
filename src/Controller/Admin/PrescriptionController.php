@@ -14,8 +14,8 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\InfoService\MedicalRecordInfoService;
-use App\Services\TemplateBuilders\PrescriptionTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
+use App\Services\MultiFormService\FormData;
+use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,7 +58,11 @@ class PrescriptionController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, FilterService $filterService, PrescriptionDataTableService $dataTableService): Response
+    public function list(
+        Request $request,
+        FilterService $filterService,
+        PrescriptionDataTableService $dataTableService
+    ): Response
     {
         return $this->responseList(
             $request, $dataTableService,
@@ -84,9 +88,14 @@ class PrescriptionController extends AdminAbstractController
         $prescription = new Prescription();
         if ($request->query->get('medical_history_id')) {
             /** @var MedicalHistory $medicalHistory */
-            $medicalHistory = $this->getDoctrine()->getManager()->getRepository(MedicalHistory::class)->find($request->query->get('medical_history_id'));
-            if ($this->getDoctrine()->getRepository(Prescription::class)->findNotCompletedPrescription($medicalHistory)) {
-                $this->addFlash('warning', 'Назначение не может быть добавлено: для данной истории болезни есть незавершенное назначение!');
+            $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)
+                ->find($request->query->get('medical_history_id'));
+            if ($this->getDoctrine()->getRepository(Prescription::class)
+                ->findNotCompletedPrescription($medicalHistory)) {
+                $this->addFlash(
+                    'warning',
+                    'Назначение не может быть добавлено: для данной истории болезни есть незавершенное назначение!'
+                );
                 return $this->redirectToRoute($this->templateService->getRoute('new'));
             }
             $prescription->setMedicalHistory($medicalHistory);
@@ -115,10 +124,20 @@ class PrescriptionController extends AdminAbstractController
         return $this->responseShow(
             self::TEMPLATE_PATH, $prescription, [
                 'staff' => (new AuthUserInfoService())->getFIO($prescription->getStaff()->getAuthUser(), true),
-                'prescriptionMedicineFilterName' => $filterService->generateFilterName('prescription_medicine_list', Prescription::class),
-                'prescriptionTestingFilterName' => $filterService->generateFilterName('prescription_testing_list', Prescription::class),
-                'medicalHistoryTitle' => (new MedicalHistoryInfoService())->getMedicalHistoryTitle($prescription->getMedicalHistory()),
-                'medicalRecordTitle' => (new MedicalRecordInfoService())->getMedicalRecordTitle($prescription->getMedicalRecord()),
+                'prescriptionMedicineFilterName' =>
+                    $filterService->generateFilterName(
+                        'prescription_medicine_list',
+                        Prescription::class
+                    ),
+                'prescriptionTestingFilterName' =>
+                    $filterService->generateFilterName(
+                        'prescription_testing_list',
+                        Prescription::class
+                    ),
+                'medicalHistoryTitle' => (new MedicalHistoryInfoService())
+                    ->getMedicalHistoryTitle($prescription->getMedicalHistory()),
+                'medicalRecordTitle' => (new MedicalRecordInfoService())
+                    ->getMedicalRecordTitle($prescription->getMedicalRecord()),
             ]
         );
     }
@@ -134,31 +153,13 @@ class PrescriptionController extends AdminAbstractController
      */
     public function edit(Request $request, Prescription $prescription): Response
     {
-        $template = $this->templateService->edit($prescription);
-        return $this->responseFormTemplate(
+        return $this->responseEditMultiForm(
             $request,
             $prescription,
-            $this->createFormBuilder()
-                ->setData(
-                    [
-                        'prescriptionMain' => $prescription,
-                        'prescriptionEdit' => $prescription
-                    ]
-                )
-                ->add(
-                    'prescriptionMain', PrescriptionType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->add(
-                    'prescriptionEdit', PrescriptionEditType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->getForm(),
-            self::RESPONSE_FORM_TYPE_EDIT,
+            [
+                new FormData($prescription, PrescriptionType::class),
+                new FormData($prescription, PrescriptionEditType::class),
+            ],
             function (EntityActions $entityActions) {
                 $this->isCompletedActions($entityActions);
             }
@@ -190,7 +191,8 @@ class PrescriptionController extends AdminAbstractController
         $prescription = $entityActions->getEntity();
         if ($prescription->getIsCompleted()) {
             $prescription->setCompletedTime(new DateTime());
-            $prescription->setMedicalRecord($entityActions->getEntityManager()->getRepository(MedicalRecord::class)->getMedicalRecord($prescription->getMedicalHistory()));
+            $prescription->setMedicalRecord($entityActions->getEntityManager()->getRepository(MedicalRecord::class)
+                ->getMedicalRecord($prescription->getMedicalHistory()));
         }
     }
 }

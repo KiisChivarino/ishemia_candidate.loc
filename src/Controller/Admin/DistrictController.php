@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\District;
 use App\Form\Admin\DistrictType;
 use App\Services\DataTable\Admin\DistrictDataTableService;
-use App\Services\TemplateBuilders\DistrictTemplate;
+use App\Services\TemplateBuilders\Admin\DistrictTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

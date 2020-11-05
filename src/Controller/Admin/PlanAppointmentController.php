@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\PlanAppointment;
 use App\Form\Admin\PlanAppointmentType;
 use App\Services\DataTable\Admin\PlanAppointmentDataTableService;
-use App\Services\TemplateBuilders\PlanAppointmentTemplate;
+use App\Services\TemplateBuilders\Admin\PlanAppointmentTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

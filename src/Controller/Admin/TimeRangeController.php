@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\TimeRange;
 use App\Form\Admin\TimeRangeType;
 use App\Services\DataTable\Admin\TimeRangeDataTableService;
-use App\Services\TemplateBuilders\TimeRangeTemplate;
+use App\Services\TemplateBuilders\Admin\TimeRangeTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

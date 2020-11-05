@@ -57,7 +57,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complications }}</span>
-        {% if entity.complications %}
+        {% if not entity.complications %}
             Осложнения основной болезни отсутствуют
         {% endif %}
         {% for complication in entity.complications %}
@@ -165,11 +165,6 @@
                 <li class="sublist__item">
                     <a href="{{ path('prescription_list', {(prescriptionFilterName) : entity.id}) }}">
                         {{ template.items.show.content.prescriptions }}
-                    </a>
-                </li>
-                <li class="sublist__item">
-                    <a href="{{ path('patient_appointment_list', {(patientAppointmentFilterName) : entity.id}) }}">
-                        {{ template.items.show.content.patientAppointments }}
                     </a>
                 </li>
                 <li class="sublist__item">

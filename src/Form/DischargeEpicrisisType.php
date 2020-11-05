@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Controller\AppAbstractController;
+use App\Entity\DischargeEpicrisisFile;
 use App\Entity\PatientDischargeEpicrisis;
+use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -25,7 +27,7 @@ class DischargeEpicrisisType extends AbstractType
     {
         $builder
             ->add(
-                'dischargeEpicrisisFiles', CollectionType::class, [
+                MultiFormService::getFormName(DischargeEpicrisisFile::class) . 's', CollectionType::class, [
                     'entry_type' => DischargeEpicrisisFileType::class,
                     'prototype' => true,
                     'allow_add' => true,

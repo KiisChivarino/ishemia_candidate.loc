@@ -6,7 +6,7 @@ use App\Entity\AnalysisGroup;
 use App\Form\Admin\AnalysisGroupType;
 use App\Services\DataTable\Admin\AnalysisGroupDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\AnalysisGroupTemplate;
+use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

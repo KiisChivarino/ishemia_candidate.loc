@@ -3,6 +3,7 @@
 namespace App\Services\TemplateItems;
 
 use App\Services\Template\TemplateItem;
+use App\Services\Template\TemplateService;
 
 /**
  * Class FilterTemplateItem
@@ -16,10 +17,11 @@ class FilterTemplateItem extends TemplateItem
 
     /**
      * FilterTemplateItem constructor.
+     * @param TemplateService $templateService
      */
-    public function __construct()
+    public function __construct(TemplateService $templateService)
     {
-        parent::__construct();
+        parent::__construct($templateService);
         $this->setName(self::TEMPLATE_ITEM_FILTER_NAME);
         $this->setIsEnabled(false);
     }

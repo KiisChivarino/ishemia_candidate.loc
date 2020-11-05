@@ -11,12 +11,16 @@ use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\Admin\Patient\PatientType;
 use App\Form\Admin\PatientAppointmentType;
+use App\Form\DischargeEpicrisisFileType;
 use App\Form\DischargeEpicrisisType;
 use App\Form\Doctor\AuthUserPersonalDataType;
+use App\Services\ControllerGetters\EntityActions;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
+use App\Services\MultiFormService\FormData;
+use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -35,10 +39,31 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MedicalHistoryController extends DoctorOfficeAbstractController
 {
+    /** @var string Path to directory with custom templates of controller */
     const TEMPLATE_PATH = 'doctorOffice/medical_history/';
 
+    /** @var string Name of form template edit personal data */
+    private const EDIT_PERSONAL_DATA_TEMPLATE_NAME = 'edit_personal_data';
+
+    /** @var string Name of form template edit ANAMNESTIC data */
+    private const EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME = 'edit_anamnestic_data';
+
+    /** @var string Name of form template edit OBJECTIVE data */
+    private const EDIT_OBJECTIVE_DATA_TEMPLATE_NAME = 'edit_objective_data';
+
+    /** @var string Name of form template edit DISCHARGE_EPICRISIS data */
+    private const EDIT_DISCHARGE_EPICRISIS_TEMPLATE_NAME = 'edit_discharge_epicrisis';
+
+    /** @var string Name of rout to patient medical history in doctor office */
+    private const DOCTOR_MEDICAL_HISTORY_ROUTE = 'doctor_medical_history';
+
+    /** @var string Id parameter of medical history view route in doctor office */
+    private const DOCTOR_MEDICAL_HISTORY_ROUTE_ID_PARAMETER = 'id';
+
+    /** @var AuthUserInfoService $authUserInfoService */
     private $authUserInfoService;
 
+    /** @var PatientInfoService $patientInfoService */
     private $patientInfoService;
 
     /** @var UserPasswordEncoderInterface $passwordEncoder */
@@ -77,13 +102,16 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     public function main(Patient $patient): Response
     {
         /** @var MedicalHistory $medicalHistory */
-        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)
+            ->getCurrentMedicalHistory($patient);
         $firstAppointment = null;
         $firstTestings = [];
         $dischargeEpicrisis = null;
         if ($medicalHistory) {
-            $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($medicalHistory);
-            $firstTestings = $this->getDoctrine()->getRepository(PatientTesting::class)->getFirstTestings($medicalHistory);
+            $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)
+                ->getFirstAppointment($medicalHistory);
+            $firstTestings = $this->getDoctrine()->getRepository(PatientTesting::class)
+                ->getFirstTestings($medicalHistory);
             $dischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis();
         }
         return $this->responseShow(
@@ -100,12 +128,14 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Edit personal data of patient medical history
      * @Route("/{id}/edit_personal_data", name="doctor_edit_personal_data", methods={"GET","POST"}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Patient $patient
      * @param AuthUserInfoService $authUserInfoService
      *
      * @return Response
+     * @throws Exception
      */
     public function editPersonalData(
         Request $request,
@@ -113,142 +143,117 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         AuthUserInfoService $authUserInfoService
     ): Response
     {
-        $template = $this->templateService->edit();
         $authUser = $patient->getAuthUser();
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    'authUser' => $authUser,
-                    'patient' => $patient,
-                ]
-            )
-            ->add(
-                'authUser', AuthUserPersonalDataType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'patient', PatientType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
         $oldPassword = $authUser->getPassword();
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
-            $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
-        }
-        return $this->render(
-            self::TEMPLATE_PATH . 'edit_personal_data.html.twig', [
-                'entity' => $patient,
-                'form' => $form->createView(),
-            ]
+        $this->setRedirectMedicalHistoryRoute($patient->getId());
+        return $this->responseEditMultiForm(
+            $request,
+            $patient,
+            [
+                new FormData($authUser, AuthUserPersonalDataType::class),
+                new FormData($patient, PatientType::class),
+            ],
+            function () use ($authUser, $oldPassword, $authUserInfoService) {
+                $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
+                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
+            },
+            self::EDIT_PERSONAL_DATA_TEMPLATE_NAME
         );
     }
 
     /**
+     * Edit anamnestic data
      * @param Request $request
      * @param Patient $patient
      * @Route("/{id}/edit_anamnestic_data", name="doctor_edit_anamnestic_data", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @return RedirectResponse|Response
+     * @throws Exception
      */
-    public function editAnamnesticData(
-        Request $request,
-        Patient $patient
-    )
+    public function editAnamnesticData(Request $request, Patient $patient)
     {
-        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
-        $template = $this->templateService->edit();
-        $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    'medicalHistory' => $medicalHistory,
-                    'mainDisease' => $medicalHistory,
-                ]
-            )
-            ->add(
-                'mainDisease', MainDiseaseType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'medicalHistory', MedicalHistoryType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
-        }
-        return $this->render(
-            self::TEMPLATE_PATH . 'edit_anamnestic_data.html.twig', [
-                'entity' => $patient,
-                'form' => $form->createView(),
-            ]
+        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)
+            ->getCurrentMedicalHistory($patient);
+        $this->setRedirectMedicalHistoryRoute($patient->getId());
+        return $this->responseEditMultiForm(
+            $request,
+            $patient,
+            [
+                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData($medicalHistory, MedicalHistoryType::class),
+            ],
+            null,
+            self::EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME
         );
     }
 
     /**
+     * Edit objective data
      * @param Request $request
-     * @param Patient $patient
-     * @Route("/{id}/edit_objective_data", name="doctor_edit_objective_data", methods={"GET","POST"}, requirements={"id"="\d+"})
-     *
+     * @param PatientAppointment $firstAppointment
      * @return RedirectResponse|Response
+     * @Route(
+     *     "/{id}/edit_objective_data",
+     *     name="doctor_edit_objective_data",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     *     )
+     *
+     * @throws Exception
      */
-    public function editObjectiveData(
-        Request $request,
-        Patient $patient
-    )
+    public function editObjectiveData(Request $request, PatientAppointment $firstAppointment)
     {
-        $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
-        $firstAppointment = $this->getDoctrine()->getRepository(PatientAppointment::class)->getFirstAppointment($medicalHistory);
-        $template = $this->templateService->edit();
-        $this->templateService->setTemplatePath(self::TEMPLATE_PATH);
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    'firstAppointment' => $firstAppointment,
-                ]
-            )
-            ->add(
-                'firstAppointment', PatientAppointmentType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('doctor_medical_history', ['id' => $patient->getId()]);
-        }
-        return $this->render(
-            self::TEMPLATE_PATH . 'edit_objective_data.html.twig', [
-                'entity' => $patient,
-                'form' => $form->createView(),
-            ]
+        $this->setRedirectMedicalHistoryRoute($firstAppointment->getMedicalHistory()->getPatient()->getId());
+        return $this->responseEdit(
+            $request,
+            $firstAppointment,
+            PatientAppointmentType::class,
+            [],
+            null,
+            self::EDIT_OBJECTIVE_DATA_TEMPLATE_NAME
         );
     }
 
     /**
-     *
+     * Edit discharge epicrisis
+     * @Route(
+     *     "/{id}/edit_discharge_epicrisis",
+     *     name="doctor_edit_discharge_epicrisis",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     *     )
      * @param Request $request
      * @param PatientDischargeEpicrisis $dischargeEpicrisis
      * @return RedirectResponse|Response
+     * @throws Exception
      */
     public function editDischargeEpicrisis(Request $request, PatientDischargeEpicrisis $dischargeEpicrisis)
     {
-        return $this->responseEdit($request, $dischargeEpicrisis, DischargeEpicrisisType::class);
+        $this->setRedirectMedicalHistoryRoute($dischargeEpicrisis->getMedicalHistory()->getPatient()->getId());
+        return $this->responseEdit(
+            $request,
+            $dischargeEpicrisis,
+            DischargeEpicrisisType::class,
+            [],
+            function (EntityActions $actions) {
+                $this->prepareFiles(
+                    $actions->getForm()
+                        ->get(MultiFormService::getFormName(DischargeEpicrisisFileType::class) . 's')
+                );
+            },
+            self::EDIT_DISCHARGE_EPICRISIS_TEMPLATE_NAME
+        );
+    }
+
+    /**
+     * Set redirect to "doctor_medical_history" when form controller successfully finishes work
+     * @param int $entityId
+     */
+    protected function setRedirectMedicalHistoryRoute(int $entityId): void
+    {
+        $this->templateService->setRedirectRoute(
+            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
+            [self::DOCTOR_MEDICAL_HISTORY_ROUTE_ID_PARAMETER => $entityId]
+        );
     }
 }
