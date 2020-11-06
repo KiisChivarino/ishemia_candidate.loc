@@ -33,6 +33,9 @@ abstract class AppAbstractController extends AbstractController
     /** @var TemplateService $adminTemplateService */
     protected $templateService;
 
+    /** @var string "new" type of form */
+    protected const RESPONSE_FORM_TYPE_NEW = 'new';
+
     /** @var string[] Labels of filters */
     public const FILTER_LABELS = [
         'ANALYSIS_GROUP' => 'analysisGroup',
@@ -288,5 +291,40 @@ abstract class AppAbstractController extends AbstractController
                 }
             }
         }
+    }
+
+    /**
+     * Response new form
+     *
+     * @param Request $request
+     * @param object $entity
+     * @param string $typeClass
+     * @param FilterLabels|null $filterLabels
+     * @param array $customFormOptions
+     * @param Closure|null $entityActions
+     *
+     * @return RedirectResponse|Response
+     */
+    public function responseNew(
+        Request $request,
+        object $entity,
+        string $typeClass,
+        ?FilterLabels $filterLabels = null,
+        array $customFormOptions = [],
+        ?Closure $entityActions = null
+    ) {
+        if (method_exists($entity, 'setEnabled')) {
+            $entity->setEnabled(true);
+        }
+        $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
+        $options = array_merge($customFormOptions, $filterLabels ? $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray()) : []);
+        $options[self::FORM_TEMPLATE_ITEM_OPTION_TITLE] = $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME);
+        return $this->responseFormTemplate(
+            $request,
+            $entity,
+            $this->createForm($typeClass, $entity, $options),
+            self::RESPONSE_FORM_TYPE_NEW,
+            $entityActions
+        );
     }
 }

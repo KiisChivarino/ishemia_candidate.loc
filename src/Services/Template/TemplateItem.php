@@ -4,6 +4,7 @@ namespace App\Services\Template;
 
 use App\Services\FilterService\FilterData;
 use App\Services\FilterService\FilterService;
+use Exception;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -107,14 +108,16 @@ abstract class TemplateItem
 
     /**
      * Returns value of content by key
-     *
      * @param string $contentKey
-     *
-     * @return mixed|string|null
+     * @return string|null
+     * @throws Exception
      */
-    public function getContentValue(string $contentKey)
+    public function getContentValue(string $contentKey): ?string
     {
-        return array_key_exists($contentKey, $this->getContent()) ? $this->getContent()[$contentKey] : null;
+        if (!array_key_exists($contentKey, $this->getContent())) {
+            throw new Exception('Value '.$contentKey.' is not defined');
+        }
+        return $this->getContent()[$contentKey] ?? null;
     }
 
     /**

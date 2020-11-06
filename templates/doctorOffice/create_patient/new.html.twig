@@ -1,0 +1,13 @@
+{% extends 'doctorOffice/index.html.twig' %}
+
+{% block content %}
+    <div class="adm-users-edit">
+        <h2>{{ template.items.new.content.h1 }}</h2>
+        {% if template.items.filter.isEnabled %}
+            {{ include(template.items.filter.path~'_filter_form.html.twig') }}
+        {% endif %}
+        {% if template.items.form.isEnabled %}
+            {{ include(template.items.form.path~'_form.html.twig') }}
+        {% endif %}
+    </div>
+{% endblock %}
