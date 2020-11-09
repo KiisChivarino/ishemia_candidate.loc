@@ -23,7 +23,7 @@
     "symfony/translation": "5.0.*",
     "symfony/twig-pack": "*",
     "symfony/validator": "5.0.*",
-    "symfony/webpack-encore-bundle": "^1.7",
+    "symfony/webpack-encore-bundle": "^1.8",
     "symfony/yaml": "5.0.*",
     "syslogic/doctrine-json-functions": "^4.1",
     "tetranz/select2entity-bundle": "2.*"

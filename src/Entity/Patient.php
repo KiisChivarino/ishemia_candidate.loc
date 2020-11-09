@@ -65,7 +65,7 @@ class Patient
     private $emailInforming;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="СНИЛС пациента"})
+     * @ORM\Column(type="string", length=14, nullable=true, options={"comment"="СНИЛС пациента"})
      */
     private $snils;
 
