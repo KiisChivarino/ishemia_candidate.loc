@@ -46,7 +46,7 @@ class Notification
     private $notificationTime;
 
     /**
-     * @ORM\Column(type="text", options={"comment"="Текст уведомления"})
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Текст уведомления"})
      */
     private $text;
 

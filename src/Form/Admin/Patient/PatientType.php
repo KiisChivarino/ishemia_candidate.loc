@@ -70,14 +70,7 @@ class PatientType extends AbstractType
                 TextType::class,
                 [
                     'label' => $templateItem->getContentValue('snils'),
-                    'attr' => ['class' => 'snils_us']
-                        /*[
-                            'pattern' => '^\d{3}-\d{3}-\d{3}-\d{2}$',
-                            'placeholder' => '000-000-000-00',
-                            'data-mask' => "000-000-000-00",
-                            "data-mask-clearifnotmatch" => "true"
-                        ]*/,
-//                    'help' => '888-888-888-88',
+                    'attr' => ['class' => 'snils_us'],
                     'required' => false
                 ]
             )
@@ -112,6 +105,7 @@ class PatientType extends AbstractType
                     'allow_clear' => true,
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('cityPlaceholder'),
+                    'required' => false
                 ]
             )
             ->add(

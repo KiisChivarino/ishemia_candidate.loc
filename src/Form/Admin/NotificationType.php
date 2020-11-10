@@ -46,6 +46,7 @@ class NotificationType extends AbstractType
                 'text', null, [
                     'label' => $templateItem->getContentValue('text'),
                     'attr' => ['class' => 'tinymce'],
+                    'required' => false
                 ]
             )
             ->add(

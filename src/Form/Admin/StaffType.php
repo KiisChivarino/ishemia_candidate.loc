@@ -46,6 +46,7 @@ class StaffType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('hospitalPlaceholder'),
                     'remote_params' => ['city' => '0'],
+                    'required' => false
                 ]
             )
             ->add(
