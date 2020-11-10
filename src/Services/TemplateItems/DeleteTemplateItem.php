@@ -3,6 +3,7 @@
 namespace App\Services\TemplateItems;
 
 use App\Services\Template\TemplateItem;
+use App\Services\Template\TemplateService;
 
 /**
  * Class DeleteTemplateItem
@@ -23,10 +24,11 @@ class DeleteTemplateItem extends TemplateItem
 
     /**
      * DeleteTemplateItem constructor.
+     * @param TemplateService $templateService
      */
-    public function __construct()
+    public function __construct(TemplateService $templateService)
     {
-        parent::__construct();
+        parent::__construct($templateService);
         $this->addContentArray(self::DEFAULT_CONTENT);
         $this->setName(self::TEMPLATE_ITEM_DELETE_NAME);
     }

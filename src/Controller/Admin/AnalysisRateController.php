@@ -8,7 +8,8 @@ use App\Form\Admin\AnalysisRate\AnalysisRateType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AnalysisRateDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\AnalysisRateTemplate;
+use App\Services\TemplateBuilders\Admin\AnalysisRateTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,7 +35,7 @@ class AnalysisRateController extends AdminAbstractController
      */
     public function __construct(Environment $twig, RouterInterface $router)
     {
-        $this->templateService = new AnalysisRateTemplate($router->getRouteCollection(),  get_class($this));
+        $this->templateService = new AnalysisRateTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -48,7 +49,11 @@ class AnalysisRateController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, FilterService $filterService, AnalysisRateDataTableService $dataTableService): Response {
+    public function list(
+        Request $request,
+        FilterService $filterService,
+        AnalysisRateDataTableService $dataTableService): Response
+    {
         return $this->responseList(
             $request,
             $dataTableService,
@@ -64,6 +69,7 @@ class AnalysisRateController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request, FilterService $filterService): Response
     {

@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\NotificationType;
 use App\Form\Admin\NotificationTypeType;
 use App\Services\DataTable\NotificationTypeDataTableService;
-use App\Services\TemplateBuilders\NotificationTypeTemplate;
+use App\Services\TemplateBuilders\Admin\NotificationTypeTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

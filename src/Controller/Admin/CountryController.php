@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Country;
 use App\Form\Admin\CountryType;
 use App\Services\DataTable\Admin\CountryDataTableService;
-use App\Services\TemplateBuilders\CountryTemplate;
+use App\Services\TemplateBuilders\Admin\CountryTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

@@ -13,7 +13,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\InfoService\MedicalRecordInfoService;
-use App\Services\TemplateBuilders\NotificationTemplate;
+use App\Services\TemplateBuilders\Admin\NotificationTemplate;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +56,11 @@ class NotificationController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, NotificationDataTableService $dataTableService, FilterService $filterService): Response
+    public function list(
+        Request $request,
+        NotificationDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
     {
         return $this->responseList(
             $request, $dataTableService,
@@ -79,18 +83,24 @@ class NotificationController extends AdminAbstractController
     public function new(Request $request): Response
     {
         if ($request->query->get('medical_history_id')) {
-            $medicalHistory = $this->getDoctrine()->getManager()->getRepository(MedicalHistory::class)->find($request->query->get('medical_history_id'));
+            $medicalHistory = $this->getDoctrine()->getManager()
+                ->getRepository(MedicalHistory::class)->find($request->query->get('medical_history_id'));
         }
         if (!isset($medicalHistory) || !is_a($medicalHistory, MedicalHistory::class)) {
             $this->addFlash('warning', 'Прием пациента не может быть добавлен: история болезни не найдена!');
             return $this->redirectToRoute('medical_history_list');
         }
         return $this->responseNew(
-            $request, (new Notification())->setMedicalHistory($medicalHistory), NotificationType::class, null, [],
+            $request,
+            (new Notification())->setMedicalHistory($medicalHistory),
+            NotificationType::class,
+            null,
+            [],
             function (EntityActions $actions) use ($medicalHistory) {
                 /** @var Notification $notification */
                 $notification = $actions->getEntity();
-                $notification->setMedicalRecord($this->getDoctrine()->getRepository(MedicalRecord::class)->getMedicalRecord($medicalHistory));
+                $notification->setMedicalRecord($this->getDoctrine()->getRepository(MedicalRecord::class)
+                    ->getMedicalRecord($medicalHistory));
                 $notification->setNotificationTime(new DateTime());
             }
         );
@@ -108,9 +118,12 @@ class NotificationController extends AdminAbstractController
     {
         return $this->responseShow(
             self::TEMPLATE_PATH, $notification, [
-                'medicalHistoryTitle' => (new MedicalHistoryInfoService())->getMedicalHistoryTitle($notification->getMedicalHistory()),
-                'medicalRecordTitle' => (new MedicalRecordInfoService())->getMedicalRecordTitle($notification->getMedicalRecord()),
-                'staffFio' => (new AuthUserInfoService())->getFIO($notification->getStaff()->getAuthUser(), true),
+                'medicalHistoryTitle' =>
+                    (new MedicalHistoryInfoService())->getMedicalHistoryTitle($notification->getMedicalHistory()),
+                'medicalRecordTitle' =>
+                    (new MedicalRecordInfoService())->getMedicalRecordTitle($notification->getMedicalRecord()),
+                'staffFio' =>
+                    (new AuthUserInfoService())->getFIO($notification->getStaff()->getAuthUser(), true),
             ]
         );
     }

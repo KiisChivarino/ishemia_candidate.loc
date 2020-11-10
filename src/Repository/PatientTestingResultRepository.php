@@ -39,4 +39,14 @@ class PatientTestingResultRepository extends AppRepository
             }
         }
     }
+
+    /**
+     * Returns enabled patient testing results by testing
+     * @param PatientTesting $testing
+     * @return PatientTestingResult[]
+     */
+    public function getEnabledTestingResults(PatientTesting $testing)
+    {
+        return $this->findBy(['patientTesting' => $testing, 'enabled' => true]);
+    }
 }

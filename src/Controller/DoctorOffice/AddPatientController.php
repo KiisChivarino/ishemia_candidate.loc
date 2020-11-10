@@ -1,22 +1,21 @@
 <?php
 
-
 namespace App\Controller\DoctorOffice;
-
 
 use App\Entity\AuthUser;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
+use App\Form\Admin\AuthUser\AuthUserPasswordType;
 use App\Form\Admin\AuthUser\AuthUserType;
-use App\Form\Admin\AuthUser\NewAuthUserType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\Patient\PatientType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\StaffType;
+use App\Services\ControllerGetters\EntityActions;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -48,9 +47,15 @@ class AddPatientController extends DoctorOfficeAbstractController
      *
      * @param Environment $twig
      * @param RouterInterface $router
+     * @param UserPasswordEncoderInterface $passwordEncoder
      */
-    public function __construct(Environment $twig, RouterInterface $router)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        UserPasswordEncoderInterface $passwordEncoder
+    )
     {
+        $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new CreateNewPatientTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
@@ -66,88 +71,51 @@ class AddPatientController extends DoctorOfficeAbstractController
      */
     public function createNew(Request $request, AuthUserInfoService $authUserInfoService): Response
     {
-        $template = $this->templateService->new();
         $authUser = (new AuthUser())->setEnabled(true);
         $patient = (new Patient())->setAuthUser($authUser);
         $medicalHistory = (new MedicalHistory)->setPatient($patient);
         $patientAppointment = (new PatientAppointment())->setMedicalHistory($medicalHistory);
-
-        $form = $this->createFormBuilder()
-            ->setData(
+        return $this->responseNewMultiForm(
+            $request,
+            $patient,
+            [
+                new FormData($authUser,AuthUserType::class),
+                new FormData($authUser,AuthUserPasswordType::class,
                 [
-                    'authUser' => $authUser,
-                    'newAuthUser' => $authUser,
-                    'patient' => $patient,
-                    'medicalHistory' => $medicalHistory,
-                    'patientAppointmentStaff' => $patientAppointment,
-                    'patientAppointmentType' => $patientAppointment,
+                    AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => true
                 ]
-            )
-            ->add(
-                'authUser', AuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'newAuthUser', NewAuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'patient', PatientType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'medicalHistory', MainDiseaseType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'patientAppointmentStaff', StaffType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'patientAppointmentType', AppointmentTypeType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $authUser->setRoles(self::PATIENT_ROLE);
-            $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
-            $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-            $authUser->setPassword($encodedPassword);
-            $em = $this->getDoctrine()->getManager();
-            $em->getConnection()->beginTransaction();
-            try {
-                $em->persist($authUser);
-                $em->flush();
-                $em->getRepository(Patient::class)->persistPatient($patient, $authUser, $medicalHistory, $patientAppointment);
-                $em->flush();
-                $em->getConnection()->commit();
-            } catch (Exception $e) {
-                $em->getConnection()->rollBack();
-                throw $e;
+                ),
+                new FormData($patient, PatientType::class),
+                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData($patientAppointment, StaffType::class),
+                new FormData($patientAppointment, AppointmentTypeType::class),
+            ],
+            function (EntityActions $actions)
+            use ($authUser, $patient, $authUserInfoService, $medicalHistory, $patientAppointment)
+            {
+                $authUser->setRoles(self::PATIENT_ROLE);
+                $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
+                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
+                $authUser->setPassword($encodedPassword);
+                $em = $actions->getEntityManager();
+                $em->getConnection()->beginTransaction();
+                try {
+                    $em->persist($authUser);
+                    $em->flush();
+                    $em->getRepository(Patient::class)->persistPatient(
+                        $patient,
+                        $authUser,
+                        $medicalHistory,
+                        $patientAppointment
+                    );
+                    $em->flush();
+                    $em->getConnection()->commit();
+                } catch (Exception $e) {
+                    $em->getConnection()->rollBack();
+                    throw $e;
+                }
+                $this->setRedirectMedicalHistoryRoute($patient->getId());
             }
-            $this->addFlash('success', 'post.created_successfully');
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
-        }
-        return $this->render(
-            self::TEMPLATE_PATH.'new.html.twig', [
-                'patient' => new Patient(),
-                'form' => $form->createView(),
-            ]
         );
     }
-
 }

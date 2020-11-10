@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Measure;
 use App\Form\Admin\MeasureType;
 use App\Services\DataTable\Admin\MeasureDataTableService;
-use App\Services\TemplateBuilders\MeasureTemplate;
+use App\Services\TemplateBuilders\Admin\MeasureTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

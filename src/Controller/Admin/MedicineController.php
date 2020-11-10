@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Medicine;
 use App\Form\Admin\MedicineType;
 use App\Services\DataTable\Admin\MedicineDataTableService;
-use App\Services\TemplateBuilders\MedicineTemplate;
+use App\Services\TemplateBuilders\Admin\MedicineTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -103,33 +103,5 @@ class MedicineController extends AdminAbstractController
     public function delete(Request $request, Medicine $medicine): Response
     {
         return $this->responseDelete($request, $medicine);
-    }
-
-    /**
-     * Find medicine by ajax
-     * @Route("/find_medicine_ajax", name="find_medicine_ajax", methods={"GET"})
-     *
-     * @param Request $request
-     *
-     * @return false|string
-     */
-    public function findHospitalAjax(Request $request)
-    {
-        $string = $request->query->get('q');
-        $entityManager = $this->getDoctrine()->getManager();
-        $medicines = $entityManager->getRepository(Medicine::class)->findMedicines($string);
-        $resultArray = [];
-        /** @var Medicine $medicine */
-        foreach ($medicines as $medicine) {
-            $resultArray[] = [
-                'id' => $medicine->getId(),
-                'text' => $medicine->getName()
-            ];
-        }
-        return new Response(
-            json_encode(
-                $resultArray
-            )
-        );
     }
 }

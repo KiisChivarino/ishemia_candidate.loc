@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class DischargeEpicrisisFile
 {
+    public const UPLOAD_DIR = 'patientDischargeEpicrisisFiles';
+
     use PatientFileTrait;
 
     /**

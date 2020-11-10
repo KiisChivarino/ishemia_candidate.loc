@@ -6,7 +6,7 @@ use App\Entity\Role;
 use App\Form\Admin\RoleType;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\DataTable\Admin\RoleDataTableService;
-use App\Services\TemplateBuilders\RoleTemplate;
+use App\Services\TemplateBuilders\Admin\RoleTemplate;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

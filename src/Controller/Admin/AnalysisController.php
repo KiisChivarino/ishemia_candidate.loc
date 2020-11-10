@@ -7,7 +7,7 @@ use App\Form\Admin\Analysis\AnalysisType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AnalysisDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\AnalysisTemplate;
+use App\Services\TemplateBuilders\Admin\AnalysisTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

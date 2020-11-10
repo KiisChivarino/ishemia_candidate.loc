@@ -2,12 +2,12 @@
 
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
-use App\Services\TemplateBuilders\AdminTemplateBuilder;
-use App\Services\TemplateBuilders\AuthUserTemplate;
-use App\Services\TemplateBuilders\PatientAppointmentTemplate;
-use App\Services\TemplateBuilders\PatientTemplate;
+use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
+use App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate;
+use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FormTemplateItem;
-use App\Services\TemplateItems\ShowTemplateItem;
+use App\Services\TemplateItems\NewTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -15,13 +15,8 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * @package App\Services\TemplateBuilders\DoctorOffice
  */
-class CreateNewPatientTemplate extends AdminTemplateBuilder
+class CreateNewPatientTemplate extends DoctorOfficeTemplateBuilder
 {
-    /** @var string[] Common show content for medical history templates */
-    protected const SHOW_CONTENT = [
-
-    ];
-
     /** @var string[] Common form and show content for medical history templates */
     protected const FORM_SHOW_CONTENT = [
         'dateBegin' => 'Дата начала лечения',
@@ -87,57 +82,24 @@ class CreateNewPatientTemplate extends AdminTemplateBuilder
     }
 
     /**
-     * @param object|null $entity
-     *
-     * @return $this|AdminTemplateBuilder
+     * @param FilterService|null $filterService
+     * @return $this|AppTemplateBuilder
      */
-    public function edit(?object $entity = null): AdminTemplateBuilder
+    public function new(?FilterService $filterService = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::new();
+//        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setPath($this->getTemplatePath());
+        $this->setCommonTemplatePath($this->getTemplatePath());
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath())
             ->addContentArray(
                 array_merge(
-                    PatientAppointmentTemplate::COMMON_CONTENT,
-                    PatientAppointmentTemplate::FORM_SHOW_CONTENT,
-                    PatientAppointmentTemplate::FORM_CONTENT,
-                    \App\Services\TemplateBuilders\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
-                    \App\Services\TemplateBuilders\MedicalHistoryTemplate::COMMON_CONTENT,
                     AuthUserTemplate::COMMON_CONTENT,
                     AuthUserTemplate::FORM_CONTENT,
                     AuthUserTemplate::FORM_SHOW_CONTENT,
-                    PatientTemplate::COMMON_CONTENT,
-                    PatientTemplate::FORM_SHOW_CONTENT,
-                    PatientTemplate::FORM_CONTENT
+                    MedicalHistoryTemplate::FORM_SHOW_CONTENT,
+                    MedicalHistoryTemplate::COMMON_CONTENT
                 )
             );
-        return $this;
-    }
-
-    /**
-     * @param object|null $entity
-     *
-     * @return $this|AdminTemplateBuilder
-     */
-    public function show(?object $entity = null): AdminTemplateBuilder
-    {
-        parent::show();
-        $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->addContentArray(
-            array_merge(
-                PatientAppointmentTemplate::COMMON_CONTENT,
-                PatientAppointmentTemplate::FORM_SHOW_CONTENT,
-                PatientAppointmentTemplate::SHOW_CONTENT,
-                \App\Services\TemplateBuilders\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
-                \App\Services\TemplateBuilders\MedicalHistoryTemplate::COMMON_CONTENT,
-                AuthUserTemplate::COMMON_CONTENT,
-                AuthUserTemplate::FORM_CONTENT,
-                AuthUserTemplate::FORM_SHOW_CONTENT,
-                PatientTemplate::COMMON_CONTENT,
-                PatientTemplate::FORM_SHOW_CONTENT,
-                PatientTemplate::SHOW_CONTENT,
-                PatientTemplate::FORM_CONTENT
-            )
-        );
         return $this;
     }
 }

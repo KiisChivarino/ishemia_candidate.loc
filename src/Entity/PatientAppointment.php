@@ -194,11 +194,11 @@ class PatientAppointment
     }
 
     /**
-     * @param DateTimeInterface $appointmentTime
+     * @param DateTimeInterface|null $appointmentTime
      *
      * @return $this
      */
-    public function setAppointmentTime(DateTimeInterface $appointmentTime): self
+    public function setAppointmentTime(?DateTimeInterface $appointmentTime): self
     {
         $this->appointmentTime = $appointmentTime;
         return $this;

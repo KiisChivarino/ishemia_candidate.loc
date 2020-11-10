@@ -11,7 +11,7 @@ use App\Services\DataTable\Admin\PrescriptionMedicineDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
-use App\Services\TemplateBuilders\PrescriptionMedicineTemplate;
+use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,7 +54,11 @@ class PrescriptionMedicineController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, PrescriptionMedicineDataTableService $dataTableService, FilterService $filterService): Response
+    public function list(
+        Request $request,
+        PrescriptionMedicineDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
     {
         return $this->responseList(
             $request, $dataTableService,
@@ -103,8 +107,10 @@ class PrescriptionMedicineController extends AdminAbstractController
     {
         return $this->responseShow(
             self::TEMPLATE_PATH, $prescriptionMedicine, [
-                'prescriptionTitle' => (new PrescriptionInfoService())->getPrescriptionTitle($prescriptionMedicine->getPrescription()),
-                'staffTitle' => (new AuthUserInfoService())->getFIO($prescriptionMedicine->getStaff()->getAuthUser()),
+                'prescriptionTitle' =>
+                    (new PrescriptionInfoService())->getPrescriptionTitle($prescriptionMedicine->getPrescription()),
+                'staffTitle' =>
+                    (new AuthUserInfoService())->getFIO($prescriptionMedicine->getStaff()->getAuthUser()),
             ]
         );
     }

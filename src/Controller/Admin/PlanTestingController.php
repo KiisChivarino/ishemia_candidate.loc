@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\PlanTesting;
 use App\Form\Admin\PlanTesting\PlanTestingType;
 use App\Services\DataTable\Admin\PlanTestingDataTableService;
-use App\Services\TemplateBuilders\PlanTestingTemplate;
+use App\Services\TemplateBuilders\Admin\PlanTestingTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

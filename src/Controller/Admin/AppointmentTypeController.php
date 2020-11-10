@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\AppointmentType;
 use App\Form\Admin\AppointmentTypeType;
 use App\Services\DataTable\Admin\AppointmentTypeDataTableService;
-use App\Services\TemplateBuilders\AppointmentTypeTemplate;
+use App\Services\TemplateBuilders\Admin\AppointmentTypeTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

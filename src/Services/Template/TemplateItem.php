@@ -33,14 +33,18 @@ abstract class TemplateItem
     /** @var FilterData[] entity, form and filter objects for every filter */
     private $filterData;
 
+    /** @var TemplateService $templateService */
+    protected $templateService;
+
     /**
      * TemplateItem constructor.
+     * @param TemplateService $templateService
      */
-    public function __construct()
+    public function __construct(TemplateService $templateService)
     {
         $this->content = $this->getContentFromYaml();
         $this->setIsEnabled(true);
-        $this->path = TemplateService::DEFAULT_COMMON_TEMPLATE_PATH;
+        $this->path = $templateService->getCommonTemplatePath();
     }
 
     /**
@@ -94,7 +98,7 @@ abstract class TemplateItem
     /**
      * Adds content array  to common content
      *
-     * @param array $contents
+     * @param array|null $contents
      *
      * @return TemplateItem
      */
@@ -125,7 +129,7 @@ abstract class TemplateItem
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -266,7 +270,7 @@ abstract class TemplateItem
     /**
      * Устанавливает контент для шаблона
      *
-     * @param array $contents
+     * @param array|null $contents
      */
     public function setContents(?array $contents = []): void
     {

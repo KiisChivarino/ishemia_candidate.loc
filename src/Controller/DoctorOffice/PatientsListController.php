@@ -4,7 +4,7 @@ namespace App\Controller\DoctorOffice;
 
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientsListDataTableService;
-use App\Services\TemplateBuilders\PatientListTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\PatientListTemplate;
 use App\Services\FilterService\FilterService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

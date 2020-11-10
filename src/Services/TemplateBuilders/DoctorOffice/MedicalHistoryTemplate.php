@@ -2,10 +2,10 @@
 
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
-use App\Services\TemplateBuilders\AdminTemplateBuilder;
-use App\Services\TemplateBuilders\AuthUserTemplate;
-use App\Services\TemplateBuilders\PatientAppointmentTemplate;
-use App\Services\TemplateBuilders\PatientTemplate;
+use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
+use App\Services\TemplateBuilders\Admin\PatientAppointmentTemplate;
+use App\Services\TemplateBuilders\Admin\PatientTemplate;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
@@ -15,7 +15,7 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * @package App\Services\TemplateBuilders\PatientOffice
  */
-class MedicalHistoryTemplate extends AdminTemplateBuilder
+class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common show content for medical history templates */
     protected const SHOW_CONTENT = [
@@ -43,6 +43,10 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'complaintsCommentNotFound' => 'Комментарий врача по жалобам отсутствует',
         'objectiveStatusNotFound' => 'Объективный статус отсутствует',
         'therapyNotFound' => 'Терапия отсутствует',
+        'laboratoryData' => 'Лабораторные данные',
+        'addDischargeEpicrises' => 'Внести выписные эпикризы',
+        'addPatientTestingResults' => 'Внести результаты обследования',
+        'firstTestings' => 'Обследования',
     ];
 
     /** @var string[] Common form and show content for medical history templates */
@@ -59,6 +63,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'anamnestic_title' => 'Редактирование анамнестических данных',
         'objective_h2' => 'Редактирование объективных данных',
         'objective_title' => 'Редактирование объективных данных',
+        'discharge_epicrisis' => 'Редактирование выписных эпикризов',
     ];
 
     /**
@@ -85,9 +90,9 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     /**
      * @param object|null $entity
      *
-     * @return $this|AdminTemplateBuilder
+     * @return AppTemplateBuilder
      */
-    public function edit(?object $entity = null): AdminTemplateBuilder
+    public function edit(?object $entity = null): AppTemplateBuilder
     {
         parent::edit();
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
@@ -97,8 +102,8 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
                     PatientAppointmentTemplate::COMMON_CONTENT,
                     PatientAppointmentTemplate::FORM_SHOW_CONTENT,
                     PatientAppointmentTemplate::FORM_CONTENT,
-                    \App\Services\TemplateBuilders\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
-                    \App\Services\TemplateBuilders\MedicalHistoryTemplate::COMMON_CONTENT,
+                    \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
+                    \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::COMMON_CONTENT,
                     AuthUserTemplate::COMMON_CONTENT,
                     AuthUserTemplate::FORM_CONTENT,
                     AuthUserTemplate::FORM_SHOW_CONTENT,
@@ -113,9 +118,9 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
     /**
      * @param object|null $entity
      *
-     * @return $this|AdminTemplateBuilder
+     * @return AppTemplateBuilder
      */
-    public function show(?object $entity = null): AdminTemplateBuilder
+    public function show(?object $entity = null): AppTemplateBuilder
     {
         parent::show();
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->addContentArray(
@@ -123,8 +128,8 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
                 PatientAppointmentTemplate::COMMON_CONTENT,
                 PatientAppointmentTemplate::FORM_SHOW_CONTENT,
                 PatientAppointmentTemplate::SHOW_CONTENT,
-                \App\Services\TemplateBuilders\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
-                \App\Services\TemplateBuilders\MedicalHistoryTemplate::COMMON_CONTENT,
+                \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
+                \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::COMMON_CONTENT,
                 AuthUserTemplate::COMMON_CONTENT,
                 AuthUserTemplate::FORM_CONTENT,
                 AuthUserTemplate::FORM_SHOW_CONTENT,

@@ -6,8 +6,9 @@ use App\Entity\AuthUser;
 use App\Entity\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -37,7 +38,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      * @param string $newEncodedPassword
      *
      * @throws ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      */
     public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
     {
@@ -70,7 +71,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         string $role,
         string $password,
         bool $enabled
-    ): ?AuthUser {
+    ): ?AuthUser
+    {
 
         $user = (new AuthUser())
             ->setPhone($phone)
@@ -90,13 +92,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $user;
     }
 
-    public function addUserFromAdmin(Form $form)
+    public function addUserFromAdmin(FormInterface $form, string $authUserFormName, string $authUserRoleFormName)
     {
         $data = $form->getData();
         /** @var AuthUser $authUser */
-        $authUser = $data['authUser'];
+        $authUser = $data[$authUserFormName];
         /** @var AuthUser $onlyRole */
-        $onlyRole = $data['onlyRole'];
+        $onlyRole = $data[$authUserRoleFormName];
         $authUser->setRoles($onlyRole->getRoles()[0]);
         // See https://symfony.com/doc/current/security.html#c-encoding-passwords
         $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());

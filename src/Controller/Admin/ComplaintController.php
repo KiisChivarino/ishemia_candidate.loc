@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Complaint;
 use App\Form\Admin\ComplaintType;
 use App\Services\DataTable\Admin\ComplaintDataTableService;
-use App\Services\TemplateBuilders\ComplaintTemplate;
+use App\Services\TemplateBuilders\Admin\ComplaintTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
