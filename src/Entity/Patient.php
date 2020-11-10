@@ -90,18 +90,19 @@ class Patient
     private $height;
 
     /**
-     * @ORM\Column(type="date", nullable=true, options={"comment"="Дата рождения"})
+     * @ORM\Column(type="date", options={"comment"="Дата рождения"})
      */
     private $dateBirth;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="patients")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $city;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\District", inversedBy="patients")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $district;
 

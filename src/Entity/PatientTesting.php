@@ -60,6 +60,7 @@ class PatientTesting
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientTestings")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $medicalRecord;
 
