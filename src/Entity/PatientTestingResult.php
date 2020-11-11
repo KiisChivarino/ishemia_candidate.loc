@@ -28,7 +28,7 @@ class PatientTestingResult
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AnalysisRate")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $analysisRate;
 
