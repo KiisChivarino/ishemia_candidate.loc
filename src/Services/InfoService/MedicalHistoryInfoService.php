@@ -3,9 +3,6 @@
 namespace App\Services\InfoService;
 
 use App\Entity\MedicalHistory;
-use DateInterval;
-use DateTime;
-use Exception;
 
 /**
  * Class MedicalHistoryInfoService
@@ -21,28 +18,11 @@ class MedicalHistoryInfoService
      *
      * @return string
      */
-    public function getMedicalHistoryTitle(MedicalHistory $medicalHistory): string
+    static public function getMedicalHistoryTitle(MedicalHistory $medicalHistory): string
     {
-        return (new AuthUserInfoService())->getFIO($medicalHistory->getPatient()->getAuthUser(), true).': '.$medicalHistory->getDateBegin()->format('d.m.Y');
-    }
-
-    /**
-     * @param DateTime $currDate
-     * @param int $timeRangeCount
-     * @param int $multiplier
-     * @param string $format
-     *
-     * @return DateTime
-     * @throws Exception
-     */
-    public function getPlannedDate(DateTime $currDate, int $timeRangeCount, int $multiplier, string $format)
-    {
-        return $currDate->add(
-            new DateInterval(
-                'P'.
-                (string)($timeRangeCount * $multiplier).
-                $format
-            )
-        );
+        return (new AuthUserInfoService())
+                ->getFIO($medicalHistory->getPatient()->getAuthUser(), true)
+            . ': '
+            . $medicalHistory->getDateBegin()->format('d.m.Y');
     }
 }

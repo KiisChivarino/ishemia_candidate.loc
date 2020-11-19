@@ -2,9 +2,8 @@
 
 namespace App\Services\DataTable\Admin;
 
-use App\Entity\AnalysisGroup;
+use App\Controller\AppAbstractController;
 use App\Entity\Template;
-use App\Entity\TemplateParameter;
 use App\Entity\TemplateType;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
@@ -27,9 +26,14 @@ class TemplateDataTableService extends AdminDatatableService
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
      *
+     * @param array $filters
      * @return DataTable
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
@@ -50,18 +54,23 @@ class TemplateDataTableService extends AdminDatatableService
                                 : '';
                     }
                 ]
-            )
-           ;
+            );
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
+        $templateType = $filters[AppAbstractController::FILTER_LABELS['TEMPLATE_TYPE']];
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
                     'entity' => Template::class,
-                    'query' => function (QueryBuilder $builder) {
+                    'query' => function (QueryBuilder $builder) use ($templateType) {
                         $builder
                             ->select('t')
                             ->from(Template::class, 't');
+                        if ($templateType) {
+                            $builder
+                                ->andWhere('t.templateType = :valTemplateType')
+                                ->setParameter('valTemplateType', $templateType);
+                        }
                     },
                 ]
             );

@@ -35,83 +35,70 @@ class TemplateParameterText
      */
     private $templateParameter;
 
-//    /**
-//     * @ORM\ManyToMany(targetEntity=Template::class, mappedBy="templateParameterTexts")
-//     */
-//    private $templates;
-
     /**
      * @ORM\OneToMany(targetEntity=TemplateManyToManyTemplateParameterText::class, mappedBy="templateParameterText")
      */
     private $templateManyToManyTemplateParameterTexts;
 
+    /**
+     * TemplateParameterText constructor.
+     */
     public function __construct()
     {
-        $this->templates = new ArrayCollection();
         $this->templateManyToManyTemplateParameterTexts = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @param int $id
+     * @return $this
+     */
     public function setId(int $id): self
     {
         $this->id = $id;
-
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 
+    /**
+     * @return TemplateParameter|null
+     */
     public function getTemplateParameter(): ?TemplateParameter
     {
         return $this->templateParameter;
     }
 
+    /**
+     * @param TemplateParameter|null $templateParameter
+     * @return $this
+     */
     public function setTemplateParameter(?TemplateParameter $templateParameter): self
     {
         $this->templateParameter = $templateParameter;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Template[]
-     */
-    public function getTemplates(): Collection
-    {
-        return $this->templates;
-    }
-
-    public function addTemplate(Template $template): self
-    {
-        if (!$this->templates->contains($template)) {
-            $this->templates[] = $template;
-            $template->addTemplateParameterText($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTemplate(Template $template): self
-    {
-        if ($this->templates->contains($template)) {
-            $this->templates->removeElement($template);
-            $template->removeTemplateParameterText($this);
-        }
-
         return $this;
     }
 
@@ -123,16 +110,23 @@ class TemplateParameterText
         return $this->templateManyToManyTemplateParameterTexts;
     }
 
+    /**
+     * @param TemplateManyToManyTemplateParameterText $templateManyToManyTemplateParameterText
+     * @return $this
+     */
     public function addTemplateManyToManyTemplateParameterText(TemplateManyToManyTemplateParameterText $templateManyToManyTemplateParameterText): self
     {
         if (!$this->templateManyToManyTemplateParameterTexts->contains($templateManyToManyTemplateParameterText)) {
             $this->templateManyToManyTemplateParameterTexts[] = $templateManyToManyTemplateParameterText;
             $templateManyToManyTemplateParameterText->setTemplateParameterText($this);
         }
-
         return $this;
     }
 
+    /**
+     * @param TemplateManyToManyTemplateParameterText $templateManyToManyTemplateParameterText
+     * @return $this
+     */
     public function removeTemplateManyToManyTemplateParameterText(TemplateManyToManyTemplateParameterText $templateManyToManyTemplateParameterText): self
     {
         if ($this->templateManyToManyTemplateParameterTexts->contains($templateManyToManyTemplateParameterText)) {
@@ -142,19 +136,24 @@ class TemplateParameterText
                 $templateManyToManyTemplateParameterText->setTemplateParameterText(null);
             }
         }
-
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getText(): ?string
     {
         return $this->text;
     }
 
+    /**
+     * @param string|null $text
+     * @return $this
+     */
     public function setText(?string $text): self
     {
         $this->text = $text;
-
         return $this;
     }
 

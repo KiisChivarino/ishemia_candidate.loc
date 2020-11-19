@@ -5,7 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\Position;
 use App\Form\Admin\PositionType;
 use App\Services\DataTable\Admin\PositionDataTableService;
-use App\Services\TemplateBuilders\PositionTemplate;
+use App\Services\TemplateBuilders\Admin\PositionTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class PositionController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -85,6 +87,7 @@ class PositionController extends AdminAbstractController
      * @param Position $position
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, Position $position): Response
     {

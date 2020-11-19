@@ -37,10 +37,9 @@ class MedicalRecordRepository extends AppRepository
      * @return MedicalRecord
      * @throws Exception
      */
-    public function getMedicalRecord(MedicalHistory $medicalHistory): MedicalRecord
+    public function getMedicalRecord(MedicalHistory $medicalHistory): ?MedicalRecord
     {
-        /** @var MedicalRecord[] $medicalRecord */
-        $medicalRecord = $this->_em->getRepository(MedicalRecord::class)
+        return $this
             ->createQueryBuilder('mr')
             ->leftJoin('mr.medicalHistory', 'mh')
             ->where('mr.recordDate = :recordDate and mr.medicalHistory=:medicalHistory and mr.enabled = true and mh.enabled = true')
@@ -50,13 +49,5 @@ class MedicalRecordRepository extends AppRepository
                     'medicalHistory' => $medicalHistory
                 ]
             )->getQuery()->getOneOrNullResult();
-        if ($medicalRecord === null) {
-            $medicalRecord = (new MedicalRecord())
-                ->setEnabled(true)
-                ->setMedicalHistory($medicalHistory)
-                ->setRecordDate(new DateTime());
-            $this->_em->persist($medicalRecord);
-        }
-        return $medicalRecord;
     }
 }

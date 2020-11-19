@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\StaffRepository;
 
 /**
  * Персонал
@@ -55,12 +54,18 @@ class Staff
     private $patientAppointments;
 
     /**
+     * @ORM\OneToMany(targetEntity=PrescriptionMedicine::class, mappedBy="staff")
+     */
+    private $prescriptionMedicines;
+
+    /**
      * Staff constructor.
      */
     public function __construct()
     {
         $this->prescriptions = new ArrayCollection();
         $this->prescriptionTestings = new ArrayCollection();
+        $this->prescriptionMedicines = new ArrayCollection();
         $this->patientAppointments = new ArrayCollection();
     }
 
@@ -202,6 +207,45 @@ class Staff
             // set the owning side to null (unless already changed)
             if ($prescriptionTesting->getStaff() === $this) {
                 $prescriptionTesting->setStaff(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection|PrescriptionMedicine[]
+     */
+    public function getPrescriptionMedicines(): Collection
+    {
+        return $this->prescriptionMedicines;
+    }
+
+    /**
+     * @param PrescriptionMedicine $prescriptionMedicine
+     *
+     * @return $this
+     */
+    public function addPrescriptionMedicine(PrescriptionMedicine $prescriptionMedicine): self
+    {
+        if (!$this->prescriptionMedicines->contains($prescriptionMedicine)) {
+            $this->prescriptionMedicines[] = $prescriptionMedicine;
+            $prescriptionMedicine->setStaff($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param PrescriptionMedicine $prescriptionMedicine
+     *
+     * @return $this
+     */
+    public function removePrescriptionMedicine(PrescriptionMedicine $prescriptionMedicine): self
+    {
+        if ($this->prescriptionMedicines->contains($prescriptionMedicine)) {
+            $this->prescriptionMedicines->removeElement($prescriptionMedicine);
+            // set the owning side to null (unless already changed)
+            if ($prescriptionMedicine->getStaff() === $this) {
+                $prescriptionMedicine->setStaff(null);
             }
         }
         return $this;

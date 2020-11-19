@@ -3,20 +3,23 @@
 namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
-use App\Entity\Patient;
 use App\Entity\PatientDischargeEpicrisis;
-use App\Entity\Prescription;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\DischargeEpicrisisType;
+use App\Repository\PatientTestingFileRepository;
+use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
+use App\Services\MultiFormService\FormData;
 use App\Services\DataTable\Admin\MedicalHistoryDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
-use App\Services\TemplateBuilders\MedicalHistoryTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
+use App\Services\MultiFormService\MultiFormService;
+use App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate;
+use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,20 +39,11 @@ class MedicalHistoryController extends AdminAbstractController
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/medical_history/';
 
+    public const MEDICAL_HISTORY_ID_PARAMETER_KEY = 'medical_history_id';
+
     /** @var string Name of collection of files from entity method */
     protected const FILES_COLLECTION_PROPERTY_NAME = 'dischargeEpicrisisFiles';
 
-    /** @var string Name of form of patient discharge epicrisis */
-    protected const PATIENT_DISCHARGE_EPICRISIS_FORM_NAME = 'patientDischargeEpicrisis';
-
-    /** @var string Name of main disease form */
-    protected const MAIN_DISEASE_FORM_NAME = 'mainDisease';
-
-    /** @var string Name of medical history form */
-    protected const MEDICAL_HISTORY_FORM_NAME = 'medicalHistory';
-
-    /** @var string Name of date end medical history form */
-    protected const DATE_END_MEDICAL_HISTORY_FORM_NAME = 'dateEndMedicalHistory';
     /**
      * CountryController constructor.
      *
@@ -72,7 +66,11 @@ class MedicalHistoryController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, MedicalHistoryDataTableService $dataTableService, FilterService $filterService): Response
+    public function list(
+        Request $request,
+        MedicalHistoryDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
     {
         return $this->responseList(
             $request, $dataTableService,
@@ -82,61 +80,18 @@ class MedicalHistoryController extends AdminAbstractController
         );
     }
 
-    /**
-     * New MedicalHistory
-     * @Route("/new", name="medical_history_new", methods={"GET","POST"})
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function new(Request $request): Response
-    {
-        $template = $this->templateService->new();
-        $medicalHistory = new MedicalHistory();
-        $dischargeEpicrisis = (new PatientDischargeEpicrisis())->setMedicalHistory($medicalHistory);
-        return $this->responseFormTemplate(
-            $request,
-            $medicalHistory,
-            $this->createFormBuilder()
-                ->setData(
-                    [
-                        self::MAIN_DISEASE_FORM_NAME => $medicalHistory,
-                        self::MEDICAL_HISTORY_FORM_NAME => $medicalHistory,
-                        self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME => $dischargeEpicrisis,
-                    ]
-                )
-                ->add(
-                    self::MAIN_DISEASE_FORM_NAME, MainDiseaseType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->add(
-                    self::MEDICAL_HISTORY_FORM_NAME, MedicalHistoryType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->add(
-                    self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME, DischargeEpicrisisType::class, [
-                        'label' => false,
-                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                    ]
-                )
-                ->getForm(),
-            self::RESPONSE_FORM_TYPE_NEW,
-            function (EntityActions $actions) use ($dischargeEpicrisis) {
-                /** @var Patient $patient */
-                $patient = $actions->getRequest()->query->get('id')
-                    ? $this->getDoctrine()->getManager()->getRepository(Patient::class)->find($actions->getRequest()->query->get('id'))
-                    : null;
-                $actions->getEntity()->setPatient($patient);
-                $this->prepareFiles($actions->getForm()->get(self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME)->get(self::FILES_COLLECTION_PROPERTY_NAME));
-                $actions->getEntityManager()->persist($dischargeEpicrisis);
-            }
-        );
-    }
+//    /**
+//     * New MedicalHistory
+//     * @Route("/new", name="medical_history_new", methods={"GET","POST"})
+//     *
+//     * @param Request $request
+//     *
+//     * @return Response
+//     */
+//    public function new(Request $request): Response
+//    {
+//      todo: сделать добавление истории болезни на случай, если понадобится добавить пациенту вторую после завершения лечения
+//    }
 
     /**
      * Show medical history info
@@ -145,21 +100,47 @@ class MedicalHistoryController extends AdminAbstractController
      * @param MedicalHistory $medicalHistory
      * @param FilterService $filterService
      *
+     * @param PrescriptionRepository $prescriptionRepository
      * @return Response
      */
-    public function show(MedicalHistory $medicalHistory, FilterService $filterService): Response
+    public function show(
+        MedicalHistory $medicalHistory,
+        FilterService $filterService,
+        PrescriptionRepository $prescriptionRepository
+    ): Response
     {
         return $this->responseShow(
             self::TEMPLATE_PATH,
             $medicalHistory,
             [
-                'patientFio' => (new AuthUserInfoService())->getFIO($medicalHistory->getPatient()->getAuthUser(), true),
-                'medicalRecordFilterName' => $filterService->generateFilterName('medical_record_list', MedicalHistory::class),
-                'patientTestingFilterName' => $filterService->generateFilterName('patient_testing_list', MedicalHistory::class),
-                'prescriptionFilterName' => $filterService->generateFilterName('prescription_list', MedicalHistory::class),
-                'patientAppointmentFilterName' => $filterService->generateFilterName('patient_appointment_list', MedicalHistory::class),
-                'allPrescriptionsCompleted' => $this->getDoctrine()->getRepository(Prescription::class)->findNotCompletedPrescription($medicalHistory) ? false : true,
-                'notificationFilterName' => $filterService->generateFilterName('notification_list', MedicalHistory::class),
+                'patientFio' => AuthUserInfoService::getFIO($medicalHistory->getPatient()->getAuthUser(), true),
+                'medicalRecordFilterName' =>
+                    $filterService->generateFilterName(
+                        'medical_record_list',
+                        MedicalHistory::class
+                    ),
+                'patientTestingFilterName' =>
+                    $filterService->generateFilterName(
+                        'patient_testing_list',
+                        MedicalHistory::class
+                    ),
+                'prescriptionFilterName' =>
+                    $filterService->generateFilterName(
+                        'prescription_list',
+                        MedicalHistory::class
+                    ),
+                'patientAppointmentFilterName' =>
+                    $filterService->generateFilterName(
+                        'patient_appointment_list',
+                        MedicalHistory::class
+                    ),
+                'allPrescriptionsCompleted' =>
+                    $prescriptionRepository->findNotCompletedPrescription($medicalHistory) ? false : true,
+                'notificationFilterName' =>
+                    $filterService->generateFilterName(
+                        'notification_list',
+                        MedicalHistory::class
+                    ),
             ]
         );
     }
@@ -171,62 +152,35 @@ class MedicalHistoryController extends AdminAbstractController
      * @param Request $request
      * @param MedicalHistory $medicalHistory
      *
+     * @param PatientTestingFileRepository $patientTestingFileRepository
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function edit(Request $request, MedicalHistory $medicalHistory): Response
+    public function edit(Request $request, MedicalHistory $medicalHistory, PatientTestingFileRepository $patientTestingFileRepository): Response
     {
-        $template = $this->templateService->edit();
-        $patientDischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis() ? $medicalHistory->getPatientDischargeEpicrisis() : new PatientDischargeEpicrisis();
+        $patientDischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis()
+            ? $medicalHistory->getPatientDischargeEpicrisis()
+            : new PatientDischargeEpicrisis();
         $medicalHistory->setPatientDischargeEpicrisis($patientDischargeEpicrisis);
         $this->getDoctrine()->getManager()->persist($patientDischargeEpicrisis);
         $this->getDoctrine()->getManager()->flush();
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    self::MAIN_DISEASE_FORM_NAME => $medicalHistory,
-                    self::MEDICAL_HISTORY_FORM_NAME => $medicalHistory,
-                    self::DATE_END_MEDICAL_HISTORY_FORM_NAME => $medicalHistory,
-                    self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME => $medicalHistory->getPatientDischargeEpicrisis() ? $medicalHistory->getPatientDischargeEpicrisis()
-                        : new PatientDischargeEpicrisis(),
-                ]
-            )
-            ->add(
-                self::MAIN_DISEASE_FORM_NAME, MainDiseaseType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                self::MEDICAL_HISTORY_FORM_NAME, MedicalHistoryType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                self::DATE_END_MEDICAL_HISTORY_FORM_NAME, EditMedicalHistoryType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME, DischargeEpicrisisType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $this->prepareFiles($form->get(self::PATIENT_DISCHARGE_EPICRISIS_FORM_NAME)->get(self::FILES_COLLECTION_PROPERTY_NAME));
-            $entityManager->flush();
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
-        }
-        return $this->render(
-            $this->templateService->getCommonTemplatePath().'edit.html.twig', [
-                'entity' => $medicalHistory,
-                'form' => $form->createView(),
-            ]
+        return $this->responseEditMultiForm(
+            $request,
+            $medicalHistory,
+            [
+                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData($medicalHistory, MedicalHistoryType::class),
+                new FormData($medicalHistory, EditMedicalHistoryType::class),
+                new FormData($patientDischargeEpicrisis, DischargeEpicrisisType::class),
+            ],
+            function (EntityActions $actions) use ($patientTestingFileRepository) {
+                $this->prepareFiles(
+                    $actions->getForm()
+                        ->get(MultiFormService::getFormName(DischargeEpicrisisType::class))
+                        ->get(self::FILES_COLLECTION_PROPERTY_NAME), $patientTestingFileRepository
+                );
+            }
         );
     }
 

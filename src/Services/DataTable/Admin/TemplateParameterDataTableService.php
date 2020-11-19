@@ -2,7 +2,7 @@
 
 namespace App\Services\DataTable\Admin;
 
-use App\Entity\AnalysisGroup;
+use App\Controller\AppAbstractController;
 use App\Entity\TemplateParameter;
 use App\Entity\TemplateType;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -26,9 +26,14 @@ class TemplateParameterDataTableService extends AdminDatatableService
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
      *
+     * @param array $filters
      * @return DataTable
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
@@ -45,22 +50,31 @@ class TemplateParameterDataTableService extends AdminDatatableService
                         $templateType = $templateParameter->getTemplateType();
                         return
                             $templateType ?
-                                $this->getLink($templateType->getName(), $templateType->getId(), 'template_type_show')
+                                $this->getLink(
+                                    $templateType->getName(),
+                                    $templateType->getId(),
+                                    'template_type_show'
+                                )
                                 : '';
                     }
                 ]
-            )
-           ;
+            );
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
+        $templateType = $filters[AppAbstractController::FILTER_LABELS['TEMPLATE_TYPE']];
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
                     'entity' => TemplateParameter::class,
-                    'query' => function (QueryBuilder $builder) {
+                    'query' => function (QueryBuilder $builder) use ($templateType) {
                         $builder
-                            ->select('t')
-                            ->from(TemplateParameter::class, 't');
+                            ->select('tt')
+                            ->from(TemplateParameter::class, 'tt');
+                        if ($templateType) {
+                            $builder
+                                ->andWhere('tt.templateType = :valTemplateType')
+                                ->setParameter('valTemplateType', $templateType);
+                        }
                     },
                 ]
             );

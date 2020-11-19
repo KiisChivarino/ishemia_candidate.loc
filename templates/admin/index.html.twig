@@ -5,6 +5,13 @@
 {% endblock %}
 {% block title %}{% endblock %}
 {% block favicon %}{{ asset('build/images/adm-fav.ico') }}{% endblock %}
+{% block data %}
+    <div
+            id="data-values"
+            data-init-json-class="{{ constant('App\\Controller\\AjaxController::AJAX_INIT_CSS_CLASS') }}"
+            style="display: none;"
+    ></div>
+{% endblock %}
 {% block body %}
     <header class="main-header main-header--admin">
         <div class="main-header__logo"><a href="{{ path('index') }}">

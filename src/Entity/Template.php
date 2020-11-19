@@ -30,11 +30,6 @@ class Template
      */
     private $templateType;
 
-//    /**
-//     * @ORM\ManyToMany(targetEntity=TemplateParameterText::class, inversedBy="templates")
-//     */
-//    private $templateParameterTexts;
-
     /**
      * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
      */
@@ -50,74 +45,66 @@ class Template
      */
     private $templateManyToManyTemplateParameterTexts;
 
+    /**
+     * Template constructor.
+     */
     public function __construct()
     {
-        $this->templateParameterTexts = new ArrayCollection();
         $this->textByTemplates = new ArrayCollection();
-        $this->templateParameterText = new ArrayCollection();
         $this->templateManyToManyTemplateParameterTexts = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @param int $id
+     * @return $this
+     */
     public function setId(int $id): self
     {
         $this->id = $id;
-
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
-        return $this;
-    }
-
-
-    /**
-     * @return Collection|TemplateParameterText[]
-     */
-    public function getTemplateParameterTexts(): Collection
-    {
-        return $this->templateParameterTexts;
-    }
-
-    public function addTemplateParameterText(TemplateParameterText $templateParameterText): self
-    {
-        if (!$this->templateParameterTexts->contains($templateParameterText)) {
-            $this->templateParameterTexts[] = $templateParameterText;
-        }
-
-        return $this;
-    }
-
-    public function removeTemplateParameterText(TemplateParameterText $templateParameterText): self
-    {
-        if ($this->templateParameterTexts->contains($templateParameterText)) {
-            $this->templateParameterTexts->removeElement($templateParameterText);
-        }
-
         return $this;
     }
 
@@ -129,16 +116,23 @@ class Template
         return $this->textByTemplates;
     }
 
+    /**
+     * @param TextByTemplate $textByTemplate
+     * @return $this
+     */
     public function addTextByTemplate(TextByTemplate $textByTemplate): self
     {
         if (!$this->textByTemplates->contains($textByTemplate)) {
             $this->textByTemplates[] = $textByTemplate;
             $textByTemplate->setTemplate($this);
         }
-
         return $this;
     }
 
+    /**
+     * @param TextByTemplate $textByTemplate
+     * @return $this
+     */
     public function removeTextByTemplate(TextByTemplate $textByTemplate): self
     {
         if ($this->textByTemplates->contains($textByTemplate)) {
@@ -148,16 +142,7 @@ class Template
                 $textByTemplate->setTemplate(null);
             }
         }
-
         return $this;
-    }
-
-    /**
-     * @return Collection|TemplateManyToManyTemplateParameter[]
-     */
-    public function getTemplateParameterText(): Collection
-    {
-        return $this->templateParameterText;
     }
 
     /**
@@ -168,16 +153,23 @@ class Template
         return $this->templateManyToManyTemplateParameterTexts;
     }
 
+    /**
+     * @param TemplateManyToManyTemplateParameterText $templateManyToManyTemplateParameterText
+     * @return $this
+     */
     public function addTemplateManyToManyTemplateParameterText(TemplateManyToManyTemplateParameterText $templateManyToManyTemplateParameterText): self
     {
         if (!$this->templateManyToManyTemplateParameterTexts->contains($templateManyToManyTemplateParameterText)) {
             $this->templateManyToManyTemplateParameterTexts[] = $templateManyToManyTemplateParameterText;
             $templateManyToManyTemplateParameterText->setTemplate($this);
         }
-
         return $this;
     }
 
+    /**
+     * @param TemplateManyToManyTemplateParameterText $templateManyToManyTemplateParameterText
+     * @return $this
+     */
     public function removeTemplateManyToManyTemplateParameterText(TemplateManyToManyTemplateParameterText $templateManyToManyTemplateParameterText): self
     {
         if ($this->templateManyToManyTemplateParameterTexts->contains($templateManyToManyTemplateParameterText)) {
@@ -187,21 +179,24 @@ class Template
                 $templateManyToManyTemplateParameterText->setTemplate(null);
             }
         }
-
         return $this;
     }
 
+    /**
+     * @return TemplateType|null
+     */
     public function getTemplateType(): ?TemplateType
     {
         return $this->templateType;
     }
 
+    /**
+     * @param TemplateType|null $templateType
+     * @return $this
+     */
     public function setTemplateType(?TemplateType $templateType): self
     {
         $this->templateType = $templateType;
-
         return $this;
     }
-
-
 }

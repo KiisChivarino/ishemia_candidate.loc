@@ -2,6 +2,7 @@
 
 namespace App\Form\Admin\MedicalHistory;
 
+use App\Controller\AjaxController;
 use App\Controller\AppAbstractController;
 use App\Entity\Diagnosis;
 use App\Entity\MedicalHistory;
@@ -41,7 +42,7 @@ class MainDiseaseType extends AbstractType
                     'delay' => 250,
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('mainDiseasePlaceholder'),
-                    'attr' => ['class' => 'js-example-basic-single'],
+                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
                 ]
             );
     }

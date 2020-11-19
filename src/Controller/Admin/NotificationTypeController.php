@@ -5,7 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\NotificationType;
 use App\Form\Admin\NotificationTypeType;
 use App\Services\DataTable\NotificationTypeDataTableService;
-use App\Services\TemplateBuilders\NotificationTypeTemplate;
+use App\Services\TemplateBuilders\Admin\NotificationTypeTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class NotificationTypeController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -85,6 +87,7 @@ class NotificationTypeController extends AdminAbstractController
      * @param NotificationType $notificationType
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, NotificationType $notificationType): Response
     {

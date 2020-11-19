@@ -79,7 +79,7 @@ class PatientAppointment
     private $complaintsComment;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\TextByTemplate", inversedBy="patient")
+     * @ORM\OneToOne(targetEntity="App\Entity\TextByTemplate", inversedBy="patientAppointment")
      * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $objectiveStatus;
@@ -195,11 +195,11 @@ class PatientAppointment
     }
 
     /**
-     * @param DateTimeInterface $appointmentTime
+     * @param DateTimeInterface|null $appointmentTime
      *
      * @return $this
      */
-    public function setAppointmentTime(DateTimeInterface $appointmentTime): self
+    public function setAppointmentTime(?DateTimeInterface $appointmentTime): self
     {
         $this->appointmentTime = $appointmentTime;
         return $this;
@@ -353,15 +353,21 @@ class PatientAppointment
         return $this;
     }
 
+    /**
+     * @return TextByTemplate|null
+     */
     public function getObjectiveStatus(): ?TextByTemplate
     {
         return $this->objectiveStatus;
     }
 
+    /**
+     * @param TextByTemplate|null $objectiveStatus
+     * @return $this
+     */
     public function setObjectiveStatus(?TextByTemplate $objectiveStatus): self
     {
         $this->objectiveStatus = $objectiveStatus;
-
         return $this;
     }
 

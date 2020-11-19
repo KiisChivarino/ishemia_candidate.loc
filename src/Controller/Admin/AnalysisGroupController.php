@@ -6,7 +6,8 @@ use App\Entity\AnalysisGroup;
 use App\Form\Admin\AnalysisGroupType;
 use App\Services\DataTable\Admin\AnalysisGroupDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\AnalysisGroupTemplate;
+use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,6 +58,7 @@ class AnalysisGroupController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -98,6 +100,7 @@ class AnalysisGroupController extends AdminAbstractController
      * @param AnalysisGroup $analysisGroup
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, AnalysisGroup $analysisGroup): Response
     {

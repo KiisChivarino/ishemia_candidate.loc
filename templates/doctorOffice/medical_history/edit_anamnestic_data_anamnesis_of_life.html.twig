@@ -1,7 +1,11 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block title %}{{ template.items.edit.content.anamnestic_title }}{% endblock %}
 {% block content %}
-    {% include (template.templatePath~'content_wrapper_top.html.twig') %}
+    <div class="content-wrapper__top">
+        <ul>
+            <li><a class="back-page" href="{{ path('doctor_medical_history', {'id': entity.id}) }}">Назад</a></li>
+        </ul>
+    </div>
     <div class="pacient-edit-wrapper">
         <div class="popup__wrapper acc">
             <h2 class="title accordion active">{{ template.items.edit.content.anamnestic_h2 }}</h2>

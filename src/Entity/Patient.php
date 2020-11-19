@@ -65,7 +65,7 @@ class Patient
     private $emailInforming;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="СНИЛС пациента"})
+     * @ORM\Column(type="string", length=14, nullable=true, options={"comment"="СНИЛС пациента"})
      */
     private $snils;
 
@@ -80,28 +80,37 @@ class Patient
     private $passport;
 
     /**
-     * @ORM\Column(type="integer", nullable=true, columnDefinition="INTEGER CHECK (weight >= 28)", options={"comment"="Вес"})
+     * @ORM\Column(
+     *     type="integer",
+     *     nullable=true,
+     *     columnDefinition="INTEGER CHECK (weight >= 28)", options={"comment"="Вес"}
+     *     )
      */
     private $weight;
 
     /**
-     * @ORM\Column(type="integer", nullable=true, columnDefinition="INTEGER CHECK (height >= 48)", options={"comment"="Рост"})
+     * @ORM\Column(
+     *     type="integer",
+     *     nullable=true,
+     *     columnDefinition="INTEGER CHECK (height >= 48)", options={"comment"="Рост"}
+     *     )
      */
     private $height;
 
     /**
-     * @ORM\Column(type="date", nullable=true, options={"comment"="Дата рождения"})
+     * @ORM\Column(type="date", options={"comment"="Дата рождения"})
      */
     private $dateBirth;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="patients")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $city;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\District", inversedBy="patients")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $district;
 
@@ -472,7 +481,7 @@ class Patient
     /**
      * @return DateTimeInterface|null
      */
-    public function getHeartAttackDate(): ?\DateTimeInterface
+    public function getHeartAttackDate(): ?DateTimeInterface
     {
         return $this->heartAttackDate;
     }
@@ -482,7 +491,7 @@ class Patient
      *
      * @return $this
      */
-    public function setHeartAttackDate(?\DateTimeInterface $heartAttackDate): self
+    public function setHeartAttackDate(?DateTimeInterface $heartAttackDate): self
     {
         $this->heartAttackDate = $heartAttackDate;
         return $this;

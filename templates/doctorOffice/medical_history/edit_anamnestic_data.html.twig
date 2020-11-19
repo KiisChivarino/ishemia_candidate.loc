@@ -6,15 +6,26 @@
         <div class="popup__wrapper acc">
             <h2 class="title accordion active">{{ template.items.edit.content.anamnestic_h2 }}</h2>
             <div class="popup__inner panel">
-{#                {{ include(template.items.form.path~'_form.html.twig') }}#}
+                {# {{ include(template.items.form.path~'_form.html.twig') }} #}
                 {{ form_start(form) }}
                 {% for child in form.mainDisease %}
                     <ul>
                         <p class="popup__row">
                             <span class="label">{{ form_label(child) }}</span>
-                            {%  if child.vars.name == 'lifeHistory' %}
-                                <a href="{{ path('doctor_edit_anamnestic_data_anamnesis_of_life', { 'id': entity.id}) }}" class="form-control">Собрать Анамнез жизни</a>
-                                <a href="{{ path('doctor_edit_anamnestic_data_anamnesis_of_life_by_template', { 'id': entity.id}) }}" class="form-control">Выбрать из шаблона Анамнез жизни</a>
+                            {% if child.vars.name == 'lifeHistory' %}
+                                <a href="{{ path(
+                                    'doctor_edit_anamnestic_data_anamnesis_of_life',
+                                    { 'id': entity.id}
+                                ) }}"
+                                   class="form-control">Собрать Анамнез жизни</a>
+                                <a href="{{ path(
+                                    'doctor_edit_anamnestic_data_anamnesis_of_life_by_template',
+                                    { 'id': entity.id}
+                                ) }}"
+                                   class="form-control"
+                                >
+                                    Выбрать из шаблона Анамнез жизни
+                                </a>
                             {% endif %}
                             {{ form_widget(child) }}
                         </p>
@@ -24,9 +35,23 @@
                     <ul>
                         <p class="popup__row">
                             <span class="label">{{ form_label(child) }}</span>
-                            {%  if child.vars.name == 'lifeHistory' %}
-                                <a href="{{ path('doctor_edit_anamnestic_data_anamnesis_of_life', { 'id': entity.id}) }}" class="form-control">Собрать Анамнез жизни</a>
-                                <a href="{{ path('doctor_edit_anamnestic_data_anamnesis_of_life_by_template', { 'id': entity.id}) }}" class="form-control">Выбрать из шаблона Анамнез жизни</a>
+                            {% if child.vars.name == 'lifeHistory' %}
+                                <a href="{{ path(
+                                    'doctor_edit_anamnestic_data_anamnesis_of_life_using_constructor',
+                                    { 'id': entity.id}
+                                ) }}"
+                                   class="form-control"
+                                >
+                                    Собрать Анамнез жизни
+                                </a>
+                                <a href="{{ path(
+                                    'doctor_edit_anamnestic_data_anamnesis_of_life_by_template',
+                                    { 'id': entity.id}
+                                ) }}"
+                                   class="form-control"
+                                >
+                                    Выбрать из шаблона Анамнез жизни
+                                </a>
                             {% endif %}
                             {{ form_widget(child) }}
                         </p>
@@ -34,9 +59,11 @@
                 {% endfor %}
                 <ul>
                     <p class="popup__row">
-                        <div class="buttons">
-                            <button class="button main-button">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
-                        </div>
+                    <div class="buttons">
+                        <button class="button main-button">
+                            {{ button_label|default(template.items.form.content.formButtonLabel) }}
+                        </button>
+                    </div>
                     </p>
                 </ul>
                 {{ form_end(form) }}

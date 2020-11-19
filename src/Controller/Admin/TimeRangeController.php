@@ -5,7 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\TimeRange;
 use App\Form\Admin\TimeRangeType;
 use App\Services\DataTable\Admin\TimeRangeDataTableService;
-use App\Services\TemplateBuilders\TimeRangeTemplate;
+use App\Services\TemplateBuilders\Admin\TimeRangeTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class TimeRangeController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -92,6 +94,7 @@ class TimeRangeController extends AdminAbstractController
      * @param TimeRange $country
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, TimeRange $country): Response
     {

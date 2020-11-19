@@ -2,6 +2,7 @@
 
 namespace App\Form\Admin;
 
+use App\Controller\AjaxController;
 use App\Controller\AppAbstractController;
 use App\Entity\Complaint;
 use App\Entity\PatientAppointment;
@@ -21,6 +22,9 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
  */
 class PatientAppointmentType extends AbstractType
 {
+    /** @var string Name of objective status text option */
+    public const OBJECTIVE_STATUS_TEXT_OPTION_NAME = 'objectiveStatusText';
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -30,6 +34,15 @@ class PatientAppointmentType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
+            ->add(
+                'plannedTime', DateTimeType::class, [
+                    'label' => $templateItem->getContentValue('plannedTime'),
+                    'date_widget' => 'single_text',
+                    'date_label' => $templateItem->getContentValue('plannedTimeDateLabel'),
+                    'time_widget' => 'single_text',
+                    'time_label' => $templateItem->getContentValue('plannedTimeTimeLabel'),
+                ]
+            )
             ->add(
                 'recommendation', null, [
                     'label' => $templateItem->getContentValue('recommendation'),
@@ -43,6 +56,9 @@ class PatientAppointmentType extends AbstractType
                     'date_label' => $templateItem->getContentValue('appointmentTimeDateLabel'),
                     'time_widget' => 'single_text',
                     'time_label' => $templateItem->getContentValue('appointmentTimeTimeLabel'),
+                    'required' => false,
+                    'empty_data' => null,
+                    'by_reference' => true,
                 ]
             )
             ->add(
@@ -60,7 +76,7 @@ class PatientAppointmentType extends AbstractType
                     'delay' => 250,
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('complaintsPlaceholder'),
-                    'attr' => ['class' => 'js-example-basic-single'],
+                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
                 ]
             )
             ->add(
@@ -73,7 +89,9 @@ class PatientAppointmentType extends AbstractType
                 'objectiveStatus', TextareaType::class, [
                     'label' => $templateItem->getContentValue('objectiveStatus'),
                     'attr' => ['class' => 'tinymce'],
-                    'data' => $options['objectiveStatusText']->getText(),
+                    'data' => $options[self::OBJECTIVE_STATUS_TEXT_OPTION_NAME] ?
+                        $options[self::OBJECTIVE_STATUS_TEXT_OPTION_NAME]->getText()
+                        : null,
                     'mapped' => false
                 ]
             )
@@ -101,7 +119,7 @@ class PatientAppointmentType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => PatientAppointment::class,
-                'objectiveStatusText' => null
+                self::OBJECTIVE_STATUS_TEXT_OPTION_NAME => null
                 ])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);

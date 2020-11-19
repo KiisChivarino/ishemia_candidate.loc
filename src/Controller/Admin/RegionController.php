@@ -5,7 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\Region;
 use App\Form\Admin\RegionType;
 use App\Services\DataTable\Admin\RegionDataTableService;
-use App\Services\TemplateBuilders\RegionTemplate;
+use App\Services\TemplateBuilders\Admin\RegionTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,6 +60,7 @@ class RegionController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -86,6 +88,7 @@ class RegionController extends AdminAbstractController
      * @param Region $region
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, Region $region): Response
     {

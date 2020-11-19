@@ -2,17 +2,10 @@
 
 namespace App\Utils;
 
+use App\Services\FileService\FileService;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Spatie\ImageOptimizer\Optimizers\Jpegoptim;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Doctrine\ORM\Mapping\PrePersist;
-use Doctrine\ORM\Mapping\PreUpdate;
-use Doctrine\ORM\Mapping\PostPersist;
-use Doctrine\ORM\Mapping\PostUpdate;
-use Doctrine\ORM\Mapping\PreRemove;
-use Doctrine\ORM\Mapping\PostRemove;
-use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 trait PatientFileTrait
@@ -91,7 +84,7 @@ trait PatientFileTrait
         }
         // A file is present, remove it
         if (null !== $this->tempFilename) {
-            $oldFile = $this->getUploadDir().'/'.$this->id.'.'.$this->tempFilename;
+            $oldFile = $this->getUploadDir() . '/' . $this->id . '.' . $this->tempFilename;
             if (file_exists($oldFile)) {
                 unlink($oldFile);
             }
@@ -101,10 +94,10 @@ trait PatientFileTrait
         // Move the file to the upload folder
         $this->file->move(
             $this->getUploadDir(),
-            $this->id.'.'.$this->extension
+            $this->id . '.' . $this->extension
         );
         $optimizerChain
-            ->optimize($this->getUploadDir().$this->id.'.'.$this->extension);
+            ->optimize($this->getUploadDir() . $this->id . '.' . $this->extension);
     }
 
     /**
@@ -170,7 +163,7 @@ trait PatientFileTrait
     public function preRemoveUpload(): void
     {
         // Save the name of the file we would want to remove
-        $this->tempFilename = $this->getUploadDir().'/'.$this->id.'.'.$this->extension;
+        $this->tempFilename = $this->getUploadDir() . '/' . $this->id . '.' . $this->extension;
     }
 
     /**
@@ -191,7 +184,7 @@ trait PatientFileTrait
     public function getUploadDir(): string
     {
         // Upload directory
-        return $this->getUploadRootDir().'/patient_files/';
+        return $this->getUploadRootDir() . '/' . FileService::FILES_DIR . '/' . self::UPLOAD_DIR . '/';
         // This means /web/uploads/documents/
     }
 
@@ -210,6 +203,6 @@ trait PatientFileTrait
      */
     public function getUrl(): string
     {
-        return $this->id.'.'.$this->extension;
+        return $this->id . '.' . $this->extension;
     }
 }

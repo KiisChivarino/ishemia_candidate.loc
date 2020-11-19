@@ -46,6 +46,7 @@ class NotificationType extends AbstractType
                 'text', null, [
                     'label' => $templateItem->getContentValue('text'),
                     'attr' => ['class' => 'tinymce'],
+                    'required' => false
                 ]
             )
             ->add(
@@ -61,7 +62,7 @@ class NotificationType extends AbstractType
                     'label' => $templateItem->getContentValue('staff'),
                     'class' => Staff::class,
                     'choice_label' => function ($staff) {
-                        return (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true);
+                        return AuthUserInfoService::getFIO($staff->getAuthUser(), true);
                     },
                     'query_builder' => function (StaffRepository $er) {
                         return $er->createQueryBuilder('s')

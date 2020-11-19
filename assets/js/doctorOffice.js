@@ -8,6 +8,13 @@ import './hospitalByCity';
 import '../css/doctorOffice.css';
 import './tinymce';
 import './initDatatable';
+import './fileUpload';
+
+require('../images/operation-icon-1.svg');
+require('../images/operation-icon-2.svg');
+require('../images/operation-icon-3.svg');
+require('../images/favicons/adm-fav.ico');
+require('fancybox')($);
 
 var acc = document.getElementsByClassName("accordion");
 var i;
@@ -48,4 +55,25 @@ $(document).ready(function () {
     $('.closed-popup').on('click', function () {
         $('.popup').removeClass('active');
     })
+
+    $('.fancybox').fancybox({
+        buttons: [
+            'close'
+        ],
+        helpers: {
+            title: null
+        },
+        tpl: {
+            closeBtn: '<a title="Close" class="fancybox-item fancybox-close"></a>'
+        },
+        afterShow: function () {
+            let click = 1;
+            $('.fancybox-wrap').click(function () {
+                let n = 90 * ++click;
+                $('.fancybox-skin')
+                    .css('webkitTransform', 'rotate(-' + n + 'deg)')
+                    .css('mozTransform', 'rotate(-' + n + 'deg)');
+            });
+        }
+    });
 });

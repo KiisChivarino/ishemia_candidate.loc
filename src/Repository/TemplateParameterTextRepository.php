@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\TemplateParameterText;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,37 +13,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TemplateParameterTextRepository extends AppRepository
 {
+    /**
+     * TemplateParameterTextRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TemplateParameterText::class);
     }
-
-    // /**
-    //  * @return TemplateParameterText[] Returns an array of TemplateParameterText objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?TemplateParameterText
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

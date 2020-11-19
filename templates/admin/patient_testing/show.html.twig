@@ -27,12 +27,14 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.patientTestingFiles }}</span>
+        {% set filesDir = constant('App\\Services\\FileService\\FileService::FILES_DIR') %}
+        {% set uploadDir = constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') %}
         {% for patientTestingFile in entity.patientTestingFiles %}
             <a target="_blank"
-               href="/patient_files/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
+               href="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
                class="fancybox"
                title="{{ patientTestingFile.fileName }}">
-                <img src="/patient_files/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
+                <img src="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
                      alt="{{ patientTestingFile.fileName }}"/>
             </a>
         {% endfor %}

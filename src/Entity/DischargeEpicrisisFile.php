@@ -13,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class DischargeEpicrisisFile
 {
+    /** @var string Upload files dir */
+    public const UPLOAD_DIR = 'patientDischargeEpicrisisFiles';
+
     use PatientFileTrait;
 
     /**
@@ -23,7 +26,11 @@ class DischargeEpicrisisFile
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PatientDischargeEpicrisis::class, inversedBy="dischargeEpicrisisFiles", cascade={"persist"})
+     * @ORM\ManyToOne(
+     *     targetEntity=PatientDischargeEpicrisis::class,
+     *     inversedBy="dischargeEpicrisisFiles",
+     *     cascade={"persist"}
+     *     )
      * @ORM\JoinColumn(nullable=false)
      */
     private $patientDischargeEpicrisis;

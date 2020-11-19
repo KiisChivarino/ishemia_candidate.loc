@@ -14,11 +14,11 @@ class MedicalRecordInfoService
     /**
      * Returns medical record title
      *
-     * @param MedicalRecord $medicalRecord
+     * @param MedicalRecord|null $medicalRecord
      *
      * @return string
      */
-    public function getMedicalRecordTitle(?MedicalRecord $medicalRecord): string
+    static public function getMedicalRecordTitle(?MedicalRecord $medicalRecord): string
     {
         return
             $medicalRecord ?

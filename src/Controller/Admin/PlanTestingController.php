@@ -5,7 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\PlanTesting;
 use App\Form\Admin\PlanTesting\PlanTestingType;
 use App\Services\DataTable\Admin\PlanTestingDataTableService;
-use App\Services\TemplateBuilders\PlanTestingTemplate;
+use App\Services\TemplateBuilders\Admin\PlanTestingTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,6 +38,7 @@ class PlanTestingController extends AdminAbstractController
         $this->templateService = new PlanTEstingTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
+
     /**
      * Список планируемых тестов
      * @Route("/", name="plan_testing_list", methods={"GET","POST"})
@@ -46,7 +48,8 @@ class PlanTestingController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, PlanTestingDataTableService $dataTableService): Response {
+    public function list(Request $request, PlanTestingDataTableService $dataTableService): Response
+    {
         return $this->responseList($request, $dataTableService);
     }
 
@@ -57,6 +60,7 @@ class PlanTestingController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -84,6 +88,7 @@ class PlanTestingController extends AdminAbstractController
      * @param PlanTesting $planTesting
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, PlanTesting $planTesting): Response
     {

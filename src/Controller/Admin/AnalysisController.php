@@ -7,7 +7,8 @@ use App\Form\Admin\Analysis\AnalysisType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AnalysisDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\AnalysisTemplate;
+use App\Services\TemplateBuilders\Admin\AnalysisTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,7 +49,11 @@ class AnalysisController extends AdminAbstractController
      *
      * @return Response
      */
-    public function list(Request $request, FilterService $filterService, AnalysisDataTableService $dataTableService): Response
+    public function list(
+        Request $request,
+        FilterService $filterService,
+        AnalysisDataTableService $dataTableService
+    ): Response
     {
         return $this->responseList(
             $request, $dataTableService,
@@ -65,6 +70,7 @@ class AnalysisController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -99,6 +105,7 @@ class AnalysisController extends AdminAbstractController
      * @param Analysis $analysis
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, Analysis $analysis): Response
     {

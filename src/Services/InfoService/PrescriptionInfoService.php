@@ -20,7 +20,7 @@ class PrescriptionInfoService
      *
      * @return string
      */
-    public function getPrescriptionTitle(Prescription $prescription): string
+    static public function getPrescriptionTitle(Prescription $prescription): string
     {
         return
             'Врач: '.
@@ -36,7 +36,7 @@ class PrescriptionInfoService
      *
      * @return int
      */
-    public function countChildren(Prescription $prescription)
+    static public function countChildren(Prescription $prescription)
     {
         $prescriptionMedicines = count(
             array_filter(

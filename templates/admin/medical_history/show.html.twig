@@ -44,7 +44,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.backgroundDiseases }}</span>
-        {% if entity.backgroundDiseases %}
+        {% if not entity.backgroundDiseases %}
             Фоновые заболевания отсутствуют
         {% endif %}
         {% for backgroundDisease in entity.backgroundDiseases %}
@@ -57,7 +57,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complications }}</span>
-        {% if entity.complications %}
+        {% if not entity.complications %}
             Осложнения основной болезни отсутствуют
         {% endif %}
         {% for complication in entity.complications %}
@@ -104,12 +104,16 @@
     {% if not entity.patientDischargeEpicrisis is empty %}
         <li>
             <span class="title">{{ template.items.show.content.dischargeEpicrisis }}</span>
+            {% set filesDir = constant('App\\Services\\FileService\\FileService::FILES_DIR') %}
+            {% set uploadDir = constant('App\\Services\\FileService\\FileService::FILES_DIR') %}
             {% for file in entity.patientDischargeEpicrisis.dischargeEpicrisisFiles %}
-                <a target="_blank"
-                   href="/patient_files/{{ file.id }}.{{ file.extension }}"
-                   class="fancybox"
-                   title="{{ file.fileName }}">
-                    <img src="/patient_files/{{ file.id }}.{{ file.extension }}"
+                <a
+                        target="_blank"
+                        href="/{{ filesDir }}/{{ uploadDir }}/{{ file.id }}.{{ file.extension }}"
+                        class="fancybox"
+                        title="{{ file.fileName }}"
+                >
+                    <img src="/{{ filesDir }}/{{ uploadDir }}/{{ file.id }}.{{ file.extension }}"
                          alt="{{ file.fileName }}"/>
                 </a>
             {% endfor %}
@@ -119,31 +123,35 @@
 {% block custom_actions %}
     <div class="buttons">
         <button class="btn btn--add btn--show">Добавить
+            {% set medicalHistoryParameterKey =
+                constant('App\\Controller\\Admin\\MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY') %}
             <ul class="sublist">
                 <li class="sublist__item">
-                    <a href="{{ path('medical_record_new', {'medical_history_id': entity.id}) }}">
+                    <a href="{{ path('medical_record_new',{ medicalHistoryParameterKey:entity.id }) }}">
                         {{ template.items.show.content.addMedicalRecord }}
                     </a>
                 </li>
                 <li class="sublist__item">
-                    <a href="{{ path('patient_testing_new', {'medical_history_id': entity.id}) }}">
+                    <a href="{{ path('patient_testing_new', { medicalHistoryParameterKey : entity.id } ) }}">
                         {{ template.items.show.content.addPatientTesting }}
                     </a>
                 </li>
                 {% if allPrescriptionsCompleted %}
                     <li class="sublist__item">
-                        <a href="{{ path('prescription_new', {'medical_history_id': entity.id}) }}">
+                        <a href="{{ path(
+                            'prescription_new',
+                            { medicalHistoryParameterKey : entity.id }) }}">
                             {{ template.items.show.content.addPrescription }}
                         </a>
                     </li>
                 {% endif %}
                 <li class="sublist__item">
-                    <a href="{{ path('patient_appointment_new', {'medical_history_id': entity.id}) }}">
+                    <a href="{{ path('patient_appointment_new',{ medicalHistoryParameterKey : entity.id }) }}">
                         {{ template.items.show.content.addPatientAppointment }}
                     </a>
                 </li>
                 <li class="sublist__item">
-                    <a href="{{ path('notification_new', {'medical_history_id': entity.id}) }}">
+                    <a href="{{ path('notification_new',{ medicalHistoryParameterKey : entity.id }) }}">
                         {{ template.items.show.content.addNotification }}
                     </a>
                 </li>
@@ -165,11 +173,6 @@
                 <li class="sublist__item">
                     <a href="{{ path('prescription_list', {(prescriptionFilterName) : entity.id}) }}">
                         {{ template.items.show.content.prescriptions }}
-                    </a>
-                </li>
-                <li class="sublist__item">
-                    <a href="{{ path('patient_appointment_list', {(patientAppointmentFilterName) : entity.id}) }}">
-                        {{ template.items.show.content.patientAppointments }}
                     </a>
                 </li>
                 <li class="sublist__item">

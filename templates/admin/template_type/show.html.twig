@@ -10,8 +10,11 @@
         <button class="btn btn--list btn--show">Список
             <ul class="sublist">
                 <li class="sublist__item">
-                    <a href="{{ path('template_type_list') }}">
-                        {{ template.items.show.content.analyzesLink }}
+                    <a href="{{ path(
+                        'template_parameter_list',
+                        {(templateTypeFilterName) : entity.id}
+                    ) }}">
+                        {{ template.items.show.content.templateParametersLink }}
                     </a>
                 </li>
             </ul>

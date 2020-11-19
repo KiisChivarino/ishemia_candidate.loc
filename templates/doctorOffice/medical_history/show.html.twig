@@ -196,7 +196,7 @@
                 <div class="statement__head">
                     <h3 class="subtitle">{{ template.items.show.content.objectiveData }}</h3>
                     <a class="back-page"
-                       href="{{ path('doctor_edit_objective_data', {'id': entity.id}) }}">
+                       href="{{ path('doctor_edit_objective_data', {'id': firstAppointment.id}) }}">
                         <span class="statement__edit">{{ template.items.show.content.addObjectiveData }}</span>
                     </a>
                 </div>
@@ -250,8 +250,8 @@
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.objectiveStatus }}</p>
                             <p>
-                                {% if firstAppointment.objectiveStatus %}
-                                    {{ firstAppointment.objectiveStatus | raw }}
+                                {% if firstAppointment.objectiveStatus.text %}
+                                    {{ firstAppointment.objectiveStatus.text | raw }}
                                 {% else %}
                                     {{ template.items.show.content.objectiveStatusNotFound }}
                                 {% endif %}
@@ -275,12 +275,92 @@
         </div>
     {% endif %}
 
+    <div class="statement acc">
+        <h2 class="title accordion">{{ template.items.show.content.laboratoryData }}</h2>
+        <div class="statement__wrapper panel">
+            <div class="statement__head">
+                <h3 class="subtitle">{{ template.items.show.content.dischargeEpicrisis }}</h3>
+                <a class="back-page"
+                   href="{{ path('doctor_edit_discharge_epicrisis', {'id': patientDischargeEpicrisis.id}) }}">
+                    <span class="statement__edit">{{ template.items.show.content.addDischargeEpicrises }}</span>
+                </a>
+            </div>
+            <div class="statement__content">
+                {% if not patientDischargeEpicrisis is empty %}
+                    <p>
+                        {% for file in patientDischargeEpicrisis.dischargeEpicrisisFiles %}
+                            <a target="_blank" style="display: inline-block;"
+                               href="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\DischargeEpicrisisFile::UPLOAD_DIR') }}/{{ file.id }}.{{ file.extension }}"
+                               class="fancybox"
+                               title="{{ file.fileName }}">
+                                <img src="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\DischargeEpicrisisFile::UPLOAD_DIR') }}/{{ file.id }}.{{ file.extension }}"
+                                     alt="{{ file.fileName }}" style="max-width: 400px;"/>
+                            </a>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+            {% for testing in firstTestings %}
+                <div class="statement__head">
+                    <h3 class="subtitle">Обследование: {{ patientTestingTitle(testing) }}</h3>
+                    <a class="back-page"
+                       href="{{ path('doctor_edit_objective_data', {'id': entity.id}) }}">
+                        <span class="statement__edit">{{ template.items.show.content.addPatientTestingResults }}</span>
+                    </a>
+                </div>
+                {% if testing.patientTestingFiles is empty and  enabledTestingResults(testing) is empty %}
+                    <p>Результаты обследования не внесены!</p>
+                {% endif %}
+                <div class="statement__content">
+                    <div class="statement__info">
+                        <div class="statement__info-block">
+                            <p>
+                                {% for testingFile in testing.patientTestingFiles %}
+                                    <a target="_blank"
+                                       href="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') }}/{{ testingFile.id }}.{{ testingFile.extension }}"
+                                       class="fancybox"
+                                       title="{{ testingFile.fileName }}">
+                                        <img src="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') }}/{{ testingFile.id }}.{{ testingFile.extension }}"
+                                             alt="{{ testingFile.fileName }}"/>
+                                    </a>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="statement__info">
+                        <div class="statement__info-block">
+                            {% if not enabledTestingResults(testing) is empty %}
+                                <table>
+                                    <tr>
+                                        <th>Параметр</th>
+                                        <th>Значение</th>
+                                    </tr>
+                                    {% for result in testing.patientTestingResults %}
+                                        {% if(result.enabled) %}
+                                            <tr>
+                                                <td>{{ analysisRate(result.analysisRate) }}</td>
+                                                <td>{{ result.result }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
     <div class="history">
         <h2 class="title">Электронная история болезни </h2>
         <div class="history__head">
             <div class="select"><span>Период</span>
-                <input class="js-datepicker" type="text" value="15.03.2020">
-                <input class="js-datepicker" type="text" value="15.03.2020">
+                <label>
+                    <input class="js-datepicker" type="text" value="15.03.2020">
+                </label>
+                <label>
+                    <input class="js-datepicker" type="text" value="15.03.2020">
+                </label>
             </div>
             <button class="button main-button">Назначить лечение</button>
         </div>
@@ -329,21 +409,27 @@
                 <th>
                     <div class="th-inner">
                         <span class="table__min-title">Принимать</span>
-                        <span>Ангиовит 1 таблетка в суткиКурантил 25 мг по 1 таблетки 3 раза в день. </span>
+                        <span>Клопидогрель 75 мг утро</span>
+                        <span>АЦСК 75 мг вечер</span>
+                        <span>Бисопролол 2,5 мг утро</span>
+                        <span>Рамиприл 2,5 мг 2 р/д</span>
+                        <span>Розувастатин 20 мг вечер</span>
+                        <span>Торасемид 5 мг утро</span>
+                        <span>Спиронолактон 25 мг утро</span>
                     </div>
-                    <div class="th-inner">
-                        <span class="table__min-title">Вводить подкожно</span>
-                        <span>Фраксипарин 0,3 один раз.</span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__min-title">Сдать анализы </span>
-                        <span>D-димер через 2 недели </span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__small-text">
-                            Рекомендации направлены <br> на согласование врачу гематологу
-                        </span>
-                    </div>
+                    {# <div class="th-inner"> #}
+                    {# <span class="table__min-title">Рекоммендации врача</span> #}
+                    {# <span>Фраксипарин 0,3 один раз.</span> #}
+                    {# </div> #}
+                    {# <div class="th-inner"> #}
+                    {# <span class="table__min-title">Сдать анализы </span> #}
+                    {# <span>D-димер через 2 недели </span> #}
+                    {# </div> #}
+                    {# <div class="th-inner"> #}
+                    {# <span class="table__small-text"> #}
+                    {# Рекомендации направлены <br> на согласование врачу гематологу #}
+                    {# </span> #}
+                    {# </div> #}
                     <div class="th-inner">
                         <span class="table__small-text">Врач</span>
                         <span>Иванов М. С.</span>
@@ -357,7 +443,7 @@
                     </div>
                     <div class="th-inner">
                         <span class="table__small-text">Жалобы</span>
-                        <span>одышка, загрудная боль, перебои в работе сердца, нарушение ритма, слабость</span>
+                        <span>одышка при ходьбе, слабость, головная боль</span>
                     </div>
                     <div class="th-inner">
                         <span class="table__small-text">Врач</span>

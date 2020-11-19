@@ -8,7 +8,8 @@ use App\Form\Admin\AnalysisGroupType;
 use App\Form\Admin\TemplateTypeType;
 use App\Services\DataTable\Admin\TemplateTypeDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\TemplateTypeTemplate;
+use App\Services\TemplateBuilders\Admin\TemplateTypeTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,6 +38,7 @@ class TemplateTypeController extends AdminAbstractController
         $this->templateService = new TemplateTypeTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
+
     /**
      * Новая группа анализов
      * @Route("/new", name="analysis_group_new", methods={"GET","POST"})
@@ -44,6 +46,7 @@ class TemplateTypeController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -86,7 +89,9 @@ class TemplateTypeController extends AdminAbstractController
             self::TEMPLATE_PATH,
             $templateType,
             [
-                'templateTypeFilterName' => $filterService->generateFilterName('template_type', TemplateType::class)
+                'templateTypeFilterName' => $filterService->generateFilterName(
+                    'template_parameter_list',
+                    TemplateType::class)
             ]
         );
     }
@@ -98,6 +103,7 @@ class TemplateTypeController extends AdminAbstractController
      * @param Request $request
      * @param TemplateType $templateType
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, TemplateType $templateType): Response
     {

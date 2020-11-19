@@ -15,16 +15,16 @@ class AnalysisRateInfoService
     /**
      * Возвращает строку с описанием единицы референтных значений
      *
-     * @param AnalysisRate $analysisRate
+     * @param AnalysisRate|null $analysisRate
      *
      * @return string
      */
-    public function getAnalysisRateInfoString(?AnalysisRate $analysisRate)
+    static public function getAnalysisRateInfoString(?AnalysisRate $analysisRate)
     {
         return
             $analysisRate ?
-                $analysisRate->getAnalysis()->getName().
-                ', '.$analysisRate->getRateMin().'-'.$analysisRate->getRateMax().
-                ', '.$analysisRate->getMeasure()->getNameRu() : '';
+                $analysisRate->getAnalysis()->getName() .
+                ', ' . $analysisRate->getRateMin() . '-' . $analysisRate->getRateMax() .
+                ', ' . $analysisRate->getMeasure()->getNameRu() : '';
     }
 }

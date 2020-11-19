@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\PatientTesting;
 use App\Entity\PatientTestingResult;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,22 +20,12 @@ class PatientTestingResultRepository extends AppRepository
     }
 
     /**
-     * Подготовить результаты анализов для обследования
-     *
-     * @param PatientTesting $patientTesting
-     *
-     * @throws ORMException
+     * Returns enabled patient testing results by testing
+     * @param PatientTesting $testing
+     * @return PatientTestingResult[]
      */
-    public function persistTestingResultsForTesting(PatientTesting $patientTesting)
+    public function getEnabledTestingResults(PatientTesting $testing)
     {
-        foreach ($patientTesting->getAnalysisGroup()->getAnalyses() as $analysis) {
-            if ($analysis->getEnabled()) {
-                $analysisTestingResult = new PatientTestingResult();
-                $analysisTestingResult->setPatientTesting($patientTesting);
-                $analysisTestingResult->setAnalysis($analysis);
-                $analysisTestingResult->setEnabled(false);
-                $this->_em->persist($analysisTestingResult);
-            }
-        }
+        return $this->findBy(['patientTesting' => $testing, 'enabled' => true]);
     }
 }

@@ -5,7 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\PlanAppointment;
 use App\Form\Admin\PlanAppointmentType;
 use App\Services\DataTable\Admin\PlanAppointmentDataTableService;
-use App\Services\TemplateBuilders\PlanAppointmentTemplate;
+use App\Services\TemplateBuilders\Admin\PlanAppointmentTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class PlanAppointmentController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -83,6 +85,7 @@ class PlanAppointmentController extends AdminAbstractController
      * @param PlanAppointment $planAppointment
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, PlanAppointment $planAppointment): Response
     {

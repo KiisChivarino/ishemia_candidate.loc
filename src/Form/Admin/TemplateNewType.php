@@ -4,20 +4,13 @@ namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
 use App\Entity\Template;
-use App\Entity\TemplateManyToManyTemplateParameterText;
-use App\Entity\TemplateParameter;
 use App\Entity\TemplateParameterText;
-use App\Entity\TemplateType;
 use App\Repository\TemplateParameterTextRepository;
-use App\Repository\TemplateTypeRepository;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -28,6 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TemplateNewType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FormTemplateItem $templateItem */
@@ -58,33 +55,6 @@ class TemplateNewType extends AbstractType
                     ]
                 );
         }
-
-//        foreach ($options['parameters'] as $parameter) {
-//
-//            $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) use ($parameter) {
-//                $data = $event->getData();
-//                $form = $event->getForm();
-//
-//                if (!empty($data['itemNew']['name'])) {
-//                    $form->remove('item');
-//
-//                    $form->add('enabled'.$parameter->getId(), EntityType::class, array(
-//                        'label' => $parameter->getName(),
-//                        'class' => TemplateParameterText::class,
-//                        'mapped' => false,
-//                        'choice_label' => 'text',
-//                        'query_builder' => function (TemplateParameterTextRepository $er) use ($parameter) {
-////                        dd($options);
-//                            return $er->createQueryBuilder('t')
-//                                ->andWhere('t.enabled = true')
-//                                ->leftJoin('t.templateParameter', 'templateParameter')
-//                                ->andWhere('templateParameter.id = :val')
-//                                ->setParameter('val', $parameter->getId());
-//                        },
-//                    ));
-//                }
-//            });
-//        }
     }
 
     /**

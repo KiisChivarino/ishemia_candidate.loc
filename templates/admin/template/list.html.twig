@@ -4,23 +4,28 @@
 {% block content %}
     <div class="tabs">
         <ul class="content-wrapper__nav tabs__caption">
-        {% if template.items.filter.isEnabled %}
-            {{ include(
-                template.items.filter.path~'_filter_form.html.twig'
-            ) }}
-        {% endif %}
-        {% if template.items.new.isEnabled %}
-            <div class="content-wrapper__select">
-                <select class="form-control" name="forma" onchange="location = this.value;">
-                    <option selected disabled="disabled">Создать новый шаблон</option>
-                    <option value="{{ path('template_new', {type: 'disease_analysis'}) }}">Создать новый шаблон типа Анализ заболевания</option>
-                    <option value="{{ path('template_new', {type: 'objective_status'}) }}">Создать новый шаблон типа Объективный статус</option>
-                    <option value="{{ path('template_new', {type: 'therapy'}) }}">Создать новый шаблон типа Терапия</option>
-                    <option value="{{ path('template_new', {type: 'life_analysis'}) }}">Создать новый шаблон типа Анализ жизни</option>
-                </select>
-{#                <a style="text-decoration: none;" href="{{ path(template.routes.new) }}" class="main-button">{{ template.items.list.content.toNew }}</a>#}
-            </div>
-        {% endif %}
+            {% if template.items.filter.isEnabled %}
+                {{ include(
+                    template.items.filter.path~'_filter_form.html.twig'
+                ) }}
+            {% endif %}
+            {% if template.items.new.isEnabled %}
+                <div class="content-wrapper__select">
+                    <label>
+                        <select class="form-control" name="form" onchange="location = this.value;">
+                            <option selected disabled="disabled">
+                                {{ template.items.list.content.createNewTemplate }}
+                            </option>
+                            <option value="{{ path('template_new_objective_status') }}">
+                                {{ template.items.list.content.newObjectiveStatusTemplate }}
+                            </option>
+                            <option value="{{ path('template_new_life_anamnesis') }}">
+                                {{ template.items.list.content.newLifeAnamnesisTemplate }}
+                            </option>
+                        </select>
+                    </label>
+                </div>
+            {% endif %}
         </ul>
         {{ include('flashmessages.html.twig') }}
         <div class="box-body table-responsive table-wrapper table-pacients tabs__content active">

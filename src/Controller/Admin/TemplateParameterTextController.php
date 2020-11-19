@@ -4,9 +4,11 @@ namespace App\Controller\Admin;
 
 use App\Entity\TemplateParameterText;
 use App\Form\Admin\TemplateParameterTextType;
+use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\TemplateParameterTextDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\TemplateParameterTextTemplate;
+use App\Services\TemplateBuilders\Admin\TemplateParameterTextTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,6 +37,7 @@ class TemplateParameterTextController extends AdminAbstractController
         $this->templateService = new TemplateParameterTextTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
+
     /**
      * Новый текст параметра шаблона
      * @Route("/new", name="template_parameter_text_new", methods={"GET","POST"})
@@ -42,6 +45,7 @@ class TemplateParameterTextController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -62,11 +66,22 @@ class TemplateParameterTextController extends AdminAbstractController
      * @param Request $request
      * @param TemplateParameterTextDataTableService $dataTableService
      *
+     * @param FilterService $filterService
      * @return Response
      */
-    public function list(Request $request, TemplateParameterTextDataTableService $dataTableService): Response
+    public function list(
+        Request $request,
+        TemplateParameterTextDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
     {
-        return $this->responseList($request, $dataTableService);
+        return $this->responseList(
+            $request,
+            $dataTableService,
+            (new FilterLabels($filterService))->setFilterLabelsArray(
+                [self::FILTER_LABELS['TEMPLATE_PARAMETER'],]
+            )
+        );
     }
 
     /**
@@ -84,7 +99,10 @@ class TemplateParameterTextController extends AdminAbstractController
             self::TEMPLATE_PATH,
             $templateParameterText,
             [
-                'templateParameterTextFilterName' => $filterService->generateFilterName('template_parameter_text', TemplateParameterText::class)
+                'templateParameterFilterName' => $filterService->generateFilterName(
+                    'template_parameter_text',
+                    TemplateParameterText::class
+                )
             ]
         );
     }
@@ -96,6 +114,7 @@ class TemplateParameterTextController extends AdminAbstractController
      * @param Request $request
      * @param TemplateParameterText $templateParameterText
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, TemplateParameterText $templateParameterText): Response
     {

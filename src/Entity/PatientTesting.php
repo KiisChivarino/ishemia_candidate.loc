@@ -60,6 +60,7 @@ class PatientTesting
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientTestings")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $medicalRecord;
 
@@ -69,7 +70,11 @@ class PatientTesting
     private $plannedDate;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientTestingFile::class, mappedBy="patientTesting", orphanRemoval=true,cascade={"persist"})
+     * @ORM\OneToMany(
+     *     targetEntity=PatientTestingFile::class,
+     *     mappedBy="patientTesting",
+     *     orphanRemoval=true,cascade={"persist"}
+     *     )
      */
     private $patientTestingFiles;
 
@@ -137,11 +142,11 @@ class PatientTesting
     }
 
     /**
-     * @param DateTimeInterface|null $plannedDate
+     * @param DateTimeInterface $plannedDate
      *
      * @return $this
      */
-    public function setPlannedDate(?DateTimeInterface $plannedDate): self
+    public function setPlannedDate(DateTimeInterface $plannedDate): self
     {
         $this->plannedDate = $plannedDate;
         return $this;

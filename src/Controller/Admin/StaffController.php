@@ -5,16 +5,18 @@ namespace App\Controller\Admin;
 use App\Entity\AuthUser;
 use App\Entity\Staff;
 use App\Form\Admin\AuthUser\AuthUserType;
-use App\Form\Admin\AuthUser\EditAuthUserType;
-use App\Form\Admin\AuthUser\NewAuthUserType;
+use App\Form\Admin\AuthUser\AuthUserPasswordType;
 use App\Form\Admin\Staff\StaffRoleType;
 use App\Form\Admin\StaffType;
+use App\Services\ControllerGetters\EntityActions;
 use App\Services\DataTable\Admin\StaffDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
-use App\Services\TemplateBuilders\StaffTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
+use App\Services\MultiFormService\FormData;
+use App\Services\MultiFormService\MultiFormService;
+use App\Services\TemplateBuilders\Admin\StaffTemplate;
 use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,7 +47,11 @@ class StaffController extends AdminAbstractController
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $passwordEncoder
      */
-    public function __construct(Environment $twig, RouterInterface $router, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        UserPasswordEncoderInterface $passwordEncoder
+    )
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new StaffTemplate($router->getRouteCollection(), get_class($this));
@@ -71,107 +77,64 @@ class StaffController extends AdminAbstractController
      * @Route("/new", name="staff_new", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param AuthUserInfoService $authUserInfoService
      *
      * @return Response
      * @throws Exception
      */
-    public function new(Request $request, AuthUserInfoService $authUserInfoService): Response
+    public function new(Request $request): Response
     {
-        $template = $this->templateService->new();
         $staff = new Staff();
         $user = new AuthUser();
         $staff->setAuthUser($user);
         $user->setEnabled(true);
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    'authUser' => $user,
-                    'newAuthUser' => $user,
-                    'staff' => $staff
-                ]
-            )
-            ->add(
-                'authUser', AuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'newAuthUser', NewAuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'onlyRole', StaffRoleType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'staff', StaffType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
-        try {
-            $form->handleRequest($request);
-        } catch (Exception $e) {
-            $this->addFlash('error', 'Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...');
-            return $this->render(
-                $this->templateService->getCommonTemplatePath().'new.html.twig', [
-                    'staff' => $staff,
-                    'form' => $form->createView(),
-                ]
-            );
-        }
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            /** @var AuthUser $authUser */
-            $authUser = $data['authUser'];
-            $staff = $data['staff'];
-            try {
-                /** @var AuthUser $role */
-                $role = $data['onlyRole'];
-                if (!isset($role->getRoles()[0])) {
-                    throw new Exception('Ошибка добавления роли сотруднику!');
+        return $this->responseNewMultiForm(
+            $request,
+            $staff,
+            [
+                new FormData($user, AuthUserType::class),
+                new FormData(
+                    $user,
+                    AuthUserPasswordType::class,
+                    [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => true]
+                ),
+                new FormData($user, StaffRoleType::class, [], false),
+                new FormData($staff, StaffType::class),
+            ],
+            function (EntityActions $actions) use ($user, $staff): ?Response {
+                try {
+                    /** @var AuthUser $role */
+                    $role = $actions->getForm()->getData()[MultiFormService::getFormName(StaffRoleType::class)];
+                    if (!isset($role->getRoles()[0])) {
+                        throw new Exception('Ошибка добавления роли сотруднику!');
+                    }
+                    $user->setRoles($role->getRoles()[0]);
+                    $user->setPhone(AuthUserInfoService::clearUserPhone($user->getPhone()));
+                } catch (Exception $e) {
+                    $this->addFlash('error', $e->getMessage());
+                    return $this->render(
+                        $this->templateService->getCommonTemplatePath() . 'new.html.twig', [
+                            'staff' => $staff,
+                            'form' => $actions->getForm()->createView(),
+                        ]
+                    );
                 }
-                $authUser->setRoles($role->getRoles()[0]);
-                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-            } catch (Exception $e) {
-                $this->addFlash('error', $e->getMessage());
-                return $this->render(
-                    $this->templateService->getCommonTemplatePath().'new.html.twig', [
-                        'staff' => $staff,
-                        'form' => $form->createView(),
-                    ]
-                );
+                $encodedPassword = $this->passwordEncoder->encodePassword($user, $user->getPassword());
+                $user->setPassword($encodedPassword);
+                $em = $this->getDoctrine()->getManager();
+                $em->getConnection()->beginTransaction();
+                try {
+                    $em->persist($user);
+                    $em->flush();
+                    $staff->setAuthUser($user);
+                    $em->persist($staff);
+                    $em->flush();
+                    $em->getConnection()->commit();
+                } catch (Exception $e) {
+                    $em->getConnection()->rollBack();
+                    throw $e;
+                }
+                return null;
             }
-            $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
-            $authUser->setPassword($encodedPassword);
-            $em = $this->getDoctrine()->getManager();
-            $em->getConnection()->beginTransaction();
-            try {
-                $em->persist($authUser);
-                $em->flush();
-                $staff->setAuthUser($authUser);
-                $em->persist($staff);
-                $em->flush();
-                $em->getConnection()->commit();
-            } catch (Exception $e) {
-                $em->getConnection()->rollBack();
-                throw $e;
-            }
-            $this->addFlash('success', 'post.created_successfully');
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
-        }
-        return $this->render(
-            $this->templateService->getCommonTemplatePath().'new.html.twig', [
-                'staff' => $staff,
-                'form' => $form->createView(),
-            ]
         );
     }
 
@@ -199,61 +162,32 @@ class StaffController extends AdminAbstractController
      *
      * @param Request $request
      * @param Staff $staff
-     * @param AuthUserInfoService $authUserInfoService
      *
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function edit(Request $request, Staff $staff, AuthUserInfoService $authUserInfoService): Response
+    public function edit(Request $request, Staff $staff): Response
     {
-        $template = $this->templateService->edit();
         $authUser = $staff->getAuthUser();
-        $form = $this->createFormBuilder()
-            ->setData(
-                [
-                    'authUser' => $authUser,
-                    'editAuthUser' => $authUser,
-                    'onlyRole' => $authUser,
-                    'staff' => $staff,
-                ]
-            )
-            ->add(
-                'authUser', AuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'editAuthUser', EditAuthUserType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'onlyRole', StaffRoleType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->add(
-                'staff', StaffType::class, [
-                    'label' => false,
-                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
-                ]
-            )
-            ->getForm();
         $oldPassword = $authUser->getPassword();
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
-            $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
-        }
-        return $this->render(
-            $this->templateService->getCommonTemplatePath().'edit.html.twig', [
-                'entity' => $staff,
-                'form' => $form->createView(),
-            ]
+        return $this->responseEditMultiForm(
+            $request,
+            $staff,
+            [
+                new FormData($authUser, AuthUserType::class),
+                new FormData(
+                    $authUser,
+                    AuthUserPasswordType::class,
+                    [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false]
+                ),
+                new FormData($authUser, StaffRoleType::class, []),
+                new FormData($staff, StaffType::class),
+            ],
+            function () use ($authUser, $oldPassword, $staff) {
+                $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
+                $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
+            }
         );
     }
 

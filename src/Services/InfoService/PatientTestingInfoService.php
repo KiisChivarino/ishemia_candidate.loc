@@ -19,7 +19,7 @@ class PatientTestingInfoService
      *
      * @return string
      */
-    public function getPatientTestingInfoString(PatientTesting $patientTesting)
+    static public function getPatientTestingInfoString(PatientTesting $patientTesting)
     {
         return
             is_null($patientTesting->getAnalysisDate())
