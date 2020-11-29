@@ -1,19 +1,19 @@
-import './app';
-
 require('datatables');
+import './tinymce';
 import './select2';
 import './select2entity';
 import '../css/select2.min.css'
 import './hospitalByCity';
 import '../css/doctorOffice.css';
-import './tinymce';
 import './initDatatable';
 import './fileUpload';
+import './app';
+import './mask';
 
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
 require('../images/operation-icon-3.svg');
-require('../images/favicons/adm-fav.ico');
+require('../images/favicons/doc-fav.ico');
 require('fancybox')($);
 
 var acc = document.getElementsByClassName("accordion");
@@ -76,4 +76,11 @@ $(document).ready(function () {
             });
         }
     });
+
+    //set datatable search from header input
+    $('.js-main-search input').on('keyup', function () {
+        $('#dt_filter input')
+            .val($(this).val())
+            .trigger('keyup');
+    })
 });

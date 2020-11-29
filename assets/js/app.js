@@ -10,8 +10,7 @@ import '../css/app.css';
 import '../css/app.scss';
 import '../css/main.min.css';
 import '../css/select2.min.css';
-
-require('@fortawesome/fontawesome-free/css/all.min.css');
+import 'font-awesome/css/font-awesome.css';
 
 const $ = require('jquery');
 import 'select2';

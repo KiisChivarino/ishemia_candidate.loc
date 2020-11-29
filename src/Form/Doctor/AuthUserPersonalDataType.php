@@ -5,6 +5,7 @@ namespace App\Form\Doctor;
 use App\Controller\AppAbstractController;
 use App\Entity\AuthUser;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
@@ -21,6 +22,7 @@ class AuthUserPersonalDataType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

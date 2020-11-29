@@ -74,6 +74,7 @@ class TemplateService
     private function getRoutesFromRouteCollection(RouteCollection $routeCollection, string $className): array
     {
         $routes = [];
+//        VarDumper::dump($routeCollection->all());
         /**
          * @var string $key
          * @var Route $value

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Form\Admin\PrescriptionMedicineType;
+use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionMedicineDataTableService;
@@ -13,6 +14,7 @@ use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
 use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -76,15 +78,17 @@ class PrescriptionMedicineController extends AdminAbstractController
      *
      * @param Request $request
      *
+     * @param PrescriptionRepository $prescriptionRepository
      * @return Response
+     * @throws Exception
      */
-    public function new(Request $request): Response
+    public function new(Request $request, PrescriptionRepository $prescriptionRepository): Response
     {
         $prescriptionMedicine = new PrescriptionMedicine();
-        if ($request->query->get('prescription_id')) {
+        if ($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)) {
             /** @var Prescription $prescription */
-            $prescription = $this->getDoctrine()->getManager()->getRepository(Prescription::class)
-                ->find($request->query->get('prescription_id'));
+            $prescription = $prescriptionRepository
+                ->find($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY));
             $prescriptionMedicine->setPrescription($prescription);
         }
         return $this->responseNew(
@@ -108,9 +112,9 @@ class PrescriptionMedicineController extends AdminAbstractController
         return $this->responseShow(
             self::TEMPLATE_PATH, $prescriptionMedicine, [
                 'prescriptionTitle' =>
-                    (new PrescriptionInfoService())->getPrescriptionTitle($prescriptionMedicine->getPrescription()),
+                    PrescriptionInfoService::getPrescriptionTitle($prescriptionMedicine->getPrescription()),
                 'staffTitle' =>
-                    (new AuthUserInfoService())->getFIO($prescriptionMedicine->getStaff()->getAuthUser()),
+                    AuthUserInfoService::getFIO($prescriptionMedicine->getStaff()->getAuthUser()),
             ]
         );
     }
@@ -123,6 +127,7 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param PrescriptionMedicine $prescriptionMedicine
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, PrescriptionMedicine $prescriptionMedicine): Response
     {

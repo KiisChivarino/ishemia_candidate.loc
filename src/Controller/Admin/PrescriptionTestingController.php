@@ -7,6 +7,7 @@ use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
 use App\Form\Admin\PatientTesting\PatientTestingRequiredType;
 use App\Form\Admin\PrescriptionTestingType;
+use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
 use App\Services\FilterService\FilterService;
@@ -16,6 +17,8 @@ use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use DateTime;
+use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -79,14 +82,17 @@ class PrescriptionTestingController extends AdminAbstractController
      *
      * @param Request $request
      *
+     * @param PrescriptionRepository $prescriptionRepository
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function new(Request $request): Response
+    public function new(Request $request, PrescriptionRepository $prescriptionRepository): Response
     {
-        if ($request->query->get('prescription_id')) {
+        if ($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)) {
             /** @var Prescription $prescription */
-            $prescription = $this->getDoctrine()->getManager()->getRepository(Prescription::class)
-                ->find($request->query->get('prescription_id'));
+            $prescription = $prescriptionRepository
+                ->find($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY));
             if (!$prescription || !is_a($prescription, Prescription::class)) {
                 $this->addFlash(
                     'warning',
@@ -134,14 +140,11 @@ class PrescriptionTestingController extends AdminAbstractController
         return $this->responseShow(
             self::TEMPLATE_PATH, $prescriptionTesting, [
                 'prescriptionTitle' =>
-                    (new PrescriptionInfoService())
-                        ->getPrescriptionTitle($prescriptionTesting->getPrescription()),
+                    PrescriptionInfoService::getPrescriptionTitle($prescriptionTesting->getPrescription()),
                 'patientTestingInfo' =>
-                    (new PatientTestingInfoService())
-                        ->getPatientTestingInfoString($prescriptionTesting->getPatientTesting()),
+                    PatientTestingInfoService::getPatientTestingInfoString($prescriptionTesting->getPatientTesting()),
                 'staff' =>
-                    (new AuthUserInfoService())
-                        ->getFIO($prescriptionTesting->getStaff()->getAuthUser(), true),
+                    AuthUserInfoService::getFIO($prescriptionTesting->getStaff()->getAuthUser(), true),
             ]
         );
     }
@@ -154,6 +157,7 @@ class PrescriptionTestingController extends AdminAbstractController
      * @param PrescriptionTesting $prescriptionTesting
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, PrescriptionTesting $prescriptionTesting): Response
     {

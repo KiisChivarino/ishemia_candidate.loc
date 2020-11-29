@@ -21,12 +21,16 @@ function createAddFile(filePos) {
             '<div id="' + FILE_VIEW_ELEMENT_ID_PREFIX + filePos + '" style="display: none;">' +
                 '<span id="' + FILE_NAME_ELEMENT_ID_PREFIX + filePos + '"></span>' +
                 '<span id="'+ FILE_REMOVE_ELEMENT_ID_PREFIX + filePos +'">' +
-                    '<button type="button" class="'+ FILE_REMOVE_BUTTON_CLASS +'"><i class="fa fa-times" aria-hidden="true"></i></button>' +
+                    '<button type="button" class="'+ FILE_REMOVE_BUTTON_CLASS +'">' +
+                        '<i class="fa fa-times" aria-hidden="true"></i>' +
+                    '</button>' +
                 '</span>' +
             '</div>' +
             '<div id="' + FILE_WIDGET_ELEMENT_ID_PREFIX + filePos +'" style="display: none;">' + newWidget + '</div>' +
             '<div id="' + FILE_ADD_ELEMENT_ID_PREFIX + filePos +'">' +
-                '<button type="button" id="' + FILE_UPLOAD_BUTTON_ID_PREFIX + filePos + '">' + '<i class="fa fa-plus"></i> Файл' + '</button>' +
+                '<button type="button" id="' + FILE_UPLOAD_BUTTON_ID_PREFIX + filePos + '">' +
+                    '<i class="fa fa-plus"></i> Файл' +
+                '</button>' +
             '</div>' +
         '</div>';
     $("#fileBox").append(newFile);

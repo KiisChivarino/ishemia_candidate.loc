@@ -9,12 +9,14 @@ use App\Entity\TimeRange;
 use App\Repository\AnalysisGroupRepository;
 use App\Repository\TimeRangeRepository;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 /**
  * Class PlanTestingType
@@ -27,6 +29,7 @@ class PlanTestingType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -49,7 +52,7 @@ class PlanTestingType extends AbstractType
                 'timeRangeCount', IntegerType::class,
                 [
                     'label' => $templateItem->getContentValue('timeRangeCount'),
-                    'attr' => ['min' => '1']
+                    'attr' => ['min' => '0']
                 ]
             )
             ->add(
@@ -61,6 +64,24 @@ class PlanTestingType extends AbstractType
                         return $er->createQueryBuilder('d')
                             ->where('d.enabled = true');
                     },
+                ]
+            )
+            ->add(
+                'analysisGroup', Select2EntityType::class, [
+                    'label' => $templateItem->getContentValue('analysisGroup'),
+                    'method' => 'POST',
+                    'multiple' => false,
+                    'remote_route' => 'find_analysis_group_ajax',
+                    'class' => AnalysisGroup::class,
+                    'primary_key' => 'id',
+                    'text_property' => 'name',
+                    'minimum_input_length' => 0,
+                    'page_limit' => 1,
+                    'allow_clear' => true,
+                    'delay' => 250,
+                    'language' => 'ru',
+                    'placeholder' => $templateItem->getContentValue('analysisGroupPlaceholder'),
+                    'remote_params' => ['analysisGroup' => '0'],
                 ]
             )
             ->add(

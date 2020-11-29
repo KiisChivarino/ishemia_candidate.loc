@@ -3,15 +3,18 @@
 namespace App\Controller\Admin;
 
 use App\Entity\AuthUser;
+use App\Form\Admin\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\AuthUser\AuthUserRoleType;
-use App\Form\Admin\AuthUser\AuthUserType;
+use App\Form\Admin\AuthUser\AuthUserOptionalType;
 use App\Form\Admin\AuthUser\AuthUserPasswordType;
+use App\Repository\UserRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\DataTable\Admin\AuthUserDataTableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
-use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
+use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,7 +45,11 @@ class AuthUserController extends AdminAbstractController
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $passwordEncoder
      */
-    public function __construct(Environment $twig, RouterInterface $router, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        UserPasswordEncoderInterface $passwordEncoder
+    )
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new AuthUserTemplate($router->getRouteCollection(), get_class($this));
@@ -69,16 +76,16 @@ class AuthUserController extends AdminAbstractController
      *
      * @param AuthUser $authUser
      *
+     * @param UserRepository $userRepository
      * @return Response
      */
-    public function show(AuthUser $authUser): Response
+    public function show(AuthUser $authUser, UserRepository $userRepository): Response
     {
         return $this->responseShow(
             self::TEMPLATE_PATH,
             $authUser,
             [
-                'roles' => $this->getDoctrine()->getManager()->getRepository(AuthUser::class)
-                    ->getRoles($authUser)
+                'roles' => $userRepository->getRoles($authUser)
             ]
         );
     }
@@ -89,14 +96,17 @@ class AuthUserController extends AdminAbstractController
      *
      * @param Request $request
      * @param AuthUser $authUser
-     * @param AuthUserInfoService $authUserInfoService
-     *
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserRepository $userRepository
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
     public function edit(
         Request $request,
         AuthUser $authUser,
-        AuthUserInfoService $authUserInfoService
+        UserPasswordEncoderInterface $passwordEncoder,
+        UserRepository $userRepository
     ): Response
     {
         $oldPassword = $authUser->getPassword();
@@ -104,7 +114,8 @@ class AuthUserController extends AdminAbstractController
             $request,
             $authUser,
             [
-                new FormData($authUser, AuthUserType::class),
+                new FormData($authUser, AuthUserRequiredType::class),
+                new FormData($authUser, AuthUserOptionalType::class),
                 new FormData(
                     $authUser,
                     AuthUserPasswordType::class,
@@ -112,16 +123,22 @@ class AuthUserController extends AdminAbstractController
                 ),
                 new FormData($authUser, AuthUserRoleType::class, [], false),
             ],
-            function (EntityActions $actions) use ($oldPassword, $authUserInfoService) {
-                /** @var AuthUser $authUser */
-                $authUser = $actions->getEntity();
-                $authUserInfoService->updatePassword($this->passwordEncoder, $authUser, $oldPassword);
-                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-                $actions->getEntityManager()->getRepository(AuthUser::class)->addUserFromAdmin(
-                    $actions->getForm(),
-                    MultiFormService::getFormName(AuthUserType::class),
-                    MultiFormService::getFormName(AuthUserRoleType::class)
-                );
+            function (EntityActions $actions)
+            use ($oldPassword, $passwordEncoder, $userRepository, $authUser) {
+                AuthUserInfoService::updatePassword($this->passwordEncoder, $authUser, $oldPassword);
+                $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
+                try {
+                    $authUser->setRoles($authUser->getRoles()[0]);
+                    // See https://symfony.com/doc/current/security.html#c-encoding-passwords
+                    $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
+                    $authUser->setPassword($encodedPassword);
+                    $actions->getEntityManager()->persist($authUser);
+                } catch (Exception $e) {
+                    $this->addFlash(
+                        'error',
+                        'Пользователь не добавлен!'
+                    );
+                }
             }
         );
     }

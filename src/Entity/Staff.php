@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\StaffRepository;
 
 /**
  * Персонал
@@ -55,13 +54,25 @@ class Staff
     private $patientAppointments;
 
     /**
+     * @ORM\OneToMany(targetEntity=PrescriptionMedicine::class, mappedBy="staff")
+     */
+    private $prescriptionMedicines;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PrescriptionAppointment::class, mappedBy="staff")
+     */
+    private $prescriptionAppointments;
+
+    /**
      * Staff constructor.
      */
     public function __construct()
     {
         $this->prescriptions = new ArrayCollection();
         $this->prescriptionTestings = new ArrayCollection();
+        $this->prescriptionMedicines = new ArrayCollection();
         $this->patientAppointments = new ArrayCollection();
+        $this->prescriptionAppointments = new ArrayCollection();
     }
 
     /**
@@ -208,6 +219,45 @@ class Staff
     }
 
     /**
+     * @return Collection|PrescriptionMedicine[]
+     */
+    public function getPrescriptionMedicines(): Collection
+    {
+        return $this->prescriptionMedicines;
+    }
+
+    /**
+     * @param PrescriptionMedicine $prescriptionMedicine
+     *
+     * @return $this
+     */
+    public function addPrescriptionMedicine(PrescriptionMedicine $prescriptionMedicine): self
+    {
+        if (!$this->prescriptionMedicines->contains($prescriptionMedicine)) {
+            $this->prescriptionMedicines[] = $prescriptionMedicine;
+            $prescriptionMedicine->setStaff($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param PrescriptionMedicine $prescriptionMedicine
+     *
+     * @return $this
+     */
+    public function removePrescriptionMedicine(PrescriptionMedicine $prescriptionMedicine): self
+    {
+        if ($this->prescriptionMedicines->contains($prescriptionMedicine)) {
+            $this->prescriptionMedicines->removeElement($prescriptionMedicine);
+            // set the owning side to null (unless already changed)
+            if ($prescriptionMedicine->getStaff() === $this) {
+                $prescriptionMedicine->setStaff(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
      * @return Collection|PatientAppointment[]
      */
     public function getPatientAppointments(): Collection
@@ -243,6 +293,36 @@ class Staff
                 $patientAppointment->setStaff(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection|PrescriptionAppointment[]
+     */
+    public function getPrescriptionAppointments(): Collection
+    {
+        return $this->prescriptionAppointments;
+    }
+
+    public function addPrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
+    {
+        if (!$this->prescriptionAppointments->contains($prescriptionAppointment)) {
+            $this->prescriptionAppointments[] = $prescriptionAppointment;
+            $prescriptionAppointment->setStaff($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
+    {
+        if ($this->prescriptionAppointments->removeElement($prescriptionAppointment)) {
+            // set the owning side to null (unless already changed)
+            if ($prescriptionAppointment->getStaff() === $this) {
+                $prescriptionAppointment->setStaff(null);
+            }
+        }
+
         return $this;
     }
 }

@@ -55,15 +55,22 @@
     <div class="buttons">
         {% if not entity.isCompleted %}
             <button class="btn btn--add btn--show">Добавить
+                {% set prescriptionParameterKey =
+                    constant('App\\Controller\\Admin\\PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY') %}
                 <ul class="sublist">
                     <li class="sublist__item">
-                        <a href="{{ path('prescription_medicine_new',{'prescription_id': entity.id}) }}"
+                        <a href="{{ path('prescription_medicine_new',{(prescriptionParameterKey) : entity.id}) }}"
                         >{{ template.items.show.content.addPrescriptionMedicine }}
                         </a>
                     </li>
                     <li class="sublist__item">
-                        <a href="{{ path('prescription_testing_new', {'prescription_id': entity.id}) }}">
+                        <a href="{{ path('prescription_testing_new',{(prescriptionParameterKey) : entity.id}) }}">
                             {{ template.items.show.content.addPrescriptionTesting }}
+                        </a>
+                    </li>
+                    <li class="sublist__item">
+                        <a href="{{ path('prescription_appointment_new',{(prescriptionParameterKey) : entity.id}) }}">
+                            {{ template.items.show.content.addPrescriptionAppointment }}
                         </a>
                     </li>
                 </ul>
@@ -72,13 +79,19 @@
         <button class="btn btn--list btn--show">Список
             <ul class="sublist">
                 <li class="sublist__item">
-                    <a href="{{ path('prescription_medicine_list', {(prescriptionMedicineFilterName) : entity.id}) }}">
+                    <a href="{{ path(
+                        'prescription_medicine_list', {(prescriptionMedicineFilterName) : entity.id}) }}">
                         {{ template.items.show.content.prescriptionMedicines }}
                     </a>
                 </li>
                 <li class="sublist__item">
                     <a href="{{ path('prescription_testing_list', {(prescriptionTestingFilterName) : entity.id}) }}">
                         {{ template.items.show.content.prescriptionTestings }}
+                    </a>
+                </li>
+                <li class="sublist__item">
+                    <a href="{{ path('prescription_appointment_list', {(prescriptionAppointmentFilterName) : entity.id}) }}">
+                        {{ template.items.show.content.prescriptionAppointments }}
                     </a>
                 </li>
             </ul>

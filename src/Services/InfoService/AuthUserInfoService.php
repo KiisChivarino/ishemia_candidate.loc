@@ -19,21 +19,23 @@ class AuthUserInfoService
      *
      * @return string
      */
-    public function getFIO(AuthUser $authUser, bool $initials = false): string
+    static public function getFIO(AuthUser $authUser, bool $initials = false): string
     {
         $firstName = '';
         $patronymicName = '';
         $lastName = '';
         if ($authUser->getLastName()) {
-            $lastName .= $authUser->getLastName().' ';
+            $lastName .= $authUser->getLastName() . ' ';
         }
         if ($authUser->getFirstName()) {
-            $firstName .= ($initials ? mb_strtoupper(mb_substr($authUser->getFirstName(), 0, 1)).'.' : $authUser->getFirstName()).' ';
+            $firstName .= ($initials ? mb_strtoupper(mb_substr($authUser->getFirstName(), 0, 1))
+                    . '.' : $authUser->getFirstName()) . ' ';
         }
         if ($authUser->getPatronymicName()) {
-            $patronymicName = $initials ? mb_strtoupper(mb_substr($authUser->getPatronymicName(), 0, 1)).'.' : $authUser->getPatronymicName();
+            $patronymicName = $initials ? mb_strtoupper(mb_substr($authUser->getPatronymicName(), 0, 1))
+                . '.' : $authUser->getPatronymicName();
         }
-        return $lastName.$firstName.$patronymicName;
+        return $lastName . $firstName . $patronymicName;
     }
 
     /**
@@ -43,7 +45,11 @@ class AuthUserInfoService
      * @param AuthUser $authUser
      * @param string $oldPassword
      */
-    public function updatePassword(UserPasswordEncoderInterface $passwordEncoder, AuthUser $authUser, string $oldPassword): void
+    static public function updatePassword(
+        UserPasswordEncoderInterface $passwordEncoder,
+        AuthUser $authUser,
+        string $oldPassword
+    ): void
     {
         $newPassword = $authUser->getPassword();
         $authUser->setPassword($oldPassword);
@@ -65,7 +71,7 @@ class AuthUserInfoService
      *
      * @return string
      */
-    public function getRoleNames(array $roles, bool $techName = false): string
+    static public function getRoleNames(array $roles, bool $techName = false): string
     {
         $rolesNames = [];
         foreach ($roles as $role) {
@@ -81,7 +87,7 @@ class AuthUserInfoService
      *
      * @return string
      */
-    public function clearUserPhone(string $phone)
+    static public function clearUserPhone(string $phone)
     {
         return preg_replace('/[^0-9]/', '', ltrim($phone, '+7'));
     }
@@ -93,9 +99,23 @@ class AuthUserInfoService
      *
      * @return string
      */
-    public function getPhone(AuthUser $authUser)
+    static public function getPhone(AuthUser $authUser)
     {
         $phone = $authUser->getPhone();
-        return '+7 ('.substr($phone, 0, 3).') '.substr($phone, 3, 3).'-'.substr($phone, 6, 4);
+        return
+            '+7 (' . substr($phone, 0, 3) . ') '
+            . substr($phone, 3, 3)
+            . '-' . substr($phone, 6, 4);
+    }
+
+    static public function randomPassword() {
+        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789(_).,!$%^&*+-=";
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\AuthUser;
-use App\Entity\PatientTestingFile;
+use App\Repository\PatientTestingFileRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
@@ -46,6 +46,8 @@ abstract class AppAbstractController extends AbstractController
         'MEDICAL_HISTORY' => 'medicalHistory',
         'STAFF' => 'staff',
         'PRESCRIPTION' => 'prescription',
+        'TEMPLATE_TYPE' => 'templateType',
+        'TEMPLATE_PARAMETER' => 'templateParameter',
     ];
 
     /** @var string Label of form option for adding formTemplateItem in form */
@@ -63,7 +65,8 @@ abstract class AppAbstractController extends AbstractController
     {
         return function ($value) {
             return $this->render(
-                $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig', [
+                $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
+                [
                     'rowId' => $value,
                     'template' => $this->templateService
                 ]
@@ -111,7 +114,8 @@ abstract class AppAbstractController extends AbstractController
             return $table->getResponse();
         }
         return $this->render(
-            $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath() . 'list.html.twig', [
+            $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath() . 'list.html.twig',
+            [
                 'datatable' => $table,
                 'filters' => $template->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
             ]
@@ -178,10 +182,14 @@ abstract class AppAbstractController extends AbstractController
         try {
             $form->handleRequest($request);
         } catch (Exception $e) {
-            $this->addFlash('error', 'Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...');
+            $this->addFlash(
+                'error',
+                'Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...'
+            );
             return $this->render(
-                $this->templateService->getCommonTemplatePath() . $formName . '.html.twig', [
-                    'staff' => $entity,
+                $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                [
+                    'entity' => $entity,
                     'form' => $form->createView(),
                 ]
             );
@@ -201,7 +209,8 @@ abstract class AppAbstractController extends AbstractController
             } catch (DBALException $e) {
                 $this->addFlash('error', 'Не удалось сохранить запись!');
                 return $this->render(
-                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig', [
+                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                    [
                         'entity' => $entity,
                         'form' => $form->createView(),
                     ]
@@ -209,7 +218,8 @@ abstract class AppAbstractController extends AbstractController
             } catch (Exception $e) {
                 $this->addFlash('error', 'Ошибка cохранения записи!');
                 return $this->render(
-                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig', [
+                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                    [
                         'entity' => $entity,
                         'form' => $form->createView(),
                     ]
@@ -221,14 +231,22 @@ abstract class AppAbstractController extends AbstractController
                     $this->templateService->getRedirectRouteName()),
                 $this->templateService->getRedirectRouteParameters() ?
                     $this->templateService->getRedirectRouteParameters() :
-                    ['id' => $entity->getId()]
+                    [
+                        'id' => $entity->getId()
+                    ]
             );
         }
         return $this->render(
-            $this->templateService->getTemplateFullName($formName, $this->getParameter('kernel.project_dir')), [
+            $this->templateService->getTemplateFullName(
+                $formName,
+                $this->getParameter('kernel.project_dir')),
+            [
                 'entity' => $entity,
                 'form' => $form->createView(),
-                'filters' => $this->templateService->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
+                'filters' =>
+                    $this->templateService
+                        ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                        ->getFiltersViews(),
             ]
         );
     }
@@ -242,7 +260,11 @@ abstract class AppAbstractController extends AbstractController
      *
      * @return AuthUser
      */
-    protected function editPassword(UserPasswordEncoderInterface $passwordEncoder, AuthUser $authUser, string $oldPassword): AuthUser
+    protected function editPassword(
+        UserPasswordEncoderInterface $passwordEncoder,
+        AuthUser $authUser,
+        string $oldPassword
+    ): AuthUser
     {
         $newPassword = $authUser->getPassword();
         $authUser->setPassword($oldPassword);
@@ -344,6 +366,7 @@ abstract class AppAbstractController extends AbstractController
      * @param Closure|null $entityActions
      *
      * @param string $formName
+     * @param object|null $formEntity
      * @return RedirectResponse|Response
      * @throws Exception
      */
@@ -353,14 +376,15 @@ abstract class AppAbstractController extends AbstractController
         string $typeClass,
         array $customFormOptions = [],
         ?Closure $entityActions = null,
-        string $formName = self::RESPONSE_FORM_TYPE_EDIT
+        string $formName = self::RESPONSE_FORM_TYPE_EDIT,
+        object $formEntity = null
     )
     {
         return $this->responseFormTemplate(
             $request,
             $entity,
             $this->createForm(
-                $typeClass, $entity,
+                $typeClass, $formEntity ? $formEntity : $entity,
                 array_merge($customFormOptions, [self::FORM_TEMPLATE_ITEM_OPTION_TITLE =>
                     $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),])
             ),
@@ -447,8 +471,12 @@ abstract class AppAbstractController extends AbstractController
      * Prepare files, because preUpload and prePersist dont`t work...WHY???
      *
      * @param FormInterface $filesForm
+     * @param PatientTestingFileRepository $patientTestingFileRepository
      */
-    protected function prepareFiles(FormInterface $filesForm): void
+    protected function prepareFiles(
+        FormInterface $filesForm,
+        PatientTestingFileRepository $patientTestingFileRepository
+    ): void
     {
         foreach ($filesForm->all() as $fileForm) {
             $fileEntity = $fileForm->getData();
@@ -456,8 +484,7 @@ abstract class AppAbstractController extends AbstractController
                 /** @var UploadedFile $uploadedFile */
                 $uploadedFile = $fileForm->get('file')->getData();
                 if ($uploadedFile) {
-                    $this->getDoctrine()->getRepository(PatientTestingFile::class)
-                        ->setFileProperties($fileEntity, $uploadedFile);
+                    $patientTestingFileRepository->setFileProperties($fileEntity, $uploadedFile);
                 }
             }
         }

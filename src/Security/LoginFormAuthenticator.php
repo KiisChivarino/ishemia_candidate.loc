@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\AuthUser;
+use App\Repository\UserRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -121,6 +122,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
+     * @param $credentials
+     * @return string|null
      */
     public function getPassword($credentials): ?string
     {
@@ -134,17 +137,20 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      *
      * @return RedirectResponse|Response|null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
-        $authUser = $this->entityManager->getRepository(AuthUser::class)->findOneBy(
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(AuthUser::class);
+        /** @var AuthUser $authUser */
+        $authUser = $userRepository->findOneBy(
             [
                 'phone' => (new AuthUserInfoService())->clearUserPhone($this->getCredentials($request)['phone'])
             ]
         );
-        $roleTechName = (new AuthUserInfoService())->getRoleNames($this->entityManager->getRepository(AuthUser::class)->getRoles($authUser), true);
+        $roleTechName = (new AuthUserInfoService())->getRoleNames($userRepository->getRoles($authUser), true);
         $roles = Yaml::parseFile('..//config/services/roles.yaml');
         foreach ($roles['parameters'] as $roleData) {
             if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {
@@ -159,8 +165,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     /**
      * @return string
      */
-    protected
-    function getLoginUrl()
+    protected function getLoginUrl()
     {
         return $this->urlGenerator->generate('app_login');
     }

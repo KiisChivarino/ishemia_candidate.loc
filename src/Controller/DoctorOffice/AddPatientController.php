@@ -6,16 +6,17 @@ use App\Entity\AuthUser;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
-use App\Form\Admin\AuthUser\AuthUserPasswordType;
-use App\Form\Admin\AuthUser\AuthUserType;
-use App\Form\Admin\MedicalHistory\MainDiseaseType;
-use App\Form\Admin\Patient\PatientType;
+use App\Form\Admin\AuthUser\AuthUserRequiredType;
+use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
-use App\Form\Admin\PatientAppointment\StaffType;
+use App\Form\Doctor\MainDiseaseInputType;
+use App\Repository\StaffRepository;
 use App\Services\ControllerGetters\EntityActions;
+use App\Services\CreatingPatient\CreatingPatientService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -34,10 +35,10 @@ use Exception;
  */
 class AddPatientController extends DoctorOfficeAbstractController
 {
-    const TEMPLATE_PATH = 'doctorOffice/create_patient/';
-
     /** @var string Роль пациента */
     private const PATIENT_ROLE = 'ROLE_PATIENT';
+    /** @var string Path to custom template directory */
+    const TEMPLATE_PATH = 'doctorOffice/create_patient/';
 
     /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;
@@ -62,52 +63,57 @@ class AddPatientController extends DoctorOfficeAbstractController
 
     /**
      * Add newPatient
-     * @Route("/create_patient", name="create_patients", methods={"GET","POST"})
+     * @Route("/create_patient", name="adding_patient_by_doctor", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param AuthUserInfoService $authUserInfoService
+     * @param CreatingPatientService $creatingPatientService
+     * @param StaffRepository $staffRepository
      * @return Response
+     * @throws ReflectionException
      * @throws Exception
      */
-    public function createNew(Request $request, AuthUserInfoService $authUserInfoService): Response
+    public function createNew(
+        Request $request,
+        CreatingPatientService $creatingPatientService,
+        StaffRepository $staffRepository
+    ): Response
     {
-        $authUser = (new AuthUser())->setEnabled(true);
-        $patient = (new Patient())->setAuthUser($authUser);
-        $medicalHistory = (new MedicalHistory)->setPatient($patient);
-        $patientAppointment = (new PatientAppointment())->setMedicalHistory($medicalHistory);
+        $staff = $staffRepository->getStaff($this->getUser());
+        $patientAuthUser = new AuthUser();
+        $patient = new Patient();
+        $medicalHistory = (new MedicalHistory);
+        $firstPatientAppointment = (new PatientAppointment());
         return $this->responseNewMultiForm(
             $request,
             $patient,
             [
-                new FormData($authUser,AuthUserType::class),
-                new FormData($authUser,AuthUserPasswordType::class,
-                [
-                    AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => true
-                ]
-                ),
-                new FormData($patient, PatientType::class),
-                new FormData($medicalHistory, MainDiseaseType::class),
-                new FormData($patientAppointment, StaffType::class),
-                new FormData($patientAppointment, AppointmentTypeType::class),
+                new FormData($patientAuthUser,AuthUserRequiredType::class),
+                new FormData($patient, PatientRequiredType::class),
+                new FormData($medicalHistory, MainDiseaseInputType::class),
+//                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData($firstPatientAppointment, AppointmentTypeType::class),
             ],
             function (EntityActions $actions)
-            use ($authUser, $patient, $authUserInfoService, $medicalHistory, $patientAppointment)
+            use (
+                $patientAuthUser,
+                $patient,
+                $medicalHistory,
+                $firstPatientAppointment,
+                $creatingPatientService,
+                $staff
+            )
             {
-                $authUser->setRoles(self::PATIENT_ROLE);
-                $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
-                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-                $authUser->setPassword($encodedPassword);
                 $em = $actions->getEntityManager();
                 $em->getConnection()->beginTransaction();
                 try {
-                    $em->persist($authUser);
+                    $patientAuthUser->setEnabled(true)
+                        ->setPassword(AuthUserInfoService::randomPassword())
+                        ->setRoles(self::PATIENT_ROLE)
+                        ->setPhone(AuthUserInfoService::clearUserPhone($patientAuthUser->getPhone()));
+                    $em->persist($patientAuthUser);
                     $em->flush();
-                    $em->getRepository(Patient::class)->persistPatient(
-                        $patient,
-                        $authUser,
-                        $medicalHistory,
-                        $patientAppointment
-                    );
+                    $creatingPatientService
+                        ->persistPatient($patient, $patientAuthUser, $medicalHistory, $firstPatientAppointment, $staff);
                     $em->flush();
                     $em->getConnection()->commit();
                 } catch (Exception $e) {

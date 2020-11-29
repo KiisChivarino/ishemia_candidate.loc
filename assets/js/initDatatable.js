@@ -10,6 +10,7 @@ $(document).ready(function () {
                 }).nodes().each(function (cell, i) {
                     cell.innerHTML = settings._iDisplayStart + i + 1;
                 });
+                $('.pagination a').addClass('item');
             }
         });
 });

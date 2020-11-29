@@ -6,6 +6,7 @@ use App\Entity\ReceptionMethod;
 use App\Form\Admin\ReceptionMethodType;
 use App\Services\DataTable\Admin\ReceptionMethodDataTableService;
 use App\Services\TemplateBuilders\Admin\ReceptionMethodTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class ReceptionMethodController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -85,6 +87,7 @@ class ReceptionMethodController extends AdminAbstractController
      * @param ReceptionMethod $receptionMethod
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, ReceptionMethod $receptionMethod): Response
     {

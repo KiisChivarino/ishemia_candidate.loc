@@ -7,3 +7,15 @@
 .statement__head a.back-page {
     text-decoration: none;
 }
+
+.sorting,.sorting_desc,.sorting_asc{
+    cursor: pointer;
+}
+
+.content-wrapper__top h1{
+    margin-bottom: 30px;
+}
+
+#datatable .dataTables_filter{
+    display: none;
+}

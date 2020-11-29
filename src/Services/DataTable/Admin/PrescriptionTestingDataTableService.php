@@ -13,6 +13,7 @@ use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
@@ -31,6 +32,7 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
      * @param array $filters
      *
      * @return DataTable
+     * @throws Exception
      */
     public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
     {
@@ -42,7 +44,7 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                     'render' => function (string $data, PrescriptionTesting $prescriptionTesting) {
                         $prescription = $prescriptionTesting->getPrescription();
                         return $prescription ? $this->getLink(
-                            (new PrescriptionInfoService())->getPrescriptionTitle($prescription),
+                            PrescriptionInfoService::getPrescriptionTitle($prescription),
                             $prescription->getId(),
                             'prescription_show'
                         ) : '';
@@ -56,7 +58,7 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                         /** @var PatientTesting $patientTesting */
                         $patientTesting = $prescriptionTesting->getPatientTesting();
                         return $patientTesting ? $this->getLink(
-                            (new PatientTestingInfoService())->getPatientTestingInfoString($patientTesting),
+                            PatientTestingInfoService::getPatientTestingInfoString($patientTesting),
                             $patientTesting->getId(),
                             'patient_testing_show'
                         ) : '';
@@ -70,7 +72,7 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                         /** @var Staff $staff */
                         $staff = $prescriptionTesting->getStaff();
                         return $staff ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($staff->getAuthUser()),
+                            AuthUserInfoService::getFIO($staff->getAuthUser()),
                             $staff->getId(),
                             'staff_show'
                         ) : '';
@@ -78,9 +80,9 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'inclusionTime', DateTimeColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('inclusionTime'),
-                    'format' => 'd.m.Y H:i:s',
+                'plannedTime', DateTimeColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('plannedDate'),
+                    'format' => 'd.m.Y H:m',
                     'searchable' => false
                 ]
             );

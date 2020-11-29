@@ -6,6 +6,7 @@ use App\Entity\AppointmentType;
 use App\Form\Admin\AppointmentTypeType;
 use App\Services\DataTable\Admin\AppointmentTypeDataTableService;
 use App\Services\TemplateBuilders\Admin\AppointmentTypeTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class AppointmentTypeController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -85,6 +87,7 @@ class AppointmentTypeController extends AdminAbstractController
      * @param AppointmentType $appointmentType
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, AppointmentType $appointmentType): Response
     {

@@ -8,6 +8,7 @@ use App\Entity\Staff;
 use App\Repository\StaffRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,6 +24,7 @@ class StaffType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

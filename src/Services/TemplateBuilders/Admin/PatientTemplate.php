@@ -39,6 +39,9 @@ class PatientTemplate extends AdminTemplateBuilder
         'district' => 'Район',
         'hospital' => 'Больница',
         'heartAttackDate' => 'Дата возникновения инфаркта',
+        'passportIssuingAuthority' => 'Орган, выдавший паспорт',
+        'passportIssuingAuthorityCode' => 'Код органа, выдавшего паспорт',
+        'passportIssueDate' => 'Дата выдачи паспорта'
     ];
 
     /** @var string[] Common content for list, edit template */

@@ -4,8 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\AuthUser;
 use App\Entity\Staff;
-use App\Form\Admin\AuthUser\AuthUserType;
+use App\Form\Admin\AuthUser\AuthUserOptionalType;
 use App\Form\Admin\AuthUser\AuthUserPasswordType;
+use App\Form\Admin\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\Staff\StaffRoleType;
 use App\Form\Admin\StaffType;
 use App\Services\ControllerGetters\EntityActions;
@@ -16,6 +17,7 @@ use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\Admin\StaffTemplate;
 use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -76,12 +78,11 @@ class StaffController extends AdminAbstractController
      * @Route("/new", name="staff_new", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param AuthUserInfoService $authUserInfoService
      *
      * @return Response
      * @throws Exception
      */
-    public function new(Request $request, AuthUserInfoService $authUserInfoService): Response
+    public function new(Request $request): Response
     {
         $staff = new Staff();
         $user = new AuthUser();
@@ -91,7 +92,8 @@ class StaffController extends AdminAbstractController
             $request,
             $staff,
             [
-                new FormData($user, AuthUserType::class),
+                new FormData($user, AuthUserRequiredType::class),
+                new FormData($user, AuthUserOptionalType::class),
                 new FormData(
                     $user,
                     AuthUserPasswordType::class,
@@ -100,7 +102,7 @@ class StaffController extends AdminAbstractController
                 new FormData($user, StaffRoleType::class, [], false),
                 new FormData($staff, StaffType::class),
             ],
-            function (EntityActions $actions) use ($authUserInfoService, $user, $staff) {
+            function (EntityActions $actions) use ($user, $staff): ?Response {
                 try {
                     /** @var AuthUser $role */
                     $role = $actions->getForm()->getData()[MultiFormService::getFormName(StaffRoleType::class)];
@@ -108,7 +110,7 @@ class StaffController extends AdminAbstractController
                         throw new Exception('Ошибка добавления роли сотруднику!');
                     }
                     $user->setRoles($role->getRoles()[0]);
-                    $user->setPhone($authUserInfoService->clearUserPhone($user->getPhone()));
+                    $user->setPhone(AuthUserInfoService::clearUserPhone($user->getPhone()));
                 } catch (Exception $e) {
                     $this->addFlash('error', $e->getMessage());
                     return $this->render(
@@ -133,6 +135,7 @@ class StaffController extends AdminAbstractController
                     $em->getConnection()->rollBack();
                     throw $e;
                 }
+                return null;
             }
         );
     }
@@ -161,11 +164,12 @@ class StaffController extends AdminAbstractController
      *
      * @param Request $request
      * @param Staff $staff
-     * @param AuthUserInfoService $authUserInfoService
      *
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function edit(Request $request, Staff $staff, AuthUserInfoService $authUserInfoService): Response
+    public function edit(Request $request, Staff $staff): Response
     {
         $authUser = $staff->getAuthUser();
         $oldPassword = $authUser->getPassword();
@@ -173,7 +177,8 @@ class StaffController extends AdminAbstractController
             $request,
             $staff,
             [
-                new FormData($authUser, AuthUserType::class),
+                new FormData($authUser, AuthUserRequiredType::class),
+                new FormData($authUser, AuthUserOptionalType::class),
                 new FormData(
                     $authUser,
                     AuthUserPasswordType::class,
@@ -182,9 +187,9 @@ class StaffController extends AdminAbstractController
                 new FormData($authUser, StaffRoleType::class, []),
                 new FormData($staff, StaffType::class),
             ],
-            function () use ($authUser, $oldPassword, $staff, $authUserInfoService) {
+            function () use ($authUser, $oldPassword, $staff) {
                 $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
-                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
+                $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
             }
         );
     }

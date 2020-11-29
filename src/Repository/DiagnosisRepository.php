@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Diagnosis;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @method Diagnosis|null find($id, $lockMode = null, $lockVersion = null)
@@ -31,12 +31,33 @@ class DiagnosisRepository extends AppRepository
         return $this->createQueryBuilder('d')
             ->andWhere('LOWER(d.name) LIKE LOWER(:valName) OR LOWER(d.code) LIKE LOWER(:valCode)')
             ->andWhere('d.enabled = :valEnabled')
-            ->setParameter('valName', '%'.$value.'%')
-            ->setParameter('valCode', $value.'%')
+            ->setParameter('valName', '%' . $value . '%')
+            ->setParameter('valCode', $value . '%')
             ->setParameter('valEnabled', true)
             ->orderBy('d.name', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Find diagnosis by name and code (without register)
+     * @param string $name
+     * @param string $code
+     * @return int|mixed|string|null
+     * @throws NonUniqueResultException
+     */
+    public function findDiagnosisByNameAndCode(string $name, string $code)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('LOWER(d.name) = LOWER(:valName)')
+            ->andWhere('LOWER(d.code) = LOWER(:valCode)')
+            ->andWhere('d.enabled = :valEnabled')
+            ->setParameter('valName', $name)
+            ->setParameter('valCode', $code)
+            ->setParameter('valEnabled', true)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

@@ -41,6 +41,10 @@ class PlanTestingTemplate extends AdminTemplateBuilder
         'h1' => 'Редактирование запланированного обследования',
         'title' => 'Редактирование запланированного обследования',
     ];
+    /** @var string[] Common FORM_CONTENT */
+    protected const FORM_CONTENT = [
+        'analysisGroupPlaceholder' => 'Выберите обследование',
+    ];
 
     /**
      * PlanTestingTemplate constructor.

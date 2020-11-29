@@ -1,28 +1,33 @@
 {{ form_start(form) }}
-<div id="fileBox">
-    {% set pos = 0 %}
-    <div id="jsFileWidgetExample" style="display: none;">
-        {{ form_widget(form.dischargeEpicrisisFiles.vars.prototype) }}
-    </div>
-    {% for doc in form.dischargeEpicrisisFiles %}
-        <div class="jsFile" data-pos="{{ pos }}">
-            <div id="jsView{{ pos }}">
+<ul>
+    <li>
+        <div id="fileBox">
+            {% set pos = 0 %}
+            <div id="jsFileWidgetExample" style="display: none;">
+                {{ form_widget(form.dischargeEpicrisisFiles.vars.prototype) }}
+                {% do form.dischargeEpicrisisFiles.setRendered %}
+            </div>
+            {% for doc in form.dischargeEpicrisisFiles %}
+                <div class="jsFile" data-pos="{{ pos }}">
+                    <div id="jsView{{ pos }}">
                         <span id="jsName{{ pos }}">
                             {{ doc.vars.value ? doc.vars.value.fileName : '' }}
                         </span>
-                <span id="jsRemove{{ pos }}">
+                        <span id="jsRemove{{ pos }}">
                             <button type="button" class="js-remove-file">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
                         </span>
-            </div>
-            <div id="jsWidget{{ pos }}" style="display: none;">
-                {{ form_widget(doc) }}
-            </div>
+                    </div>
+                    <div id="jsWidget{{ pos }}" style="display: none;">
+                        {{ form_widget(doc) }}
+                    </div>
+                </div>
+                {% set pos = pos + 1 %}
+            {% endfor %}
         </div>
-        {% set pos = pos + 1 %}
-    {% endfor %}
-</div>
+    </li>
+</ul>
 <div class="buttons">
     <button class="button main-button">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
 </div>

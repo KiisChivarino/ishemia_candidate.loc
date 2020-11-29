@@ -6,6 +6,7 @@ use App\Entity\Complaint;
 use App\Form\Admin\ComplaintType;
 use App\Services\DataTable\Admin\ComplaintDataTableService;
 use App\Services\TemplateBuilders\Admin\ComplaintTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class ComplaintController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -85,6 +87,7 @@ class ComplaintController extends AdminAbstractController
      * @param Complaint $complaint
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, Complaint $complaint): Response
     {

@@ -13,6 +13,7 @@ use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -62,6 +63,8 @@ class PrescriptionTemplate extends AdminTemplateBuilder
         'prescriptionMedicines' => 'Лекарства',
         'addPrescriptionTesting' => 'Добавить назначение на обследование',
         'prescriptionTestings' => 'Назначения на обследование',
+        'prescriptionAppointments' =>'Назначения на прием',
+        'addPrescriptionAppointment' => 'Добавить назначение на прием',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
@@ -101,6 +104,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

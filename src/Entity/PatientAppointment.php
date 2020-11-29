@@ -79,7 +79,8 @@ class PatientAppointment
     private $complaintsComment;
 
     /**
-     * @ORM\Column(type="text", nullable=true, options={"comment"="Объективный статус"})
+     * @ORM\OneToOne(targetEntity="App\Entity\TextByTemplate", inversedBy="patientAppointment")
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $objectiveStatus;
 
@@ -89,9 +90,14 @@ class PatientAppointment
     private $therapy;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false, options={"comment"="Дата и время приема по плану"})
+     * @ORM\OneToOne(targetEntity=PrescriptionAppointment::class, mappedBy="patientAppointment", cascade={"persist", "remove"})
      */
-    private $plannedTime;
+    private $prescriptionAppointment;
+
+    /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг первого приема при заведении истории болезни"})
+     */
+    private $isFirst;
 
     /**
      * PatientAppointment constructor.
@@ -317,25 +323,6 @@ class PatientAppointment
     /**
      * @return string|null
      */
-    public function getObjectiveStatus(): ?string
-    {
-        return $this->objectiveStatus;
-    }
-
-    /**
-     * @param string|null $objectiveStatus
-     *
-     * @return $this
-     */
-    public function setObjectiveStatus(?string $objectiveStatus): self
-    {
-        $this->objectiveStatus = $objectiveStatus;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getTherapy(): ?string
     {
         return $this->therapy;
@@ -353,21 +340,56 @@ class PatientAppointment
     }
 
     /**
-     * @return DateTimeInterface|null
+     * @return TextByTemplate|null
      */
-    public function getPlannedTime(): ?DateTimeInterface
+    public function getObjectiveStatus(): ?TextByTemplate
     {
-        return $this->plannedTime;
+        return $this->objectiveStatus;
     }
 
     /**
-     * @param DateTimeInterface $plannedTime
-     *
+     * @param TextByTemplate|null $objectiveStatus
      * @return $this
      */
-    public function setPlannedTime(DateTimeInterface $plannedTime): self
+    public function setObjectiveStatus(?TextByTemplate $objectiveStatus): self
     {
-        $this->plannedTime = $plannedTime;
+        $this->objectiveStatus = $objectiveStatus;
         return $this;
     }
+
+    public function getPrescriptionAppointment(): ?PrescriptionAppointment
+    {
+        return $this->prescriptionAppointment;
+    }
+
+    public function setPrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
+    {
+        $this->prescriptionAppointment = $prescriptionAppointment;
+
+        // set the owning side of the relation if necessary
+        if ($prescriptionAppointment->getPatientAppointment() !== $this) {
+            $prescriptionAppointment->setPatientAppointment($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsFirst(): ?bool
+    {
+        return $this->isFirst;
+    }
+
+    /**
+     * @param bool $isFirst
+     * @return $this
+     */
+    public function setIsFirst(bool $isFirst): self
+    {
+        $this->isFirst = $isFirst;
+        return $this;
+    }
+
 }

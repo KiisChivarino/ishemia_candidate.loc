@@ -7,6 +7,7 @@ use App\Entity\AppointmentType;
 use App\Entity\PatientAppointment;
 use App\Repository\AppointmentTypeRepository;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,6 +23,7 @@ class AppointmentTypeType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

@@ -5,21 +5,25 @@ namespace App\Controller\Admin;
 use App\Entity\MedicalHistory;
 use App\Entity\PatientAppointment;
 use App\Form\Admin\AuthUser\AuthUserPasswordType;
+use App\Form\Admin\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
-use App\Form\Admin\Patient\PatientType;
+use App\Form\Admin\Patient\PatientOptionalType;
+use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\StaffType;
 use App\Services\ControllerGetters\EntityActions;
+use App\Services\CreatingPatient\CreatingPatientService;
 use App\Services\DataTable\Admin\PatientDataTableService;
 use App\Entity\AuthUser;
 use App\Entity\Patient;
-use App\Form\Admin\AuthUser\AuthUserType;
+use App\Form\Admin\AuthUser\AuthUserOptionalType;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PatientTemplate;
 use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,45 +81,55 @@ class PatientController extends AdminAbstractController
      * @Route("/new", name="patient_new", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param AuthUserInfoService $authUserInfoService
      *
+     * @param CreatingPatientService $creatingPatientService
      * @return Response
+     * @throws ReflectionException
      * @throws Exception
      */
-    public function new(Request $request, AuthUserInfoService $authUserInfoService): Response
+    public function new(
+        Request $request,
+        CreatingPatientService $creatingPatientService
+    ): Response
     {
         $authUser = (new AuthUser())->setEnabled(true);
-        $patient = (new Patient())->setAuthUser($authUser);
-        $medicalHistory = (new MedicalHistory)->setPatient($patient);
-        $patientAppointment = (new PatientAppointment())->setMedicalHistory($medicalHistory);
+        $patient = (new Patient());
+        $medicalHistory = (new MedicalHistory);
+        $patientAppointment = (new PatientAppointment());
         return $this->responseNewMultiForm(
             $request,
             $patient,
             [
-                new FormData($authUser, AuthUserType::class),
+                new FormData($authUser, AuthUserRequiredType::class),
+                new FormData($authUser, AuthUserOptionalType::class),
                 new FormData(
                     $authUser,
                     AuthUserPasswordType::class,
                     [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => true]
                 ),
-                new FormData($patient, PatientType::class),
+                new FormData($patient, PatientRequiredType::class),
+                new FormData($patient, PatientOptionalType::class),
                 new FormData($medicalHistory, MainDiseaseType::class),
                 new FormData($patientAppointment, StaffType::class),
                 new FormData($patientAppointment, AppointmentTypeType::class),
             ],
             function (EntityActions $actions)
-            use ($authUser, $patient, $authUserInfoService, $medicalHistory, $patientAppointment) {
-                $patient->getAuthUser()->setRoles(self::PATIENT_ROLE);
-                $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
-                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
-                $authUser->setPassword($encodedPassword);
+            use ($authUser, $patient, $medicalHistory, $patientAppointment, $creatingPatientService) {
                 $em = $actions->getEntityManager();
+                $authUser->setEnabled(true)
+                    ->setPassword(AuthUserInfoService::randomPassword())
+                    ->setRoles(self::PATIENT_ROLE)
+                    ->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
+                $em->persist($authUser);
+                $em->flush();
                 $em->getConnection()->beginTransaction();
                 try {
                     $em->persist($authUser);
                     $em->flush();
-                    $em->getRepository(Patient::class)
-                        ->persistPatient($patient, $authUser, $medicalHistory, $patientAppointment);
+                    $creatingPatientService
+                        ->persistPatient(
+                            $patient, $authUser, $medicalHistory, $patientAppointment, $patientAppointment->getStaff()
+                        );
                     $em->flush();
                     $em->getConnection()->commit();
                 } catch (Exception $e) {
@@ -141,7 +155,7 @@ class PatientController extends AdminAbstractController
             self::TEMPLATE_PATH,
             $patient,
             [
-                'bodyMassIndex' => (new PatientInfoService())->getBodyMassIndex($patient),
+                'bodyMassIndex' => PatientInfoService::getBodyMassIndex($patient),
                 'medicalHistoryFilterName' =>
                     $filterService->generateFilterName('medical_history_list', Patient::class),
             ]
@@ -154,14 +168,14 @@ class PatientController extends AdminAbstractController
      *
      * @param Request $request
      * @param Patient $patient
-     * @param AuthUserInfoService $authUserInfoService
      *
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
     public function edit(
         Request $request,
-        Patient $patient,
-        AuthUserInfoService $authUserInfoService
+        Patient $patient
     ): Response
     {
         $authUser = $patient->getAuthUser();
@@ -170,13 +184,15 @@ class PatientController extends AdminAbstractController
             $request,
             $patient,
             [
-                new FormData($authUser, AuthUserType::class),
+                new FormData($authUser, AuthUserRequiredType::class),
+                new FormData($authUser, AuthUserOptionalType::class),
                 new FormData($authUser, AuthUserPasswordType::class, ['isPasswordRequired' => false]),
-                new FormData($patient, PatientType::class),
+                new FormData($patient, PatientRequiredType::class),
+                new FormData($patient, PatientOptionalType::class),
             ],
-            function () use ($authUser, $oldPassword, $authUserInfoService) {
+            function () use ($authUser, $oldPassword) {
                 $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
-                $authUser->setPhone($authUserInfoService->clearUserPhone($authUser->getPhone()));
+                $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
             }
         );
     }

@@ -11,6 +11,7 @@ use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -49,6 +50,7 @@ class PatientsListDataTableService extends AdminDatatableService
      * @param array $filters
      *
      * @return DataTable
+     * @throws Exception
      */
     public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
     {
@@ -58,10 +60,19 @@ class PatientsListDataTableService extends AdminDatatableService
             ->add(
                 'fio', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('fio'),
+                    'field' => 'u.lastName',
                     'render' => function (string $data, Patient $patient) {
                         return
-                            $patient ? $this->getLink($this->authUserInfoService->getFIO($patient->getAuthUser()), $patient->getId(), 'doctor_medical_history') : '';
+                            $patient
+                                ? $this->getLink(
+                                $this->authUserInfoService->getFIO($patient->getAuthUser()),
+                                $patient->getId(),
+                                'doctor_medical_history'
+                            )
+                                : '';
                     },
+                    'orderable' => true,
+                    'orderField' => 'u.lastName',
                 ]
             )
             ->add(
@@ -69,23 +80,11 @@ class PatientsListDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('age'),
                     'data' => function ($value) use ($patientInfoService) {
                         return $patientInfoService->getAge($value);
-                    }
+                    },
+                    'orderable' => true,
+                    'orderField' => 'p.dateBirth',
                 ]
             );
-//            ->add(
-//                'unprocessedTestings', TextColumn::class, [
-//                    'label' => $listTemplateItem->getContentValue('unprocessedTestings'),
-//                    'data' => function ($value) use ($patientInfoService) {
-//                        $unprocessedTestings = '';
-//                        /** @var PatientTesting $testing */
-//                        foreach ($patientInfoService->getUnprocessedTestings($value) as $testing) {
-//                            $unprocessedTestings .= $testing->getAnalysisGroup()->getName().'<br/>';
-//                        }
-//                        return $unprocessedTestings;
-//                    },
-//                    'raw' => true
-//                ]
-//            );
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']];
         return $this->dataTable
             ->createAdapter(

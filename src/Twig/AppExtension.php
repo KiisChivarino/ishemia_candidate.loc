@@ -108,7 +108,8 @@ class AppExtension extends AbstractExtension
     public function getRoleTitle(?AuthUser $authUser): string
     {
         return ($authUser) ?
-            (new AuthUserInfoService())->getRoleNames($this->entityManager->getRepository(AuthUser::class)->getRoles($authUser)) : '';
+            (new AuthUserInfoService())->getRoleNames($this->entityManager->getRepository(AuthUser::class)
+                ->getRoles($authUser)) : '';
     }
 
     /**

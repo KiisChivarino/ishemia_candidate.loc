@@ -93,4 +93,12 @@ class StaffRepository extends AppRepository implements PasswordUpgraderInterface
         $this->_em->persist($user);
         $this->_em->flush();
     }
+
+    /**
+     * @param UserInterface $authUser
+     * @return object|null
+     */
+    public function getStaff(UserInterface $authUser){
+        return $this->findOneBy(['AuthUser'=>$authUser]);
+    }
 }

@@ -7,9 +7,9 @@ use App\Entity\AnalysisGroup;
 use App\Entity\PatientTesting;
 use App\Repository\AnalysisGroupRepository;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,19 +23,13 @@ class PatientTestingRequiredType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add(
-                'plannedDate', DateType::class,
-                [
-                    'label' => $templateItem->getContentValue('plannedDate'),
-                    'widget' => 'single_text',
-                ]
-            )
             ->add(
                 'analysisGroup', EntityType::class, [
                     'label' => $templateItem->getContentValue('analysisGroup'),

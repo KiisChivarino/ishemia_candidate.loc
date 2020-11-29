@@ -2,13 +2,16 @@
 
 namespace App\Form\Admin;
 
+use App\Controller\AjaxController;
 use App\Controller\AppAbstractController;
 use App\Entity\Diagnosis;
 use App\Entity\MedicalHistory;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -21,9 +24,16 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
  */
 class MedicalHistoryType extends AbstractType
 {
+    /** @var string Name of life history form */
+    public const FORM_LIFE_HISTORY_NAME = 'lifeHistory';
+
+    /** @var string Key of anamnesis of life text option */
+    public const ANAMNES_OF_LIFE_TEXT_OPTION_KEY = 'anamnesOfLifeText';
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -52,7 +62,7 @@ class MedicalHistoryType extends AbstractType
                     'delay' => 250,
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('backgroundDiseasesPlaceholder'),
-                    'attr' => ['class' => 'js-example-basic-single'],
+                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
                 ]
             )
             ->add(
@@ -70,7 +80,7 @@ class MedicalHistoryType extends AbstractType
                     'delay' => 250,
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('complicationsPlaceholder'),
-                    'attr' => ['class' => 'js-example-basic-single'],
+                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
                 ]
             )
             ->add(
@@ -88,7 +98,7 @@ class MedicalHistoryType extends AbstractType
                     'delay' => 250,
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('concomitantDiseasesPlaceholder'),
-                    'attr' => ['class' => 'js-example-basic-single'],
+                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
                 ]
             )
             ->add(
@@ -98,9 +108,11 @@ class MedicalHistoryType extends AbstractType
                 ]
             )
             ->add(
-                'lifeHistory', null, [
+                self::FORM_LIFE_HISTORY_NAME, TextareaType::class, [
                     'label' => $templateItem->getContentValue('lifeHistory'),
                     'attr' => ['class' => 'tinymce'],
+                    'data' => $options['anamnesOfLifeText'],
+                    'mapped' => false
                 ]
             )
             ->add(
@@ -117,7 +129,7 @@ class MedicalHistoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => MedicalHistory::class,])
+            ->setDefaults(['data_class' => MedicalHistory::class, 'anamnesOfLifeText' => null])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

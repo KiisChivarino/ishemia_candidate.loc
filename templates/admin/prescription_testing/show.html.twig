@@ -30,4 +30,17 @@
         <span class="title">{{ template.items.show.content.inclusionTime }}</span>
         <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
     </li>
+    <li>
+        <span class="title">{{ template.items.show.content.plannedDate }}</span>
+        <p>{{ entity.plannedDate ? entity.plannedDate|date('d.m.Y') : '' }}</p>
+    </li>
+    {% if entity.confirmedByStaff is defined %}
+        <li>
+            <span class="title">{{ template.items.show.content.confirmedByStaff }}</span>
+            <p>{{ entity.confirmedByStaff ?
+                template.items.show.content.trueValue :
+                template.items.show.content.falseValue }}
+            </p>
+        </li>
+    {% endif %}
 {% endblock %}

@@ -1,12 +1,20 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block title %}{{ template.items.edit.content.discharge_epicrisis }}{% endblock %}
 {% block content %}
-    {% include (template.templatePath~'content_wrapper_top.html.twig') %}
-    <div class="patient-edit-wrapper">
-        <div class="popup__wrapper acc"><h2 class="title accordion active">{{ template.items.edit.content.discharge_epicrisis }}</h2>
-            <div class="popup__inner panel">
-                {{ include(template.items.form.path~'_form_discharge_epicrisis.html.twig') }}
-            </div>
-        </div>
+    <div class="content-wrapper__top">
+        <ul>
+            <li>
+                <h1>редактирование выписных эпикризов</h1>
+            </li>
+            <li>
+                {% if template.items.list.isEnabled %}
+                    <a class="back-page" href="{{ path(template.routes.main, {id: entity.medicalHistory.id}) }}">История
+                        болезни</a>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+    <div class="adm-users-edit">
+        {{ include(template.items.form.path~'_form_discharge_epicrisis.html.twig') }}
     </div>
 {% endblock %}

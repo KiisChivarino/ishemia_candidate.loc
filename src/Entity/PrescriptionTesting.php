@@ -48,6 +48,16 @@ class PrescriptionTesting
     private $enabled;
 
     /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг подтверждения врачом назначения на прием", "default"=false})
+     */
+    private $confirmedByStaff;
+
+    /**
+     * @ORM\Column(type="date", options={"comment"="Назначенная дата проведения обследования"})
+     */
+    private $plannedDate;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -71,7 +81,6 @@ class PrescriptionTesting
     public function setPrescription(?Prescription $prescription): self
     {
         $this->prescription = $prescription;
-
         return $this;
     }
 
@@ -91,7 +100,6 @@ class PrescriptionTesting
     public function setPatientTesting(PatientTesting $patientTesting): self
     {
         $this->patientTesting = $patientTesting;
-
         return $this;
     }
 
@@ -111,7 +119,6 @@ class PrescriptionTesting
     public function setStaff(?Staff $staff): self
     {
         $this->staff = $staff;
-
         return $this;
     }
 
@@ -131,7 +138,6 @@ class PrescriptionTesting
     public function setInclusionTime(DateTimeInterface $inclusionTime): self
     {
         $this->inclusionTime = $inclusionTime;
-
         return $this;
     }
 
@@ -151,7 +157,42 @@ class PrescriptionTesting
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+        return $this;
+    }
 
+    /**
+     * @return bool|null
+     */
+    public function getConfirmedByStaff(): ?bool
+    {
+        return $this->confirmedByStaff;
+    }
+
+    /**
+     * @param bool $confirmedByStaff
+     * @return $this
+     */
+    public function setConfirmedByStaff(bool $confirmedByStaff): self
+    {
+        $this->confirmedByStaff = $confirmedByStaff;
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getPlannedDate(): ?DateTimeInterface
+    {
+        return $this->plannedDate;
+    }
+
+    /**
+     * @param DateTimeInterface $plannedDate
+     * @return $this
+     */
+    public function setPlannedDate(DateTimeInterface $plannedDate): self
+    {
+        $this->plannedDate = $plannedDate;
         return $this;
     }
 }

@@ -12,6 +12,7 @@ use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -26,13 +27,18 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
         'prescription' => 'Назначение',
         'patientTesting' => 'Обследование',
         'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
-        'inclusionTime' => 'Дата и время назначения'
+        'confirmedByStaff' => 'Подтверждено врачом',
+        'plannedDate' => 'Запланировано',
+    ];
+    /** @var string[] FORM_SHOW_CONTENT */
+    protected const FORM_SHOW_CONTENT = [
+        'inclusionTime' => 'Дата и время включения в назначение',
     ];
 
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
-        'h1' => 'Назначение на обследование',
-        'title' => 'Обследования',
+        'h1' => 'Назначения на обследование',
+        'title' => 'Назначения на обследование',
     ];
 
     /** @var string[] Common NEW_CONTENT */
@@ -52,7 +58,7 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
         'h1' => 'Редактирование назначения на обследование',
         'title' => 'Редактирование назначения на обследование',
     ];
-
+    /** @var string[] FILTER_CONTENT */
     protected const FILTER_CONTENT = [
         'prescriptionFilter' => 'Фильтр по назначению',
     ];
@@ -82,6 +88,7 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

@@ -15,6 +15,8 @@ class SecurityController extends AbstractController
 {
     /**
      * @Route("/login", name="app_login")
+     * @param AuthenticationUtils $authenticationUtils
+     * @return Response
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -23,7 +25,9 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
         if ($this->getUser()) {
-            $roleTechName = (new AuthUserInfoService())->getRoleNames($this->getDoctrine()->getManager()->getRepository(AuthUser::class)->getRoles($this->getUser()), true);
+            $roleTechName = (new AuthUserInfoService())
+                ->getRoleNames($this->getDoctrine()->getManager()->getRepository(AuthUser::class)
+                    ->getRoles($this->getUser()), true);
             $roles = Yaml::parseFile('..//config/services/roles.yaml');
             foreach ($roles['parameters'] as $roleData) {
                 if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {

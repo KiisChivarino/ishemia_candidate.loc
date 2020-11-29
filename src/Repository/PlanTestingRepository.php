@@ -16,6 +16,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PlanTestingRepository extends AppRepository
 {
+    //time range count for first testings
+    private const FIRST_TESTINGS_TIME_RANGE_COUNT = 0;
+
     /**
      * PlanTestingRepository constructor.
      *
@@ -35,9 +38,25 @@ class PlanTestingRepository extends AppRepository
     {
         return $this->createQueryBuilder('pt')
             ->andWhere('pt.enabled = :enabledValue')
-//            ->andWhere('pt.timeRangeCount > :timeRangeCount')
+            ->andWhere('pt.timeRangeCount != :timeRangeCount')
             ->setParameter('enabledValue', true)
-//            ->setParameter('timeRangeCount', 0)
+            ->setParameter('timeRangeCount', self::FIRST_TESTINGS_TIME_RANGE_COUNT)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get plan of first testings
+     * Получить план начальных обследований
+     * @return int|mixed|string
+     */
+    public function getPlanOfFirstTestings()
+    {
+        return $this->createQueryBuilder('pt')
+            ->andWhere('pt.enabled = :enabledValue')
+            ->andWhere('pt.timeRangeCount = :timeRangeCount')
+            ->setParameter('enabledValue', true)
+            ->setParameter('timeRangeCount', self::FIRST_TESTINGS_TIME_RANGE_COUNT)
             ->getQuery()
             ->getResult();
     }

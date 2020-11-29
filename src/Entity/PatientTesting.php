@@ -60,18 +60,23 @@ class PatientTesting
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientTestings")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $medicalRecord;
 
     /**
-     * @ORM\Column(type="date", options={"comment"="Планируемая дата проведения тестирования"})
-     */
-    private $plannedDate;
-
-    /**
-     * @ORM\OneToMany(targetEntity=PatientTestingFile::class, mappedBy="patientTesting", orphanRemoval=true,cascade={"persist"})
+     * @ORM\OneToMany(
+     *     targetEntity=PatientTestingFile::class,
+     *     mappedBy="patientTesting",
+     *     orphanRemoval=true,cascade={"persist"}
+     *     )
      */
     private $patientTestingFiles;
+
+    /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг первого обследования по плану при заведении истории болезни"})
+     */
+    private $isFirst;
 
     /**
      * PatientTesting constructor.
@@ -125,25 +130,6 @@ class PatientTesting
     public function setAnalysisDate(?DateTimeInterface $analysisDate): self
     {
         $this->analysisDate = $analysisDate;
-        return $this;
-    }
-
-    /**
-     * @return DateTimeInterface|null
-     */
-    public function getPlannedDate(): ?DateTimeInterface
-    {
-        return $this->plannedDate;
-    }
-
-    /**
-     * @param DateTimeInterface|null $plannedDate
-     *
-     * @return $this
-     */
-    public function setPlannedDate(?DateTimeInterface $plannedDate): self
-    {
-        $this->plannedDate = $plannedDate;
         return $this;
     }
 
@@ -322,6 +308,24 @@ class PatientTesting
                 $patientTestingFile->setPatientTesting(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsFirst(): ?bool
+    {
+        return $this->isFirst;
+    }
+
+    /**
+     * @param bool $isFirst
+     * @return $this
+     */
+    public function setIsFirst(bool $isFirst): self
+    {
+        $this->isFirst = $isFirst;
         return $this;
     }
 }

@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block stylesheets %}
-    {{ parent() }}
     {{ encore_entry_link_tags('doctorOffice') }}
+    {{ parent() }}
 {% endblock %}
 {% block title %}Список пациентов{% endblock %}
+{% block favicon %}{{ asset('build/images/doc-fav.8feb2c8d.ico') }}{% endblock %}
 {% block body %}
     <header class="main-header">
         <div class="main-header__logo"><a href="#">
@@ -14,12 +15,14 @@
                 <span>Медицина</span></a></div>
         <nav class="main-nav">
             {{ knp_menu_render('doctorOfficeHeader') }}
-            <div class="main-nav__search">
-                <input type="text" name="search" placeholder="Search for a mail">
+            <div class="main-nav__search js-main-search">
+                <label>
+                    <input type="text" name="search" placeholder="Поиск">
+                </label>
             </div>
             <div class="main-nav__avatar avatar">
-                <div class="avatar__name"><span class="avatar__title">Иванович М.С.</span><span
-                            class="avatar__subtitle">Врач-терапевт</span></div>
+                <div class="avatar__name"><span class="avatar__title">{{ fio(app.user, true) }}</span><span
+                            class="avatar__subtitle">{{ roleTitle(app.user) }}</span></div>
                 <div class="avatar__picture"><img src="" alt=""></div>
             </div>
         </nav>
@@ -31,7 +34,6 @@
             </div>
         </aside>
         <div class="content-wrapper">
-            <a href="{{ path('app_logout') }}">Выйти</a>
             {% block content %}{% endblock %}
         </div>
     </main>

@@ -2,6 +2,7 @@
 
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
+use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
 use App\Services\TemplateBuilders\Admin\PatientAppointmentTemplate;
@@ -44,9 +45,9 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'objectiveStatusNotFound' => 'Объективный статус отсутствует',
         'therapyNotFound' => 'Терапия отсутствует',
         'laboratoryData' => 'Лабораторные данные',
-        'addDischargeEpicrises' => 'Внести выписные эпикризы',
         'addPatientTestingResults' => 'Внести результаты обследования',
         'firstTestings' => 'Обследования',
+        'addDischargeEpicrises' => 'Добавить выписные эпикризы',
     ];
 
     /** @var string[] Common form and show content for medical history templates */
@@ -64,6 +65,10 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'objective_h2' => 'Редактирование объективных данных',
         'objective_title' => 'Редактирование объективных данных',
         'discharge_epicrisis' => 'Редактирование выписных эпикризов',
+    ];
+
+    protected const NEW_CONTENT = [
+        'discharge_epicrisis' => 'Добавление выписных эпикризов',
     ];
 
     /**
@@ -85,6 +90,14 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
             self::COMMON_CONTENT,
             self::FILTER_CONTENT
         );
+    }
+
+    public function new(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::new($filterService);
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+            ->setPath($this->getTemplatePath());
+        return $this;
     }
 
     /**
@@ -136,7 +149,8 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
                 PatientTemplate::COMMON_CONTENT,
                 PatientTemplate::FORM_SHOW_CONTENT,
                 PatientTemplate::SHOW_CONTENT,
-                PatientTemplate::FORM_CONTENT
+                PatientTemplate::FORM_CONTENT,
+                $this->showContent
             )
         );
         return $this;

@@ -4,9 +4,8 @@ namespace App\Repository;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
-use DateTime;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -33,30 +32,22 @@ class MedicalHistoryRepository extends AppRepository
      *
      * @param Patient $patient
      *
-     * @return MedicalHistory|null
+     * @return MedicalHistory
+     * @throws Exception
      */
-    public function getCurrentMedicalHistory(Patient $patient)
+    public function getCurrentMedicalHistory(Patient $patient): MedicalHistory
     {
-        return $this->findOneBy(
+        /** @var MedicalHistory $medicalHistory */
+        $medicalHistory = $this->findOneBy(
             [
                 'patient' => $patient,
                 'enabled' => true,
                 'dateEnd' => null
             ]
         );
-    }
-
-    /**
-     * @param MedicalHistory $medicalHistory
-     *
-     * @return void
-     * @throws ORMException
-     */
-    public function persistMedicalHistory(MedicalHistory $medicalHistory): void
-    {
-        $medicalHistory
-            ->setEnabled(true)
-            ->setDateBegin(new DateTime());
-        $this->_em->persist($medicalHistory);
+        if (!$medicalHistory) {
+            throw new Exception('История болезни не найдена!');
+        }
+        return $medicalHistory;
     }
 }

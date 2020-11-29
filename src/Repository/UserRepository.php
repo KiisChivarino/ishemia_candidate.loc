@@ -8,7 +8,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -45,7 +44,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         if (!$user instanceof AuthUser) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
-
         $user->setPassword($newEncodedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
@@ -92,28 +90,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $user;
     }
 
-    public function addUserFromAdmin(FormInterface $form, string $authUserFormName, string $authUserRoleFormName)
-    {
-        $data = $form->getData();
-        /** @var AuthUser $authUser */
-        $authUser = $data[$authUserFormName];
-        /** @var AuthUser $onlyRole */
-        $onlyRole = $data[$authUserRoleFormName];
-        $authUser->setRoles($onlyRole->getRoles()[0]);
-        // See https://symfony.com/doc/current/security.html#c-encoding-passwords
-        $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
-        $authUser->setPassword($encodedPassword);
-        $this->_em->persist($authUser);
-    }
-
     /**
      * Возврачащет роли пользователя в виде коллекции объектов Role
      *
-     * @param AuthUser $user
+     * @param UserInterface $user
      *
      * @return int|mixed|string
      */
-    public function getRoles(AuthUser $user)
+    public function getRoles(UserInterface $user)
     {
         $qb = $this->_em->getRepository(Role::class)
             ->createQueryBuilder('r');

@@ -16,11 +16,6 @@ require('../images/operation-icon-3.svg');
 require('../images/favicons/adm-fav.ico');
 require('fancybox')($);
 
-tinymce.init({
-    selector: '.tinymce',
-    language: 'ru',
-});
-
 $(document).ready(function () {
     $(document).ready(function () {
         $('.fancybox').fancybox({

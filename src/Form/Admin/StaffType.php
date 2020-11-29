@@ -8,6 +8,7 @@ use App\Entity\Position;
 use App\Entity\Staff;
 use App\Repository\PositionRepository;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,6 +25,7 @@ class StaffType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -46,6 +48,7 @@ class StaffType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('hospitalPlaceholder'),
                     'remote_params' => ['city' => '0'],
+                    'required' => false
                 ]
             )
             ->add(

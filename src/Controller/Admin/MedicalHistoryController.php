@@ -4,11 +4,12 @@ namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
 use App\Entity\PatientDischargeEpicrisis;
-use App\Entity\Prescription;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\DischargeEpicrisisType;
+use App\Repository\PatientTestingFileRepository;
+use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\MultiFormService\FormData;
@@ -17,6 +18,8 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate;
+use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,6 +38,8 @@ class MedicalHistoryController extends AdminAbstractController
 {
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/medical_history/';
+
+    public const MEDICAL_HISTORY_ID_PARAMETER_KEY = 'medical_history_id';
 
     /** @var string Name of collection of files from entity method */
     protected const FILES_COLLECTION_PROPERTY_NAME = 'dischargeEpicrisisFiles';
@@ -95,16 +100,20 @@ class MedicalHistoryController extends AdminAbstractController
      * @param MedicalHistory $medicalHistory
      * @param FilterService $filterService
      *
+     * @param PrescriptionRepository $prescriptionRepository
      * @return Response
      */
-    public function show(MedicalHistory $medicalHistory, FilterService $filterService): Response
+    public function show(
+        MedicalHistory $medicalHistory,
+        FilterService $filterService,
+        PrescriptionRepository $prescriptionRepository
+    ): Response
     {
         return $this->responseShow(
             self::TEMPLATE_PATH,
             $medicalHistory,
             [
-                'patientFio' => (new AuthUserInfoService())
-                    ->getFIO($medicalHistory->getPatient()->getAuthUser(), true),
+                'patientFio' => AuthUserInfoService::getFIO($medicalHistory->getPatient()->getAuthUser(), true),
                 'medicalRecordFilterName' =>
                     $filterService->generateFilterName(
                         'medical_record_list',
@@ -126,8 +135,7 @@ class MedicalHistoryController extends AdminAbstractController
                         MedicalHistory::class
                     ),
                 'allPrescriptionsCompleted' =>
-                    $this->getDoctrine()->getRepository(Prescription::class)
-                        ->findNotCompletedPrescription($medicalHistory) ? false : true,
+                    $prescriptionRepository->findNotCompletedPrescription($medicalHistory) ? false : true,
                 'notificationFilterName' =>
                     $filterService->generateFilterName(
                         'notification_list',
@@ -144,9 +152,12 @@ class MedicalHistoryController extends AdminAbstractController
      * @param Request $request
      * @param MedicalHistory $medicalHistory
      *
+     * @param PatientTestingFileRepository $patientTestingFileRepository
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function edit(Request $request, MedicalHistory $medicalHistory): Response
+    public function edit(Request $request, MedicalHistory $medicalHistory, PatientTestingFileRepository $patientTestingFileRepository): Response
     {
         $patientDischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis()
             ? $medicalHistory->getPatientDischargeEpicrisis()
@@ -163,11 +174,11 @@ class MedicalHistoryController extends AdminAbstractController
                 new FormData($medicalHistory, EditMedicalHistoryType::class),
                 new FormData($patientDischargeEpicrisis, DischargeEpicrisisType::class),
             ],
-            function (EntityActions $actions) {
+            function (EntityActions $actions) use ($patientTestingFileRepository) {
                 $this->prepareFiles(
                     $actions->getForm()
                         ->get(MultiFormService::getFormName(DischargeEpicrisisType::class))
-                        ->get(self::FILES_COLLECTION_PROPERTY_NAME)
+                        ->get(self::FILES_COLLECTION_PROPERTY_NAME), $patientTestingFileRepository
                 );
             }
         );

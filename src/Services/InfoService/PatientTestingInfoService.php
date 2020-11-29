@@ -12,6 +12,9 @@ use App\Entity\PatientTesting;
  */
 class PatientTestingInfoService
 {
+    /** @var string Format of patient testing date */
+    public const PATIENT_TESTING_DATE_FORMAT = 'd.m.Y H:m';
+
     /**
      * Возвращает строку с описанием анализа пациента
      *
@@ -19,17 +22,30 @@ class PatientTestingInfoService
      *
      * @return string
      */
-    public function getPatientTestingInfoString(PatientTesting $patientTesting)
+    static public function getPatientTestingInfoString(PatientTesting $patientTesting)
     {
+        $patientInfo = 'Пациент: '. AuthUserInfoService::getFIO($patientTesting->getMedicalHistory()->getPatient()->getAuthUser(), true);
+        if ($patientTesting->getPrescriptionTesting()) {
+            $plannedDateTimeString = ', '.$patientTesting->getPrescriptionTesting()->getPlannedDate()
+                    ->format(self::PATIENT_TESTING_DATE_FORMAT);
+        } else {
+            $plannedDateTimeString = '';
+        }
+        if ($patientTesting->getAnalysisDate()) {
+            $analysisDateString = ', '.$patientTesting->getAnalysisDate()
+                ->format(self::PATIENT_TESTING_DATE_FORMAT);
+        } else {
+            $analysisDateString = '';
+        }
         return
             is_null($patientTesting->getAnalysisDate())
                 ?
-                $patientTesting->getMedicalHistory()->getPatient()->getAuthUser()->getLastName()
+                $patientInfo
                 .', '.$patientTesting->getAnalysisGroup()->getName()
-                .', '.$patientTesting->getPlannedDate()->format('d.m.Y')
+                .$plannedDateTimeString
                 :
-                $patientTesting->getMedicalHistory()->getPatient()->getAuthUser()->getLastName()
+                $patientInfo
                 .', '.$patientTesting->getAnalysisGroup()->getName()
-                .', '.$patientTesting->getAnalysisDate()->format('d.m.Y');
+                .$analysisDateString;
     }
 }

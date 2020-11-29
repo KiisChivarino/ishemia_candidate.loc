@@ -1,0 +1,23 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.name }}</span>
+        <p>{{ entity.name }}</p>
+    </li>
+{% endblock %}
+{% block custom_actions %}
+    <div class="buttons">
+        <button class="btn btn--list btn--show">Список
+            <ul class="sublist">
+                <li class="sublist__item">
+                    <a href="{{ path(
+                        'template_parameter_list',
+                        {(templateTypeFilterName) : entity.id}
+                    ) }}">
+                        {{ template.items.show.content.templateParametersLink }}
+                    </a>
+                </li>
+            </ul>
+        </button>
+    </div>
+{% endblock %}

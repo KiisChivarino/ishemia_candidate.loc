@@ -6,6 +6,7 @@ use App\Controller\AppAbstractController;
 use App\Entity\PatientTesting;
 use App\Form\PatientTestingFileType;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -24,6 +25,7 @@ class PatientTestingNotRequiredType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

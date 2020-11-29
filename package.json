@@ -24,6 +24,7 @@
     "@fortawesome/fontawesome-free": "^5.15.1",
     "datatables": "^1.10.18",
     "fancybox": "^3.0.1",
+    "font-awesome": "^4.7.0",
     "jquery-mask-plugin": "^1.14.16",
     "npm-cdn": "^2.0.0",
     "tinymce": "^5.5.1",

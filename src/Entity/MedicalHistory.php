@@ -71,7 +71,8 @@ class MedicalHistory
     private $diseaseHistory;
 
     /**
-     * @ORM\Column(type="text", nullable=true, options={"comment"="Анамнез жизни"})
+     * @ORM\OneToOne(targetEntity="App\Entity\TextByTemplate", inversedBy="lifeHistory")
+     * @ORM\JoinColumn(name="life_history_id", nullable=true, onDelete="SET NULL")
      */
     private $lifeHistory;
 
@@ -546,25 +547,6 @@ class MedicalHistory
     }
 
     /**
-     * @return string|null
-     */
-    public function getLifeHistory(): ?string
-    {
-        return $this->lifeHistory;
-    }
-
-    /**
-     * @param string|null $lifeHistory
-     *
-     * @return $this
-     */
-    public function setLifeHistory(?string $lifeHistory): self
-    {
-        $this->lifeHistory = $lifeHistory;
-        return $this;
-    }
-
-    /**
      * @return PatientDischargeEpicrisis|null
      */
     public function getPatientDischargeEpicrisis(): ?PatientDischargeEpicrisis
@@ -584,6 +566,18 @@ class MedicalHistory
         if ($patientDischargeEpicrisis->getMedicalHistory() !== $this) {
             $patientDischargeEpicrisis->setMedicalHistory($this);
         }
+        return $this;
+    }
+
+    public function getLifeHistory(): ?TextByTemplate
+    {
+        return $this->lifeHistory;
+    }
+
+    public function setLifeHistory(?TextByTemplate $lifeHistory): self
+    {
+        $this->lifeHistory = $lifeHistory;
+
         return $this;
     }
 }

@@ -32,7 +32,7 @@ class PlanTesting
     private $enabled;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Срок выполнения"})
      */
     private $timeRangeCount;
 

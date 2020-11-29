@@ -6,6 +6,7 @@ use App\Entity\Medicine;
 use App\Form\Admin\MedicineType;
 use App\Services\DataTable\Admin\MedicineDataTableService;
 use App\Services\TemplateBuilders\Admin\MedicineTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class MedicineController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -85,6 +87,7 @@ class MedicineController extends AdminAbstractController
      * @param Medicine $medicine
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, Medicine $medicine): Response
     {

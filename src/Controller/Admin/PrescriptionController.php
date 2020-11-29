@@ -7,6 +7,9 @@ use App\Entity\MedicalRecord;
 use App\Entity\Prescription;
 use App\Form\Admin\Prescription\PrescriptionEditType;
 use App\Form\Admin\PrescriptionType;
+use App\Repository\MedicalHistoryRepository;
+use App\Repository\MedicalRecordRepository;
+use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
@@ -17,6 +20,8 @@ use App\Services\InfoService\MedicalRecordInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
 use DateTime;
+use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,6 +40,9 @@ class PrescriptionController extends AdminAbstractController
 {
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/prescription/';
+
+    /** @var string The key of parameter with prescription id */
+    public const PRESCRIPTION_ID_PARAMETER_KEY = 'prescription_id';
 
     /**
      * PrescriptionController constructor.
@@ -81,17 +89,23 @@ class PrescriptionController extends AdminAbstractController
      *
      * @param Request $request
      *
+     * @param MedicalHistoryRepository $medicalHistoryRepository
+     * @param PrescriptionRepository $prescriptionRepository
      * @return Response
+     * @throws Exception
      */
-    public function new(Request $request): Response
+    public function new(
+        Request $request,
+        MedicalHistoryRepository $medicalHistoryRepository,
+        PrescriptionRepository $prescriptionRepository
+    ): Response
     {
         $prescription = new Prescription();
-        if ($request->query->get('medical_history_id')) {
+        if ($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)) {
             /** @var MedicalHistory $medicalHistory */
-            $medicalHistory = $this->getDoctrine()->getRepository(MedicalHistory::class)
-                ->find($request->query->get('medical_history_id'));
-            if ($this->getDoctrine()->getRepository(Prescription::class)
-                ->findNotCompletedPrescription($medicalHistory)) {
+            $medicalHistory = $medicalHistoryRepository
+                ->find($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY));
+            if ($prescriptionRepository->findNotCompletedPrescription($medicalHistory)) {
                 $this->addFlash(
                     'warning',
                     'Назначение не может быть добавлено: для данной истории болезни есть незавершенное назначение!'
@@ -119,11 +133,14 @@ class PrescriptionController extends AdminAbstractController
      *
      * @return Response
      */
-    public function show(Prescription $prescription, FilterService $filterService): Response
+    public function show(
+        Prescription $prescription,
+        FilterService $filterService
+    ): Response
     {
         return $this->responseShow(
             self::TEMPLATE_PATH, $prescription, [
-                'staff' => (new AuthUserInfoService())->getFIO($prescription->getStaff()->getAuthUser(), true),
+                'staff' => AuthUserInfoService::getFIO($prescription->getStaff()->getAuthUser(), true),
                 'prescriptionMedicineFilterName' =>
                     $filterService->generateFilterName(
                         'prescription_medicine_list',
@@ -134,10 +151,15 @@ class PrescriptionController extends AdminAbstractController
                         'prescription_testing_list',
                         Prescription::class
                     ),
-                'medicalHistoryTitle' => (new MedicalHistoryInfoService())
-                    ->getMedicalHistoryTitle($prescription->getMedicalHistory()),
-                'medicalRecordTitle' => (new MedicalRecordInfoService())
-                    ->getMedicalRecordTitle($prescription->getMedicalRecord()),
+                'prescriptionAppointmentFilterName' =>
+                    $filterService->generateFilterName(
+                        'prescription_appointment_list',
+                        Prescription::class
+                    ),
+                'medicalHistoryTitle' =>
+                    MedicalHistoryInfoService::getMedicalHistoryTitle($prescription->getMedicalHistory()),
+                'medicalRecordTitle' =>
+                    MedicalRecordInfoService::getMedicalRecordTitle($prescription->getMedicalRecord()),
             ]
         );
     }
@@ -149,9 +171,16 @@ class PrescriptionController extends AdminAbstractController
      * @param Request $request
      * @param Prescription $prescription
      *
+     * @param MedicalRecordRepository $medicalRecordRepository
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function edit(Request $request, Prescription $prescription): Response
+    public function edit(
+        Request $request,
+        Prescription $prescription,
+        MedicalRecordRepository $medicalRecordRepository
+    ): Response
     {
         return $this->responseEditMultiForm(
             $request,
@@ -160,8 +189,13 @@ class PrescriptionController extends AdminAbstractController
                 new FormData($prescription, PrescriptionType::class),
                 new FormData($prescription, PrescriptionEditType::class),
             ],
-            function (EntityActions $entityActions) {
-                $this->isCompletedActions($entityActions);
+            function (EntityActions $entityActions)
+            use ($prescription, $medicalRecordRepository)
+            {
+                $this->isCompletedActions(
+                    $entityActions,
+                    $medicalRecordRepository->getMedicalRecord($prescription->getMedicalHistory())
+                );
             }
         );
     }
@@ -184,15 +218,15 @@ class PrescriptionController extends AdminAbstractController
      * Actions if flag isCompleted checked
      *
      * @param EntityActions $entityActions
+     * @param MedicalRecord $medicalRecord
      */
-    private function isCompletedActions(EntityActions $entityActions)
+    private function isCompletedActions(EntityActions $entityActions, MedicalRecord $medicalRecord)
     {
         /** @var Prescription $prescription */
         $prescription = $entityActions->getEntity();
         if ($prescription->getIsCompleted()) {
             $prescription->setCompletedTime(new DateTime());
-            $prescription->setMedicalRecord($entityActions->getEntityManager()->getRepository(MedicalRecord::class)
-                ->getMedicalRecord($prescription->getMedicalHistory()));
+            $prescription->setMedicalRecord($medicalRecord);
         }
     }
 }

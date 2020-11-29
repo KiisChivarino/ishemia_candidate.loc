@@ -11,6 +11,7 @@ use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -40,8 +41,6 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     public const FORM_SHOW_CONTENT = [
         'appointmentTimeDateLabel' => 'Дата приема',
         'appointmentTimeTimeLabel' => 'Время приема',
-        'plannedTimeDateLabel' => 'Дата приема по плану',
-        'plannedTimeTimeLabel' => 'Время приема по плану',
         'recommendation' => 'Рекомендации врача',
         'complaints' => 'Жалобы',
         'complaintsComment' => 'Комментарий к жалобам',
@@ -75,6 +74,7 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
 
     protected const FILTER_CONTENT = [
         'medicalHistoryFilter' => 'Фильтр по истории болезни',
+        'medicalHistory' => MedicalHistoryTemplate::ENTITY_CONTENT['medicalHistory'],
     ];
 
     /**
@@ -102,6 +102,7 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

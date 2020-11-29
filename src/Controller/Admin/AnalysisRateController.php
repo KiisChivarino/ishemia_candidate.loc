@@ -104,6 +104,7 @@ class AnalysisRateController extends AdminAbstractController
      * @param AnalysisRate $analysisRate
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, AnalysisRate $analysisRate): Response
     {

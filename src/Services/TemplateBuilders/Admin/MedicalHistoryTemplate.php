@@ -11,6 +11,7 @@ use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -80,6 +81,10 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'patientFilter' => 'Фильтр по пациенту',
     ];
 
+    public const ENTITY_CONTENT = [
+        'medicalHistory' => 'История болезни',
+    ];
+
     /**
      * MedicalHistoryTemplate constructor.
      *
@@ -130,6 +135,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
      *
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

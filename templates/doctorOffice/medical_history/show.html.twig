@@ -251,7 +251,7 @@
                             <p>{{ template.items.show.content.objectiveStatus }}</p>
                             <p>
                                 {% if firstAppointment.objectiveStatus %}
-                                    {{ firstAppointment.objectiveStatus | raw }}
+                                    {{ firstAppointment.objectiveStatus.text | raw }}
                                 {% else %}
                                     {{ template.items.show.content.objectiveStatusNotFound }}
                                 {% endif %}
@@ -274,30 +274,38 @@
             </div>
         </div>
     {% endif %}
-    {% if patientDischargeEpicrisis is not empty and firstTestings is not empty%}
+{#    {% if patientDischargeEpicrisis is not empty and firstTestings is not empty%}#}
+        {% set filesDir = constant('App\\Services\\FileService\\FileService::FILES_DIR') %}
     <div class="statement acc">
         <h2 class="title accordion">{{ template.items.show.content.laboratoryData }}</h2>
         <div class="statement__wrapper panel">
             <div class="statement__head">
                 <h3 class="subtitle">{{ template.items.show.content.dischargeEpicrisis }}</h3>
+                {% if not patientDischargeEpicrisis is empty %}
                 <a class="back-page"
                    href="{{ path('doctor_edit_discharge_epicrisis', {'id': patientDischargeEpicrisis.id}) }}">
                     <span class="statement__edit">{{ template.items.show.content.addDischargeEpicrises }}</span>
                 </a>
+                {% endif %}
             </div>
             <div class="statement__content">
                 {% if not patientDischargeEpicrisis is empty %}
                     <p>
+                        {% set uploadDir = constant('App\\Entity\\DischargeEpicrisisFile::UPLOAD_DIR') %}
                         {% for file in patientDischargeEpicrisis.dischargeEpicrisisFiles %}
                             <a target="_blank" style="display: inline-block;"
-                               href="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\DischargeEpicrisisFile::UPLOAD_DIR') }}/{{ file.id }}.{{ file.extension }}"
+                               href="/{{ filesDir }}/{{ uploadDir }}/{{ file.id }}.{{ file.extension }}"
                                class="fancybox"
                                title="{{ file.fileName }}">
-                                <img src="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\DischargeEpicrisisFile::UPLOAD_DIR') }}/{{ file.id }}.{{ file.extension }}"
+                                <img src="/{{ filesDir }}/{{ uploadDir }}/{{ file.id }}.{{ file.extension }}"
                                      alt="{{ file.fileName }}" style="max-width: 400px;"/>
                             </a>
                         {% endfor %}
                     </p>
+                {% else %}
+                    <div class="buttons">
+                        <button class="button main-button" onclick="location.href='{{ path('doctor_new_discharge_epicrisis', {'id': medicalHistory.id}) }}';">+ Добавить выписной эпикриз</button>
+                    </div>
                 {% endif %}
             </div>
             {% for testing in firstTestings %}
@@ -315,12 +323,13 @@
                     <div class="statement__info">
                         <div class="statement__info-block">
                             <p>
+                                {% set uploadDir = constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') %}
                                 {% for testingFile in testing.patientTestingFiles %}
                                     <a target="_blank"
-                                       href="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') }}/{{ testingFile.id }}.{{ testingFile.extension }}"
+                                       href="/{{ filesDir }}/{{ uploadDir }}/{{ testingFile.id }}.{{ testingFile.extension }}"
                                        class="fancybox"
                                        title="{{ testingFile.fileName }}">
-                                        <img src="/{{ constant('App\\Services\\FileService\\FileService::FILES_DIR') }}/{{ constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') }}/{{ testingFile.id }}.{{ testingFile.extension }}"
+                                        <img src="/{{ filesDir }}/{{ uploadDir }}/{{ testingFile.id }}.{{ testingFile.extension }}"
                                              alt="{{ testingFile.fileName }}"/>
                                     </a>
                                 {% endfor %}
@@ -351,13 +360,17 @@
             {% endfor %}
         </div>
     </div>
-    {% endif %}
+{#    {% endif %}#}
     <div class="history">
         <h2 class="title">Электронная история болезни </h2>
         <div class="history__head">
             <div class="select"><span>Период</span>
-                <input class="js-datepicker" type="text" value="15.03.2020">
-                <input class="js-datepicker" type="text" value="15.03.2020">
+                <label>
+                    <input class="js-datepicker" type="text" value="15.03.2020">
+                </label>
+                <label>
+                    <input class="js-datepicker" type="text" value="15.03.2020">
+                </label>
             </div>
             <button class="button main-button">Назначить лечение</button>
         </div>

@@ -5,9 +5,9 @@ namespace App\Services\TemplateBuilders\DoctorOffice;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
 use App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate;
+use App\Services\TemplateBuilders\Admin\PatientTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FormTemplateItem;
-use App\Services\TemplateItems\NewTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -17,49 +17,13 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class CreateNewPatientTemplate extends DoctorOfficeTemplateBuilder
 {
-    /** @var string[] Common form and show content for medical history templates */
-    protected const FORM_SHOW_CONTENT = [
-        'dateBegin' => 'Дата начала лечения',
-        'dateEnd' => 'Дата окончания лечения',
-        'lastName' => 'Фамилия',
-        'firstName' => 'Имя',
-        'patronymicName' => 'Отчество',
-        'phone' => 'Телефон',
-        'phoneHelp' => 'Введите телефон 10 цифр',
-        'snils' => 'СНИЛС',
-        'address' => 'Адрес',
-        'smsInforming' => 'Информировать по смс',
-        'emailInforming' => 'Информировать по email',
-        'passport' => 'Паспорт',
-        'weight' => 'Вес',
-        'height' => 'Рост',
-        'city' => 'Город',
-        'district' => 'Район',
-        'hospital' => 'Больница',
-        'heartAttackDate' => 'Дата возникновения инфаркта',
-        'email' => 'Email',
-        'password' => 'Пароль',
-        'passwordHelp' => 'Введите пароль не менее 6 знаков, включая английские символы, спецсимволы и цифры',
-        'dateBirth' => 'Дата рождения',
-        'insuranceNumber' => 'Номер страховки',
-        'cityPlaceholder' => 'Выберите город',
-        'hospitalPlaceholder' => 'Выберите больницу',
-        'mainDisease' => 'Основное заболевание',
-        'mainDiseasePlaceholder' => 'Выберите заболевание',
-        'staff' => 'Отправивший врач',
-        'appointmentType' => 'Вид приема',
+    public const NEW_CONTENT = [
+        'title' => 'Новый пациент',
+        'h1' => 'Новый пациент',
     ];
-
-    /** @var string[] Common form content for edit templates */
-    protected const EDIT_CONTENT = [
-        'personal_h2' => 'Редактирование персональных данных',
-        'personal_title' => 'Редактирование персональных данных',
-        'anamnestic_h2' => 'Редактирование анамнестических данных',
-        'anamnestic_title' => 'Редактирование анамнестических данных',
-        'objective_h2' => 'Редактирование объективных данных',
-        'objective_title' => 'Редактирование объективных данных',
+    public const FORM_CONTENT = [
+        'inputMainDisease' => 'Свое название основного заболевания',
     ];
-
     /**
      * MedicalHistoryTemplate constructor.
      *
@@ -93,11 +57,13 @@ class CreateNewPatientTemplate extends DoctorOfficeTemplateBuilder
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
             ->addContentArray(
                 array_merge(
-                    AuthUserTemplate::COMMON_CONTENT,
                     AuthUserTemplate::FORM_CONTENT,
                     AuthUserTemplate::FORM_SHOW_CONTENT,
+                    MedicalHistoryTemplate::COMMON_CONTENT,
                     MedicalHistoryTemplate::FORM_SHOW_CONTENT,
-                    MedicalHistoryTemplate::COMMON_CONTENT
+                    PatientTemplate::COMMON_CONTENT,
+                    PatientTemplate::FORM_SHOW_CONTENT,
+                    PatientTemplate::FORM_CONTENT
                 )
             );
         return $this;

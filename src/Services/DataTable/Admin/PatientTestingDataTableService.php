@@ -12,6 +12,7 @@ use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
@@ -32,6 +33,7 @@ class PatientTestingDataTableService extends AdminDatatableService
      * @param array $filters
      *
      * @return DataTable
+     * @throws Exception
      */
     public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
     {
@@ -69,13 +71,6 @@ class PatientTestingDataTableService extends AdminDatatableService
                 'analysisDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisDate'),
                     'format' => 'd.m.Y',
-                    'searchable' => false
-                ]
-            )
-            ->add(
-                'plannedTime', DateTimeColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('plannedDate'),
-                    'format' => 'd.m.Y H:m',
                     'searchable' => false
                 ]
             )

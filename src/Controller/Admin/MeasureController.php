@@ -6,6 +6,7 @@ use App\Entity\Measure;
 use App\Form\Admin\MeasureType;
 use App\Services\DataTable\Admin\MeasureDataTableService;
 use App\Services\TemplateBuilders\Admin\MeasureTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,6 +60,7 @@ class MeasureController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -93,6 +95,7 @@ class MeasureController extends AdminAbstractController
      * @param Measure $measure
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, Measure $measure): Response
     {

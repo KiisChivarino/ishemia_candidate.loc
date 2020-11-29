@@ -4,7 +4,14 @@
     {{ encore_entry_link_tags('admin') }}
 {% endblock %}
 {% block title %}{% endblock %}
-{% block favicon %}{{ asset('build/images/adm-fav.ico') }}{% endblock %}
+{% block favicon %}{{ asset('build/images/adm-fav.e28e842f.ico') }}{% endblock %}
+{% block data %}
+    <div
+            id="data-values"
+            data-init-json-class="{{ constant('App\\Controller\\AjaxController::AJAX_INIT_CSS_CLASS') }}"
+            style="display: none;"
+    ></div>
+{% endblock %}
 {% block body %}
     <header class="main-header main-header--admin">
         <div class="main-header__logo"><a href="{{ path('index') }}">
@@ -34,7 +41,6 @@
             </div>
         </aside>
         <div class="content-wrapper">
-            <a href="{{ path('app_logout') }}">Выйти</a>
             {% block h1 %}{% endblock %}
             {% block content %}
                 <h2>Процесс разработки</h2>

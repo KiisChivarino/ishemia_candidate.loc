@@ -6,13 +6,6 @@ use App\Services\FileService\FileService;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Doctrine\ORM\Mapping\PrePersist;
-use Doctrine\ORM\Mapping\PreUpdate;
-use Doctrine\ORM\Mapping\PostPersist;
-use Doctrine\ORM\Mapping\PostUpdate;
-use Doctrine\ORM\Mapping\PreRemove;
-use Doctrine\ORM\Mapping\PostRemove;
-use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 trait PatientFileTrait

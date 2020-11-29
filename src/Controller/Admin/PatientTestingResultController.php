@@ -11,6 +11,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AnalysisRateInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\TemplateBuilders\Admin\PatientTestingResultTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -70,96 +71,6 @@ class PatientTestingResultController extends AdminAbstractController
         );
     }
 
-//    /**
-//     * Внесение результата анализа
-//     *
-//     * @param PatientTestingResultRepository $patientTestingResultRepository
-//     * @param Request $request
-//     *
-//     * @return Response
-//     * @Route("/new", name="patient_testing_result_new", methods={"GET","POST"})
-//     */
-//    public function new(PatientTestingResultRepository $patientTestingResultRepository, Request $request): Response
-//    {
-//
-//        $entityManager = $this->getDoctrine()->getManager();
-//        /** @var PatientTesting $patientTesting */
-//        $patientTesting = $entityManager->getRepository(PatientTesting::class)->find((int)$request->query->get('id'));
-//        if (is_null($patientTesting)) {
-//            return $this->redirectToRoute($this->templateService->getRoute('list'));
-//        }
-//        $analyzes = $patientTestingResultRepository->getAnalyzes($patientTesting);
-//        $formBuilder = $this->createFormBuilder();
-//        $formTemplateItem = $this->templateService->new()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME);
-//        $formBuilder->add(
-//            self::TESTING_DATE_FORM_NAME,
-//            DateType::class,
-//            [
-//                'widget' => 'single_text',
-//                'label' => $formTemplateItem->getContentValue('testingDate'),
-//                'data' => $patientTesting->getAnalysisDate(),
-//                'required' => true
-//            ]
-//        );
-//        if ($patientTesting->getPatientTestingResults()->count() > 0) {
-//            foreach ($patientTesting->getPatientTestingResults() as $testingResult) {
-//                $formBuilder->add(
-//                    'testing'.$testingResult->getAnalysis()->getId(),
-//                    PatientTestingResultType::class,
-//                    [
-//                        'label' => $testingResult->getAnalysis()->getName(),
-//                        'patientTesting' => $patientTesting,
-//                        'analysis' => $testingResult->getAnalysis(),
-//                        'data' => $testingResult,
-//                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $formTemplateItem,
-//                    ]
-//                );
-//            }
-//        } else {
-//            foreach ($analyzes as $analysis) {
-//                $formBuilder->add(
-//                    'testing'.$analysis->getId(),
-//                    PatientTestingResultType::class,
-//                    [
-//                        'label' => $analysis->getName(),
-//                        'patientTesting' => $patientTesting,
-//                        'analysis' => $analysis,
-//                        self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $formTemplateItem,
-//                    ]
-//                );
-//            }
-//        }
-//        $form = $formBuilder->getForm();
-//        $form->handleRequest($request);
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $formData = $form->getData();
-//            /**
-//             * @var string $formName
-//             * @var PatientTestingResult $data
-//             */
-//            foreach ($formData as $formName => $data) {
-//                if ($formName == self::TESTING_DATE_FORM_NAME) {
-//                    $patientTesting->setAnalysisDate($data);
-//                    $entityManager->persist($patientTesting);
-//                } else {
-//                    $data->setPatientTesting($patientTesting);
-//                    if ($data->getResult()) {
-//                        $data->setEnabled(true);
-//                        $entityManager->persist($data);
-//                    }
-//                }
-//            }
-//            $entityManager->flush();
-//
-//            return $this->redirectToRoute($this->templateService->getRoute('list'));
-//        }
-//        return $this->render(
-//            $this->templateService->getCommonTemplatePath().'new.html.twig', [
-//                'form' => $form->createView(),
-//            ]
-//        );
-//    }
-
     /**
      * Вывод результата анализа
      *
@@ -174,10 +85,10 @@ class PatientTestingResultController extends AdminAbstractController
             self::TEMPLATE_PATH,
             $patientTestingResult,
             [
-                'patientTestingInfo' => (new PatientTestingInfoService())
-                    ->getPatientTestingInfoString($patientTestingResult->getPatientTesting()),
-                'analysisRateInfo' => (new AnalysisRateInfoService())
-                    ->getAnalysisRateInfoString($patientTestingResult->getAnalysisRate()),
+                'patientTestingInfo' =>
+                    PatientTestingInfoService::getPatientTestingInfoString($patientTestingResult->getPatientTesting()),
+                'analysisRateInfo' =>
+                    AnalysisRateInfoService::getAnalysisRateInfoString($patientTestingResult->getAnalysisRate()),
             ]
         );
     }
@@ -190,6 +101,7 @@ class PatientTestingResultController extends AdminAbstractController
      * @param PatientTestingResult $patientTestingResult
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, PatientTestingResult $patientTestingResult): Response
     {

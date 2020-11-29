@@ -2,10 +2,12 @@
 
 namespace App\Form\Admin\MedicalHistory;
 
+use App\Controller\AjaxController;
 use App\Controller\AppAbstractController;
 use App\Entity\Diagnosis;
 use App\Entity\MedicalHistory;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,6 +23,7 @@ class MainDiseaseType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -41,7 +44,7 @@ class MainDiseaseType extends AbstractType
                     'delay' => 250,
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('mainDiseasePlaceholder'),
-                    'attr' => ['class' => 'js-example-basic-single'],
+                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
                 ]
             );
     }

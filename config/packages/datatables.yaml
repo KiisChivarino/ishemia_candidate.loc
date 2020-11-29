@@ -4,7 +4,7 @@ datatables:
   options:
     lengthMenu: [10, 25, 50, 100, 250, 500, 1000, 2500]
     pageLength: 50
-    dom: ltr<<'pagination'p >>,
+    dom: f<<'content-wrapper__select'l>>tr<<'pagination'p >>,
     pagingType: simple_numbers
 
   template: 'datatable_html.html.twig'

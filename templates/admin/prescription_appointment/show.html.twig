@@ -1,0 +1,48 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.prescription }}</span>
+        <p>
+            {% if entity.prescription %}
+                <a href="{{ path('prescription_show', {'id': entity.prescription.id}) }}">
+                    {{ prescriptionTitle }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.patientAppointment }}</span>
+        <p>
+            {% if entity.patientAppointment %}
+                <a href="{{ path('patient_appointment_show', {'id': entity.patientAppointment.id}) }}">
+                    {{ patientAppointmentInfo }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.staff }}</span>
+        <p>
+            {% if entity.staff %}
+                <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staff }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.inclusionTime }}</span>
+        <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.plannedDateTime }}</span>
+        <p>{{ entity.plannedDateTime ? entity.plannedDateTime|date('Y-m-d H:i:s') : '' }}</p>
+    </li>
+    {% if entity.confirmedByStaff is defined %}
+        <li>
+            <span class="title">{{ template.items.show.content.confirmedByStaff }}</span>
+            <p>{{ entity.confirmedByStaff ?
+                template.items.show.content.trueValue :
+                template.items.show.content.falseValue }}
+            </p>
+        </li>
+    {% endif %}
+{% endblock %}

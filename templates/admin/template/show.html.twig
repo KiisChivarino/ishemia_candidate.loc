@@ -1,0 +1,28 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.name }}</span>
+        <p>{{ entity.name }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.templateType }}</span>
+        <p>
+            {% if entity.templateType %}
+                <a href="{{ path('template_type_show', {'id': entity.templateType.id}) }}">
+                    {{ entity.templateType.name }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <h2>Данные</h2>
+    <br>
+    {% if entity.templateManyToManyTemplateParameterTexts %}
+       {% for item in entity.templateManyToManyTemplateParameterTexts %}
+           <li>
+               <span class="title">{{ item.templateParameterText.templateParameter.name }}</span>
+               <p>{{ item.templateParameterText.text }}</p>
+           </li>
+
+        {% endfor %}
+    {% endif %}
+{% endblock %}

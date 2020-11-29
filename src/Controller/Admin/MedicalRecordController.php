@@ -2,15 +2,16 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
 use App\Form\Admin\MedicalRecordType;
+use App\Repository\MedicalHistoryRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\MedicalRecordDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\TemplateBuilders\Admin\MedicalRecordTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,6 +50,7 @@ class MedicalRecordController extends AdminAbstractController
      * @param Request $request
      * @param MedicalRecordDataTableService $dataTableService
      *
+     * @param FilterService $filterService
      * @return Response
      */
     public function list(Request $request, MedicalRecordDataTableService $dataTableService, FilterService $filterService): Response
@@ -67,16 +69,22 @@ class MedicalRecordController extends AdminAbstractController
      *
      * @param Request $request
      *
+     * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return Response
+     * @throws Exception
      */
-    public function new(Request $request): Response
+    public function new(Request $request, MedicalHistoryRepository $medicalHistoryRepository): Response
     {
         return $this->responseNew(
             $request, (new MedicalRecord()), MedicalRecordType::class, null, [],
-            function (EntityActions $actions) {
+            function (EntityActions $actions) use ($medicalHistoryRepository) {
                 $actions->getEntity()->setMedicalHistory(
-                    $this->getDoctrine()->getManager()->getRepository(MedicalHistory::class)
-                        ->find($actions->getRequest()->query->get('medical_history_id'))
+                    $medicalHistoryRepository
+                        ->find(
+                            $actions->getRequest()->query->get(
+                                MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY
+                            )
+                        )
                 );
             }
         );
@@ -94,8 +102,8 @@ class MedicalRecordController extends AdminAbstractController
     {
         return $this->responseShow(
             self::TEMPLATE_PATH, $medicalRecord, [
-                'medicalHistoryTitle' => (new MedicalHistoryInfoService())
-                    ->getMedicalHistoryTitle($medicalRecord->getMedicalHistory()),
+                'medicalHistoryTitle' =>
+                    MedicalHistoryInfoService::getMedicalHistoryTitle($medicalRecord->getMedicalHistory()),
             ]
         );
     }
@@ -108,6 +116,7 @@ class MedicalRecordController extends AdminAbstractController
      * @param MedicalRecord $medicalRecord
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, MedicalRecord $medicalRecord): Response
     {

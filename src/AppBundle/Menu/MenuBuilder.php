@@ -186,6 +186,12 @@ class MenuBuilder
             ]
         );
         $menu['medicalHistory']->addChild(
+            'prescriptionAppointmentList', [
+                'label' => 'Назначения на прием',
+                'route' => 'prescription_appointment_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
             'notificationList', [
                 'label' => 'Уведомления',
                 'route' => 'notification_list'
@@ -274,6 +280,30 @@ class MenuBuilder
                 'route' => 'notification_type_list'
             ]
         );
+        $menu['medical_guides']->addChild(
+            'templates', [
+                'label' => 'Шаблоны',
+                'route' => 'template_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'templatesTypes', [
+                'label' => 'Типы шаблонов',
+                'route' => 'template_type_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'templatesParametres', [
+                'label' => 'Параметры шаблонов',
+                'route' => 'template_parameter_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'templatesParametersTexts', [
+                'label' => 'Тексты параметров шаблонов',
+                'route' => 'template_parameter_text_list'
+            ]
+        );
         $menu->addChild(
             'locations', [
                 'label' => 'Управление локациями',
@@ -309,6 +339,12 @@ class MenuBuilder
                 'route' => 'hospital_list'
             ]
         );
+        $menu->addChild(
+            'logout', [
+                'label' => 'Выйти',
+                'route' => 'app_logout'
+            ]
+        );
         foreach ($menu->getChildren() as $item) {
             foreach ($item->getChildren() as $childrenItem) {
                 if ($childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()) {
@@ -329,9 +365,15 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'main-nav__list');
         $menu->addChild(
-            'help', [
-                'label' => 'Помощь',
-                'route' => 'doctor_office_help'
+            'add_patient', [
+                'label' => 'Добавить пациента',
+                'route' => 'adding_patient_by_doctor'
+            ]
+        );
+        $menu->addChild(
+            'logout', [
+                'label' => 'Выйти',
+                'route' => 'app_logout'
             ]
         );
         return $menu;

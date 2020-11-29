@@ -68,7 +68,7 @@ class AppRepository extends ServiceEntityRepository
      * @param object $fileEntity
      * @param UploadedFile $uploadedFile
      */
-    public function setFileProperties(object $fileEntity, UploadedFile $uploadedFile)
+    public function setFileProperties(object $fileEntity, UploadedFile $uploadedFile): void
     {
         $fileEntity->setFile($uploadedFile);
         $fileEntity->setFileName($uploadedFile->getClientOriginalName());

@@ -6,6 +6,7 @@ use App\Services\DataTable\DataTableService;
 use App\Services\Template\TemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -63,6 +64,7 @@ abstract class AdminDatatableService extends DataTableService
      * @param string $prefix
      *
      * @return DataTable
+     * @throws Exception
      */
     protected function addEnabled(TemplateItem $templateItem, string $prefix = '')
     {
@@ -84,7 +86,9 @@ abstract class AdminDatatableService extends DataTableService
      *
      * @param Closure $renderOperationsFunction
      *
+     * @param TemplateItem $templateItem
      * @return DataTable
+     * @throws Exception
      */
     protected function addOperations(Closure $renderOperationsFunction, TemplateItem $templateItem)
     {

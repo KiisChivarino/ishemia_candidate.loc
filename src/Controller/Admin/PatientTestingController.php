@@ -5,16 +5,21 @@ namespace App\Controller\Admin;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Entity\PatientTestingResult;
 use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTesting\PatientTestingRequiredType;
+use App\Repository\MedicalHistoryRepository;
+use App\Repository\PatientTestingFileRepository;
+use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\FilterLabels;
+use App\Services\CreatingPatient\CreatingPatientService;
 use App\Services\DataTable\Admin\PatientTestingDataTableService;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FilterService\FilterService;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\Admin\PatientTestingTemplate;
+use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,9 +88,21 @@ class PatientTestingController extends AdminAbstractController
      *
      * @param Request $request
      *
+     * @param PatientTestingResultRepository $patientTestingResultRepository
+     * @param MedicalHistoryRepository $medicalHistoryRepository
+     * @param PatientTestingFileRepository $patientTestingFileRepository
+     * @param CreatingPatientService $creatingPatientService
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function new(Request $request): Response
+    public function new(
+        Request $request,
+        PatientTestingResultRepository $patientTestingResultRepository,
+        MedicalHistoryRepository $medicalHistoryRepository,
+        PatientTestingFileRepository $patientTestingFileRepository,
+        CreatingPatientService $creatingPatientService
+    ): Response
     {
         $patientTesting = new PatientTesting();
         return $this->responseNewMultiForm(
@@ -95,21 +112,26 @@ class PatientTestingController extends AdminAbstractController
                 new FormData($patientTesting, PatientTestingRequiredType::class),
                 new FormData($patientTesting, PatientTestingNotRequiredType::class),
             ],
-            function (EntityActions $actions) {
+            function (EntityActions $actions)
+            use ($patientTestingResultRepository, $patientTesting, $medicalHistoryRepository, $patientTestingFileRepository, $creatingPatientService) {
                 /** @var MedicalHistory $medicalHistory */
-                $medicalHistory = $actions->getRequest()->query->get('medical_history_id')
-                    ? $actions->getEntityManager()
-                        ->getRepository(MedicalHistory::class)
-                        ->find($actions->getRequest()->query->get('medical_history_id'))
-                    : null;
+                $medicalHistory =
+                    $actions->getRequest()->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)
+                        ? $medicalHistoryRepository
+                        ->find(
+                            $actions->getRequest()->query->get(
+                                MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY
+                            )
+                        )
+                        : null;
                 $actions->getEntity()->setMedicalHistory($medicalHistory);
                 $this->prepareFiles(
                     $actions->getForm()
                         ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
-                        ->get(self::FILES_COLLECTION_PROPERTY_NAME)
+                        ->get(self::FILES_COLLECTION_PROPERTY_NAME),
+                    $patientTestingFileRepository
                 );
-                $actions->getEntityManager()->getRepository(PatientTestingResult::class)
-                    ->persistTestingResultsForTesting($actions->getEntity());
+                $creatingPatientService->persistTestingResultsForTesting($patientTesting);
             }
         );
     }
@@ -150,9 +172,12 @@ class PatientTestingController extends AdminAbstractController
      * @param Request $request
      * @param PatientTesting $patientTesting
      *
+     * @param PatientTestingFileRepository $patientTestingFileRepository
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function edit(Request $request, PatientTesting $patientTesting): Response
+    public function edit(Request $request, PatientTesting $patientTesting, PatientTestingFileRepository $patientTestingFileRepository): Response
     {
         return $this->responseEditMultiForm(
             $request,
@@ -161,10 +186,10 @@ class PatientTestingController extends AdminAbstractController
                 new FormData($patientTesting, PatientTestingRequiredType::class),
                 new FormData($patientTesting, PatientTestingNotRequiredType::class),
             ],
-            function (EntityActions $actions) use ($patientTesting) {
+            function (EntityActions $actions) use ($patientTesting, $patientTestingFileRepository) {
                 $this->prepareFiles($actions->getForm()
                     ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
-                    ->get(self::FILES_COLLECTION_PROPERTY_NAME));
+                    ->get(self::FILES_COLLECTION_PROPERTY_NAME), $patientTestingFileRepository);
             }
         );
     }

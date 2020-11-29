@@ -8,6 +8,7 @@ use App\Entity\AnalysisGroup;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -28,8 +29,13 @@ class AnalysisDataTableService extends AdminDatatableService
      * @param array $filters
      *
      * @return DataTable
+     * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
@@ -51,7 +57,10 @@ class AnalysisDataTableService extends AdminDatatableService
                         $analysisGroup = $analysis->getAnalysisGroup();
                         return
                             $analysisGroup ?
-                                $this->getLink($analysisGroup->getName(), $analysisGroup->getId(), 'analysis_group_show')
+                                $this->getLink(
+                                    $analysisGroup->getName(), $analysisGroup->getId(),
+                                    'analysis_group_show'
+                                )
                                 : '';
                     }
                 ]

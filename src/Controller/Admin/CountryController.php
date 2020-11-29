@@ -6,6 +6,7 @@ use App\Entity\Country;
 use App\Form\Admin\CountryType;
 use App\Services\DataTable\Admin\CountryDataTableService;
 use App\Services\TemplateBuilders\Admin\CountryTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class CountryController extends AdminAbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -85,6 +87,7 @@ class CountryController extends AdminAbstractController
      * @param Country $country
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, Country $country): Response
     {

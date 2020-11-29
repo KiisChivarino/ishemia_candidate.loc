@@ -1,11 +1,47 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block title %}{{ template.items.edit.content.objective_title }}{% endblock %}
 {% block content %}
-    {% include (template.templatePath~'content_wrapper_top.html.twig') %}
+    <div class="content-wrapper__top">
+        <ul>
+            <li><a class="back-page" href="{{ path('doctor_medical_history', {'id': entity.medicalHistory.patient.id}) }}">Назад</a></li>
+        </ul>
+    </div>
     <div class="pacient-edit-wrapper">
-        <div class="popup__wrapper acc"><h2 class="title accordion active">{{ template.items.edit.content.objective_h2 }}</h2>
+        <div class="popup__wrapper acc"><h2
+                    class="title accordion active">{{ template.items.edit.content.objective_h2 }}</h2>
             <div class="popup__inner panel">
-                {{ include(template.items.form.path~'_form.html.twig') }}
+                {{ form_start(form) }}
+                {% for child in form %}
+                    <ul>
+                        <p class="popup__row">
+                            <span class="label">{{ form_label(child) }}</span>
+                            {% if child.vars.name == 'objectiveStatus' %}
+                                <a href="{{ path(
+                                    'doctor_edit_objective_data_objective_status_using_constructor',
+                                    { 'id': entity.id }
+                                ) }}"
+                                   class="form-control"
+                                >
+                                    Собрать Объективный статус
+                                </a>
+                                <a href="{{ path(
+                                    'doctor_edit_objective_data_objective_status_by_template',
+                                    { 'id': entity.id }
+                                ) }}"
+                                   class="form-control">
+                                    Выбрать из шаблона Объективный статус
+                                </a>
+                            {% endif %}
+                            {{ form_widget(child) }}
+                        </p>
+                    </ul>
+                {% endfor %}
+                <ul>
+                    <div class="buttons">
+                        <button class="button main-button">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
+                    </div>
+                </ul>
+                {{ form_end(form) }}
             </div>
         </div>
     </div>

@@ -1,13 +1,10 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block content %}
     <div class="content-wrapper__top">
-        <ul class="content-wrapper__nav">
-            <li><a class="active" href="#">Новые</a></li>
-            <li><a href="#">Основные</a></li>
-            <div class="buttons">
-                <button class="button main-button" onclick="location.href='{{ path('create_patients') }}';">+ Добавить пациента</button>
-            </div>
-        </ul>
+{#        <ul class="content-wrapper__nav">#}
+{#            <li><a class="active" href="#">Новые</a></li>#}
+{#            <li><a href="#">Основные</a></li>#}
+{#        </ul>#}
         <div class="content-wrapper__select">
             {% if template.items.filter.isEnabled %}
                 {{ include(

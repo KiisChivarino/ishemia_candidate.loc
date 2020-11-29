@@ -79,12 +79,18 @@ class Prescription
     private $medicalRecord;
 
     /**
+     * @ORM\OneToMany(targetEntity=PrescriptionAppointment::class, mappedBy="prescription", orphanRemoval=true)
+     */
+    private $prescriptionAppointments;
+
+    /**
      * Prescription constructor.
      */
     public function __construct()
     {
         $this->prescriptionMedicines = new ArrayCollection();
         $this->prescriptionTestings = new ArrayCollection();
+        $this->prescriptionAppointments = new ArrayCollection();
     }
 
     /**
@@ -336,6 +342,36 @@ class Prescription
     public function setMedicalRecord(?MedicalRecord $medicalRecord): self
     {
         $this->medicalRecord = $medicalRecord;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PrescriptionAppointment[]
+     */
+    public function getPrescriptionAppointments(): Collection
+    {
+        return $this->prescriptionAppointments;
+    }
+
+    public function addPrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
+    {
+        if (!$this->prescriptionAppointments->contains($prescriptionAppointment)) {
+            $this->prescriptionAppointments[] = $prescriptionAppointment;
+            $prescriptionAppointment->setPrescription($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
+    {
+        if ($this->prescriptionAppointments->removeElement($prescriptionAppointment)) {
+            // set the owning side to null (unless already changed)
+            if ($prescriptionAppointment->getPrescription() === $this) {
+                $prescriptionAppointment->setPrescription(null);
+            }
+        }
 
         return $this;
     }

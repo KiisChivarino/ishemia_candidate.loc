@@ -2,13 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\City;
-use App\Entity\Complaint;
-use App\Entity\Diagnosis;
-use App\Entity\Hospital;
-use App\Entity\Medicine;
+use App\Repository\AnalysisGroupRepository;
+use App\Repository\CityRepository;
+use App\Repository\ComplaintRepository;
+use App\Repository\DiagnosisRepository;
+use App\Repository\HospitalRepository;
+use App\Repository\MedicineRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,58 +23,60 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AjaxController extends AbstractController
 {
+    public const JSON_PARAMETER_KEY = 'q';
+
+    public const AJAX_INIT_CSS_CLASS = 'js-ajax-init';
     /**
      * Find diagnoses
      * @Route("/find_diagnosis_ajax", name="find_diagnosis_ajax", methods={"GET"})
      *
      * @param Request $request
      *
+     * @param DiagnosisRepository $diagnosisRepository
      * @return false|string
      */
-    public function findDiagnosisAjax(Request $request)
+    public function findDiagnosisAjax(
+        Request $request,
+        DiagnosisRepository $diagnosisRepository
+    )
     {
-        $string = $request->query->get('q');
-        $entityManager = $this->getDoctrine()->getManager();
-        $diagnoses = $entityManager->getRepository(Diagnosis::class)->findDiagnoses($string);
-        return new Response(
-            json_encode(
-                $this->getAjaxResultArray($diagnoses)
+        return $this->responseAjaxResult(
+            $diagnosisRepository->findDiagnoses(
+                $request->query->get(self::JSON_PARAMETER_KEY)
             )
         );
     }
 
     /**
+     * Return complaints using ajax
      * @Route("/find_complaint_ajax", name="find_complaint_ajax", methods={"GET"})
      * @param Request $request
      *
+     * @param ComplaintRepository $complaintRepository
      * @return Response
      */
-    public function findComplaintAjax(Request $request)
+    public function findComplaintAjax(Request $request, ComplaintRepository $complaintRepository)
     {
-        $string = $request->query->get('q');
-        $entityManager = $this->getDoctrine()->getManager();
-        $complaints = $entityManager->getRepository(Complaint::class)->findComplaints($string);
-        return new Response(
-            json_encode(
-                $this->getAjaxResultArray($complaints)
+        return $this->responseAjaxResult(
+            $complaintRepository->findComplaints(
+                $request->query->get(self::JSON_PARAMETER_KEY)
             )
         );
     }
 
     /**
+     * Find cities
      * @Route("/find_city_ajax", name="find_city_ajax", methods={"GET"})
      * @param Request $request
      *
+     * @param CityRepository $cityRepository
      * @return Response
      */
-    public function findCityAjax(Request $request): Response
+    public function findCityAjax(Request $request, CityRepository $cityRepository): Response
     {
-        $string = $request->query->get('q');
-        $entityManager = $this->getDoctrine()->getManager();
-        $cities = $entityManager->getRepository(City::class)->findCities($string);
-        return new Response(
-            json_encode(
-                $this->getAjaxResultArray($cities)
+        return $this->responseAjaxResult(
+            $cityRepository->findCities(
+                $request->query->get(self::JSON_PARAMETER_KEY)
             )
         );
     }
@@ -83,17 +87,16 @@ class AjaxController extends AbstractController
      *
      * @param Request $request
      *
+     * @param HospitalRepository $hospitalRepository
      * @return false|string
      */
-    public function findHospitalAjax(Request $request)
+    public function findHospitalAjax(Request $request, HospitalRepository $hospitalRepository)
     {
         $city = $request->get('city');
-        $string = $request->query->get('q');
-        $entityManager = $this->getDoctrine()->getManager();
-        $hospitals = $entityManager->getRepository(Hospital::class)->findHospitals($string, $city);
-        return new Response(
-            json_encode(
-                $this->getAjaxResultArray($hospitals)
+        return $this->responseAjaxResult(
+            $hospitalRepository->findHospitals(
+                $request->query->get(self::JSON_PARAMETER_KEY), 
+                $city
             )
         );
     }
@@ -104,16 +107,30 @@ class AjaxController extends AbstractController
      *
      * @param Request $request
      *
+     * @param MedicineRepository $medicineRepository
      * @return false|string
      */
-    public function findMedicineAjax(Request $request)
+    public function findMedicineAjax(Request $request, MedicineRepository $medicineRepository)
     {
-        $string = $request->query->get('q');
-        $entityManager = $this->getDoctrine()->getManager();
-        $medicines = $entityManager->getRepository(Medicine::class)->findMedicines($string);
-        return new Response(
-            json_encode(
-                $this->getAjaxResultArray($medicines)
+        return $this->responseAjaxResult(
+            $medicineRepository->findMedicines(
+                $request->query->get(self::JSON_PARAMETER_KEY)
+            )
+        );
+    }
+
+    /**
+     * Find analysis group by ajax
+     * @Route("/find_analysis_group_ajax", name="find_analysis_group_ajax", methods={"GET"})
+     *
+     * @param Request $request
+     * @param AnalysisGroupRepository $analysisGroupRepository
+     * @return JsonResponse
+     */
+    public function findAnalysisGroupAjax(Request $request, AnalysisGroupRepository $analysisGroupRepository){
+        return $this->responseAjaxResult(
+            $analysisGroupRepository->findAnalysisGroups(
+                $request->query->get(self::JSON_PARAMETER_KEY)
             )
         );
     }
@@ -124,11 +141,11 @@ class AjaxController extends AbstractController
      * @param $entities
      * @param null $textFieldName
      *
-     * @return array
+     * @return JsonResponse
      */
-    private function getAjaxResultArray($entities, $textFieldName = null): array
+    private function responseAjaxResult($entities, $textFieldName = null): JsonResponse
     {
-        $textMethodName = 'get'.ucfirst($textFieldName);
+        $textMethodName = 'get' . ucfirst($textFieldName);
         $resultArray = [];
         foreach ($entities as $entity) {
             $resultArray[] = [
@@ -136,6 +153,8 @@ class AjaxController extends AbstractController
                 'text' => $textFieldName ? $entity->$textMethodName() : $entity->getName(),
             ];
         }
-        return $resultArray;
+        return new JsonResponse(
+            $resultArray
+        );
     }
 }

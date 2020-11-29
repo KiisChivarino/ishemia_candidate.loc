@@ -3,12 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
-use App\Entity\MedicalRecord;
 use App\Entity\PatientAppointment;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\ConfirmedType;
 use App\Form\Admin\PatientAppointment\StaffType;
 use App\Form\Admin\PatientAppointmentType;
+use App\Repository\MedicalHistoryRepository;
+use App\Repository\MedicalRecordRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PatientAppointmentDataTableService;
@@ -18,6 +19,8 @@ use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\InfoService\MedicalRecordInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PatientAppointmentTemplate;
+use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,8 +45,6 @@ class PatientAppointmentController extends AdminAbstractController
         'Прием пациента не может быть добавлен: история болезни не найдена!';
     /** @var string Route for redirect after error "Medical history not found" */
     private const FLASH_ERROR_REDIRECT_ROUTE = 'medical_history_list';
-    /** @var string Get parameter name of medical history id */
-    private const MEDICAL_HISTORY_ID_GET_PARAMETER = 'medical_history_id';
 
     /**
      * PatientAppointmentController constructor.
@@ -89,13 +90,21 @@ class PatientAppointmentController extends AdminAbstractController
      *
      * @param Request $request
      *
+     * @param MedicalRecordRepository $medicalRecordRepository
+     * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return Response
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function new(Request $request): Response
+    public function new(
+        Request $request,
+        MedicalRecordRepository $medicalRecordRepository,
+        MedicalHistoryRepository $medicalHistoryRepository
+): Response
     {
-        if ($request->query->get(self::MEDICAL_HISTORY_ID_GET_PARAMETER)) {
-            $medicalHistory = $this->getDoctrine()->getManager()->getRepository(MedicalHistory::class)
-                ->find($request->query->get(self::MEDICAL_HISTORY_ID_GET_PARAMETER));
+        if ($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)) {
+            $medicalHistory = $medicalHistoryRepository
+                ->find($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY));
         }
         if (!isset($medicalHistory) || !is_a($medicalHistory, MedicalHistory::class)) {
             $this->addFlash('warning', self::FLASH_ERROR_MEDICAL_HISTORY_NOT_FOUND);
@@ -111,14 +120,11 @@ class PatientAppointmentController extends AdminAbstractController
                 new FormData($patientAppointment, StaffType::class),
                 new FormData($patientAppointment, AppointmentTypeType::class),
             ],
-            function (EntityActions $actions) use ($medicalHistory) {
+            function (EntityActions $actions) use ($medicalHistory, $medicalRecordRepository) {
                 /** @var PatientAppointment $patientAppointment */
                 $patientAppointment = $actions->getEntity();
                 $patientAppointment->setMedicalRecord(
-                    $this
-                        ->getDoctrine()
-                        ->getRepository(MedicalRecord::class)
-                        ->getMedicalRecord($medicalHistory)
+                    $medicalRecordRepository->getMedicalRecord($medicalHistory)
                 );
                 $patientAppointment->setIsConfirmed(false);
             }
@@ -156,6 +162,7 @@ class PatientAppointmentController extends AdminAbstractController
      * @param PatientAppointment $patientAppointment
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, PatientAppointment $patientAppointment): Response
     {

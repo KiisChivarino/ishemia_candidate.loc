@@ -14,6 +14,7 @@ use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -30,7 +31,6 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'analysisGroup' => 'Группа анализов',
         'analysisDate' => 'Проведено',
         'processed' => 'Обработано врачом',
-        'plannedDate' => 'Запланировано',
         'patientTestingFiles'=> 'Сканкопии результатов анализов'
     ];
 
@@ -117,6 +117,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

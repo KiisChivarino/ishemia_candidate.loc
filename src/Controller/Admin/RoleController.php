@@ -8,6 +8,7 @@ use App\Services\ControllerGetters\EntityActions;
 use App\Services\DataTable\Admin\RoleDataTableService;
 use App\Services\TemplateBuilders\Admin\RoleTemplate;
 use Closure;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -74,6 +75,7 @@ class RoleController extends AdminAbstractController
      * @param Role $role
      *
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, Role $role): Response
     {
