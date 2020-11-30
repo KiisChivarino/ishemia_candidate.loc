@@ -36,6 +36,10 @@ class DischargeEpicrisisFileType extends AbstractType
                                 'mimeTypes' => [
                                     'image/jpeg',
                                     'image/pjpeg',
+                                    'application/msword',
+                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                    'application/pdf',
+                                    'image/png'
                                 ],
                             ]
                         )

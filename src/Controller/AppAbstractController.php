@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\AuthUser;
-use App\Repository\PatientTestingFileRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
@@ -17,7 +16,6 @@ use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -465,28 +463,5 @@ abstract class AppAbstractController extends AbstractController
         }
         $this->addFlash('success', 'Запись успешно удалена');
         return $this->redirectToRoute($this->templateService->getRoute('list'));
-    }
-
-    /**
-     * Prepare files, because preUpload and prePersist dont`t work...WHY???
-     *
-     * @param FormInterface $filesForm
-     * @param PatientTestingFileRepository $patientTestingFileRepository
-     */
-    protected function prepareFiles(
-        FormInterface $filesForm,
-        PatientTestingFileRepository $patientTestingFileRepository
-    ): void
-    {
-        foreach ($filesForm->all() as $fileForm) {
-            $fileEntity = $fileForm->getData();
-            if ($fileEntity) {
-                /** @var UploadedFile $uploadedFile */
-                $uploadedFile = $fileForm->get('file')->getData();
-                if ($uploadedFile) {
-                    $patientTestingFileRepository->setFileProperties($fileEntity, $uploadedFile);
-                }
-            }
-        }
     }
 }

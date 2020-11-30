@@ -6,6 +6,7 @@
             <li><a class="back-page" href="{{ path('patients_list') }}">Назад</a></li>
         </ul>
     </div>
+    <!-- Персональные данные -->
     <div class="statement acc">
         <h2 class="title accordion">{{ template.items.show.content.personalData }}</h2>
         <div class="statement__wrapper panel">
@@ -95,6 +96,7 @@
             </div>
         </div>
     </div>
+    <!-- Анамнестические данные -->
     {% if medicalHistory is not empty %}
         <div class="statement acc">
             <h2 class="title accordion">{{ template.items.show.content.anamnesticData }}</h2>
@@ -188,7 +190,7 @@
             </div>
         </div>
     {% endif %}
-
+    <!-- Объективные данные -->
     {% if firstAppointment is not empty %}
         <div class="statement acc">
             <h2 class="title accordion">{{ template.items.show.content.objectiveData }}</h2>
@@ -274,18 +276,22 @@
             </div>
         </div>
     {% endif %}
-{#    {% if patientDischargeEpicrisis is not empty and firstTestings is not empty%}#}
-        {% set filesDir = constant('App\\Services\\FileService\\FileService::FILES_DIR') %}
+    <!-- Лабораторные данные -->
+    {# {% if patientDischargeEpicrisis is not empty and firstTestings is not empty%} #}
+    {% set filesDir = constant('App\\Services\\FileService\\FileService::FILES_DIR') %}
     <div class="statement acc">
         <h2 class="title accordion">{{ template.items.show.content.laboratoryData }}</h2>
         <div class="statement__wrapper panel">
             <div class="statement__head">
                 <h3 class="subtitle">{{ template.items.show.content.dischargeEpicrisis }}</h3>
                 {% if not patientDischargeEpicrisis is empty %}
-                <a class="back-page"
-                   href="{{ path('doctor_edit_discharge_epicrisis', {'id': patientDischargeEpicrisis.id}) }}">
-                    <span class="statement__edit">{{ template.items.show.content.addDischargeEpicrises }}</span>
-                </a>
+                    <a class="back-page"
+                       href="{{ path(
+                           'doctor_edit_discharge_epicrisis',
+                           {'id': patientDischargeEpicrisis.id}
+                       ) }}">
+                        <span class="statement__edit">{{ template.items.show.content.addDischargeEpicrises }}</span>
+                    </a>
                 {% endif %}
             </div>
             <div class="statement__content">
@@ -304,7 +310,13 @@
                     </p>
                 {% else %}
                     <div class="buttons">
-                        <button class="button main-button" onclick="location.href='{{ path('doctor_new_discharge_epicrisis', {'id': medicalHistory.id}) }}';">+ Добавить выписной эпикриз</button>
+                        <button class="button main-button"
+                                onclick="location.href='{{ path(
+                                    'doctor_new_discharge_epicrisis',
+                                    {'id': medicalHistory.id}
+                                ) }}';">
+                            + Добавить выписной эпикриз
+                        </button>
                     </div>
                 {% endif %}
             </div>
@@ -312,7 +324,7 @@
                 <div class="statement__head">
                     <h3 class="subtitle">Обследование: {{ patientTestingTitle(testing) }}</h3>
                     <a class="back-page"
-                       href="{{ path('doctor_edit_objective_data', {'id': entity.id}) }}">
+                       href="{{ path('doctor_edit_patient_testing', {'id': testing.id}) }}">
                         <span class="statement__edit">{{ template.items.show.content.addPatientTestingResults }}</span>
                     </a>
                 </div>
@@ -360,7 +372,7 @@
             {% endfor %}
         </div>
     </div>
-{#    {% endif %}#}
+    {# {% endif %} #}
     <div class="history">
         <h2 class="title">Электронная история болезни </h2>
         <div class="history__head">

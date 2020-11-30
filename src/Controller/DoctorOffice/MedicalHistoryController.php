@@ -6,6 +6,7 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientAppointment;
 use App\Entity\PatientDischargeEpicrisis;
+use App\Entity\PatientTesting;
 use App\Entity\TemplateType;
 use App\Entity\TextByTemplate;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
@@ -13,19 +14,21 @@ use App\Form\Admin\MedicalHistoryType;
 use App\Form\Admin\Patient\PatientOptionalType;
 use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointmentType;
+use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\DischargeEpicrisisFileType;
 use App\Form\DischargeEpicrisisType;
 use App\Form\Doctor\AuthUserPersonalDataType;
+use App\Form\PatientTestingFileType;
 use App\Form\TextBySelectingTemplateType;
 use App\Form\TextByTemplateType;
 use App\Repository\MedicalHistoryRepository;
 use App\Repository\PatientAppointmentRepository;
-use App\Repository\PatientTestingFileRepository;
 use App\Repository\PatientTestingRepository;
 use App\Repository\TemplateParameterRepository;
 use App\Repository\TemplateRepository;
 use App\Repository\TemplateTypeRepository;
 use App\Services\ControllerGetters\EntityActions;
+use App\Services\FileService\FileService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\MultiFormService\FormData;
@@ -82,7 +85,10 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     private const EDIT_OBJECTIVE_DATA_TEMPLATE_NAME = 'edit_objective_data';
     /** @var string Name of form template edit DISCHARGE_EPICRISIS data */
     private const EDIT_DISCHARGE_EPICRISIS_TEMPLATE_NAME = 'edit_discharge_epicrisis';
+    /** @var string Name of form template: new discharge epicrisis */
     private const NEW_DISCHARGE_EPICRISIS_TEMPLATE_NAME = 'new_discharge_epicrisis';
+    /** @var string Name of form template: edit patient testing */
+    private const EDIT_PATIENT_TESTING_TEMPLATE_NAME = 'edit_patient_testing';
 
     //form data names
     /** @var string Name of form with objective status data */
@@ -278,6 +284,41 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     }
 
     /**
+     * @Route(
+     *     "/{id}/new_discharge_epicrisis",
+     *     name="doctor_new_discharge_epicrisis",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     * )
+     * @param Request $request
+     * @param MedicalHistory $medicalHistory
+     * @param FileService $fileService
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function newDischargeEpicrisis(
+        Request $request,
+        MedicalHistory $medicalHistory,
+        FileService $fileService
+    ){
+        $this->setRedirectMedicalHistoryRoute($medicalHistory->getPatient()->getId());
+        return $this->responseNew(
+            $request,
+            (new PatientDischargeEpicrisis())->setMedicalHistory($medicalHistory),
+            DischargeEpicrisisType::class,
+            null,
+            [],
+            function (EntityActions $actions) use ($fileService) {
+                $fileService->prepareFiles(
+                    $actions->getForm()
+                        ->get(MultiFormService::getFormName(DischargeEpicrisisFileType::class) . 's')
+                );
+            },
+            self::NEW_DISCHARGE_EPICRISIS_TEMPLATE_NAME
+        );
+    }
+
+    /**
      * Edit discharge epicrisis
      * @Route(
      *     "/{id}/edit_discharge_epicrisis",
@@ -287,14 +328,15 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
      *     )
      * @param Request $request
      * @param PatientDischargeEpicrisis $dischargeEpicrisis
-     * @param PatientTestingFileRepository $patientTestingFileRepository
+     * @param FileService $fileService
      * @return RedirectResponse|Response
      * @throws Exception
      */
     public function editDischargeEpicrisis(
         Request $request,
         PatientDischargeEpicrisis $dischargeEpicrisis,
-        PatientTestingFileRepository $patientTestingFileRepository)
+        FileService $fileService
+        )
     {
         $this->setRedirectMedicalHistoryRoute($dischargeEpicrisis->getMedicalHistory()->getPatient()->getId());
         return $this->responseEdit(
@@ -302,14 +344,47 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             $dischargeEpicrisis,
             DischargeEpicrisisType::class,
             [],
-            function (EntityActions $actions) use ($patientTestingFileRepository) {
-                $this->prepareFiles(
+            function (EntityActions $actions) use ($fileService) {
+                $fileService->prepareFiles(
                     $actions->getForm()
-                        ->get(MultiFormService::getFormName(DischargeEpicrisisFileType::class) . 's'),
-                    $patientTestingFileRepository
+                        ->get(MultiFormService::getFormName(DischargeEpicrisisFileType::class) . 's')
                 );
             },
             self::EDIT_DISCHARGE_EPICRISIS_TEMPLATE_NAME
+        );
+    }
+
+    /**
+     * @Route(
+     *     "/{id}/edit_patient_testing",
+     *     name="doctor_edit_patient_testing",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     *     )
+     * @param Request $request \
+     * @param PatientTesting $patientTesting
+     * @param FileService $fileService
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function editPatientTesting(
+        Request $request,
+        PatientTesting $patientTesting,
+        FileService $fileService
+    ){
+        $this->setRedirectMedicalHistoryRoute($patientTesting->getMedicalHistory()->getPatient()->getId());
+        return $this->responseEdit(
+            $request,
+            $patientTesting,
+            PatientTestingNotRequiredType::class,
+            [],
+            function (EntityActions $actions) use ($fileService) {
+                $fileService->prepareFiles(
+                    $actions->getForm()
+                        ->get(MultiFormService::getFormName(PatientTestingFileType::class) . 's')
+                );
+            },
+            self::EDIT_PATIENT_TESTING_TEMPLATE_NAME
         );
     }
 
@@ -542,42 +617,6 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             },
             self::EDIT_OBJECTIVE_DATA_OBJECTIVE_STATUS_TEMPLATE_NAME,
             $textByTemplate
-        );
-    }
-
-    /**
-     * @Route(
-     *     "/{id}/new_discharge_epicrisis",
-     *     name="doctor_new_discharge_epicrisis",
-     *     methods={"GET","POST"},
-     *     requirements={"id"="\d+"}
-     * )
-     * @param Request $request
-     * @param MedicalHistory $medicalHistory
-     * @param PatientTestingFileRepository $patientTestingFileRepository
-     * @return RedirectResponse|Response
-     * @throws Exception
-     */
-    public function newDischargeEpicrisis(
-        Request $request,
-        MedicalHistory $medicalHistory,
-        PatientTestingFileRepository $patientTestingFileRepository
-    ){
-        $this->setRedirectMedicalHistoryRoute($medicalHistory->getPatient()->getId());
-        return $this->responseNew(
-            $request,
-            (new PatientDischargeEpicrisis())->setMedicalHistory($medicalHistory),
-            DischargeEpicrisisType::class,
-            null,
-            [],
-            function (EntityActions $actions) use ($patientTestingFileRepository) {
-                $this->prepareFiles(
-                    $actions->getForm()
-                        ->get(MultiFormService::getFormName(DischargeEpicrisisFileType::class) . 's'),
-                    $patientTestingFileRepository
-                );
-            },
-            self::NEW_DISCHARGE_EPICRISIS_TEMPLATE_NAME
         );
     }
 

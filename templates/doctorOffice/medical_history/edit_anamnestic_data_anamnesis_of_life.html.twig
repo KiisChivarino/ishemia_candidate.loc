@@ -3,14 +3,18 @@
 {% block content %}
     <div class="content-wrapper__top">
         <ul>
-            <li><a class="back-page" href="{{ path('doctor_medical_history', {'id': entity.id}) }}">Назад</a></li>
+            <li>
+                <a class="back-page" href="{{ path(
+                    'doctor_medical_history',
+                    {'id': entity.id}
+                ) }}">Назад</a>
+            </li>
         </ul>
     </div>
     <div class="pacient-edit-wrapper">
         <div class="popup__wrapper acc">
             <h2 class="title accordion active">{{ template.items.edit.content.anamnestic_h2 }}</h2>
             <div class="popup__inner panel">
-{#                <a href="{{ path('doctor_edit_objective_data_objective_status_by_template', { 'id': entity.id, 'appointmentID': firstAppointment.id }) }}" class="form-control">Выбрать из шаблона Объективный статус</a>#}
                 {{ include(template.items.form.path~'_form.html.twig') }}
             </div>
         </div>

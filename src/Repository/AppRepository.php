@@ -2,11 +2,9 @@
 
 namespace App\Repository;
 
-use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class AppRepository
@@ -60,19 +58,5 @@ class AppRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
         return $lastEntity ? $lastEntity->getId() + 1 : 1;
-    }
-
-    /**
-     * Set property values for file entity
-     *
-     * @param object $fileEntity
-     * @param UploadedFile $uploadedFile
-     */
-    public function setFileProperties(object $fileEntity, UploadedFile $uploadedFile): void
-    {
-        $fileEntity->setFile($uploadedFile);
-        $fileEntity->setFileName($uploadedFile->getClientOriginalName());
-        $fileEntity->setExtension(preg_replace('/.+\//', '', $uploadedFile->getMimeType()));
-        $fileEntity->setUploadedDate(new DateTime());
     }
 }

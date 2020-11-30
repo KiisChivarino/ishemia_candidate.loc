@@ -4,19 +4,19 @@
     <div class="content-wrapper__top">
         <ul>
             <li>
-                <h1>Редактирование выписных эпикризов</h1>
+                <h1>Редактирование результатов обследования</h1>
             </li>
             <li>
                 {% if template.items.list.isEnabled %}
-                    <a class="back-page" href="{{ path(
-                        template.routes.main,
-                        {id: entity.medicalHistory.patient.id}
-                    ) }}">История болезни</a>
+                    <a
+                            class="back-page"
+                            href="{{ path(template.routes.main, {id: entity.medicalHistory.patient.id}) }}"
+                    >История болезни</a>
                 {% endif %}
             </li>
         </ul>
     </div>
     <div class="adm-users-edit">
-        {{ include(template.items.form.path~'_form_discharge_epicrisis.html.twig') }}
+        {{ include( template.items.form.path~'_form_patient_testing.html.twig') }}
     </div>
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\Admin\PatientTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
 use App\Services\TemplateBuilders\Admin\PatientAppointmentTemplate;
@@ -122,7 +123,8 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
                     AuthUserTemplate::FORM_SHOW_CONTENT,
                     PatientTemplate::COMMON_CONTENT,
                     PatientTemplate::FORM_SHOW_CONTENT,
-                    PatientTemplate::FORM_CONTENT
+                    PatientTemplate::FORM_CONTENT,
+                    PatientTestingTemplate::COMMON_CONTENT
                 )
             );
         return $this;
