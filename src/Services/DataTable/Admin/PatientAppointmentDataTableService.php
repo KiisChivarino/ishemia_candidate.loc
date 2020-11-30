@@ -13,6 +13,7 @@ use App\Services\InfoService\MedicalRecordInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
@@ -31,6 +32,7 @@ class PatientAppointmentDataTableService extends AdminDatatableService
      * @param ListTemplateItem $listTemplateItem
      *
      * @return DataTable
+     * @throws Exception
      */
     public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
     {
@@ -79,8 +81,9 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'plannedTime', DateTimeColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('plannedTime'),
+                'plannedDateTime', DateTimeColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('plannedDateTime'),
+                    'field' => 'pra.plannedDateTime',
                     'searchable' => false,
                     'format' => 'd.m.Y H:i'
                 ]
@@ -111,7 +114,9 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                     'query' => function (QueryBuilder $builder) use ($medicalHistory) {
                         $builder
                             ->select('pa')
-                            ->from(PatientAppointment::class, 'pa');
+                            ->from(PatientAppointment::class, 'pa')
+                            ->innerJoin('pa.prescriptionAppointment', 'pra')
+                        ;
                         if ($medicalHistory) {
                             $builder
                                 ->andWhere('pa.medicalHistory = :medicalHistory')

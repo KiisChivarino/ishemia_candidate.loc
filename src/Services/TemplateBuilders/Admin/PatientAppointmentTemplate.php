@@ -27,7 +27,6 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
         'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
         'appointmentType' => AppointmentTypeTemplate::ENTITY_CONTENT['appointmentType'],
         'appointmentTime' => 'Дата приема',
-        'plannedTime' => 'Дата приема по плану',
         'isConfirmed' => 'Подтверждено',
     ];
 
@@ -35,6 +34,7 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     protected const LIST_CONTENT = [
         'h1' => 'Приемы пациентов',
         'title' => 'Список приема пациентов',
+        'plannedDateTime' => 'Дата приема по плану',
     ];
 
     /** @var string[]  FORM_SHOW COMMON CONTENT */
