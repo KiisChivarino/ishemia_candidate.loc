@@ -18,27 +18,29 @@
         {{ form_start(form) }}
         <ul>
             {% for child in form %}
-                <li>
-                    <span class="label">{{ form_label(child) }}</span>
-                    {% if child.vars.name == 'objectiveStatus' %}
-                        <a href="{{ path(
-                            'doctor_edit_objective_data_objective_status_using_constructor',
-                            { 'id': entity.id }
-                        ) }}"
-                           class="form-control"
-                        >
-                            Собрать Объективный статус
-                        </a>
-                        <a href="{{ path(
-                            'doctor_edit_objective_data_objective_status_by_template',
-                            { 'id': entity.id }
-                        ) }}"
-                           class="form-control">
-                            Выбрать из шаблона Объективный статус
-                        </a>
-                    {% endif %}
-                    {{ form_widget(child) }}
-                </li>
+                {% if 'hidden' not in child.vars.block_prefixes and not child.rendered %}
+                    <li>
+                        <span class="label">{{ form_label(child) }}</span>
+                        {% if child.vars.name == 'objectiveStatus' %}
+                            <a href="{{ path(
+                                'doctor_edit_objective_data_objective_status_using_constructor',
+                                { 'id': entity.id }
+                            ) }}"
+                               class="form-control"
+                            >
+                                Собрать Объективный статус
+                            </a>
+                            <a href="{{ path(
+                                'doctor_edit_objective_data_objective_status_by_template',
+                                { 'id': entity.id }
+                            ) }}"
+                               class="form-control">
+                                Выбрать из шаблона Объективный статус
+                            </a>
+                        {% endif %}
+                        {{ form_widget(child) }}
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
         <div class="buttons">
