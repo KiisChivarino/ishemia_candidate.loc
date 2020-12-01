@@ -105,7 +105,7 @@ class PatientController extends AdminAbstractController
                 new FormData(
                     $authUser,
                     AuthUserPasswordType::class,
-                    [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => true]
+                    [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false]
                 ),
                 new FormData($patient, PatientRequiredType::class),
                 new FormData($patient, PatientOptionalType::class),
@@ -117,7 +117,14 @@ class PatientController extends AdminAbstractController
             use ($authUser, $patient, $medicalHistory, $patientAppointment, $creatingPatientService) {
                 $em = $actions->getEntityManager();
                 $authUser->setEnabled(true)
-                    ->setPassword(AuthUserInfoService::randomPassword())
+                    ->setPassword(
+                        $this->passwordEncoder->encodePassword(
+                            $authUser,
+                            $authUser->getPassword() ?
+                                $authUser->getPassword() :
+                                AuthUserInfoService::randomPassword()
+                        )
+                    )
                     ->setRoles(self::PATIENT_ROLE)
                     ->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
                 $em->persist($authUser);

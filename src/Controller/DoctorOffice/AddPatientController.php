@@ -107,7 +107,7 @@ class AddPatientController extends DoctorOfficeAbstractController
                 $em->getConnection()->beginTransaction();
                 try {
                     $patientAuthUser->setEnabled(true)
-                        ->setPassword(AuthUserInfoService::randomPassword())
+                        ->setPassword($this->passwordEncoder->encodePassword($patientAuthUser, AuthUserInfoService::randomPassword()))
                         ->setRoles(self::PATIENT_ROLE)
                         ->setPhone(AuthUserInfoService::clearUserPhone($patientAuthUser->getPhone()));
                     $em->persist($patientAuthUser);
