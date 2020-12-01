@@ -7,10 +7,12 @@ use App\Entity\AuthUser;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\PatientTestingResult;
+use App\Entity\PlanTesting;
 use App\Services\InfoService\AnalysisRateInfoService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
+use App\Services\InfoService\PlanTestingInfoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -80,6 +82,12 @@ class AppExtension extends AbstractExtension
                 'enabledTestingResults', [
                     $this,
                     'getEnabledTestingResults',
+                ]
+            ),
+            new TwigFunction(
+                'planTestingTitle', [
+                    $this,
+                    'getPlanTestingTitle',
                 ]
             )
         ];
@@ -162,5 +170,15 @@ class AppExtension extends AbstractExtension
     public function getEnabledTestingResults(PatientTesting $testing): array
     {
         return $this->entityManager->getRepository(PatientTestingResult::class)->getEnabledTestingResults($testing);
+    }
+
+    /**
+     * Returns info string of plan testing
+     * @param PlanTesting $planTesting
+     * @return string
+     */
+    public function getPlanTestingTitle(PlanTesting $planTesting): string
+    {
+        return PlanTestingInfoService::getPlanTestingInfoString($planTesting);
     }
 }

@@ -52,6 +52,8 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'h1' => 'Обследование пациента',
         'title' => 'Просмотр анализа пациента',
         'analysisResultsLink' => 'Результаты анализов',
+        'isByPlan' => 'По плану обследований',
+        'planTesting' => 'План обследований',
     ];
 
     /** @var string[] Common EDIT_CONTENT */

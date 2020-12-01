@@ -79,6 +79,16 @@ class PatientTesting
     private $isFirst;
 
     /**
+     * @ORM\ManyToOne(targetEntity=PlanTesting::class)
+     */
+    private $planTesting;
+
+    /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг: обследование по плану", "default"=false})
+     */
+    private $isByPlan;
+
+    /**
      * PatientTesting constructor.
      */
     public function __construct()
@@ -326,6 +336,42 @@ class PatientTesting
     public function setIsFirst(bool $isFirst): self
     {
         $this->isFirst = $isFirst;
+        return $this;
+    }
+
+    /**
+     * @return PlanTesting|null
+     */
+    public function getPlanTesting(): ?PlanTesting
+    {
+        return $this->planTesting;
+    }
+
+    /**
+     * @param PlanTesting|null $planTesting
+     * @return $this
+     */
+    public function setPlanTesting(?PlanTesting $planTesting): self
+    {
+        $this->planTesting = $planTesting;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsByPlan(): ?bool
+    {
+        return $this->isByPlan;
+    }
+
+    /**
+     * @param bool $isByPlan
+     * @return $this
+     */
+    public function setIsByPlan(bool $isByPlan): self
+    {
+        $this->isByPlan = $isByPlan;
         return $this;
     }
 }

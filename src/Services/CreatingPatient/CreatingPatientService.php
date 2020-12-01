@@ -223,7 +223,9 @@ class CreatingPatientService
             ->setProcessed(false)
             ->setEnabled(true)
             ->setAnalysisDate(null)
-            ->setIsFirst($isFirst);
+            ->setIsFirst($isFirst)
+            ->setIsByPlan(true)
+            ->setPlanTesting($test);
         $this->entityManager->persist($patientTesting);
         $this->persistTestingResultsForTesting($patientTesting);
         return $patientTesting;
