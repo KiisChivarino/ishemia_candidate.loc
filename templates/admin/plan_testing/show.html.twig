@@ -11,17 +11,17 @@
         </p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.timeRangeCount }}</span>
+        <span class="title">{{ template.items.show.content.timeRange }}</span>
         <p>
             {% if entity.timeRange %}
-                <a href="{{ path('analysis_group_show', {'id': entity.timeRange.id}) }}">
+                <a href="{{ path('time_range_show', {'id': entity.timeRange.id}) }}">
                     {{ entity.timeRange.title }}
                 </a>
             {% endif %}
         </p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.timeRange }}</span>
+        <span class="title">{{ template.items.show.content.timeRangeCount }}</span>
         <p>{{ entity.timeRangeCount }}</p>
     </li>
 {% endblock %}
