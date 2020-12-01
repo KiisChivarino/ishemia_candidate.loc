@@ -6,6 +6,7 @@ use App\Controller\AppAbstractController;
 use App\Entity\DateInterval;
 use App\Entity\TimeRange;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -24,6 +25,7 @@ class TimeRangeType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -40,6 +42,14 @@ class TimeRangeType extends AbstractType
                 'label' => $templateItem->getContentValue('multiplier'),
                 'attr' => ['min' => '1'],
             ])
+            ->add(
+                'isRegular',
+                CheckboxType::class,
+                [
+                    'label' => $templateItem->getContentValue('isRegular'),
+                    'required' => false,
+                ]
+            )
             ->add(
                 'enabled',
                 CheckboxType::class,

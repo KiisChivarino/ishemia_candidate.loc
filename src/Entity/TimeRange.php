@@ -40,6 +40,11 @@ class TimeRange
     private $dateInterval;
 
     /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг регулярный период", "default"=false})
+     */
+    private $isRegular;
+
+    /**
      * @param int $id
      *
      * @return $this
@@ -131,6 +136,24 @@ class TimeRange
     public function setDateInterval(?DateInterval $dateInterval): self
     {
         $this->dateInterval = $dateInterval;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsRegular(): ?bool
+    {
+        return $this->isRegular;
+    }
+
+    /**
+     * @param bool $isRegular
+     * @return $this
+     */
+    public function setIsRegular(bool $isRegular): self
+    {
+        $this->isRegular = $isRegular;
         return $this;
     }
 }

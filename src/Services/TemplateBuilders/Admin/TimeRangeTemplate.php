@@ -16,6 +16,7 @@ class TimeRangeTemplate extends AdminTemplateBuilder
         'rangeTitle' => 'Заголовок',
         'dateInterval' => DateIntervalTemplateBuilder::ENTITY_CONTENT['dateInterval'],
         'multiplier' => 'Множитель',
+        'isRegular' => 'Регулярно',
     ];
 
     /** @var string[] Common LIST_CONTENT */

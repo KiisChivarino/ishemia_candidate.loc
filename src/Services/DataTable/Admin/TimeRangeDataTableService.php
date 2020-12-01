@@ -6,7 +6,9 @@ use App\Entity\TimeRange;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\NumberColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -23,6 +25,7 @@ class TimeRangeDataTableService extends AdminDatatableService
      * @param ListTemplateItem $listTemplateItem
      *
      * @return DataTable
+     * @throws Exception
      */
     public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem): DataTable
     {
@@ -43,6 +46,13 @@ class TimeRangeDataTableService extends AdminDatatableService
             ->add(
                 'multiplier', NumberColumn::class, [
                     'label' => $listTemplateItem->getContentValue('multiplier'),
+                ]
+            )
+            ->add('isRegular', BoolColumn::class, [
+                    'trueValue' => $listTemplateItem->getContentValue('trueValue'),
+                    'falseValue' => $listTemplateItem->getContentValue('falseValue'),
+                    'label' => $listTemplateItem->getContentValue('isRegular'),
+                    'searchable' => false,
                 ]
             );
         $this->addEnabled($listTemplateItem);

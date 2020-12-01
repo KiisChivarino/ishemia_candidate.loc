@@ -1,11 +1,14 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
     <li>
-        <span class="title">{{ template.items.show.content.name }}</span>
-        <p>{{ entity.name }}</p>
-    </li>
-    <li>
         <span class="title">{{ template.items.show.content.rangeTitle }}</span>
         <p>{{ entity.title }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.isRegular }}</span>
+        <p>{{ entity.isRegular ?
+            template.items.show.content.trueValue :
+            template.items.show.content.falseValue }}
+        </p>
     </li>
 {% endblock %}
