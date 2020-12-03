@@ -197,14 +197,7 @@ class PatientTestingController extends AdminAbstractController
                 new FormData($patientTesting, PatientTestingNotRequiredType::class),
             ],
             function (EntityActions $actions) use ($patientTesting, $fileService, $patientTestingCreator) {
-                if($patientTestingCreator->checkPatientTestingForRegular($patientTesting)){
-                    $patientTestingCreator->persistPatientTesting(
-                        $patientTesting->getMedicalHistory(),
-                        $patientTesting->getPlanTesting(),
-                        $patientTesting->getPrescriptionTesting()->getStaff(),
-                        $patientTesting
-                    );
-                }
+                $patientTestingCreator->checkAndPersistRegularPatientTesting($patientTesting);
                 $fileService->prepareFiles($actions->getForm()
                     ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
                     ->get(self::FILES_COLLECTION_PROPERTY_NAME));

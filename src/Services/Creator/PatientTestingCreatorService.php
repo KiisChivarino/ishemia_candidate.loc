@@ -74,7 +74,7 @@ class PatientTestingCreatorService
             ->setEnabled(true)
             ->setAnalysisDate(null)
             ->setIsFirst($isFirst)
-            ->setIsByPlan(true)
+            ->setIsByPlan(false)
             ->setPlanTesting($planTesting);
     }
 
@@ -89,6 +89,7 @@ class PatientTestingCreatorService
         /** @var PlanTesting $planTesting */
         foreach ($this->planTestingRepository->getPlanOfFirstTestings() as $planTesting) {
             $patientTesting = $this->createPatientTesting($medicalHistory, $planTesting, true);
+            $this->preparePatientTestingByPlan($patientTesting);
             $this->entityManager->persist($patientTesting);
             $this->patientTestingResultsCreator->persistTestingResultsForTesting($patientTesting);
             $patientTests[] = $patientTesting;
@@ -108,12 +109,14 @@ class PatientTestingCreatorService
         $patientTests = [];
         /** @var PlanTesting $test */
         foreach ($this->planTestingRepository->getStandardPlanTesting() as $planTesting) {
+            $patientTesting = $this->createPatientTesting($medicalHistory, $planTesting);
+            $this->preparePatientTestingByPlan($patientTesting);
             $patientTests[] =
                 $this->persistPatientTesting(
                     $medicalHistory,
                     $planTesting,
                     $staff,
-                    $this->createPatientTesting($medicalHistory, $planTesting)
+                    $patientTesting
                 );
         }
         return $patientTests;
@@ -160,5 +163,33 @@ class PatientTestingCreatorService
         return $patientTesting->getProcessed()
             && $patientTesting->getIsByPlan()
             && $patientTesting->getPlanTesting()->getTimeRange()->getIsRegular();
+    }
+
+    /**
+     * Check patient testing for regular and if regular create new regular patient testing
+     * @param PatientTesting $patientTesting
+     * @throws Exception
+     */
+    public function checkAndPersistRegularPatientTesting(PatientTesting $patientTesting): void
+    {
+        if ($this->checkPatientTestingForRegular($patientTesting)) {
+            $newPatientTesting = $this->createPatientTesting($patientTesting->getMedicalHistory(), $patientTesting->getPlanTesting());
+            $this->preparePatientTestingByPlan($newPatientTesting);
+            $this->persistPatientTesting(
+                $patientTesting->getMedicalHistory(),
+                $patientTesting->getPlanTesting(),
+                $patientTesting->getPrescriptionTesting()->getStaff(),
+                $newPatientTesting
+            );
+        }
+    }
+
+    /**
+     * @param PatientTesting $patientTesting
+     * @return PatientTesting
+     */
+    public function preparePatientTestingByPlan(PatientTesting $patientTesting): PatientTesting
+    {
+        return $patientTesting->setIsByPlan(true);
     }
 }
