@@ -100,6 +100,16 @@ class PatientAppointment
     private $isFirst;
 
     /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг: прием по плану", "default"=false})
+     */
+    private $isByPlan;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=PlanAppointment::class)
+     */
+    private $planAppointment;
+
+    /**
      * PatientAppointment constructor.
      */
     public function __construct()
@@ -389,6 +399,42 @@ class PatientAppointment
     public function setIsFirst(bool $isFirst): self
     {
         $this->isFirst = $isFirst;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsByPlan(): ?bool
+    {
+        return $this->isByPlan;
+    }
+
+    /**
+     * @param bool $isByPlan
+     * @return $this
+     */
+    public function setIsByPlan(bool $isByPlan): self
+    {
+        $this->isByPlan = $isByPlan;
+        return $this;
+    }
+
+    /**
+     * @return PlanAppointment|null
+     */
+    public function getPlanAppointment(): ?PlanAppointment
+    {
+        return $this->planAppointment;
+    }
+
+    /**
+     * @param PlanAppointment|null $planAppointment
+     * @return $this
+     */
+    public function setPlanAppointment(?PlanAppointment $planAppointment): self
+    {
+        $this->planAppointment = $planAppointment;
         return $this;
     }
 

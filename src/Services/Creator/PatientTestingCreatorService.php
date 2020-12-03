@@ -57,13 +57,13 @@ class PatientTestingCreatorService
     /**
      * Create Patient testing entity object
      * @param MedicalHistory $medicalHistory
-     * @param PlanTesting $planTesting
+     * @param PlanTesting|null $planTesting
      * @param bool $isFirst
      * @return PatientTesting
      */
     public function createPatientTesting(
         MedicalHistory $medicalHistory,
-        PlanTesting $planTesting,
+        PlanTesting $planTesting = null,
         bool $isFirst = false
     ): PatientTesting
     {
@@ -173,7 +173,10 @@ class PatientTestingCreatorService
     public function checkAndPersistRegularPatientTesting(PatientTesting $patientTesting): void
     {
         if ($this->checkPatientTestingForRegular($patientTesting)) {
-            $newPatientTesting = $this->createPatientTesting($patientTesting->getMedicalHistory(), $patientTesting->getPlanTesting());
+            $newPatientTesting = $this->createPatientTesting(
+                $patientTesting->getMedicalHistory(),
+                $patientTesting->getPlanTesting()
+            );
             $this->preparePatientTestingByPlan($newPatientTesting);
             $this->persistPatientTesting(
                 $patientTesting->getMedicalHistory(),

@@ -12,6 +12,7 @@ use App\Repository\MedicalHistoryRepository;
 use App\Repository\MedicalRecordRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
+use App\Services\Creator\PatientAppointmentCreatorService;
 use App\Services\DataTable\Admin\PatientAppointmentDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
@@ -161,10 +162,16 @@ class PatientAppointmentController extends AdminAbstractController
      * @param Request $request
      * @param PatientAppointment $patientAppointment
      *
+     * @param PatientAppointmentCreatorService $patientAppointmentCreator
      * @return Response
+     * @throws ReflectionException
      * @throws Exception
      */
-    public function edit(Request $request, PatientAppointment $patientAppointment): Response
+    public function edit(
+        Request $request,
+        PatientAppointment $patientAppointment,
+        PatientAppointmentCreatorService $patientAppointmentCreator
+    ): Response
     {
         return $this->responseEditMultiForm(
             $request,
@@ -174,7 +181,10 @@ class PatientAppointmentController extends AdminAbstractController
                 new FormData($patientAppointment, StaffType::class),
                 new FormData($patientAppointment, AppointmentTypeType::class),
                 new FormData($patientAppointment, ConfirmedType::class),
-            ]
+            ],
+            function () use ($patientAppointment, $patientAppointmentCreator) {
+                $patientAppointmentCreator->checkAndPersistRegularPatientAppointment($patientAppointment);
+            }
         );
     }
 
