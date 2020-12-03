@@ -53,6 +53,7 @@ class PatientOptionalType extends AbstractType
                         'label' => $templateItem->getContentValue('heartAttackDate'),
                         'widget' => 'single_text',
                         'format' => 'yyyy-MM-dd',
+                        'required' => false,
                     ]
                 )
                 ->add(
@@ -75,19 +76,19 @@ class PatientOptionalType extends AbstractType
                             'placeholder' => '0000 000000',
                             "data-mask-clearifnotmatch" => "true"
                         ],
-                        'required' => false
+                        'required' => false,
                     ]
                 )
                 ->add(
                     'passportIssuingAuthority', TextType::class, [
                         'label' => $templateItem->getContentValue('passportIssuingAuthority'),
-                        'required' => false
+                        'required' => false,
                     ]
                 )
                 ->add(
                     'passportIssuingAuthorityCode', TextType::class, [
                         'label' => $templateItem->getContentValue('passportIssuingAuthorityCode'),
-                        'required' => false
+                        'required' => false,
                     ]
                 )
                 ->add(
@@ -95,7 +96,7 @@ class PatientOptionalType extends AbstractType
                         'label' => $templateItem->getContentValue('passportIssueDate'),
                         'widget' => 'single_text',
                         'format' => 'yyyy-MM-dd',
-                        'required' => false
+                        'required' => false,
                     ]
                 )
                 ->add('weight', null, ['label' => $templateItem->getContentValue('weight')])

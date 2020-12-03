@@ -2,8 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\MedicalHistory;
-use App\Entity\PatientAppointment;
 use App\Form\Admin\AuthUser\AuthUserPasswordType;
 use App\Form\Admin\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
@@ -12,9 +10,11 @@ use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\StaffType;
 use App\Services\ControllerGetters\EntityActions;
-use App\Services\CreatingPatient\CreatingPatientService;
+use App\Services\Creator\AuthUserCreatorService;
+use App\Services\Creator\MedicalHistoryCreatorService;
+use App\Services\Creator\PatientAppointmentCreatorService;
+use App\Services\Creator\PatientCreatorService;
 use App\Services\DataTable\Admin\PatientDataTableService;
-use App\Entity\AuthUser;
 use App\Entity\Patient;
 use App\Form\Admin\AuthUser\AuthUserOptionalType;
 use App\Services\FilterService\FilterService;
@@ -41,9 +41,6 @@ class PatientController extends AdminAbstractController
 {
     //relative path to twig templates
     public const TEMPLATE_PATH = 'admin/patient/';
-
-    /** @var string Роль пациента */
-    private const PATIENT_ROLE = 'ROLE_PATIENT';
 
     /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;
@@ -82,20 +79,26 @@ class PatientController extends AdminAbstractController
      *
      * @param Request $request
      *
-     * @param CreatingPatientService $creatingPatientService
+     * @param AuthUserCreatorService $authUserCreatorService
+     * @param MedicalHistoryCreatorService $medicalHistoryCreatorService
+     * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
+     * @param PatientCreatorService $patientCreator
      * @return Response
      * @throws ReflectionException
      * @throws Exception
      */
     public function new(
         Request $request,
-        CreatingPatientService $creatingPatientService
+        AuthUserCreatorService $authUserCreatorService,
+        MedicalHistoryCreatorService $medicalHistoryCreatorService,
+        PatientAppointmentCreatorService $patientAppointmentCreatorService,
+        PatientCreatorService $patientCreator
     ): Response
     {
-        $authUser = (new AuthUser())->setEnabled(true);
-        $patient = (new Patient());
-        $medicalHistory = (new MedicalHistory);
-        $patientAppointment = (new PatientAppointment());
+        $authUser = $authUserCreatorService->createAuthUser();
+        $patient = $patientCreator->createPatient();
+        $medicalHistory = $medicalHistoryCreatorService->createMedicalHistory();
+        $patientAppointment = $patientAppointmentCreatorService->createPatientAppointment($medicalHistory);
         return $this->responseNewMultiForm(
             $request,
             $patient,
@@ -114,26 +117,13 @@ class PatientController extends AdminAbstractController
                 new FormData($patientAppointment, AppointmentTypeType::class),
             ],
             function (EntityActions $actions)
-            use ($authUser, $patient, $medicalHistory, $patientAppointment, $creatingPatientService) {
+            use ($authUser, $patient, $medicalHistory, $patientAppointment, $patientCreator, $authUserCreatorService) {
                 $em = $actions->getEntityManager();
-                $authUser->setEnabled(true)
-                    ->setPassword(
-                        $this->passwordEncoder->encodePassword(
-                            $authUser,
-                            $authUser->getPassword() ?
-                                $authUser->getPassword() :
-                                AuthUserInfoService::randomPassword()
-                        )
-                    )
-                    ->setRoles(self::PATIENT_ROLE)
-                    ->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
-                $em->persist($authUser);
-                $em->flush();
                 $em->getConnection()->beginTransaction();
                 try {
-                    $em->persist($authUser);
+                    $authUserCreatorService->persistAuthUser($authUser);
                     $em->flush();
-                    $creatingPatientService
+                    $patientCreator
                         ->persistPatient(
                             $patient, $authUser, $medicalHistory, $patientAppointment, $patientAppointment->getStaff()
                         );

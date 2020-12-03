@@ -35,6 +35,23 @@
             </a>
         {% endfor %}
     </li>
+    <li>
+        <span class="title">{{ template.items.show.content.isByPlan }}</span>
+        <p>{{ entity.isByPlan ?
+            template.items.show.content.trueValue :
+            template.items.show.content.falseValue }}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.planTesting }}</span>
+        <p>
+            {% if entity.planTesting %}
+                <a href="{{ path('plan_testing_show', {'id': entity.planTesting.id}) }}">
+                    {{ planTestingTitle(entity.planTesting) }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
 {% endblock %}
 {% block custom_actions %}
     <div class="buttons">

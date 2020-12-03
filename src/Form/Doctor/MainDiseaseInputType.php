@@ -4,7 +4,7 @@ namespace App\Form\Doctor;
 
 use App\Controller\AppAbstractController;
 use App\Entity\MedicalHistory;
-use App\Services\CreatingPatient\CreatingPatientService;
+use App\Services\Creator\DiagnosisCreatorService;
 use App\Services\TemplateItems\FormTemplateItem;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -21,16 +21,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MainDiseaseInputType extends AbstractType
 {
-    /** @var CreatingPatientService $creatingPatientService */
-    private $creatingPatientService;
+    /** @var DiagnosisCreatorService $diagnosisCreatorService */
+    private $diagnosisCreatorService;
 
     /**
      * MainDiseaseInputType constructor.
-     * @param CreatingPatientService $creatingPatientService
+     * @param DiagnosisCreatorService $diagnosisCreatorService
      */
-    public function __construct(CreatingPatientService $creatingPatientService)
+    public function __construct(DiagnosisCreatorService $diagnosisCreatorService)
     {
-        $this->creatingPatientService = $creatingPatientService;
+        $this->diagnosisCreatorService = $diagnosisCreatorService;
     }
 
     /**
@@ -60,7 +60,7 @@ class MainDiseaseInputType extends AbstractType
      */
     public function onPreSubmit(FormEvent $event): void
     {
-        $diagnosis = $this->creatingPatientService->persistDiagnosis($event->getData()['mainDisease']);
+        $diagnosis = $this->diagnosisCreatorService->persistDiagnosis($event->getData()['mainDisease']);
         $event->setData(['mainDisease'=>$diagnosis]);
     }
 
