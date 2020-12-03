@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
@@ -10,7 +9,8 @@ use App\Form\Admin\PatientTesting\PatientTestingRequiredType;
 use App\Repository\MedicalHistoryRepository;
 use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\CreatingPatient\CreatingPatientService;
+use App\Services\Creator\PatientTestingCreatorService;
+use App\Services\Creator\PatientTestingResultsCreatorService;
 use App\Services\DataTable\Admin\PatientTestingDataTableService;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FileService\FileService;
@@ -90,8 +90,8 @@ class PatientTestingController extends AdminAbstractController
      *
      * @param PatientTestingResultRepository $patientTestingResultRepository
      * @param MedicalHistoryRepository $medicalHistoryRepository
-     * @param CreatingPatientService $creatingPatientService
      * @param FileService $fileService
+     * @param PatientTestingResultsCreatorService $patientTestingResultsCreator
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -100,8 +100,8 @@ class PatientTestingController extends AdminAbstractController
         Request $request,
         PatientTestingResultRepository $patientTestingResultRepository,
         MedicalHistoryRepository $medicalHistoryRepository,
-        CreatingPatientService $creatingPatientService,
-        FileService $fileService
+        FileService $fileService,
+        PatientTestingResultsCreatorService $patientTestingResultsCreator
     ): Response
     {
         $patientTesting = new PatientTesting();
@@ -113,9 +113,14 @@ class PatientTestingController extends AdminAbstractController
                 new FormData($patientTesting, PatientTestingNotRequiredType::class),
             ],
             function (EntityActions $actions)
-            use ($patientTestingResultRepository, $patientTesting, $medicalHistoryRepository, $creatingPatientService, $fileService) {
-                /** @var MedicalHistory $medicalHistory */
-                $medicalHistory =
+            use (
+                $patientTestingResultRepository,
+                $patientTesting,
+                $medicalHistoryRepository,
+                $fileService,
+                $patientTestingResultsCreator
+            ) {
+                $patientTesting->setMedicalHistory(
                     $actions->getRequest()->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)
                         ? $medicalHistoryRepository
                         ->find(
@@ -123,14 +128,14 @@ class PatientTestingController extends AdminAbstractController
                                 MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY
                             )
                         )
-                        : null;
-                $actions->getEntity()->setMedicalHistory($medicalHistory);
+                        : null
+                );
                 $fileService->prepareFiles(
                     $actions->getForm()
                         ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
                         ->get(self::FILES_COLLECTION_PROPERTY_NAME)
                 );
-                $creatingPatientService->persistTestingResultsForTesting($patientTesting);
+                $patientTestingResultsCreator->persistTestingResultsForTesting($patientTesting);
             }
         );
     }
@@ -172,11 +177,17 @@ class PatientTestingController extends AdminAbstractController
      * @param PatientTesting $patientTesting
      *
      * @param FileService $fileService
+     * @param PatientTestingCreatorService $patientTestingCreator
      * @return Response
      * @throws ReflectionException
      * @throws Exception
      */
-    public function edit(Request $request, PatientTesting $patientTesting, FileService $fileService): Response
+    public function edit(
+        Request $request,
+        PatientTesting $patientTesting,
+        FileService $fileService,
+        PatientTestingCreatorService $patientTestingCreator
+    ): Response
     {
         return $this->responseEditMultiForm(
             $request,
@@ -185,7 +196,15 @@ class PatientTestingController extends AdminAbstractController
                 new FormData($patientTesting, PatientTestingRequiredType::class),
                 new FormData($patientTesting, PatientTestingNotRequiredType::class),
             ],
-            function (EntityActions $actions) use ($patientTesting, $fileService) {
+            function (EntityActions $actions) use ($patientTesting, $fileService, $patientTestingCreator) {
+                if($patientTestingCreator->checkPatientTestingForRegular($patientTesting)){
+                    $patientTestingCreator->persistPatientTesting(
+                        $patientTesting->getMedicalHistory(),
+                        $patientTesting->getPlanTesting(),
+                        $patientTesting->getPrescriptionTesting()->getStaff(),
+                        $patientTesting
+                    );
+                }
                 $fileService->prepareFiles($actions->getForm()
                     ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
                     ->get(self::FILES_COLLECTION_PROPERTY_NAME));
