@@ -40,6 +40,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'diseaseHistory' => 'Анамнез заболевания',
         'lifeHistory' => 'Анамнез жизни',
         'dischargeEpicrisis' => 'Выписные эпикризы',
+        'clinicalDiagnosis' => 'Клинический диагноз',
     ];
 
     /** @var string[] Common LIST_CONTENT */

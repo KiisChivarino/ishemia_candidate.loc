@@ -9,6 +9,7 @@ use App\Entity\MedicalHistory;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -31,6 +32,13 @@ class MainDiseaseType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
+                'clinicalDiagnosis', TextareaType::class, [
+                    'label' => $templateItem->getContentValue('clinicalDiagnosis'),
+                    'required' => true,
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
+            ->add(
                 'mainDisease', Select2EntityType::class, [
                     'label' => $templateItem->getContentValue('mainDisease'),
                     'method' => 'POST',
@@ -45,6 +53,7 @@ class MainDiseaseType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('mainDiseasePlaceholder'),
                     'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
+                    'required' => false
                 ]
             );
     }

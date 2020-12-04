@@ -40,7 +40,7 @@ class MedicalHistory
 
     /**
      * @ORM\ManyToOne(targetEntity=Diagnosis::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $mainDisease;
 
@@ -110,6 +110,11 @@ class MedicalHistory
      * @ORM\OneToOne(targetEntity=PatientDischargeEpicrisis::class, mappedBy="medicalHistory", cascade={"persist", "remove"})
      */
     private $patientDischargeEpicrisis;
+
+    /**
+     * @ORM\Column(type="text", options={"comment"="Клинический диагноз"})
+     */
+    private $clinicalDiagnosis;
 
     /**
      * MedicalHistory constructor.
@@ -569,15 +574,39 @@ class MedicalHistory
         return $this;
     }
 
+    /**
+     * @return TextByTemplate|null
+     */
     public function getLifeHistory(): ?TextByTemplate
     {
         return $this->lifeHistory;
     }
 
+    /**
+     * @param TextByTemplate|null $lifeHistory
+     * @return $this
+     */
     public function setLifeHistory(?TextByTemplate $lifeHistory): self
     {
         $this->lifeHistory = $lifeHistory;
+        return $this;
+    }
 
+    /**
+     * @return string|null
+     */
+    public function getClinicalDiagnosis(): ?string
+    {
+        return $this->clinicalDiagnosis;
+    }
+
+    /**
+     * @param string $clinicalDiagnosis
+     * @return $this
+     */
+    public function setClinicalDiagnosis(string $clinicalDiagnosis): self
+    {
+        $this->clinicalDiagnosis = $clinicalDiagnosis;
         return $this;
     }
 }

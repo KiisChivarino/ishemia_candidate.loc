@@ -3,9 +3,9 @@
 namespace App\Controller\DoctorOffice;
 
 use App\Form\Admin\AuthUser\AuthUserRequiredType;
+use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
-use App\Form\Doctor\MainDiseaseInputType;
 use App\Repository\StaffRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\Creator\AuthUserCreatorService;
@@ -91,8 +91,8 @@ class AddPatientController extends DoctorOfficeAbstractController
             [
                 new FormData($patientAuthUser,AuthUserRequiredType::class),
                 new FormData($patient, PatientRequiredType::class),
-                new FormData($medicalHistory, MainDiseaseInputType::class),
-//                new FormData($medicalHistory, MainDiseaseType::class),
+//                new FormData($medicalHistory, MainDiseaseInputType::class),
+                new FormData($medicalHistory, MainDiseaseType::class),
                 new FormData($firstPatientAppointment, AppointmentTypeType::class),
             ],
             function (EntityActions $actions)

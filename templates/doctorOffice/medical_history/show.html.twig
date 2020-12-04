@@ -123,6 +123,10 @@
                             </div>
                         {% endif %}
                         <div class="statement__info-block">
+                            <p>{{ template.items.show.content.clinicalDiagnosis }}</p>
+                            {{ medicalHistory.clinicalDiagnosis | raw }}
+                        </div>
+                        <div class="statement__info-block">
                             <p>{{ template.items.show.content.mainDisease }}</p>
                             <p>
                                 {% if (medicalHistory.mainDisease) %}
