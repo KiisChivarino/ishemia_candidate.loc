@@ -488,7 +488,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         $this->setRedirectAnamnesticDataRoute($patient->getId());
         return $this->responseEdit(
             $request,
-            $textByTemplate,
+            $patient,
             TextBySelectingTemplateType::class,
             [
                 TextBySelectingTemplateType::TYPE_OPTION_NAME => $templateType->getId()
@@ -497,7 +497,8 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             use ($templateRepository, $textByTemplate, $textTemplateService) {
                 $this->persistTextByTemplateFromTemplate($actions->getForm(), $textByTemplate, $textTemplateService);
             },
-            self::EDIT_ANAMNESTIC_DATA_ANAMNESIS_OF_LIFE_TEMPLATE_NAME
+            self::EDIT_ANAMNESTIC_DATA_ANAMNESIS_OF_LIFE_TEMPLATE_NAME,
+            $textByTemplate
         );
     }
 

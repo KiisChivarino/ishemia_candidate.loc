@@ -5,18 +5,14 @@
         <ul>
             <li>
                 <a class="back-page" href="{{ path(
-                    'doctor_medical_history',
+                    'doctor_edit_anamnestic_data',
                     {'id': entity.id}
                 ) }}">Назад</a>
             </li>
         </ul>
     </div>
-    <div class="pacient-edit-wrapper">
-        <div class="popup__wrapper acc">
-            <h2 class="title accordion active">{{ template.items.edit.content.anamnestic_h2 }}</h2>
-            <div class="popup__inner panel">
-                {{ include(template.items.form.path~'_form.html.twig') }}
-            </div>
-        </div>
+    <h2>{{ template.items.edit.content.anamnestic_h2 }}</h2>
+    <div class="adm-users-edit">
+        {{ include(template.items.form.path~'_form.html.twig') }}
     </div>
 {% endblock %}
