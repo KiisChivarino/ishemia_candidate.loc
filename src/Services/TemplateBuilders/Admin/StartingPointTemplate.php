@@ -32,6 +32,11 @@ class StartingPointTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование точки отсчета',
     ];
 
+    /** @var string[] ENTITY_CONTENT */
+    public const ENTITY_CONTENT = [
+        'startingPoint' => 'Точка отсчета',
+    ];
+
     /**
      * StartingPointTemplate constructor.
      * @param RouteCollection $routeCollection
