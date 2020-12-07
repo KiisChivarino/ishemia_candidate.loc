@@ -14,23 +14,22 @@ class CreatorHelper
 {
     /**
      * Get planned date
-     * @param DateTime $currDate
+     * @param DateTime $startingPointDate
      * @param int $timeRangeCount
      * @param int $multiplier
      * @param string $format
      *
      * @return DateTime|null
-     * @throws Exception
      */
     static public function getPlannedDate(
-        DateTime $currDate,
+        DateTime $startingPointDate,
         int $timeRangeCount,
         int $multiplier,
         string $format
     ): ?DateTime
     {
         try {
-            return $currDate->add(
+            return $startingPointDate->add(
                 new DateInterval(
                     'P' .
                     (string)($timeRangeCount * $multiplier) .

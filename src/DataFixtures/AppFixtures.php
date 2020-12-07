@@ -24,12 +24,14 @@ use App\Entity\AuthUser;
 use App\Entity\District;
 use App\Entity\Hospital;
 use App\Entity\Staff;
+use App\Entity\StartingPoint;
 use App\Entity\TemplateParameter;
 use App\Entity\TemplateParameterText;
 use App\Entity\TemplateType;
 use App\Entity\TimeRange;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\ORMException;
 
 class AppFixtures extends Fixture
 {
@@ -42,6 +44,10 @@ class AppFixtures extends Fixture
         $this->dataSowing = $dataSowing;
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @throws ORMException
+     */
     public function load(ObjectManager $manager)
     {
         /** begin Должности */
@@ -61,6 +67,12 @@ class AppFixtures extends Fixture
         $positionDoctor = $manager->getRepository(Position::class)->findOneBy(['name'=>'Врач']);
         $manager->getRepository(Staff::class)->addStaffFromFixtures('0000000000', 'Максим', 'Хруслов', 'ROLE_DOCTOR_CONSULTANT', '111111', true, $positionDoctor);
         /** end Пользователи */
+
+        /** begin Точки отсчета */
+        echo "Добавление точек отсчета\n";
+        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures('dateBegin', 'Включение в историю болезни');
+        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures('heartAttackDate', 'Дата возникновения инфаркта');
+        /** end Точки отсчета */
 
         /** begin Пол */
         echo "Добавление пола\n";

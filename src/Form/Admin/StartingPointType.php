@@ -3,21 +3,19 @@
 namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
-use App\Entity\Complaint;
+use App\Entity\StartingPoint;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ComplaintType
- * form for creating / modifying a complaint
- *
- * @package App\Form
+ * Class StartingPointType
+ * @package App\Form\Admin
  */
-class ComplaintType extends AbstractType
+class StartingPointType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -29,21 +27,7 @@ class ComplaintType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add('name', null, ['label' => $templateItem->getContentValue('name')])
-            ->add(
-                'description', null, [
-                    'label' => $templateItem->getContentValue('description'),
-                    'attr' => ['class' => 'tinymce'],
-                ]
-            )
-            ->add(
-                'enabled',
-                CheckboxType::class,
-                [
-                    'label' => $templateItem->getContentValue('enabled'),
-                    'required' => false,
-                ]
-            );
+            ->add('title', TextType::class, ['label' => $templateItem->getContentValue('title')]);
     }
 
     /**
@@ -52,7 +36,7 @@ class ComplaintType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => Complaint::class,])
+            ->setDefaults(['data_class' => StartingPoint::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }
