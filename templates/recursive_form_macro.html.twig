@@ -7,7 +7,7 @@
     {% endif %}
     {% if form.children is empty %}
         {% if form.parent and form.parent.vars.choices is not defined %}
-            <li>
+            <li {% if 'checkbox' in form.vars.block_prefixes %}class="checks" {% endif %}>
         {% endif %}
         {% if 'hidden' not in form.vars.block_prefixes and not form.rendered %}
             <span class="title">{{ form_label(form) }}</span>

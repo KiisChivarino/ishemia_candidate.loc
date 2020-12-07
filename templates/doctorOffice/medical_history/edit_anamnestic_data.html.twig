@@ -39,7 +39,7 @@
         {% endfor %}
         {% for child in form.medicalHistory %}
             <ul>
-                <li>
+                <li {% if 'checkbox' in child.vars.block_prefixes %}class="checks" {% endif %}>
                     <span class="label">{{ form_label(child) }}</span>
                     {% if child.vars.name == 'lifeHistory' %}
                         <a href="{{ path(
