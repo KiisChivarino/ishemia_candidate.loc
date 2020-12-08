@@ -10,6 +10,7 @@ use App\Entity\AppointmentType;
 use App\Entity\DateInterval;
 use App\Entity\Diagnosis;
 use App\Entity\Gender;
+use App\Entity\Logger\LogAction;
 use App\Entity\LPU;
 use App\Entity\City;
 use App\Entity\Measure;
@@ -326,5 +327,16 @@ class AppFixtures extends Fixture
             ]
         );
         /** end Тексты параметров шаблонов */
+
+        /** begin Типы логов */
+        echo "Заполнение \"Типов логов\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV.'log_actions.csv',
+            LogAction::class,
+            '|',
+            [],
+            ['enabled' => true]);
+        /** end Типы логов */
     }
 }

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20201122180730 extends AbstractMigration
+final class Version20201208084632 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -38,28 +38,24 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN oksm.caption IS \'Название страны\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE notification_type (id INT NOT NULL, name VARCHAR(255) NOT NULL, template TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('COMMENT ON TABLE notification_type IS \'Тип уведомления\'');
-        $this->addSql('COMMENT ON COLUMN notification_type.id IS \'Ключ типа уведомления\'');
-        $this->addSql('COMMENT ON COLUMN notification_type.name IS \'Наименование типа уведомления\'');
-        $this->addSql('COMMENT ON COLUMN notification_type.template IS \'Шаблон типа уведомления\'');
-        $this->addSql('COMMENT ON COLUMN notification_type.enabled IS \'Ограничение использования\'');
+        $this->addSql('CREATE TABLE analysis (id INT NOT NULL, analysis_group_id INT NOT NULL, name VARCHAR(50) NOT NULL, description VARCHAR(255) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_33c730174dad14 ON analysis (analysis_group_id)');
+        $this->addSql('COMMENT ON COLUMN analysis.id IS \'Ключ анализа\'');
+        $this->addSql('COMMENT ON COLUMN analysis.analysis_group_id IS \'Ключ группы анализов\'');
+        $this->addSql('COMMENT ON COLUMN analysis.name IS \'Название анализа\'');
+        $this->addSql('COMMENT ON COLUMN analysis.description IS \'Описание анализа\'');
+        $this->addSql('COMMENT ON COLUMN analysis.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE notification (id INT NOT NULL, notification_type_id INT NOT NULL, medical_record_id INT NOT NULL, staff_id INT NOT NULL, medical_history_id INT NOT NULL, notification_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, text TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_bf5476cad0520624 ON notification (notification_type_id)');
-        $this->addSql('CREATE INDEX idx_bf5476cad4d57cd ON notification (staff_id)');
-        $this->addSql('CREATE INDEX idx_bf5476cab88e2bb6 ON notification (medical_record_id)');
-        $this->addSql('CREATE INDEX idx_bf5476ca3544ad9e ON notification (medical_history_id)');
-        $this->addSql('COMMENT ON TABLE notification IS \'Уведомление\'');
-        $this->addSql('COMMENT ON COLUMN notification.id IS \'Ключ уведомления\'');
-        $this->addSql('COMMENT ON COLUMN notification.notification_type_id IS \'Ключ типа уведомления\'');
-        $this->addSql('COMMENT ON COLUMN notification.medical_record_id IS \'Ключ записи в историю болезни\'');
-        $this->addSql('COMMENT ON COLUMN notification.staff_id IS \'Ключ персонала\'');
-        $this->addSql('COMMENT ON COLUMN notification.medical_history_id IS \'Ключ истории болезни\'');
-        $this->addSql('COMMENT ON COLUMN notification.notification_time IS \'Дата и время создания уведомления\'');
-        $this->addSql('COMMENT ON COLUMN notification.text IS \'Текст уведомления\'');
-        $this->addSql('COMMENT ON COLUMN notification.enabled IS \'Ограничение использования\'');
+        $this->addSql('CREATE TABLE staff (id INT NOT NULL, hospital_id INT DEFAULT NULL, position_id INT NOT NULL, auth_user_id INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_426ef392dd842e46 ON staff (position_id)');
+        $this->addSql('CREATE INDEX idx_426ef39263dbb69 ON staff (hospital_id)');
+        $this->addSql('CREATE UNIQUE INDEX uniq_426ef392e94af366 ON staff (auth_user_id)');
+        $this->addSql('COMMENT ON TABLE staff IS \'Персонал\'');
+        $this->addSql('COMMENT ON COLUMN staff.id IS \'Ключ персонала\'');
+        $this->addSql('COMMENT ON COLUMN staff.hospital_id IS \'Ключ больницы\'');
+        $this->addSql('COMMENT ON COLUMN staff.position_id IS \'Ключ должности\'');
+        $this->addSql('COMMENT ON COLUMN staff.auth_user_id IS \'Ключ пользователя\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE medical_record (id INT NOT NULL, medical_history_id INT NOT NULL, record_date DATE NOT NULL, comment TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
@@ -72,17 +68,6 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN medical_record.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE staff (id INT NOT NULL, hospital_id INT DEFAULT NULL, position_id INT NOT NULL, auth_user_id INT NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX uniq_426ef392e94af366 ON staff (auth_user_id)');
-        $this->addSql('CREATE INDEX idx_426ef39263dbb69 ON staff (hospital_id)');
-        $this->addSql('CREATE INDEX idx_426ef392dd842e46 ON staff (position_id)');
-        $this->addSql('COMMENT ON TABLE staff IS \'Персонал\'');
-        $this->addSql('COMMENT ON COLUMN staff.id IS \'Ключ персонала\'');
-        $this->addSql('COMMENT ON COLUMN staff.hospital_id IS \'Ключ больницы\'');
-        $this->addSql('COMMENT ON COLUMN staff.position_id IS \'Ключ должности\'');
-        $this->addSql('COMMENT ON COLUMN staff.auth_user_id IS \'Ключ пользователя\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE TABLE analysis_group (id INT NOT NULL, name VARCHAR(50) NOT NULL, full_name VARCHAR(255) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON TABLE analysis_group IS \'Группа анализов\'');
         $this->addSql('COMMENT ON COLUMN analysis_group.id IS \'Ключ группы анализов\'');
@@ -91,75 +76,33 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN analysis_group.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE analysis (id INT NOT NULL, analysis_group_id INT NOT NULL, name VARCHAR(50) NOT NULL, description VARCHAR(255) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_33c730174dad14 ON analysis (analysis_group_id)');
-        $this->addSql('COMMENT ON COLUMN analysis.id IS \'Ключ анализа\'');
-        $this->addSql('COMMENT ON COLUMN analysis.analysis_group_id IS \'Ключ группы анализов\'');
-        $this->addSql('COMMENT ON COLUMN analysis.name IS \'Название анализа\'');
-        $this->addSql('COMMENT ON COLUMN analysis.description IS \'Описание анализа\'');
-        $this->addSql('COMMENT ON COLUMN analysis.enabled IS \'Ограничение использования\'');
+        $this->addSql('CREATE TABLE notification_type (id INT NOT NULL, name VARCHAR(255) NOT NULL, template TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON TABLE notification_type IS \'Тип уведомления\'');
+        $this->addSql('COMMENT ON COLUMN notification_type.id IS \'Ключ типа уведомления\'');
+        $this->addSql('COMMENT ON COLUMN notification_type.name IS \'Наименование типа уведомления\'');
+        $this->addSql('COMMENT ON COLUMN notification_type.template IS \'Шаблон типа уведомления\'');
+        $this->addSql('COMMENT ON COLUMN notification_type.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE time_range (id INT NOT NULL, date_interval_id INT NOT NULL, title VARCHAR(30) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, multiplier INT DEFAULT 1 NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_d6f5bb356f2301f2 ON time_range (date_interval_id)');
-        $this->addSql('COMMENT ON TABLE time_range IS \'Временной диапазон\'');
-        $this->addSql('COMMENT ON COLUMN time_range.date_interval_id IS \'Ключ интервала\'');
-        $this->addSql('COMMENT ON COLUMN time_range.title IS \'Заголовок временного диапазона\'');
-        $this->addSql('COMMENT ON COLUMN time_range.enabled IS \'Ограничение использования\'');
-        $this->addSql('COMMENT ON COLUMN time_range.multiplier IS \'Множитель\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE plan_appointment (id INT NOT NULL, time_range_id INT NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, time_range_count INT NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_a81202f8e07937d ON plan_appointment (time_range_id)');
-        $this->addSql('COMMENT ON TABLE plan_appointment IS \'План приемов\'');
-        $this->addSql('COMMENT ON COLUMN plan_appointment.enabled IS \'Ограничение использования\'');
-        $this->addSql('COMMENT ON COLUMN plan_appointment.time_range_count IS \'Срок выполнения\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE plan_testing (id INT NOT NULL, analysis_group_id INT NOT NULL, time_range_id INT NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, time_range_count INT NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_564c120e8e07937d ON plan_testing (time_range_id)');
-        $this->addSql('CREATE INDEX idx_564c120e174dad14 ON plan_testing (analysis_group_id)');
-        $this->addSql('COMMENT ON TABLE plan_testing IS \'План обследований\'');
-        $this->addSql('COMMENT ON COLUMN plan_testing.id IS \'Ключ анализа по плану\'');
-        $this->addSql('COMMENT ON COLUMN plan_testing.analysis_group_id IS \'Ключ группы анализов\'');
-        $this->addSql('COMMENT ON COLUMN plan_testing.enabled IS \'Ограничение использования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE patient_testing (id INT NOT NULL, analysis_group_id INT NOT NULL, medical_history_id INT NOT NULL, medical_record_id INT DEFAULT NULL, analysis_date DATE DEFAULT NULL, processed BOOLEAN DEFAULT \'false\' NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, planned_date DATE NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_b5900fedb88e2bb6 ON patient_testing (medical_record_id)');
-        $this->addSql('CREATE INDEX idx_b5900fed3544ad9e ON patient_testing (medical_history_id)');
-        $this->addSql('CREATE INDEX idx_b5900fed174dad14 ON patient_testing (analysis_group_id)');
-        $this->addSql('COMMENT ON TABLE patient_testing IS \'Сдача анализов (обследование) пациента\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing.id IS \'Ключ сдачи анализов\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing.analysis_group_id IS \'Ключ группы анализов\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing.medical_history_id IS \'Ключ истории болезни\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing.medical_record_id IS \'Ключ записи в историю болезни\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing.analysis_date IS \'Дата проведенного тестирования\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing.processed IS \'Статус принятия в работу врачом\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing.enabled IS \'Ограничение использования\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing.planned_date IS \'Планируемая дата проведения тестирования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE prescription (id INT NOT NULL, medical_history_id INT NOT NULL, staff_id INT NOT NULL, medical_record_id INT DEFAULT NULL, is_completed BOOLEAN DEFAULT \'false\' NOT NULL, is_patient_confirmed BOOLEAN DEFAULT \'false\' NOT NULL, description TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, created_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, completed_time TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_1fbfb8d9d4d57cd ON prescription (staff_id)');
-        $this->addSql('CREATE INDEX idx_1fbfb8d93544ad9e ON prescription (medical_history_id)');
-        $this->addSql('CREATE INDEX idx_1fbfb8d9b88e2bb6 ON prescription (medical_record_id)');
-        $this->addSql('COMMENT ON TABLE prescription IS \'Назначение\'');
-        $this->addSql('COMMENT ON COLUMN prescription.id IS \'Ключ назначения\'');
-        $this->addSql('COMMENT ON COLUMN prescription.medical_history_id IS \'Ключ истории болезни\'');
-        $this->addSql('COMMENT ON COLUMN prescription.staff_id IS \'Ключ персонала\'');
-        $this->addSql('COMMENT ON COLUMN prescription.medical_record_id IS \'Ключ записи в историю болезни\'');
-        $this->addSql('COMMENT ON COLUMN prescription.is_completed IS \'Назначено\'');
-        $this->addSql('COMMENT ON COLUMN prescription.is_patient_confirmed IS \'Подтверждение назначения пациентом\'');
-        $this->addSql('COMMENT ON COLUMN prescription.description IS \'Описание назначения\'');
-        $this->addSql('COMMENT ON COLUMN prescription.enabled IS \'Ограничение использования\'');
-        $this->addSql('COMMENT ON COLUMN prescription.created_time IS \'Дата и время создания назначения\'');
-        $this->addSql('COMMENT ON COLUMN prescription.completed_time IS \'Дата и время факта назначения\'');
+        $this->addSql('CREATE TABLE notification (id INT NOT NULL, notification_type_id INT NOT NULL, medical_record_id INT NOT NULL, staff_id INT NOT NULL, medical_history_id INT NOT NULL, notification_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, text TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_bf5476cab88e2bb6 ON notification (medical_record_id)');
+        $this->addSql('CREATE INDEX idx_bf5476cad4d57cd ON notification (staff_id)');
+        $this->addSql('CREATE INDEX idx_bf5476ca3544ad9e ON notification (medical_history_id)');
+        $this->addSql('CREATE INDEX idx_bf5476cad0520624 ON notification (notification_type_id)');
+        $this->addSql('COMMENT ON TABLE notification IS \'Уведомление\'');
+        $this->addSql('COMMENT ON COLUMN notification.id IS \'Ключ уведомления\'');
+        $this->addSql('COMMENT ON COLUMN notification.notification_type_id IS \'Ключ типа уведомления\'');
+        $this->addSql('COMMENT ON COLUMN notification.medical_record_id IS \'Ключ записи в историю болезни\'');
+        $this->addSql('COMMENT ON COLUMN notification.staff_id IS \'Ключ персонала\'');
+        $this->addSql('COMMENT ON COLUMN notification.medical_history_id IS \'Ключ истории болезни\'');
+        $this->addSql('COMMENT ON COLUMN notification.notification_time IS \'Дата и время создания уведомления\'');
+        $this->addSql('COMMENT ON COLUMN notification.text IS \'Текст уведомления\'');
+        $this->addSql('COMMENT ON COLUMN notification.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE patient_testing_result (id INT NOT NULL, patient_testing_id INT NOT NULL, analysis_rate_id INT DEFAULT NULL, analysis_id INT NOT NULL, result DOUBLE PRECISION DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_82d2ca2ab0ec09fd ON patient_testing_result (patient_testing_id)');
         $this->addSql('CREATE INDEX idx_82d2ca2a7941003f ON patient_testing_result (analysis_id)');
+        $this->addSql('CREATE INDEX idx_82d2ca2ab0ec09fd ON patient_testing_result (patient_testing_id)');
         $this->addSql('CREATE INDEX idx_82d2ca2ac648f999 ON patient_testing_result (analysis_rate_id)');
         $this->addSql('COMMENT ON TABLE patient_testing_result IS \'Результаты анализа\'');
         $this->addSql('COMMENT ON COLUMN patient_testing_result.id IS \'Ключ резултатов анализа\'');
@@ -171,10 +114,10 @@ final class Version20201122180730 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE analysis_rate (id INT NOT NULL, analysis_id INT NOT NULL, measure_id INT NOT NULL, gender_id INT DEFAULT NULL, rate_min DOUBLE PRECISION NOT NULL, rate_max DOUBLE PRECISION NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX analysis_rate_unique ON analysis_rate (analysis_id, measure_id, gender_id)');
-        $this->addSql('CREATE INDEX idx_ee5f7ad2708a0e0 ON analysis_rate (gender_id)');
         $this->addSql('CREATE INDEX idx_ee5f7ad27941003f ON analysis_rate (analysis_id)');
         $this->addSql('CREATE INDEX idx_ee5f7ad25da37d00 ON analysis_rate (measure_id)');
+        $this->addSql('CREATE INDEX idx_ee5f7ad2708a0e0 ON analysis_rate (gender_id)');
+        $this->addSql('CREATE UNIQUE INDEX analysis_rate_unique ON analysis_rate (analysis_id, measure_id, gender_id)');
         $this->addSql('COMMENT ON TABLE analysis_rate IS \'Референтные значения анализа\'');
         $this->addSql('COMMENT ON COLUMN analysis_rate.id IS \'Ключ нормальных значений\'');
         $this->addSql('COMMENT ON COLUMN analysis_rate.analysis_id IS \'Ключ анализа\'');
@@ -207,8 +150,8 @@ final class Version20201122180730 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE patient_appointment_complaint (patient_appointment_id INT NOT NULL, complaint_id INT NOT NULL, PRIMARY KEY(patient_appointment_id, complaint_id))');
-        $this->addSql('CREATE INDEX idx_7278ad235fa482b2 ON patient_appointment_complaint (patient_appointment_id)');
         $this->addSql('CREATE INDEX idx_7278ad23edae188e ON patient_appointment_complaint (complaint_id)');
+        $this->addSql('CREATE INDEX idx_7278ad235fa482b2 ON patient_appointment_complaint (patient_appointment_id)');
         $this->addSql('COMMENT ON COLUMN patient_appointment_complaint.patient_appointment_id IS \'Ключ приема пациента\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
@@ -217,47 +160,6 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN complaint.name IS \'Название жалобы\'');
         $this->addSql('COMMENT ON COLUMN complaint.description IS \'Описание жалобы\'');
         $this->addSql('COMMENT ON COLUMN complaint.enabled IS \'Ограничение использования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE hospital (id INT NOT NULL, region_id INT NOT NULL, city_id INT DEFAULT NULL, lpu_id INT DEFAULT NULL, address VARCHAR(255) DEFAULT NULL, name VARCHAR(255) NOT NULL, phone VARCHAR(50) NOT NULL, description TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, code VARCHAR(6) NOT NULL, email VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX uniq_4282c85bf2c7c2c1 ON hospital (lpu_id)');
-        $this->addSql('CREATE INDEX idx_4282c85b98260155 ON hospital (region_id)');
-        $this->addSql('CREATE INDEX idx_4282c85b8bac62af ON hospital (city_id)');
-        $this->addSql('COMMENT ON TABLE hospital IS \'Больница\'');
-        $this->addSql('COMMENT ON COLUMN hospital.id IS \'Ключ больницы\'');
-        $this->addSql('COMMENT ON COLUMN hospital.region_id IS \'Ключ региона\'');
-        $this->addSql('COMMENT ON COLUMN hospital.city_id IS \'Ключ города\'');
-        $this->addSql('COMMENT ON COLUMN hospital.lpu_id IS \'Ключ лечебно-профилактического учреждения\'');
-        $this->addSql('COMMENT ON COLUMN hospital.address IS \'Адрес больницы\'');
-        $this->addSql('COMMENT ON COLUMN hospital.name IS \'Название больницы\'');
-        $this->addSql('COMMENT ON COLUMN hospital.phone IS \'Телефон для отправки смс\'');
-        $this->addSql('COMMENT ON COLUMN hospital.description IS \'Описание или комментарий для больницы\'');
-        $this->addSql('COMMENT ON COLUMN hospital.enabled IS \'Ограничение использования\'');
-        $this->addSql('COMMENT ON COLUMN hospital.code IS \'Код больницы\'');
-        $this->addSql('COMMENT ON COLUMN hospital.email IS \'Email больницы\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE "position" (id INT NOT NULL, name VARCHAR(50) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('COMMENT ON TABLE "position" IS \'Должность\'');
-        $this->addSql('COMMENT ON COLUMN "position".id IS \'Ключ должности\'');
-        $this->addSql('COMMENT ON COLUMN "position".name IS \'Название должности\'');
-        $this->addSql('COMMENT ON COLUMN "position".enabled IS \'Ограничение использования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE prescription_medicine (id INT NOT NULL, prescription_id INT NOT NULL, medicine_id INT NOT NULL, reception_method_id INT NOT NULL, staff_id INT NOT NULL, instruction TEXT NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, inclusion_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_effcda9ad4d57cd ON prescription_medicine (staff_id)');
-        $this->addSql('CREATE INDEX idx_effcda9a2f7d140a ON prescription_medicine (medicine_id)');
-        $this->addSql('CREATE INDEX idx_effcda9a2527130b ON prescription_medicine (reception_method_id)');
-        $this->addSql('CREATE INDEX idx_effcda9a93db413d ON prescription_medicine (prescription_id)');
-        $this->addSql('COMMENT ON TABLE prescription_medicine IS \'Назначение лекарства\'');
-        $this->addSql('COMMENT ON COLUMN prescription_medicine.id IS \'Ключ назначения препарата\'');
-        $this->addSql('COMMENT ON COLUMN prescription_medicine.prescription_id IS \'Ключ назначения\'');
-        $this->addSql('COMMENT ON COLUMN prescription_medicine.medicine_id IS \'Ключ препарата\'');
-        $this->addSql('COMMENT ON COLUMN prescription_medicine.reception_method_id IS \'Ключ способа приема препарата\'');
-        $this->addSql('COMMENT ON COLUMN prescription_medicine.staff_id IS \'Ключ персонала\'');
-        $this->addSql('COMMENT ON COLUMN prescription_medicine.instruction IS \'Инструкция по применению\'');
-        $this->addSql('COMMENT ON COLUMN prescription_medicine.enabled IS \'Ограничение использования\'');
-        $this->addSql('COMMENT ON COLUMN prescription_medicine.inclusion_time IS \'Дата и время включения лекарства в назначение\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE medicine (id INT NOT NULL, name VARCHAR(50) NOT NULL, description TEXT NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
@@ -274,6 +176,59 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN reception_method.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
+        $this->addSql('CREATE TABLE "position" (id INT NOT NULL, name VARCHAR(50) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON TABLE "position" IS \'Должность\'');
+        $this->addSql('COMMENT ON COLUMN "position".id IS \'Ключ должности\'');
+        $this->addSql('COMMENT ON COLUMN "position".name IS \'Название должности\'');
+        $this->addSql('COMMENT ON COLUMN "position".enabled IS \'Ограничение использования\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE prescription_medicine (id INT NOT NULL, prescription_id INT NOT NULL, medicine_id INT NOT NULL, reception_method_id INT NOT NULL, staff_id INT NOT NULL, instruction TEXT NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, inclusion_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_effcda9ad4d57cd ON prescription_medicine (staff_id)');
+        $this->addSql('CREATE INDEX idx_effcda9a2527130b ON prescription_medicine (reception_method_id)');
+        $this->addSql('CREATE INDEX idx_effcda9a93db413d ON prescription_medicine (prescription_id)');
+        $this->addSql('CREATE INDEX idx_effcda9a2f7d140a ON prescription_medicine (medicine_id)');
+        $this->addSql('COMMENT ON TABLE prescription_medicine IS \'Назначение лекарства\'');
+        $this->addSql('COMMENT ON COLUMN prescription_medicine.id IS \'Ключ назначения препарата\'');
+        $this->addSql('COMMENT ON COLUMN prescription_medicine.prescription_id IS \'Ключ назначения\'');
+        $this->addSql('COMMENT ON COLUMN prescription_medicine.medicine_id IS \'Ключ препарата\'');
+        $this->addSql('COMMENT ON COLUMN prescription_medicine.reception_method_id IS \'Ключ способа приема препарата\'');
+        $this->addSql('COMMENT ON COLUMN prescription_medicine.staff_id IS \'Ключ персонала\'');
+        $this->addSql('COMMENT ON COLUMN prescription_medicine.instruction IS \'Инструкция по применению\'');
+        $this->addSql('COMMENT ON COLUMN prescription_medicine.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN prescription_medicine.inclusion_time IS \'Дата и время включения лекарства в назначение\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE hospital (id INT NOT NULL, region_id INT NOT NULL, city_id INT DEFAULT NULL, lpu_id INT DEFAULT NULL, address VARCHAR(255) DEFAULT NULL, name VARCHAR(255) NOT NULL, phone VARCHAR(50) NOT NULL, description TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, code VARCHAR(6) NOT NULL, email VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_4282c85b98260155 ON hospital (region_id)');
+        $this->addSql('CREATE UNIQUE INDEX uniq_4282c85bf2c7c2c1 ON hospital (lpu_id)');
+        $this->addSql('CREATE INDEX idx_4282c85b8bac62af ON hospital (city_id)');
+        $this->addSql('COMMENT ON TABLE hospital IS \'Больница\'');
+        $this->addSql('COMMENT ON COLUMN hospital.id IS \'Ключ больницы\'');
+        $this->addSql('COMMENT ON COLUMN hospital.region_id IS \'Ключ региона\'');
+        $this->addSql('COMMENT ON COLUMN hospital.city_id IS \'Ключ города\'');
+        $this->addSql('COMMENT ON COLUMN hospital.lpu_id IS \'Ключ лечебно-профилактического учреждения\'');
+        $this->addSql('COMMENT ON COLUMN hospital.address IS \'Адрес больницы\'');
+        $this->addSql('COMMENT ON COLUMN hospital.name IS \'Название больницы\'');
+        $this->addSql('COMMENT ON COLUMN hospital.phone IS \'Телефон для отправки смс\'');
+        $this->addSql('COMMENT ON COLUMN hospital.description IS \'Описание или комментарий для больницы\'');
+        $this->addSql('COMMENT ON COLUMN hospital.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN hospital.code IS \'Код больницы\'');
+        $this->addSql('COMMENT ON COLUMN hospital.email IS \'Email больницы\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE city (id INT NOT NULL, region_id INT NOT NULL, district_id INT DEFAULT NULL, oktmo_id INT DEFAULT NULL, name VARCHAR(50) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX uniq_2d5b0234ee0c723d ON city (oktmo_id)');
+        $this->addSql('CREATE INDEX idx_2d5b0234b08fa272 ON city (district_id)');
+        $this->addSql('CREATE INDEX idx_2d5b023498260155 ON city (region_id)');
+        $this->addSql('COMMENT ON COLUMN city.id IS \'Ключ города\'');
+        $this->addSql('COMMENT ON COLUMN city.region_id IS \'Ключ региона\'');
+        $this->addSql('COMMENT ON COLUMN city.district_id IS \'Ключ района\'');
+        $this->addSql('COMMENT ON COLUMN city.oktmo_id IS \'Ключ ОКТМО\'');
+        $this->addSql('COMMENT ON COLUMN city.name IS \'Название города\'');
+        $this->addSql('COMMENT ON COLUMN city.enabled IS \'Ограничение использования\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
         $this->addSql('CREATE TABLE region (id INT NOT NULL, country_id INT NOT NULL, name VARCHAR(255) NOT NULL, region_number VARCHAR(8) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, oktmo_region_id INT DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX idx_f62f176f92f3e70 ON region (country_id)');
         $this->addSql('COMMENT ON COLUMN region.id IS \'Ключ региона\'');
@@ -281,18 +236,6 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN region.name IS \'Название региона\'');
         $this->addSql('COMMENT ON COLUMN region.region_number IS \'Номер региона\'');
         $this->addSql('COMMENT ON COLUMN region.enabled IS \'Ограничение использования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE city (id INT NOT NULL, region_id INT NOT NULL, district_id INT DEFAULT NULL, oktmo_id INT DEFAULT NULL, name VARCHAR(50) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_2d5b023498260155 ON city (region_id)');
-        $this->addSql('CREATE UNIQUE INDEX uniq_2d5b0234ee0c723d ON city (oktmo_id)');
-        $this->addSql('CREATE INDEX idx_2d5b0234b08fa272 ON city (district_id)');
-        $this->addSql('COMMENT ON COLUMN city.id IS \'Ключ города\'');
-        $this->addSql('COMMENT ON COLUMN city.region_id IS \'Ключ региона\'');
-        $this->addSql('COMMENT ON COLUMN city.district_id IS \'Ключ района\'');
-        $this->addSql('COMMENT ON COLUMN city.oktmo_id IS \'Ключ ОКТМО\'');
-        $this->addSql('COMMENT ON COLUMN city.name IS \'Название города\'');
-        $this->addSql('COMMENT ON COLUMN city.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE lpu (id INT NOT NULL, oktmo_region_id INT DEFAULT NULL, region_name VARCHAR(100) NOT NULL, years VARCHAR(255) NOT NULL, code VARCHAR(6) NOT NULL, full_name VARCHAR(255) DEFAULT NULL, caption VARCHAR(255) NOT NULL, okopf VARCHAR(5) NOT NULL, post_code VARCHAR(6) DEFAULT NULL, address VARCHAR(255) NOT NULL, director_last_name VARCHAR(50) NOT NULL, director_first_name VARCHAR(50) NOT NULL, director_patronymic_name VARCHAR(50) DEFAULT NULL, phone VARCHAR(50) DEFAULT NULL, fax VARCHAR(50) DEFAULT NULL, email VARCHAR(100) DEFAULT NULL, license VARCHAR(50) DEFAULT NULL, license_date DATE DEFAULT NULL, license_date_end DATE DEFAULT NULL, medical_care_types VARCHAR(255) DEFAULT NULL, include_date DATE NOT NULL, PRIMARY KEY(id))');
@@ -319,9 +262,17 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN lpu.include_date IS \'Дата включения в реестр\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
+        $this->addSql('CREATE TABLE country (id INT NOT NULL, name VARCHAR(30) NOT NULL, shortcode VARCHAR(4) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON TABLE country IS \'Страна\'');
+        $this->addSql('COMMENT ON COLUMN country.id IS \'Ключ страны\'');
+        $this->addSql('COMMENT ON COLUMN country.name IS \'Название страны\'');
+        $this->addSql('COMMENT ON COLUMN country.shortcode IS \'Код страны в формате ISO\'');
+        $this->addSql('COMMENT ON COLUMN country.enabled IS \'Ограничение использования\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
         $this->addSql('CREATE TABLE district (id INT NOT NULL, region_id INT NOT NULL, oktmo_id INT DEFAULT NULL, name VARCHAR(100) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX uniq_31c15487ee0c723d ON district (oktmo_id)');
         $this->addSql('CREATE INDEX idx_31c1548798260155 ON district (region_id)');
+        $this->addSql('CREATE UNIQUE INDEX uniq_31c15487ee0c723d ON district (oktmo_id)');
         $this->addSql('COMMENT ON TABLE district IS \'Районы\'');
         $this->addSql('COMMENT ON COLUMN district.id IS \'Ключ района\'');
         $this->addSql('COMMENT ON COLUMN district.region_id IS \'Ключ региона\'');
@@ -335,27 +286,6 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN oktmo.id IS \'Ключ ОКТМО\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE prescription_testing (id INT NOT NULL, prescription_id INT NOT NULL, patient_testing_id INT NOT NULL, staff_id INT NOT NULL, inclusion_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_9f5f767893db413d ON prescription_testing (prescription_id)');
-        $this->addSql('CREATE INDEX idx_9f5f7678d4d57cd ON prescription_testing (staff_id)');
-        $this->addSql('CREATE UNIQUE INDEX uniq_9f5f7678b0ec09fd ON prescription_testing (patient_testing_id)');
-        $this->addSql('COMMENT ON TABLE prescription_testing IS \'Назначение обследования\'');
-        $this->addSql('COMMENT ON COLUMN prescription_testing.id IS \'Ключ назначения обследования\'');
-        $this->addSql('COMMENT ON COLUMN prescription_testing.prescription_id IS \'Ключ назначения\'');
-        $this->addSql('COMMENT ON COLUMN prescription_testing.patient_testing_id IS \'Ключ сдачи анализов\'');
-        $this->addSql('COMMENT ON COLUMN prescription_testing.staff_id IS \'Ключ персонала\'');
-        $this->addSql('COMMENT ON COLUMN prescription_testing.inclusion_time IS \'Дата и время включения в назначение\'');
-        $this->addSql('COMMENT ON COLUMN prescription_testing.enabled IS \'Ограничение использования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE country (id INT NOT NULL, name VARCHAR(30) NOT NULL, shortcode VARCHAR(4) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('COMMENT ON TABLE country IS \'Страна\'');
-        $this->addSql('COMMENT ON COLUMN country.id IS \'Ключ страны\'');
-        $this->addSql('COMMENT ON COLUMN country.name IS \'Название страны\'');
-        $this->addSql('COMMENT ON COLUMN country.shortcode IS \'Код страны в формате ISO\'');
-        $this->addSql('COMMENT ON COLUMN country.enabled IS \'Ограничение использования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE TABLE date_interval (id INT NOT NULL, name VARCHAR(30) NOT NULL, title VARCHAR(30) NOT NULL, format VARCHAR(1) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON TABLE date_interval IS \'Интервал даты\'');
         $this->addSql('COMMENT ON COLUMN date_interval.id IS \'Ключ интервала\'');
@@ -364,55 +294,28 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN date_interval.format IS \'Формат интервала\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE diagnosis (id INT NOT NULL, name VARCHAR(256) NOT NULL, code VARCHAR(50) NOT NULL, parent_code VARCHAR(50) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('COMMENT ON COLUMN diagnosis.id IS \'Ключ диагноза\'');
-        $this->addSql('COMMENT ON COLUMN diagnosis.name IS \'Название диагноза\'');
-        $this->addSql('COMMENT ON COLUMN diagnosis.code IS \'Код диагноза\'');
-        $this->addSql('COMMENT ON COLUMN diagnosis.parent_code IS \'Код группы диагнозов (диагноза верхнего уровня)\'');
-        $this->addSql('COMMENT ON COLUMN diagnosis.enabled IS \'Ограничение использования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE background_diseases (medical_history_id INT NOT NULL, diagnosis_id INT NOT NULL, PRIMARY KEY(medical_history_id, diagnosis_id))');
-        $this->addSql('CREATE INDEX idx_2c1d0b803cbe4d00 ON background_diseases (diagnosis_id)');
-        $this->addSql('CREATE INDEX idx_2c1d0b803544ad9e ON background_diseases (medical_history_id)');
-        $this->addSql('COMMENT ON COLUMN background_diseases.medical_history_id IS \'Ключ истории болезни\'');
-        $this->addSql('COMMENT ON COLUMN background_diseases.diagnosis_id IS \'Ключ диагноза\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE TABLE complications (medical_history_id INT NOT NULL, diagnosis_id INT NOT NULL, PRIMARY KEY(medical_history_id, diagnosis_id))');
-        $this->addSql('CREATE INDEX idx_bc020a5f3cbe4d00 ON complications (diagnosis_id)');
         $this->addSql('CREATE INDEX idx_bc020a5f3544ad9e ON complications (medical_history_id)');
+        $this->addSql('CREATE INDEX idx_bc020a5f3cbe4d00 ON complications (diagnosis_id)');
         $this->addSql('COMMENT ON COLUMN complications.medical_history_id IS \'Ключ истории болезни\'');
         $this->addSql('COMMENT ON COLUMN complications.diagnosis_id IS \'Ключ диагноза\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE concomitant_diseases (medical_history_id INT NOT NULL, diagnosis_id INT NOT NULL, PRIMARY KEY(medical_history_id, diagnosis_id))');
-        $this->addSql('CREATE INDEX idx_59f3a8e03cbe4d00 ON concomitant_diseases (diagnosis_id)');
-        $this->addSql('CREATE INDEX idx_59f3a8e03544ad9e ON concomitant_diseases (medical_history_id)');
-        $this->addSql('COMMENT ON COLUMN concomitant_diseases.medical_history_id IS \'Ключ истории болезни\'');
-        $this->addSql('COMMENT ON COLUMN concomitant_diseases.diagnosis_id IS \'Ключ диагноза\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE medical_history (id INT NOT NULL, patient_id INT NOT NULL, main_disease_id INT NOT NULL, life_history_id INT DEFAULT NULL, date_begin DATE NOT NULL, date_end DATE DEFAULT NULL, disease_history TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_61b890856b899279 ON medical_history (patient_id)');
-        $this->addSql('CREATE INDEX idx_61b89085e0cd2722 ON medical_history (main_disease_id)');
-        $this->addSql('CREATE UNIQUE INDEX uniq_61b89085fabd44d4 ON medical_history (life_history_id)');
-        $this->addSql('COMMENT ON TABLE medical_history IS \'История болезни\'');
-        $this->addSql('COMMENT ON COLUMN medical_history.id IS \'Ключ истории болезни\'');
-        $this->addSql('COMMENT ON COLUMN medical_history.patient_id IS \'Ключ пациента\'');
-        $this->addSql('COMMENT ON COLUMN medical_history.main_disease_id IS \'Ключ диагноза\'');
-        $this->addSql('COMMENT ON COLUMN medical_history.life_history_id IS \'Ключ текста шаблона\'');
-        $this->addSql('COMMENT ON COLUMN medical_history.date_begin IS \'Дата открытия\'');
-        $this->addSql('COMMENT ON COLUMN medical_history.date_end IS \'Дата закрытия\'');
-        $this->addSql('COMMENT ON COLUMN medical_history.disease_history IS \'Анамнез болезни\'');
-        $this->addSql('COMMENT ON COLUMN medical_history.enabled IS \'Ограничение использования\'');
+        $this->addSql('CREATE TABLE plan_testing (id INT NOT NULL, analysis_group_id INT NOT NULL, time_range_id INT NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, time_range_count INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_564c120e8e07937d ON plan_testing (time_range_id)');
+        $this->addSql('CREATE INDEX idx_564c120e174dad14 ON plan_testing (analysis_group_id)');
+        $this->addSql('COMMENT ON TABLE plan_testing IS \'План обследований\'');
+        $this->addSql('COMMENT ON COLUMN plan_testing.id IS \'Ключ анализа по плану\'');
+        $this->addSql('COMMENT ON COLUMN plan_testing.analysis_group_id IS \'Ключ группы анализов\'');
+        $this->addSql('COMMENT ON COLUMN plan_testing.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN plan_testing.time_range_count IS \'Срок выполнения\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE patient (id INT NOT NULL, auth_user_id INT NOT NULL, hospital_id INT NOT NULL, city_id INT DEFAULT NULL, district_id INT DEFAULT NULL, address VARCHAR(255) NOT NULL, sms_informing BOOLEAN DEFAULT \'true\' NOT NULL, email_informing BOOLEAN DEFAULT \'true\' NOT NULL, snils VARCHAR(14) DEFAULT NULL, insurance_number VARCHAR(50) DEFAULT NULL, passport VARCHAR(20) DEFAULT NULL, weight INT DEFAULT NULL, height INT DEFAULT NULL, date_birth DATE NOT NULL, passport_issue_date DATE DEFAULT NULL, passport_issuing_authority VARCHAR(255) DEFAULT NULL, passport_issuing_authority_code VARCHAR(7) DEFAULT NULL, heart_attack_date DATE DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX uniq_1adad7ebe94af366 ON patient (auth_user_id)');
-        $this->addSql('CREATE INDEX idx_1adad7ebb08fa272 ON patient (district_id)');
-        $this->addSql('CREATE INDEX idx_1adad7eb8bac62af ON patient (city_id)');
         $this->addSql('CREATE INDEX idx_1adad7eb63dbb69 ON patient (hospital_id)');
+        $this->addSql('CREATE INDEX idx_1adad7ebb08fa272 ON patient (district_id)');
+        $this->addSql('CREATE UNIQUE INDEX uniq_1adad7ebe94af366 ON patient (auth_user_id)');
+        $this->addSql('CREATE INDEX idx_1adad7eb8bac62af ON patient (city_id)');
         $this->addSql('COMMENT ON TABLE patient IS \'Пациент\'');
         $this->addSql('COMMENT ON COLUMN patient.id IS \'Ключ пациента\'');
         $this->addSql('COMMENT ON COLUMN patient.auth_user_id IS \'Ключ пользователя\'');
@@ -433,12 +336,36 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN patient.passport_issuing_authority_code IS \'Код органа, выдавшего паспорт\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE patient_appointment (id INT NOT NULL, medical_record_id INT DEFAULT NULL, medical_history_id INT NOT NULL, staff_id INT DEFAULT NULL, appointment_type_id INT DEFAULT NULL, objective_status_id INT DEFAULT NULL, recommendation TEXT DEFAULT NULL, appointment_time TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, is_confirmed BOOLEAN DEFAULT \'false\' NOT NULL, complaints_comment TEXT DEFAULT NULL, therapy TEXT DEFAULT NULL, planned_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX uniq_ce3bc70b1426aa42 ON patient_appointment (objective_status_id)');
-        $this->addSql('CREATE INDEX idx_ce3bc70b546fbebb ON patient_appointment (appointment_type_id)');
-        $this->addSql('CREATE INDEX idx_ce3bc70b3544ad9e ON patient_appointment (medical_history_id)');
+        $this->addSql('CREATE TABLE plan_appointment (id INT NOT NULL, time_range_id INT NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, time_range_count INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_a81202f8e07937d ON plan_appointment (time_range_id)');
+        $this->addSql('COMMENT ON TABLE plan_appointment IS \'План приемов\'');
+        $this->addSql('COMMENT ON COLUMN plan_appointment.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN plan_appointment.time_range_count IS \'Срок выполнения\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE medical_history (id INT NOT NULL, patient_id INT NOT NULL, main_disease_id INT DEFAULT NULL, life_history_id INT DEFAULT NULL, date_begin DATE NOT NULL, date_end DATE DEFAULT NULL, disease_history TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, clinical_diagnosis TEXT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_61b890856b899279 ON medical_history (patient_id)');
+        $this->addSql('CREATE UNIQUE INDEX uniq_61b89085fabd44d4 ON medical_history (life_history_id)');
+        $this->addSql('CREATE INDEX idx_61b89085e0cd2722 ON medical_history (main_disease_id)');
+        $this->addSql('COMMENT ON TABLE medical_history IS \'История болезни\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.id IS \'Ключ истории болезни\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.patient_id IS \'Ключ пациента\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.main_disease_id IS \'Ключ диагноза\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.life_history_id IS \'Ключ текста шаблона\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.date_begin IS \'Дата открытия\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.date_end IS \'Дата закрытия\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.disease_history IS \'Анамнез болезни\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN medical_history.clinical_diagnosis IS \'Клинический диагноз\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE patient_appointment (id INT NOT NULL, medical_record_id INT DEFAULT NULL, medical_history_id INT NOT NULL, staff_id INT DEFAULT NULL, appointment_type_id INT DEFAULT NULL, objective_status_id INT DEFAULT NULL, plan_appointment_id INT DEFAULT NULL, recommendation TEXT DEFAULT NULL, appointment_time TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, is_confirmed BOOLEAN DEFAULT \'false\' NOT NULL, complaints_comment TEXT DEFAULT NULL, therapy TEXT DEFAULT NULL, is_first BOOLEAN NOT NULL, is_by_plan BOOLEAN DEFAULT \'false\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_ce3bc70b5a6b53f3 ON patient_appointment (plan_appointment_id)');
         $this->addSql('CREATE INDEX idx_ce3bc70bb88e2bb6 ON patient_appointment (medical_record_id)');
         $this->addSql('CREATE INDEX idx_ce3bc70bd4d57cd ON patient_appointment (staff_id)');
+        $this->addSql('CREATE INDEX idx_ce3bc70b3544ad9e ON patient_appointment (medical_history_id)');
+        $this->addSql('CREATE INDEX idx_ce3bc70b546fbebb ON patient_appointment (appointment_type_id)');
+        $this->addSql('CREATE UNIQUE INDEX uniq_ce3bc70b1426aa42 ON patient_appointment (objective_status_id)');
         $this->addSql('COMMENT ON TABLE patient_appointment IS \'Прием пациента\'');
         $this->addSql('COMMENT ON COLUMN patient_appointment.id IS \'Ключ приема пациента\'');
         $this->addSql('COMMENT ON COLUMN patient_appointment.medical_record_id IS \'Ключ записи в историю болезни\'');
@@ -452,7 +379,78 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN patient_appointment.is_confirmed IS \'Подтверждение пользователем\'');
         $this->addSql('COMMENT ON COLUMN patient_appointment.complaints_comment IS \'Комментарий врача по жалобам\'');
         $this->addSql('COMMENT ON COLUMN patient_appointment.therapy IS \'Терапия\'');
-        $this->addSql('COMMENT ON COLUMN patient_appointment.planned_time IS \'Дата и время приема по плану\'');
+        $this->addSql('COMMENT ON COLUMN patient_appointment.is_first IS \'Флаг первого приема при заведении истории болезни\'');
+        $this->addSql('COMMENT ON COLUMN patient_appointment.is_by_plan IS \'Флаг: прием по плану\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE time_range (id INT NOT NULL, date_interval_id INT NOT NULL, title VARCHAR(30) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, multiplier INT DEFAULT 1 NOT NULL, is_regular BOOLEAN DEFAULT \'false\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_d6f5bb356f2301f2 ON time_range (date_interval_id)');
+        $this->addSql('COMMENT ON TABLE time_range IS \'Временной диапазон\'');
+        $this->addSql('COMMENT ON COLUMN time_range.date_interval_id IS \'Ключ интервала\'');
+        $this->addSql('COMMENT ON COLUMN time_range.title IS \'Заголовок временного диапазона\'');
+        $this->addSql('COMMENT ON COLUMN time_range.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN time_range.multiplier IS \'Множитель\'');
+        $this->addSql('COMMENT ON COLUMN time_range.is_regular IS \'Флаг регулярный период\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE concomitant_diseases (medical_history_id INT NOT NULL, diagnosis_id INT NOT NULL, PRIMARY KEY(medical_history_id, diagnosis_id))');
+        $this->addSql('CREATE INDEX idx_59f3a8e03cbe4d00 ON concomitant_diseases (diagnosis_id)');
+        $this->addSql('CREATE INDEX idx_59f3a8e03544ad9e ON concomitant_diseases (medical_history_id)');
+        $this->addSql('COMMENT ON COLUMN concomitant_diseases.medical_history_id IS \'Ключ истории болезни\'');
+        $this->addSql('COMMENT ON COLUMN concomitant_diseases.diagnosis_id IS \'Ключ диагноза\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE prescription_testing (id INT NOT NULL, prescription_id INT NOT NULL, patient_testing_id INT NOT NULL, staff_id INT NOT NULL, inclusion_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, confirmed_by_staff BOOLEAN DEFAULT \'false\' NOT NULL, planned_date DATE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX uniq_9f5f7678b0ec09fd ON prescription_testing (patient_testing_id)');
+        $this->addSql('CREATE INDEX idx_9f5f7678d4d57cd ON prescription_testing (staff_id)');
+        $this->addSql('CREATE INDEX idx_9f5f767893db413d ON prescription_testing (prescription_id)');
+        $this->addSql('COMMENT ON TABLE prescription_testing IS \'Назначение обследования\'');
+        $this->addSql('COMMENT ON COLUMN prescription_testing.id IS \'Ключ назначения обследования\'');
+        $this->addSql('COMMENT ON COLUMN prescription_testing.prescription_id IS \'Ключ назначения\'');
+        $this->addSql('COMMENT ON COLUMN prescription_testing.patient_testing_id IS \'Ключ сдачи анализов\'');
+        $this->addSql('COMMENT ON COLUMN prescription_testing.staff_id IS \'Ключ персонала\'');
+        $this->addSql('COMMENT ON COLUMN prescription_testing.inclusion_time IS \'Дата и время включения в назначение\'');
+        $this->addSql('COMMENT ON COLUMN prescription_testing.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN prescription_testing.confirmed_by_staff IS \'Флаг подтверждения врачом назначения на прием\'');
+        $this->addSql('COMMENT ON COLUMN prescription_testing.planned_date IS \'Назначенная дата проведения обследования\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE patient_testing (id INT NOT NULL, analysis_group_id INT NOT NULL, medical_history_id INT NOT NULL, medical_record_id INT DEFAULT NULL, plan_testing_id INT DEFAULT NULL, analysis_date DATE DEFAULT NULL, processed BOOLEAN DEFAULT \'false\' NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, is_first BOOLEAN NOT NULL, is_by_plan BOOLEAN DEFAULT \'false\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_b5900fed6b419504 ON patient_testing (plan_testing_id)');
+        $this->addSql('CREATE INDEX idx_b5900fed174dad14 ON patient_testing (analysis_group_id)');
+        $this->addSql('CREATE INDEX idx_b5900fedb88e2bb6 ON patient_testing (medical_record_id)');
+        $this->addSql('CREATE INDEX idx_b5900fed3544ad9e ON patient_testing (medical_history_id)');
+        $this->addSql('COMMENT ON TABLE patient_testing IS \'Сдача анализов (обследование) пациента\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.id IS \'Ключ сдачи анализов\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.analysis_group_id IS \'Ключ группы анализов\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.medical_history_id IS \'Ключ истории болезни\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.medical_record_id IS \'Ключ записи в историю болезни\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.plan_testing_id IS \'Ключ анализа по плану\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.analysis_date IS \'Дата проведенного тестирования\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.processed IS \'Статус принятия в работу врачом\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.is_first IS \'Флаг первого обследования по плану при заведении истории болезни\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing.is_by_plan IS \'Флаг: обследование по плану\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE template_type (id INT NOT NULL, name VARCHAR(255) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON COLUMN template_type.id IS \'Ключ типа шаблона\'');
+        $this->addSql('COMMENT ON COLUMN template_type.name IS \'Название шаблона\'');
+        $this->addSql('COMMENT ON COLUMN template_type.enabled IS \'Ограничение использования\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE template (id INT NOT NULL, template_type_id INT NOT NULL, name VARCHAR(255) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_97601f8396f4f7aa ON template (template_type_id)');
+        $this->addSql('COMMENT ON COLUMN template.id IS \'Ключ шаблона\'');
+        $this->addSql('COMMENT ON COLUMN template.template_type_id IS \'Ключ типа шаблона\'');
+        $this->addSql('COMMENT ON COLUMN template.name IS \'Название шаблона\'');
+        $this->addSql('COMMENT ON COLUMN template.enabled IS \'Ограничение использования\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE discharge_epicrisis_file (id INT NOT NULL, patient_discharge_epicrisis_id INT NOT NULL, file_name VARCHAR(255) NOT NULL, uploaded_date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, extension VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_26d6c758bcf381c ON discharge_epicrisis_file (patient_discharge_epicrisis_id)');
+        $this->addSql('COMMENT ON COLUMN discharge_epicrisis_file.id IS \'Ключ файла выписного эпикриза\'');
+        $this->addSql('COMMENT ON COLUMN discharge_epicrisis_file.patient_discharge_epicrisis_id IS \'Ключ выписного эпикриза\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE auth_user (id INT NOT NULL, email VARCHAR(180) DEFAULT NULL, roles JSON NOT NULL, password VARCHAR(255) DEFAULT NULL, phone VARCHAR(10) NOT NULL, first_name VARCHAR(30) NOT NULL, last_name VARCHAR(100) NOT NULL, patronymic_name VARCHAR(50) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
@@ -468,37 +466,32 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN auth_user.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
+        $this->addSql('CREATE TABLE patient_testing_file (id INT NOT NULL, patient_testing_id INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_3d3cb73eb0ec09fd ON patient_testing_file (patient_testing_id)');
+        $this->addSql('COMMENT ON COLUMN patient_testing_file.id IS \'Ключ файла обследования\'');
+        $this->addSql('COMMENT ON COLUMN patient_testing_file.patient_testing_id IS \'Ключ сдачи анализов\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
         $this->addSql('CREATE TABLE patient_discharge_epicrisis (id INT NOT NULL, medical_history_id INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX uniq_5e69ad6e3544ad9e ON patient_discharge_epicrisis (medical_history_id)');
         $this->addSql('COMMENT ON COLUMN patient_discharge_epicrisis.id IS \'Ключ выписного эпикриза\'');
         $this->addSql('COMMENT ON COLUMN patient_discharge_epicrisis.medical_history_id IS \'Ключ истории болезни\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE patient_testing_file (id INT NOT NULL, patient_testing_id INT NOT NULL, file_name VARCHAR(255) NOT NULL, uploaded_date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, extension VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_3d3cb73eb0ec09fd ON patient_testing_file (patient_testing_id)');
-        $this->addSql('COMMENT ON COLUMN patient_testing_file.id IS \'Ключ файла обследования\'');
-        $this->addSql('COMMENT ON COLUMN patient_testing_file.patient_testing_id IS \'Ключ сдачи анализов\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE discharge_epicrisis_file (id INT NOT NULL, patient_discharge_epicrisis_id INT NOT NULL, file_name VARCHAR(255) NOT NULL, uploaded_date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, extension VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_26d6c758bcf381c ON discharge_epicrisis_file (patient_discharge_epicrisis_id)');
-        $this->addSql('COMMENT ON COLUMN discharge_epicrisis_file.id IS \'Ключ файла выписного эпикриза\'');
-        $this->addSql('COMMENT ON COLUMN discharge_epicrisis_file.patient_discharge_epicrisis_id IS \'Ключ выписного эпикриза\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE TABLE text_by_template (id INT NOT NULL, template_id INT DEFAULT NULL, template_type_id INT NOT NULL, text TEXT DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_268cfe5996f4f7aa ON text_by_template (template_type_id)');
         $this->addSql('CREATE INDEX idx_268cfe595da0fb8 ON text_by_template (template_id)');
+        $this->addSql('CREATE INDEX idx_268cfe5996f4f7aa ON text_by_template (template_type_id)');
         $this->addSql('COMMENT ON COLUMN text_by_template.id IS \'Ключ текста шаблона\'');
         $this->addSql('COMMENT ON COLUMN text_by_template.template_id IS \'Ключ шаблона\'');
         $this->addSql('COMMENT ON COLUMN text_by_template.template_type_id IS \'Ключ типа шаблона\'');
         $this->addSql('COMMENT ON COLUMN text_by_template.text IS \'Оригинальный текст по шаблону\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE template_type (id INT NOT NULL, name VARCHAR(255) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('COMMENT ON COLUMN template_type.id IS \'Ключ типа шаблона\'');
-        $this->addSql('COMMENT ON COLUMN template_type.name IS \'Название шаблона\'');
-        $this->addSql('COMMENT ON COLUMN template_type.enabled IS \'Ограничение использования\'');
+        $this->addSql('CREATE TABLE template_many_to_many_template_parameter_text (id INT NOT NULL, template_id INT NOT NULL, template_parameter_text_id INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_f63eade5da0fb8 ON template_many_to_many_template_parameter_text (template_id)');
+        $this->addSql('CREATE INDEX idx_f63eade52ed430a ON template_many_to_many_template_parameter_text (template_parameter_text_id)');
+        $this->addSql('COMMENT ON COLUMN template_many_to_many_template_parameter_text.template_id IS \'Ключ шаблона\'');
+        $this->addSql('COMMENT ON COLUMN template_many_to_many_template_parameter_text.template_parameter_text_id IS \'Ключ параметра шаблона\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE template_parameter_text (id INT NOT NULL, template_parameter_id INT NOT NULL, text TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
@@ -509,19 +502,10 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN template_parameter_text.enabled IS \'Ограничение использования\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE template (id INT NOT NULL, template_type_id INT NOT NULL, name VARCHAR(255) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_97601f8396f4f7aa ON template (template_type_id)');
-        $this->addSql('COMMENT ON COLUMN template.id IS \'Ключ шаблона\'');
-        $this->addSql('COMMENT ON COLUMN template.template_type_id IS \'Ключ типа шаблона\'');
-        $this->addSql('COMMENT ON COLUMN template.name IS \'Название шаблона\'');
-        $this->addSql('COMMENT ON COLUMN template.enabled IS \'Ограничение использования\'');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE TABLE template_many_to_many_template_parameter_text (id INT NOT NULL, template_id INT NOT NULL, template_parameter_text_id INT NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX idx_f63eade5da0fb8 ON template_many_to_many_template_parameter_text (template_id)');
-        $this->addSql('CREATE INDEX idx_f63eade52ed430a ON template_many_to_many_template_parameter_text (template_parameter_text_id)');
-        $this->addSql('COMMENT ON COLUMN template_many_to_many_template_parameter_text.template_id IS \'Ключ шаблона\'');
-        $this->addSql('COMMENT ON COLUMN template_many_to_many_template_parameter_text.template_parameter_text_id IS \'Ключ параметра шаблона\'');
+        $this->addSql('CREATE TABLE starting_point (id INT NOT NULL, name VARCHAR(50) NOT NULL, title VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON TABLE starting_point IS \'Точка отсчета\'');
+        $this->addSql('COMMENT ON COLUMN starting_point.name IS \'Имя свойства для точки отсчета добавления обследований по плану\'');
+        $this->addSql('COMMENT ON COLUMN starting_point.title IS \'Заголовок точки отсчета добавления обследований по плану\'');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE TABLE template_parameter (id INT NOT NULL, template_type_id INT NOT NULL, name VARCHAR(255) NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
@@ -530,6 +514,60 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN template_parameter.template_type_id IS \'Ключ типа шаблона\'');
         $this->addSql('COMMENT ON COLUMN template_parameter.name IS \'Название параметра типа шаблона\'');
         $this->addSql('COMMENT ON COLUMN template_parameter.enabled IS \'Ограничение использования\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE prescription_appointment (id INT NOT NULL, prescription_id INT NOT NULL, patient_appointment_id INT NOT NULL, staff_id INT NOT NULL, inclusion_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, confirmed_by_staff BOOLEAN DEFAULT \'false\' NOT NULL, planned_date_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_885c8715d4d57cd ON prescription_appointment (staff_id)');
+        $this->addSql('CREATE INDEX idx_885c871593db413d ON prescription_appointment (prescription_id)');
+        $this->addSql('CREATE UNIQUE INDEX uniq_885c87155fa482b2 ON prescription_appointment (patient_appointment_id)');
+        $this->addSql('COMMENT ON TABLE prescription_appointment IS \'Назначение на прием\'');
+        $this->addSql('COMMENT ON COLUMN prescription_appointment.id IS \'Ключ назначения на прием\'');
+        $this->addSql('COMMENT ON COLUMN prescription_appointment.prescription_id IS \'Ключ назначения\'');
+        $this->addSql('COMMENT ON COLUMN prescription_appointment.patient_appointment_id IS \'Ключ приема пациента\'');
+        $this->addSql('COMMENT ON COLUMN prescription_appointment.staff_id IS \'Ключ персонала\'');
+        $this->addSql('COMMENT ON COLUMN prescription_appointment.inclusion_time IS \'Дата и время включения в назначение\'');
+        $this->addSql('COMMENT ON COLUMN prescription_appointment.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN prescription_appointment.confirmed_by_staff IS \'Флаг подтверждения врачом назначения на прием\'');
+        $this->addSql('COMMENT ON COLUMN prescription_appointment.planned_date_time IS \'Назначенные дата и время проведения приема\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE prescription (id INT NOT NULL, medical_history_id INT NOT NULL, staff_id INT NOT NULL, medical_record_id INT DEFAULT NULL, is_completed BOOLEAN DEFAULT \'false\' NOT NULL, is_patient_confirmed BOOLEAN DEFAULT \'false\' NOT NULL, description TEXT DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, created_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, completed_time TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_1fbfb8d93544ad9e ON prescription (medical_history_id)');
+        $this->addSql('CREATE INDEX idx_1fbfb8d9d4d57cd ON prescription (staff_id)');
+        $this->addSql('CREATE INDEX idx_1fbfb8d9b88e2bb6 ON prescription (medical_record_id)');
+        $this->addSql('COMMENT ON TABLE prescription IS \'Назначение\'');
+        $this->addSql('COMMENT ON COLUMN prescription.id IS \'Ключ назначения\'');
+        $this->addSql('COMMENT ON COLUMN prescription.medical_history_id IS \'Ключ истории болезни\'');
+        $this->addSql('COMMENT ON COLUMN prescription.staff_id IS \'Ключ персонала\'');
+        $this->addSql('COMMENT ON COLUMN prescription.medical_record_id IS \'Ключ записи в историю болезни\'');
+        $this->addSql('COMMENT ON COLUMN prescription.is_completed IS \'Назначено\'');
+        $this->addSql('COMMENT ON COLUMN prescription.is_patient_confirmed IS \'Подтверждение назначения пациентом\'');
+        $this->addSql('COMMENT ON COLUMN prescription.description IS \'Описание назначения\'');
+        $this->addSql('COMMENT ON COLUMN prescription.enabled IS \'Ограничение использования\'');
+        $this->addSql('COMMENT ON COLUMN prescription.created_time IS \'Дата и время создания назначения\'');
+        $this->addSql('COMMENT ON COLUMN prescription.completed_time IS \'Дата и время факта назначения\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE log_action (id INT NOT NULL, name VARCHAR(255) NOT NULL, enabled BOOLEAN NOT NULL, PRIMARY KEY(id))');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE log (id INT NOT NULL, log_action_id INT DEFAULT NULL, description TEXT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, user_string VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_8f3f68c58b306cbb ON log (log_action_id)');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE diagnosis (id INT NOT NULL, name VARCHAR(256) NOT NULL, code VARCHAR(50) NOT NULL, parent_code VARCHAR(50) DEFAULT NULL, enabled BOOLEAN DEFAULT \'true\' NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON COLUMN diagnosis.id IS \'Ключ диагноза\'');
+        $this->addSql('COMMENT ON COLUMN diagnosis.name IS \'Название диагноза\'');
+        $this->addSql('COMMENT ON COLUMN diagnosis.code IS \'Код диагноза\'');
+        $this->addSql('COMMENT ON COLUMN diagnosis.parent_code IS \'Код группы диагнозов (диагноза верхнего уровня)\'');
+        $this->addSql('COMMENT ON COLUMN diagnosis.enabled IS \'Ограничение использования\'');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE TABLE background_diseases (medical_history_id INT NOT NULL, diagnosis_id INT NOT NULL, PRIMARY KEY(medical_history_id, diagnosis_id))');
+        $this->addSql('CREATE INDEX idx_2c1d0b803544ad9e ON background_diseases (medical_history_id)');
+        $this->addSql('CREATE INDEX idx_2c1d0b803cbe4d00 ON background_diseases (diagnosis_id)');
+        $this->addSql('COMMENT ON COLUMN background_diseases.medical_history_id IS \'Ключ истории болезни\'');
+        $this->addSql('COMMENT ON COLUMN background_diseases.diagnosis_id IS \'Ключ диагноза\'');
     }
 
     public function down(Schema $schema) : void
@@ -543,37 +581,22 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('DROP TABLE oksm');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('DROP TABLE notification_type');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE notification');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE medical_record');
+        $this->addSql('DROP TABLE analysis');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('DROP TABLE staff');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
+        $this->addSql('DROP TABLE medical_record');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
         $this->addSql('DROP TABLE analysis_group');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('DROP TABLE analysis');
+        $this->addSql('DROP TABLE notification_type');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('DROP TABLE time_range');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE plan_appointment');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE plan_testing');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE patient_testing');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE prescription');
+        $this->addSql('DROP TABLE notification');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('DROP TABLE patient_testing_result');
@@ -597,7 +620,10 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('DROP TABLE complaint');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('DROP TABLE hospital');
+        $this->addSql('DROP TABLE medicine');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE reception_method');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('DROP TABLE "position"');
@@ -606,19 +632,19 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('DROP TABLE prescription_medicine');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('DROP TABLE medicine');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE reception_method');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE region');
+        $this->addSql('DROP TABLE hospital');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('DROP TABLE city');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
+        $this->addSql('DROP TABLE region');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
         $this->addSql('DROP TABLE lpu');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE country');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('DROP TABLE district');
@@ -627,63 +653,87 @@ final class Version20201122180730 extends AbstractMigration
         $this->addSql('DROP TABLE oktmo');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
+        $this->addSql('DROP TABLE date_interval');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE complications');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE plan_testing');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE patient');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE plan_appointment');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE medical_history');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE patient_appointment');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE time_range');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE concomitant_diseases');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
         $this->addSql('DROP TABLE prescription_testing');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('DROP TABLE country');
+        $this->addSql('DROP TABLE patient_testing');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('DROP TABLE date_interval');
+        $this->addSql('DROP TABLE template_type');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE template');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE discharge_epicrisis_file');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE auth_user');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE patient_testing_file');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE patient_discharge_epicrisis');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE text_by_template');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE template_many_to_many_template_parameter_text');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE template_parameter_text');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE starting_point');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE template_parameter');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE prescription_appointment');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE prescription');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE log_action');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP TABLE log');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('DROP TABLE diagnosis');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('DROP TABLE background_diseases');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE complications');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE concomitant_diseases');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE medical_history');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE patient');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE patient_appointment');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE auth_user');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE patient_discharge_epicrisis');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE patient_testing_file');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE discharge_epicrisis_file');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE text_by_template');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE template_type');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE template_parameter_text');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE template');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE template_many_to_many_template_parameter_text');
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP TABLE template_parameter');
     }
 }
