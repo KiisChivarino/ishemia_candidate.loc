@@ -18,12 +18,6 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
  */
 class PrescriptionTestingCreatorService
 {
-    /** @var string Property dateBegin of medical history */
-    protected const MEDICAL_HISTORY_DATE_BEGIN_PROPERTY = 'dateBegin';
-
-    /** @var string Property heartAttackDate of patient */
-    protected const PATIENT_HEART_ATTACK_DATE_PROPERTY = 'heartAttackDate';
-
     /** @var FlashBagInterface $flashBag */
     protected $flashBag;
 
@@ -69,22 +63,18 @@ class PrescriptionTestingCreatorService
      * @return DateTimeInterface|null
      * @throws Exception
      */
-    protected function getTestingPlannedDate(PlanTesting $planTesting, PatientTesting $patientTesting): ?DateTimeInterface
+    protected function getTestingPlannedDate(
+        PlanTesting $planTesting,
+        PatientTesting $patientTesting
+    ): ?DateTimeInterface
     {
-        $patientTesting->getMedicalHistory()->getDateBegin();
         try {
-            switch ($planTesting->getStartingPoint()->getName()) {
-                case self::MEDICAL_HISTORY_DATE_BEGIN_PROPERTY :
-                    $startingPoint = $patientTesting->getMedicalHistory()->getDateBegin();
-                    break;
-                case self::PATIENT_HEART_ATTACK_DATE_PROPERTY:
-                    $startingPoint = $patientTesting->getMedicalHistory()->getPatient();
-                    break;
-                default:
-                    throw new Exception('Не удалось получить точку отсчета для обследования по плану!');
-            }
             if (!$plannedDate = CreatorHelper::getPlannedDate(
-                $startingPoint,
+                CreatorHelper::getStartingPointDate(
+                    $planTesting->getStartingPoint()->getName(),
+                    $patientTesting->getMedicalHistory()->getDateBegin(),
+                    $patientTesting->getMedicalHistory()->getPatient()->getHeartAttackDate()
+                ),
                 (int)$planTesting->getTimeRangeCount(),
                 (int)$planTesting->getTimeRange()->getMultiplier(),
                 $planTesting->getTimeRange()->getDateInterval()->getFormat()
