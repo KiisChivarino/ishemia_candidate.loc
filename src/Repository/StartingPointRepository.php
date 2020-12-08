@@ -24,14 +24,16 @@ class StartingPointRepository extends AppRepository
     }
 
     /**
+     * Add starting point from fixtures
+     * @param int $id
      * @param string $name
      * @param string $title
      * @return StartingPoint
      * @throws ORMException
      */
-    public function addStartingPointFromFixtures(string $name, string $title): StartingPoint
+    public function addStartingPointFromFixtures(int $id, string $name, string $title): StartingPoint
     {
-        $newStartingPoint = (new StartingPoint())->setName($name)->setTitle($title);
+        $newStartingPoint = (new StartingPoint())->setId($id)->setName($name)->setTitle($title);
         $this->_em->persist($newStartingPoint);
         return $newStartingPoint;
     }

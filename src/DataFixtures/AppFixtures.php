@@ -70,8 +70,8 @@ class AppFixtures extends Fixture
 
         /** begin Точки отсчета */
         echo "Добавление точек отсчета\n";
-        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures('dateBegin', 'Включение в историю болезни');
-        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures('heartAttackDate', 'Дата возникновения инфаркта');
+        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(1, 'dateBegin', 'Включение в историю болезни');
+        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(2,'heartAttackDate', 'Дата возникновения инфаркта');
         /** end Точки отсчета */
 
         /** begin Пол */
@@ -228,6 +228,7 @@ class AppFixtures extends Fixture
             [
                 'analysisGroup' => AnalysisGroup::class,
                 'timeRange' => TimeRange::class,
+                'startingPoint' => StartingPoint::class,
             ]
         );
         /** end Стандартный план тестирования */
@@ -243,6 +244,7 @@ class AppFixtures extends Fixture
             ['enabled' => true],
             [
                 'timeRange' => TimeRange::class,
+                'startingPoint' => StartingPoint::class,
             ]
         );
         /** end Стандартный план приемов */

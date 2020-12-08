@@ -13,7 +13,7 @@ class StartingPoint
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -27,6 +27,17 @@ class StartingPoint
      * @ORM\Column(type="string", length=255, options={"comment"="Заголовок точки отсчета добавления обследований по плану"})
      */
     private $title;
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
 
     /**
      * @return int|null

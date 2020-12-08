@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
  */
 class PrescriptionTestingCreatorService
 {
+
     /** @var FlashBagInterface $flashBag */
     protected $flashBag;
 
@@ -64,6 +65,8 @@ class PrescriptionTestingCreatorService
      */
     protected function getTestingPlannedDate(PlanTesting $planTesting): ?DateTimeInterface
     {
+        $startingPoint = new DateTime();
+        $planTesting->getStartingPoint()->getName();
         try {
             if (!$plannedDate = CreatorHelper::getPlannedDate(
                 new DateTime(),
