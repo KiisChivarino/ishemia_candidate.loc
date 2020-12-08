@@ -5,6 +5,7 @@ namespace App\Security;
 use App\Entity\AuthUser;
 use App\Repository\UserRepository;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Services\LoggerService\LogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,7 +47,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      * @param CsrfTokenManagerInterface $csrfTokenManager
      * @param UserPasswordEncoderInterface $passwordEncoder
      */
-    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager,
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        UrlGeneratorInterface $urlGenerator,
+        CsrfTokenManagerInterface $csrfTokenManager,
         UserPasswordEncoderInterface $passwordEncoder
     ) {
         $this->entityManager = $entityManager;
@@ -139,6 +143,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
+        $authUserInfoService = new AuthUserInfoService();
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
@@ -147,10 +152,21 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         /** @var AuthUser $authUser */
         $authUser = $userRepository->findOneBy(
             [
-                'phone' => (new AuthUserInfoService())->clearUserPhone($this->getCredentials($request)['phone'])
+                'phone' => $authUserInfoService->clearUserPhone($this->getCredentials($request)['phone'])
             ]
         );
-        $roleTechName = (new AuthUserInfoService())->getRoleNames($userRepository->getRoles($authUser), true);
+        $log = new LogService($this->entityManager);
+        $logger = $log
+            ->setUser($authUser)
+            ->logLoginEvent();
+        if (!$logger) {
+            $log->getError();
+            // TODO:  when creating log fails
+        }
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return new RedirectResponse($targetPath);
+        }
+        $roleTechName = $authUserInfoService->getRoleNames($userRepository->getRoles($authUser), true);
         $roles = Yaml::parseFile('..//config/services/roles.yaml');
         foreach ($roles['parameters'] as $roleData) {
             if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {
