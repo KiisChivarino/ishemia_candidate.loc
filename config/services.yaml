@@ -59,3 +59,6 @@ services:
 
   App\Services\FilterService\FilterServie:
     autowire: true
+
+  App\Services\Notification\SMSNotificationService:
+    autowire: true

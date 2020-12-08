@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -59,6 +61,16 @@ class AuthUser implements UserInterface
      * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
      */
     private $enabled;
+
+    /**
+     * @ORM\OneToMany(targetEntity=SMSNotification::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $sMSNotifications;
+
+    public function __construct()
+    {
+        $this->sMSNotifications = new ArrayCollection();
+    }
 
     /**
      * @return int|null
@@ -248,6 +260,36 @@ class AuthUser implements UserInterface
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+        return $this;
+    }
+
+    /**
+     * @return Collection|SMSNotification[]
+     */
+    public function getSMSNotifications(): Collection
+    {
+        return $this->sMSNotifications;
+    }
+
+    public function addSMSNotification(SMSNotification $sMSNotification): self
+    {
+        if (!$this->sMSNotifications->contains($sMSNotification)) {
+            $this->sMSNotifications[] = $sMSNotification;
+            $sMSNotification->setгыuser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSMSNotification(SMSNotification $sMSNotification): self
+    {
+        if ($this->sMSNotifications->removeElement($sMSNotification)) {
+            // set the owning side to null (unless already changed)
+            if ($sMSNotification->getгыuser() === $this) {
+                $sMSNotification->setгыuser(null);
+            }
+        }
+
         return $this;
     }
 }

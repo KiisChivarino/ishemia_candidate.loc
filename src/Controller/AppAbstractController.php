@@ -7,6 +7,7 @@ use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\MultiFormService\MultiFormService;
+use App\Services\Notification\SMSNotificationService;
 use App\Services\Template\TemplateService;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
@@ -53,6 +54,16 @@ abstract class AppAbstractController extends AbstractController
 
     /** @var string "edit" type of form */
     protected const RESPONSE_FORM_TYPE_EDIT = 'edit';
+
+    /**
+     * @var SMSNotificationService
+     */
+    protected $sms;
+
+    public function __construct(SMSNotificationService $SMSNotificationService)
+    {
+        $this->sms = $SMSNotificationService;
+    }
 
     /**
      * Отображает действия с записью в таблице datatables

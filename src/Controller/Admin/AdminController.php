@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Services\Notification\SMSNotificationService;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Michelf\Markdown;
@@ -17,15 +18,23 @@ class AdminController extends AdminAbstractController
     /** KernelInterface $appKernel */
     private $appKernel;
 
-    public function __construct(KernelInterface $appKernel)
+    public function __construct(KernelInterface $appKernel, SMSNotificationService $sms)
     {
+        parent::__construct($sms);
         $this->appKernel = $appKernel;
     }
+
     /**
      * @Route("/admin", name="admin")
+     * @return void
      */
     public function index()
     {
+        $sms = $this->sms
+            ->setText('123')
+            ->setTarget('0000000000')
+            ->sendSMS();
+//        $this->sms->checkSMS();
         return $this->render(
             'admin/index.html.twig', [
                 'controller_name' => 'AdminController',
