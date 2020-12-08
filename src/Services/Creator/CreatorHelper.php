@@ -4,6 +4,7 @@ namespace App\Services\Creator;
 
 use DateInterval;
 use DateTime;
+use DateTimeInterface;
 use Exception;
 
 /**
@@ -14,7 +15,7 @@ class CreatorHelper
 {
     /**
      * Get planned date
-     * @param DateTime $startingPointDate
+     * @param DateTimeInterface $startingPointDate
      * @param int $timeRangeCount
      * @param int $multiplier
      * @param string $format
@@ -22,7 +23,7 @@ class CreatorHelper
      * @return DateTime|null
      */
     static public function getPlannedDate(
-        DateTime $startingPointDate,
+        DateTimeInterface $startingPointDate,
         int $timeRangeCount,
         int $multiplier,
         string $format
