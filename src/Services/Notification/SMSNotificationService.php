@@ -11,6 +11,10 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
 
+/**
+ * Class SMSNotificationService
+ * @package App\Services\Notification
+ */
 class SMSNotificationService
 {
     /** @var string Auth data for sms service */
