@@ -46,7 +46,7 @@ class PrescriptionTestingCreatorService
         PlanTesting $planTesting = null
     ): PrescriptionTesting
     {
-        return (new PrescriptionTesting())
+       return (new PrescriptionTesting())
             ->setStaff($staff)
             ->setEnabled(true)
             ->setInclusionTime(new DateTime())
@@ -72,9 +72,9 @@ class PrescriptionTestingCreatorService
             if (!$plannedDate = CreatorHelper::getPlannedDate(
                 CreatorHelper::getStartingPointDate(
                     $planTesting->getStartingPoint()->getName(),
-                    $patientTesting->getMedicalHistory()->getDateBegin(),
-                    $patientTesting->getMedicalHistory()->getPatient()->getHeartAttackDate()
-                ),
+                    clone $patientTesting->getMedicalHistory()->getDateBegin(),
+                    clone $patientTesting->getMedicalHistory()->getPatient()->getHeartAttackDate()
+                    ),
                 (int)$planTesting->getTimeRangeCount(),
                 (int)$planTesting->getTimeRange()->getMultiplier(),
                 $planTesting->getTimeRange()->getDateInterval()->getFormat()

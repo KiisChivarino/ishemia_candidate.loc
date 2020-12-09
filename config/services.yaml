@@ -56,6 +56,3 @@ services:
   App\Form\Admin\AuthUser\AuthUserRoleType:
     arguments: ['@doctrine.orm.entity_manager']
     tags: [form.type]
-
-  App\Services\FilterService\FilterServie:
-    autowire: true
