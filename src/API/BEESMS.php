@@ -198,8 +198,8 @@ if(!function_exists('http_build_query')) {
 			
 			if(is_array($v) || is_object($v))	array_push($ret,http_build_query($v,"",$sep,$k));
 			else	 array_push($ret,$k."=".urlencode($v));
-		};
+		}
 		if(empty($sep)) $sep = ini_get("arg_separator.output");		
 		return		implode($sep, $ret);
-	};
-};
+	}
+}

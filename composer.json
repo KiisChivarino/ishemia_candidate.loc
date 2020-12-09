@@ -27,7 +27,8 @@
     "symfony/yaml": "5.0.*",
     "syslogic/doctrine-json-functions": "^4.1",
     "tetranz/select2entity-bundle": "2.*",
-    "ext-simplexml": "*"
+    "ext-simplexml": "*",
+    "ext-zlib": "*"
   },
   "require-dev": {
     "doctrine/doctrine-fixtures-bundle": "^3.3",
