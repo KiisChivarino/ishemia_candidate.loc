@@ -1,18 +1,17 @@
 <?
 namespace App\API;
-##########################################################
-// ����� ������������ ��� �������� ���
+
 /* v. 1.6 */
 
 class BEESMS {
-	var $user='xxxx';			// ��� ����� � ������� 
-	var $pass='xxx';			// ��� ������ � �������
-	var $hostname='beeline.amega-inform.ru'; 			// host �������� �� ����� ������� ��������� � ���� "��������� -> �������� HTTP"
+	var $user='xxxx';
+	var $pass='xxx';
+	var $hostname='beeline.amega-inform.ru';
 	var $path='/sms_send/';
 	var $proxy_data=false;
 	
-	var $post_data=array();			// ������ ������������ �� ������
-	var $multipost=false;			// ������������� ������ �� ��������� false
+	var $post_data=array();
+	var $multipost=false;
 	
 	function __construct($user=false,$pass=false,$hostname=false,$proxy_data=false) {
 		if($user) $this->user=$user;
@@ -20,26 +19,24 @@ class BEESMS {
 		if($hostname) $this->hostname=$hostname;
 		if($proxy_data) $this->proxy_data=$proxy_data;
 	}
-	
-	// ������� �� ������ ������ �������
+
 	function start_multipost() {
 		$this->multipost=true;
 	}
-	// ���� ������ �������
+
 	function to_multipost($inv) {
 		$this->post_data['data'][]=$inv;
 	}
-	// �������������� ������ �� ������ � ��������� ����������
+
 	function process() {
 		return $this->get_post_request($this->post_data);
 	}
 	################# post_message
-	// �������� ��� [mes] �� ��������� [target] � ��������� ���������� XML
 	function post_message($mes,$target,$sender=null) {
 		if(is_array($target))	$target=implode(',',$target);
 		return $this->post_mes($mes,$target,false,$sender);
 	}
-	// �������� ��� [mes] �� �������� ����� ������� ����� [phl_codename]
+
 	function post_message_phl($mes,$phl_codename,$sender=null) {
 		return $this->post_mes($mes,false,$phl_codename,$sender);
 	}
@@ -57,13 +54,7 @@ class BEESMS {
 		else return $this->get_post_request($in);
 	}
 	
-	################# status_sms
-	/*	��������� ������� ��� 
-		���������� ���������:
-		1.	date_from
-			date_to
-		2.	sms_id	
-		3.	sms_group_id	*/
+
 	function status_sms_id($sms_id) {
 		return $this->status_sms(false,false,false,false,$sms_id);
 	}
@@ -80,10 +71,10 @@ class BEESMS {
 	}
 	function status_sms($date_from,$date_to,$smstype,$sms_group_id,$sms_id) {
 		$in=array('action' => ($smstype=="RECVSMS"?"inbox":"status") );
-		//��� ��������
+
 		if( isset( $this->post_data['target'] ) && $this->post_data['target'] ) $in["phone"] = $this->post_data['target'];
 		if( isset( $this->post_data['unread'] ) && $this->post_data['unread'] ) $in["new_only"] = 1;
-		//��� ��������
+
 		if($date_from)		$in['date_from']=$date_from;
 		if($date_to)		 $in['date_to']=$date_to;
 		if($smstype)		$in['smstype']=$smstype;
@@ -94,7 +85,6 @@ class BEESMS {
 	}
 	
 	################################################
-	// ������ �� ������ � ��������� ����������
 	function get_post_request($invars) {
 		$invars['user'] = ($this->user);
 		$invars['pass'] = ($this->pass);
@@ -103,8 +93,7 @@ class BEESMS {
 		$PostData=http_build_query($invars);
 		$len=strlen($PostData);
 		$nn="\r\n";
-		
-		//�������� � ������
+
 		$fsock_proxy = false;
 		$proxy_auth = false;
 		if( $this->proxy_data ) {
