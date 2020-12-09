@@ -72,9 +72,9 @@ class SMSNotificationService
     }
 
     /**
-     * @param $dateFrom
-     * @param $dateTo
-     * @return bool
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return string
      */
     private function check(string $dateFrom, string $dateTo): string
     {
@@ -129,6 +129,9 @@ class SMSNotificationService
         return true;
     }
 
+    /**
+     * @return SimpleXMLElement
+     */
     public function checkSMS()
     {
         $result = new SimpleXMLElement($this->check(
