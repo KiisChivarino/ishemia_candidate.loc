@@ -36,13 +36,21 @@ class CreatorHelper
     ): ?DateTime
     {
         try {
-            return $startingPointDate->add(
-                new DateInterval(
-                    'P' .
-                    (string)($timeRangeCount * $multiplier) .
-                    $format
+            $plannedDate = clone $startingPointDate;
+            $today = new DateTime('today');
+            $plannedDate
+                ->add(
+                    new DateInterval(
+                        'P' .
+                        (string)($timeRangeCount * $multiplier) .
+                        $format
+                    )
                 )
-            )->setTime(0, 0, 0);
+                ->setTime(0, 0, 0);
+            if ($plannedDate < $today) {
+                $plannedDate = $today;
+            }
+            return $plannedDate;
         } catch (Exception $e) {
             return null;
         }
