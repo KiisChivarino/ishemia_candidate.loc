@@ -26,15 +26,15 @@ class AdminController extends AdminAbstractController
 
     /**
      * @Route("/admin", name="admin")
-     * @return void
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index()
     {
-        $sms = $this->sms
-            ->setText('123')
-            ->setTarget('0000000000')
-            ->sendSMS();
-//        $this->sms->checkSMS();
+//        $sms = $this->sms
+//            ->setText('123')
+//            ->setTarget('0000000000')
+//            ->sendSMS();
+////        $this->sms->checkSMS();
         return $this->render(
             'admin/index.html.twig', [
                 'controller_name' => 'AdminController',
