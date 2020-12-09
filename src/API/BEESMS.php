@@ -1,4 +1,4 @@
-<?
+<?php
 namespace App\API;
 
 /* v. 1.6 */
@@ -9,7 +9,6 @@ class BEESMS {
 	var $hostname='beeline.amega-inform.ru';
 	var $path='/sms_send/';
 	var $proxy_data=false;
-	
 	var $post_data=array();
 	var $multipost=false;
 	
