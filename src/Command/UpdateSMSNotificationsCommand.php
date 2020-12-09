@@ -20,12 +20,12 @@ class UpdateSMSNotificationsCommand extends Command
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:update-sms';
 
-    const MAX_ATTEMPTS = 1;
+    const MAX_ATTEMPTS = 1; // Максимальное количество попыток переотправки
     const
-        DELIVERED = 'delivered',
-        NOT_DELIVERED = 'not_delivered',
-        WAIT = 'wait',
-        FAILED = 'failed'
+        DELIVERED = 'delivered', // Статус sms - Доставлено
+        NOT_DELIVERED = 'not_delivered', // Статус sms - Не доставлено
+        WAIT = 'wait', // Статус sms - Ожидание доставки
+        FAILED = 'failed' // Статус sms - Ошибка
     ;
     private $container;
 
@@ -34,6 +34,11 @@ class UpdateSMSNotificationsCommand extends Command
      */
     private $sms;
 
+    /**
+     * UpdateSMSNotificationsCommand constructor.
+     * @param ContainerInterface $container
+     * @param SMSNotificationService $SMSNotificationService
+     */
     public function __construct(ContainerInterface $container, SMSNotificationService $SMSNotificationService)
     {
         parent::__construct();
@@ -49,9 +54,15 @@ class UpdateSMSNotificationsCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * Check sms for the past day, and depending on status change data in out database
+     * and resend if message is not delivered
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
         $em = $this->container->get('doctrine')->getManager();
 
         $notifications = $em->getRepository(SMSNotification::class)->findBy([
@@ -61,7 +72,10 @@ class UpdateSMSNotificationsCommand extends Command
         $result = $this->sms->checkSMS();
         foreach ($result->MESSAGES->MESSAGE as $message) {
             foreach ($notifications as $notification) {
-                if ((string) $message['SMS_ID'] == (string) $notification->getExternalId() && $notification->getStatus() != self::NOT_DELIVERED) {
+                if (
+                    (string) $message['SMS_ID'] == (string) $notification->getExternalId()
+                    && $notification->getStatus() != self::NOT_DELIVERED
+                ) {
                     switch ((string)$message->SMSSTC_CODE) {
                         case self::DELIVERED:
                             $notification->setStatus(self::DELIVERED);
@@ -70,7 +84,6 @@ class UpdateSMSNotificationsCommand extends Command
                         case self::WAIT:
                             break;
                         case self::NOT_DELIVERED:
-                        case self::FAILED:
                             if ($notification->getAttempt() <= self::MAX_ATTEMPTS || self::MAX_ATTEMPTS == '-1') {
                                 $this->sms->resendSMS($notification);
                             } else {
@@ -78,10 +91,13 @@ class UpdateSMSNotificationsCommand extends Command
                                 $em->persist($notification);
                             }
                             break;
+                        case self::FAILED:
+                            $notification->setStatus(self::FAILED);
+                            $em->persist($notification);
+                            break;
                     }
                 }
             }
-
         }
 
         $em->flush();

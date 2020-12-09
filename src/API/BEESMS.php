@@ -98,7 +98,7 @@ class BEESMS {
 		$proxy_auth = false;
 		if( $this->proxy_data ) {
 			$pd = $this->proxy_data;
-			if( !$pd["host"] || $pd["host"] == "" ) return '�� ������ ����� ������-�������';
+			if( !$pd["host"] || $pd["host"] == "" ) return 'Host is unavailable.';
 			else $host = $pd["host"];
 			$port = isset($pd["port"]) && $pd["port"] != '' ? $pd["port"] : 80;
 			$user = isset($pd["user"]) && $pd["user"] != '' ? $pd["user"] : false;
@@ -107,7 +107,7 @@ class BEESMS {
 				if( $user ) $proxy_auth = "Proxy-Authorization: Basic " . base64_encode ("$user:$pass").$nn;
 			}
 			else 
-				return '���������� ����������� � ������-��������.';
+				return 'Authentication error.';
 		}
 		
 		$send="POST https://".$this->hostname.$this->path." HTTP/1.0".$nn."Host: ".$this->hostname.":443".$nn.($proxy_auth?$proxy_auth:"")."Content-Type: application/x-www-form-urlencoded".$nn."Content-Length: $len".$nn."User-Agent: AISMS PHP class".$nn.$nn.$PostData;
@@ -133,7 +133,7 @@ class BEESMS {
 			return $body;
 			
 		} else
-			return '���������� ����������� � ��������.';
+			return 'Failed to connect to proxy via ssl';
 	}
 	
 	function decode_header ($str) {
