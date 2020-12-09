@@ -7,14 +7,13 @@ namespace App\Services\Notification;
 use App\API\BEESMS;
 use App\Entity\AuthUser;
 use App\Entity\SMSNotification;
-use App\Services\InfoService\AuthUserInfoService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
-use Symfony\Component\VarDumper\VarDumper;
 
 class SMSNotificationService
 {
+    /** @var string Auth data for sms service */
     const
         SENDER = '3303',
         SMS_USER = '775000',
@@ -49,9 +48,9 @@ class SMSNotificationService
     /**
      * @param string $text
      * @param string $target
-     * @return bool
+     * @return false|string
      */
-    private function send(string $text, string $target)
+    private function send(string $text, string $target): string
     {
         $sms = new BEESMS(self::SMS_USER,self::SMS_PASSWORD);
         return $sms->post_message($text, $target, self::SENDER);
@@ -62,7 +61,7 @@ class SMSNotificationService
      * @param $dateTo
      * @return bool
      */
-    private function check(string $dateFrom, string $dateTo)
+    private function check(string $dateFrom, string $dateTo): string
     {
         $sms = new BEESMS(self::SMS_USER,self::SMS_PASSWORD);
         return $sms->status_sms_date($dateFrom, $dateTo);
@@ -71,7 +70,7 @@ class SMSNotificationService
     /**
      * @return bool
      */
-    public function sendSMS()
+    public function sendSMS(): bool
     {
         $result = new SimpleXMLElement($this->send(
             $this->text,
@@ -99,7 +98,7 @@ class SMSNotificationService
      * @param SMSNotification $notification
      * @return bool
      */
-    public function reSendSMS(SMSNotification $notification)
+    public function reSendSMS(SMSNotification $notification): bool
     {
         $result = new SimpleXMLElement($this->send(
             $notification->getText(),
@@ -127,6 +126,7 @@ class SMSNotificationService
 
     /**
      * @param string $text
+     * @return SMSNotificationService
      */
     public function setText(string $text): SMSNotificationService
     {
@@ -136,6 +136,7 @@ class SMSNotificationService
 
     /**
      * @param string $target
+     * @return SMSNotificationService
      */
     public function setTarget(string $target): SMSNotificationService
     {
