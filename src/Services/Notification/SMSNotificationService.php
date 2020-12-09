@@ -20,6 +20,14 @@ class SMSNotificationService
         SMS_PASSWORD = 'Yandex10241024'
     ;
 
+    /** @var string Standard sms statuses */
+    const
+        DELIVERED = 'delivered', // Статус sms - Доставлено
+        NOT_DELIVERED = 'not_delivered', // Статус sms - Не доставлено
+        WAIT = 'wait', // Статус sms - Ожидание доставки
+        FAILED = 'failed' // Статус sms - Ошибка
+    ;
+
     /**
      * @var EntityManagerInterface
      */
@@ -37,7 +45,7 @@ class SMSNotificationService
 
 
     /**
-     * Logger constructor.
+     * SMS notification constructor.
      * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em)
@@ -85,7 +93,7 @@ class SMSNotificationService
         );
         $sMSNotification->setText($this->text);
         $sMSNotification->setCreatedAt(new DateTime('now'));
-        $sMSNotification->setStatus('wait');
+        $sMSNotification->setStatus(self::WAIT);
         $sMSNotification->setExternalId((string) $result->result->sms['id']);
 
         $this->em->persist($sMSNotification);
@@ -143,5 +151,4 @@ class SMSNotificationService
         $this->target = $target;
         return $this;
     }
-
 }
