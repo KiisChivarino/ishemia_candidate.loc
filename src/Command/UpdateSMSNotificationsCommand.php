@@ -68,7 +68,7 @@ class UpdateSMSNotificationsCommand extends Command
         $em = $this->container->get('doctrine')->getManager();
 
         $notifications = $em->getRepository(SMSNotification::class)->findBy([
-            'status' => 'wait'
+            'status' => self::WAIT
         ]);
 
         $result = $this->sms->checkSMS();

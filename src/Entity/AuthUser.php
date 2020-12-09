@@ -67,6 +67,9 @@ class AuthUser implements UserInterface
      */
     private $sMSNotifications;
 
+    /**
+     * AuthUser constructor.
+     */
     public function __construct()
     {
         $this->sMSNotifications = new ArrayCollection();
@@ -271,6 +274,10 @@ class AuthUser implements UserInterface
         return $this->sMSNotifications;
     }
 
+    /**
+     * @param SMSNotification $sMSNotification
+     * @return $this
+     */
     public function addSMSNotification(SMSNotification $sMSNotification): self
     {
         if (!$this->sMSNotifications->contains($sMSNotification)) {
@@ -281,6 +288,10 @@ class AuthUser implements UserInterface
         return $this;
     }
 
+    /**
+     * @param SMSNotification $sMSNotification
+     * @return $this
+     */
     public function removeSMSNotification(SMSNotification $sMSNotification): self
     {
         if ($this->sMSNotifications->removeElement($sMSNotification)) {

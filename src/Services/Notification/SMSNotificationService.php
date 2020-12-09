@@ -28,6 +28,9 @@ class SMSNotificationService
         FAILED = 'failed' // Статус sms - Ошибка
     ;
 
+    /** @var string prefix for RU phone numbers */
+    const PHONE_PREFIX_RU = '+7';
+
     /**
      * @var EntityManagerInterface
      */
@@ -82,7 +85,7 @@ class SMSNotificationService
     {
         $result = new SimpleXMLElement($this->send(
             $this->text,
-            '+7' . $this->target
+            self::PHONE_PREFIX_RU . $this->target
         ));
 
         $sMSNotification = new SMSNotification();
@@ -110,7 +113,7 @@ class SMSNotificationService
     {
         $result = new SimpleXMLElement($this->send(
             $notification->getText(),
-            '+7' . $notification->getUser()->getPhone()
+            self::PHONE_PREFIX_RU . $notification->getUser()->getPhone()
         ));
 
         $notification->setCreatedAt(new DateTime('now'));

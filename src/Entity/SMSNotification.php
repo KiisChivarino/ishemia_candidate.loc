@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SMSNotification
 {
+    const FIRST_ATTEMPT = 1;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -46,7 +48,15 @@ class SMSNotification
     /**
      * @ORM\Column(type="integer")
      */
-    private $attempt = 1;
+    private $attempt;
+
+    /**
+     * SMSNotification constructor.
+     */
+    public function __construct()
+    {
+        $this->attempt = self::FIRST_ATTEMPT;
+    }
 
     public function getId(): ?int
     {
