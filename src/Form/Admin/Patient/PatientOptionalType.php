@@ -47,16 +47,6 @@ class PatientOptionalType extends AbstractType
         try {
             $builder
                 ->add(
-                    'heartAttackDate',
-                    DateType::class,
-                    [
-                        'label' => $templateItem->getContentValue('heartAttackDate'),
-                        'widget' => 'single_text',
-                        'format' => 'yyyy-MM-dd',
-                        'required' => false,
-                    ]
-                )
-                ->add(
                     'snils',
                     TextType::class,
                     [

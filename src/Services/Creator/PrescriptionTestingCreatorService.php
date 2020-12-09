@@ -46,29 +46,37 @@ class PrescriptionTestingCreatorService
         PlanTesting $planTesting = null
     ): PrescriptionTesting
     {
-        return (new PrescriptionTesting())
+       return (new PrescriptionTesting())
             ->setStaff($staff)
             ->setEnabled(true)
             ->setInclusionTime(new DateTime())
             ->setConfirmedByStaff(false)
             ->setPrescription($prescription)
             ->setPatientTesting($patientTesting)
-            ->setPlannedDate($this->getTestingPlannedDate($planTesting));
+            ->setPlannedDate($this->getTestingPlannedDate($planTesting, $patientTesting));
     }
 
     /**
      * Get planned date of testing
      * @param PlanTesting $planTesting
+     * @param PatientTesting $patientTesting
      * @return DateTimeInterface|null
      * @throws Exception
      */
-    protected function getTestingPlannedDate(PlanTesting $planTesting): ?DateTimeInterface
+    protected function getTestingPlannedDate(
+        PlanTesting $planTesting,
+        PatientTesting $patientTesting
+    ): ?DateTimeInterface
     {
         try {
             if (!$plannedDate = CreatorHelper::getPlannedDate(
-                new DateTime(),
-                (int)$planTesting->getTimeRangeCount(),
-                (int)$planTesting->getTimeRange()->getMultiplier(),
+                CreatorHelper::getStartingPointDate(
+                    $planTesting->getStartingPoint()->getName(),
+                    clone $patientTesting->getMedicalHistory()->getDateBegin(),
+                    clone $patientTesting->getMedicalHistory()->getPatient()->getHeartAttackDate()
+                    ),
+                (int) $planTesting->getTimeRangeCount(),
+                (int) $planTesting->getTimeRange()->getMultiplier(),
                 $planTesting->getTimeRange()->getDateInterval()->getFormat()
             )) {
                 throw new Exception('Не удалось добавить планируемую дату обследования!');

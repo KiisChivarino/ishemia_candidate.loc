@@ -42,7 +42,8 @@ class PrescriptionAppointmentCreatorService
         Prescription $prescription,
         PatientAppointment $patientAppointment,
         PlanAppointment $planAppointment
-    ){
+    ): PrescriptionAppointment
+    {
         return (new PrescriptionAppointment())
             ->setStaff($staff)
             ->setEnabled(true)
@@ -50,21 +51,29 @@ class PrescriptionAppointmentCreatorService
             ->setConfirmedByStaff(false)
             ->setPrescription($prescription)
             ->setPatientAppointment($patientAppointment)
-            ->setPlannedDateTime($this->getAppointmentPlannedDate($planAppointment));
+            ->setPlannedDateTime($this->getAppointmentPlannedDate($planAppointment, $patientAppointment));
     }
 
     /**
      * Get planned date of appointment
      * @param PlanAppointment $planAppointment
+     * @param PatientAppointment $patientAppointment
      * @return DateTime|null
      */
-    protected function getAppointmentPlannedDate(PlanAppointment $planAppointment): ?DateTime
+    protected function getAppointmentPlannedDate(
+        PlanAppointment $planAppointment,
+        PatientAppointment $patientAppointment
+    ): ?DateTime
     {
         try {
             if (!$plannedDate = CreatorHelper::getPlannedDate(
-                new DateTime(),
-                (int)(int)$planAppointment->getTimeRangeCount(),
-                (int)(int)$planAppointment->getTimeRange()->getMultiplier(),
+                CreatorHelper::getStartingPointDate(
+                    $planAppointment->getStartingPoint()->getName(),
+                    clone $patientAppointment->getMedicalHistory()->getDateBegin(),
+                    clone $patientAppointment->getMedicalHistory()->getPatient()->getHeartAttackDate()
+                ),
+                (int)$planAppointment->getTimeRangeCount(),
+                (int)$planAppointment->getTimeRange()->getMultiplier(),
                 $planAppointment->getTimeRange()->getDateInterval()->getFormat()
             )) {
                 throw new Exception('Не удалось добавить дату приема по плану!');

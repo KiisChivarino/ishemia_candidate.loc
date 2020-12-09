@@ -5,6 +5,7 @@ namespace App\Form\Admin\PlanTesting;
 use App\Controller\AppAbstractController;
 use App\Entity\AnalysisGroup;
 use App\Entity\PlanTesting;
+use App\Entity\StartingPoint;
 use App\Entity\TimeRange;
 use App\Repository\AnalysisGroupRepository;
 use App\Repository\TimeRangeRepository;
@@ -82,6 +83,13 @@ class PlanTestingType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('analysisGroupPlaceholder'),
                     'remote_params' => ['analysisGroup' => '0'],
+                ]
+            )
+            ->add(
+                'startingPoint', EntityType::class, [
+                    'label' => $templateItem->getContentValue('startingPoint'),
+                    'class' => StartingPoint::class,
+                    'choice_label' => 'title',
                 ]
             )
             ->add(

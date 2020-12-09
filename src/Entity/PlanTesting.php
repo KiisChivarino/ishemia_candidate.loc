@@ -43,6 +43,12 @@ class PlanTesting
     private $timeRange;
 
     /**
+     * @ORM\ManyToOne(targetEntity=StartingPoint::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $startingPoint;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -123,6 +129,24 @@ class PlanTesting
     public function setTimeRange(?TimeRange $timeRange): self
     {
         $this->timeRange = $timeRange;
+        return $this;
+    }
+
+    /**
+     * @return StartingPoint|null
+     */
+    public function getStartingPoint(): ?StartingPoint
+    {
+        return $this->startingPoint;
+    }
+
+    /**
+     * @param StartingPoint|null $startingPoint
+     * @return $this
+     */
+    public function setStartingPoint(?StartingPoint $startingPoint): self
+    {
+        $this->startingPoint = $startingPoint;
         return $this;
     }
 }

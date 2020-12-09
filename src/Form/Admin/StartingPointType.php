@@ -1,22 +1,21 @@
 <?php
 
-namespace App\Form\Admin\MedicalHistory;
+namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
-use App\Entity\MedicalHistory;
+use App\Entity\StartingPoint;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class EditMedicalHistoryType
- *
- * @package App\Form\Admin\MedicalHistory
+ * Class StartingPointType
+ * @package App\Form\Admin
  */
-class EditMedicalHistoryType extends AbstractType
+class StartingPointType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -28,14 +27,7 @@ class EditMedicalHistoryType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add(
-                'dateEnd', DateType::class, [
-                    'label' => $templateItem->getContentValue('dateEnd'),
-                    'widget' => 'single_text',
-                    'format' => 'yyyy-MM-dd',
-                    'required' => false,
-                ]
-            );
+            ->add('title', TextType::class, ['label' => $templateItem->getContentValue('title')]);
     }
 
     /**
@@ -44,7 +36,7 @@ class EditMedicalHistoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => MedicalHistory::class,])
+            ->setDefaults(['data_class' => StartingPoint::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

@@ -4,9 +4,11 @@ namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PlanAppointment;
+use App\Entity\StartingPoint;
 use App\Entity\TimeRange;
 use App\Repository\TimeRangeRepository;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -24,6 +26,7 @@ class PlanAppointmentType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -47,6 +50,13 @@ class PlanAppointmentType extends AbstractType
                 [
                     'label' => $templateItem->getContentValue('timeRangeCount'),
                     'attr' => ['min' => '1']
+                ]
+            )
+            ->add(
+                'startingPoint', EntityType::class, [
+                    'label' => $templateItem->getContentValue('startingPoint'),
+                    'class' => StartingPoint::class,
+                    'choice_label' => 'title',
                 ]
             )
             ->add(

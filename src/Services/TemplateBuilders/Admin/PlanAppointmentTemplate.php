@@ -36,6 +36,10 @@ class PlanAppointmentTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование приема по плану',
     ];
 
+    protected const FORM_SHOW_CONTENT = [
+        'startingPoint' => StartingPointTemplate::ENTITY_CONTENT['startingPoint'],
+    ];
+
     /**
      * CityTemplate constructor.
      *
