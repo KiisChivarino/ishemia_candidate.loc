@@ -10,7 +10,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-
+/**
+ * Class UpdateSMSNotificationsCommand
+ * @package App\Command
+ */
 class UpdateSMSNotificationsCommand extends Command
 {
     // the name of the command (the part after "bin/console")
@@ -66,7 +69,6 @@ class UpdateSMSNotificationsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $em = $this->container->get('doctrine')->getManager();
-
         $notifications = $em->getRepository(SMSNotification::class)->findBy([
             'status' => self::WAIT
         ]);

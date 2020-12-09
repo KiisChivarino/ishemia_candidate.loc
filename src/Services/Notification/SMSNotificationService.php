@@ -61,6 +61,7 @@ class SMSNotificationService
     }
 
     /**
+     * Send SMS
      * @param string $text
      * @param string $target
      * @return false|string
@@ -72,6 +73,7 @@ class SMSNotificationService
     }
 
     /**
+     * Check SMS form server
      * @param string $dateFrom
      * @param string $dateTo
      * @return string
@@ -83,6 +85,7 @@ class SMSNotificationService
     }
 
     /**
+     * SMS Sender and result parser
      * @return bool
      */
     public function sendSMS(): bool
@@ -110,6 +113,7 @@ class SMSNotificationService
     }
 
     /**
+     * SMS RE-Sender and result parser
      * @param SMSNotification $notification
      * @return bool
      */
@@ -130,16 +134,15 @@ class SMSNotificationService
     }
 
     /**
+     * SMS Checker and result parser
      * @return SimpleXMLElement
      */
     public function checkSMS()
     {
-        $result = new SimpleXMLElement($this->check(
+        return  new SimpleXMLElement($this->check(
             (new DateTime('today'))->format('d.m.Y') . ' 00:00:00',
             (new DateTime('today'))->format('d.m.Y') . ' 23:59:59'
         ));
-
-        return $result;
     }
 
     /**
