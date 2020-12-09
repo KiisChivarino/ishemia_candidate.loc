@@ -5,14 +5,10 @@ namespace App\Command;
 
 use App\Entity\SMSNotification;
 use App\Services\Notification\SMSNotificationService;
-use ErrorException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 
 class UpdateSMSNotificationsCommand extends Command
@@ -20,13 +16,19 @@ class UpdateSMSNotificationsCommand extends Command
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:update-sms';
 
-    const MAX_ATTEMPTS = 1; // Максимальное количество попыток переотправки
+    /** @var int Max attempts for resend sms */
+    const MAX_ATTEMPTS = 1;
+
+    /** @var string Standard sms statuses */
     const
         DELIVERED = 'delivered', // Статус sms - Доставлено
         NOT_DELIVERED = 'not_delivered', // Статус sms - Не доставлено
         WAIT = 'wait', // Статус sms - Ожидание доставки
         FAILED = 'failed' // Статус sms - Ошибка
     ;
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
     /**
