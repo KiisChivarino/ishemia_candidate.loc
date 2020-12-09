@@ -75,8 +75,8 @@ class PrescriptionTestingCreatorService
                     clone $patientTesting->getMedicalHistory()->getDateBegin(),
                     clone $patientTesting->getMedicalHistory()->getPatient()->getHeartAttackDate()
                     ),
-                (int)$planTesting->getTimeRangeCount(),
-                (int)$planTesting->getTimeRange()->getMultiplier(),
+                (int) $planTesting->getTimeRangeCount(),
+                (int) $planTesting->getTimeRange()->getMultiplier(),
                 $planTesting->getTimeRange()->getDateInterval()->getFormat()
             )) {
                 throw new Exception('Не удалось добавить планируемую дату обследования!');

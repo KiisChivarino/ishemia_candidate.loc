@@ -69,11 +69,11 @@ class PrescriptionAppointmentCreatorService
             if (!$plannedDate = CreatorHelper::getPlannedDate(
                 CreatorHelper::getStartingPointDate(
                     $planAppointment->getStartingPoint()->getName(),
-                    $patientAppointment->getMedicalHistory()->getDateBegin(),
-                    $patientAppointment->getMedicalHistory()->getPatient()->getHeartAttackDate()
+                    clone $patientAppointment->getMedicalHistory()->getDateBegin(),
+                    clone $patientAppointment->getMedicalHistory()->getPatient()->getHeartAttackDate()
                 ),
-                (int)(int)$planAppointment->getTimeRangeCount(),
-                (int)(int)$planAppointment->getTimeRange()->getMultiplier(),
+                (int)$planAppointment->getTimeRangeCount(),
+                (int)$planAppointment->getTimeRange()->getMultiplier(),
                 $planAppointment->getTimeRange()->getDateInterval()->getFormat()
             )) {
                 throw new Exception('Не удалось добавить дату приема по плану!');
