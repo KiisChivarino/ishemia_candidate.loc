@@ -89,7 +89,7 @@ class GetSMSNotificationsCommand extends Command
                                 $sms->setPatient($patient);
                                 $sms->setText((string) $message->SMS_TEXT);
                                 $sms->setExternalId((string) $message['SMS_ID']);
-                                $sms->setCreatedAt(new \DateTime('now'));
+                                $sms->setCreatedAt(date_create_from_format('d.m.y H:i:s',(string) $message->SMS_CLOSE_TIME));
                                 $em->persist($sms);
                             }
                         } else {
@@ -97,7 +97,7 @@ class GetSMSNotificationsCommand extends Command
                             $sms->setPatient($patient);
                             $sms->setText((string) $message->SMS_TEXT);
                             $sms->setExternalId((string) $message['SMS_ID']);
-                            $sms->setCreatedAt(new \DateTime('now'));
+                            $sms->setCreatedAt(date_create_from_format('d.m.y H:i:s',(string) $message->SMS_CLOSE_TIME));
                             $em->persist($sms);
                         }
                     }
