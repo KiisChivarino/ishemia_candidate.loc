@@ -12,6 +12,7 @@ use App\Repository\PatientTestingFileRepository;
 use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
+use App\Services\FileService\FileService;
 use App\Services\MultiFormService\FormData;
 use App\Services\DataTable\Admin\MedicalHistoryDataTableService;
 use App\Services\FilterService\FilterService;
@@ -153,11 +154,17 @@ class MedicalHistoryController extends AdminAbstractController
      * @param MedicalHistory $medicalHistory
      *
      * @param PatientTestingFileRepository $patientTestingFileRepository
+     * @param FileService $fileService
      * @return Response
      * @throws ReflectionException
      * @throws Exception
      */
-    public function edit(Request $request, MedicalHistory $medicalHistory, PatientTestingFileRepository $patientTestingFileRepository): Response
+    public function edit(
+        Request $request,
+        MedicalHistory $medicalHistory,
+        PatientTestingFileRepository $patientTestingFileRepository,
+        FileService $fileService
+    ): Response
     {
         $patientDischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis()
             ? $medicalHistory->getPatientDischargeEpicrisis()
@@ -174,11 +181,11 @@ class MedicalHistoryController extends AdminAbstractController
                 new FormData($medicalHistory, EditMedicalHistoryType::class),
                 new FormData($patientDischargeEpicrisis, DischargeEpicrisisType::class),
             ],
-            function (EntityActions $actions) use ($patientTestingFileRepository) {
-                $this->prepareFiles(
+            function (EntityActions $actions) use ($patientTestingFileRepository, $fileService) {
+                $fileService->prepareFiles(
                     $actions->getForm()
                         ->get(MultiFormService::getFormName(DischargeEpicrisisType::class))
-                        ->get(self::FILES_COLLECTION_PROPERTY_NAME), $patientTestingFileRepository
+                        ->get(self::FILES_COLLECTION_PROPERTY_NAME)
                 );
             }
         );

@@ -1,5 +1,4 @@
 require('datatables');
-import './tinymce';
 import './select2';
 import './select2entity';
 import '../css/select2.min.css'

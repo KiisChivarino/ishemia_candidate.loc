@@ -123,6 +123,7 @@ class MedicalHistoryType extends AbstractType
                 'diseaseHistory', null, [
                     'label' => $templateItem->getContentValue('diseaseHistory'),
                     'attr' => ['class' => 'tinymce'],
+                    'required'=>false,
                 ]
             )
             ->add(
@@ -130,6 +131,7 @@ class MedicalHistoryType extends AbstractType
                     'label' => $templateItem->getContentValue('lifeHistory'),
                     'attr' => ['class' => 'tinymce'],
                     'data' => $options['anamnesOfLifeText'],
+                    'required'=>false,
                     'mapped' => false
                 ]
             )

@@ -156,6 +156,9 @@
     "spatie/image-optimizer": {
         "version": "1.2.1"
     },
+    "stfalcon/tinymce-bundle": {
+        "version": "v3.0.0"
+    },
     "symfony/apache-pack": {
         "version": "1.0",
         "recipe": {
