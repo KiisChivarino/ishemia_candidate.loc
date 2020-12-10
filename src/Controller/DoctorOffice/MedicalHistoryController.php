@@ -24,6 +24,7 @@ use App\Form\TextByTemplateType;
 use App\Repository\MedicalHistoryRepository;
 use App\Repository\PatientAppointmentRepository;
 use App\Repository\PatientTestingRepository;
+use App\Repository\PatientTestingResultRepository;
 use App\Repository\TemplateParameterRepository;
 use App\Repository\TemplateRepository;
 use App\Repository\TemplateTypeRepository;
@@ -34,6 +35,8 @@ use App\Services\InfoService\PatientInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
+use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TextTemplateService\TextTemplateService;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -300,7 +303,8 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         Request $request,
         MedicalHistory $medicalHistory,
         FileService $fileService
-    ){
+    )
+    {
         $this->setRedirectMedicalHistoryRoute($medicalHistory->getPatient()->getId());
         return $this->responseNew(
             $request,
@@ -336,7 +340,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         Request $request,
         PatientDischargeEpicrisis $dischargeEpicrisis,
         FileService $fileService
-        )
+    )
     {
         $this->setRedirectMedicalHistoryRoute($dischargeEpicrisis->getMedicalHistory()->getPatient()->getId());
         return $this->responseEdit(
@@ -364,27 +368,72 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
      * @param Request $request \
      * @param PatientTesting $patientTesting
      * @param FileService $fileService
+     * @param PatientTestingResultRepository $patientTestingResultRepository
      * @return RedirectResponse|Response
-     * @throws Exception
+     * @throws ReflectionException
      */
     public function editPatientTesting(
         Request $request,
         PatientTesting $patientTesting,
-        FileService $fileService
-    ){
+        FileService $fileService,
+        PatientTestingResultRepository $patientTestingResultRepository
+    )
+    {
         $this->setRedirectMedicalHistoryRoute($patientTesting->getMedicalHistory()->getPatient()->getId());
-        return $this->responseEdit(
-            $request,
-            $patientTesting,
+//        $form = $this->createForm(
+//            PatientTestingNotRequiredType::class,
+//            $patientTesting,
+//            [self::FORM_TEMPLATE_ITEM_OPTION_TITLE =>
+//                $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),]
+//        );
+
+        $formBuilder = $this->createFormBuilder();
+        $formBuilder->setData(
+            [
+                MultiFormService::getFormName(PatientTestingNotRequiredType::class) => $patientTesting,
+            ]
+        );
+        $formBuilder->add(
+            MultiFormService::getFormName(PatientTestingNotRequiredType::class),
             PatientTestingNotRequiredType::class,
-            [],
-            function (EntityActions $actions) use ($fileService) {
-                $fileService->prepareFiles(
-                    $actions->getForm()
-                        ->get(MultiFormService::getFormName(PatientTestingFileType::class) . 's')
-                );
-            },
-            self::EDIT_PATIENT_TESTING_TEMPLATE_NAME
+            [
+                self::FORM_TEMPLATE_ITEM_OPTION_TITLE =>
+                    $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+            ]
+        );
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $fileService->prepareFiles(
+                $form->get(MultiFormService::getFormName(PatientTestingFileType::class) . 's')
+            );
+            $entityManager->persist($patientTesting);
+            $entityManager->flush();
+            $this->addFlash('success', 'Запись успешно сохранена!');
+            return $this->redirectToRoute(
+                $this->templateService->getRoute(
+                    $this->templateService->getRedirectRouteName()),
+                $this->templateService->getRedirectRouteParameters() ?
+                    $this->templateService->getRedirectRouteParameters() :
+                    [
+                        'id' => $patientTesting->getId()
+                    ]
+            );
+        }
+        return $this->render(
+            $this->templateService->getTemplateFullName(
+                self::EDIT_PATIENT_TESTING_TEMPLATE_NAME,
+                $this->getParameter('kernel.project_dir')),
+            [
+                'entity' => $patientTesting,
+                'form' => $form->createView(),
+                'filters' =>
+                    $this->templateService
+                        ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                        ->getFiltersViews(),
+                'patientTestingResults' => $patientTestingResultRepository->getEnabledTestingResults($patientTesting),
+            ]
         );
     }
 
@@ -620,7 +669,6 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             $textByTemplate
         );
     }
-
 
 
     /**
