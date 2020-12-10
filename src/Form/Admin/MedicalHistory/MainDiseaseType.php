@@ -35,7 +35,7 @@ class MainDiseaseType extends AbstractType
                 'clinicalDiagnosis', TextareaType::class, [
                     'label' => $templateItem->getContentValue('clinicalDiagnosis'),
                     'required' => true,
-                    'attr' => ['class' => 'tinymce'],
+//                    'attr' => ['class' => 'tinymce'],
                 ]
             )
             ->add(

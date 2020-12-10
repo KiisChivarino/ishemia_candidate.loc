@@ -160,4 +160,21 @@ class TextByTemplate
         return $this;
     }
 
+    public function setPatientAppointment(?PatientAppointment $patientAppointment): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($patientAppointment === null && $this->patientAppointment !== null) {
+            $this->patientAppointment->setObjectiveStatus(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($patientAppointment !== null && $patientAppointment->getObjectiveStatus() !== $this) {
+            $patientAppointment->setObjectiveStatus($this);
+        }
+
+        $this->patientAppointment = $patientAppointment;
+
+        return $this;
+    }
+
 }

@@ -1,4 +1,4 @@
-<?
+<?php
 namespace App\API;
 
 /* v. 1.6 */
@@ -202,5 +202,5 @@ if(!function_exists('http_build_query')) {
 		};
 		if(empty($sep)) $sep = ini_get("arg_separator.output");		
 		return		implode($sep, $ret);
-	};
-};
+	}
+}
