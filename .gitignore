@@ -23,3 +23,4 @@ yarn-error.log
 .htaccess
 /data/patient_files/
 /web/bundles
+/web/
