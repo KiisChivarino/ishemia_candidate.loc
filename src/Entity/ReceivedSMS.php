@@ -19,7 +19,7 @@ class ReceivedSMS
 
     /**
      * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="receivedSMS")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $patient;
 
