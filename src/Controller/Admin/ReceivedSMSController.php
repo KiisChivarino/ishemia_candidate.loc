@@ -56,21 +56,6 @@ class ReceivedSMSController extends AdminAbstractController
     }
 
     /**
-     * sms info
-     * @Route("/{id}", name="sms_show", methods={"GET"}, requirements={"id"="\d+"})
-     * @param ReceivedSMS $receivedSMS
-     * @param FilterService $filterService
-     * @return Response
-     */
-    public function show(ReceivedSMS $receivedSMS, FilterService $filterService): Response
-    {
-        return $this->responseShow(
-            self::TEMPLATE_PATH,
-            $receivedSMS
-        );
-    }
-
-    /**
      * Edit sms
      * @Route("/{id}/edit", name="sms_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *

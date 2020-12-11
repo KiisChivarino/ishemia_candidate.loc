@@ -5,6 +5,7 @@ namespace App\Services\TemplateBuilders\Admin;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
@@ -88,29 +89,11 @@ class ReceivedSMSTemplate extends AdminTemplateBuilder
         parent::list($filterService);
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
             ->setIsEnabled(false);
-
-        return $this;
-    }
-
-    /**
-     * Builds show sms controller
-     *
-     * @param object|null $entity
-     *
-     * @return AppTemplateBuilder
-     */
-    public function show(?object $entity = null): AppTemplateBuilder
-    {
-        parent::show();
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->setIsEnabled(false);
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
-            ->addContentArray(
-                array_merge(
-                    AuthUserTemplate::COMMON_CONTENT,
-                    AuthUserTemplate::FORM_CONTENT,
-                    AuthUserTemplate::FORM_SHOW_CONTENT
-                )
-            )
-        ;
+            ->setIsEnabled(false);
+
         return $this;
     }
 
@@ -132,6 +115,8 @@ class ReceivedSMSTemplate extends AdminTemplateBuilder
                     AuthUserTemplate::FORM_SHOW_CONTENT
                 )
             );
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->setIsEnabled(false);
         return $this;
     }
 }

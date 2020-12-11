@@ -3,15 +3,8 @@
 
 namespace App\Services\Notification;
 
-use App\API\BEESMS;
-use App\Entity\AuthUser;
 use App\Entity\Patient;
-use App\Entity\SMSNotification;
-use App\Services\DataTable\Admin\SMSDataTableService;
-use DateTime;
-use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
-use SimpleXMLElement;
 
 /**
  * Class SMSNotificationService
@@ -19,7 +12,7 @@ use SimpleXMLElement;
  */
 class NotificationService
 {
-        /**
+    /**
      * @var EntityManagerInterface
      */
     private $em;
@@ -30,19 +23,14 @@ class NotificationService
     private $text;
 
     /**
-     * @var string
-     */
-    private $target;
-
-    /**
      * @var SMSNotificationService
      */
     private $sms;
+
     /**
      * @var Patient
      */
     private $patient;
-
 
     /**
      * SMS notification constructor.
@@ -67,6 +55,7 @@ class NotificationService
             ->setText($text)
             ->setTarget($target)
             ->sendSMS();
+
         return true;
     }
 
@@ -81,6 +70,9 @@ class NotificationService
                 $this->text,
                 $this->patient->getAuthUser()->getPhone()
             );
+        }
+        if ($this->patient->getEmailInforming()) {
+            // TODO: Add email notification
         }
         return true;
     }

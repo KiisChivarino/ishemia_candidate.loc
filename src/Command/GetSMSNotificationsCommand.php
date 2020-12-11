@@ -77,27 +77,18 @@ class GetSMSNotificationsCommand extends Command
             if ((string) $message->SMS_TARGET == self::SENDER) {
                 foreach ($patients as $patient) {
                     if ((string) $message->SMS_SENDER == (string) self::PHONE_PREFIX_RU . $patient->getAuthUser()->getPhone()) {
-                        if (!empty($smses)) {
-                            $check = false;
-                            foreach ($smses as $sms) {
-                                if ($sms->getExternalId() == (string) $message['SMS_ID']) {
-                                    $check = true;
-                                }
+                        $check = false;
+                        foreach ($smses as $sms) {
+                            if ($sms->getExternalId() == (string) $message['SMS_ID']) {
+                                $check = true;
                             }
-                            if (!$check) {
-                                $sms = new ReceivedSMS();
-                                $sms->setPatient($patient);
-                                $sms->setText((string) $message->SMS_TEXT);
-                                $sms->setExternalId((string) $message['SMS_ID']);
-                                $sms->setCreatedAt(date_create_from_format('d.m.y H:i:s',(string) $message->SMS_CLOSE_TIME));
-                                $em->persist($sms);
-                            }
-                        } else {
+                        }
+                        if (!$check) {
                             $sms = new ReceivedSMS();
                             $sms->setPatient($patient);
                             $sms->setText((string) $message->SMS_TEXT);
                             $sms->setExternalId((string) $message['SMS_ID']);
-                            $sms->setCreatedAt(date_create_from_format('d.m.y H:i:s',(string) $message->SMS_CLOSE_TIME));
+                            $sms->setCreatedAt(date_create_from_format('d.m.y H:i:s', (string) $message->SMS_CLOSE_TIME));
                             $em->persist($sms);
                         }
                     }

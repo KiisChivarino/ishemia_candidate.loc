@@ -2,11 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\API\BEESMS;
-use App\Entity\Patient;
-use App\Entity\ReceivedSMS;
 use App\Services\Notification\SMSNotificationService;
-use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,34 +49,6 @@ class AdminController extends AdminAbstractController
      */
     public function index()
     {
-
-
-//        $this->sms->checkSMS();
-///
-///
-//
-//        $sms = $this->sms->getUnreadSMS();
-//        dd($sms);
-//        return new Response(dd(new \SimpleXMLElement($data)));
-//        $em = $this->container->get('doctrine')->getManager();
-//        $patients = $em->getRepository(Patient::class)->findAll();
-//
-//        $result = $this->sms->getUnreadSMS();
-//        foreach ($result->MESSAGES->MESSAGE as $message) {
-//            if ((string) $message->SMS_TARGET == self::SENDER) {
-//                foreach ($patients as $patient) {
-//                    if ((string) $message->SMS_SENDER == (string) self::PHONE_PREFIX_RU . $patient->getAuthUser()->getPhone()) {
-//                        $sms = new ReceivedSMS();
-//                        $sms->setPatient($patient);
-//                        $sms->setText((string) $message->SMS_TEXT);
-//                        $sms->setCreatedAt(new \DateTime('now'));
-//                        $em->persist($sms);
-//                    }
-//                }
-//            }
-//        }
-////        dd($sms);
-//        $em->flush();
         return $this->render(
             'admin/index.html.twig', [
                 'controller_name' => 'AdminController',
@@ -90,7 +58,7 @@ class AdminController extends AdminAbstractController
     }
 
     /**
-     * @Route("/admin/testsms", name="admin")
+     * @Route("/admin/testsms", name="testsms")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function testsms()

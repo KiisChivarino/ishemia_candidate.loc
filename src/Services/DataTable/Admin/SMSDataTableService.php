@@ -37,6 +37,9 @@ class SMSDataTableService extends AdminDatatableService
             ->add(
                 'patient', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('patient'),
+                    'field' => 'u.lastName',
+                    'orderable' => true,
+                    'orderField' => 'u.lastName',
                     'render' => function (string $data, ReceivedSMS $receivedSMS) {
                         /** @var Patient $patient */
                         $patient = $receivedSMS->getPatient();
@@ -58,12 +61,14 @@ class SMSDataTableService extends AdminDatatableService
             )
             ->add(
                 'text', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('text')
+                    'label' => $listTemplateItem->getContentValue('text'),
                 ]
             )
             ->add(
                 'created_at', DateTimeColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('createdAt')
+                    'label' => $listTemplateItem->getContentValue('createdAt'),
+                    'searchable' => false,
+                    'format' => 'd.m.Y H:m',
                 ]
             )
             ;
@@ -76,6 +81,10 @@ class SMSDataTableService extends AdminDatatableService
                         $builder
                             ->select('l')
                             ->from(ReceivedSMS::class, 'l')
+                            ->leftJoin('l.patient', 'p')
+                            ->leftJoin('p.AuthUser', 'u')
+                            ->andWhere('u.enabled = :val')
+                            ->setParameter('val', true)
                             ->orderBy('l.id', 'desc')
                         ;
                     },
