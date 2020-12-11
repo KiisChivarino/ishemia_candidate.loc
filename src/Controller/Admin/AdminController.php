@@ -39,7 +39,6 @@ class AdminController extends AdminAbstractController
 
     public function __construct(KernelInterface $appKernel, SMSNotificationService $sms)
     {
-        parent::__construct($sms);
         $this->appKernel = $appKernel;
     }
 

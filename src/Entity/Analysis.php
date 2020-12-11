@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Анализ
  * @ORM\Entity(repositoryClass="App\Repository\AnalysisRepository")
+ * @ORM\Table(options={"comment":"Анализы"});
  */
 class Analysis
 {
@@ -66,51 +67,75 @@ class Analysis
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
+    /**
+     * @param string|null $description
+     * @return $this
+     */
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-
         return $this;
     }
 
+    /**
+     * @return AnalysisGroup|null
+     */
     public function getAnalysisGroup(): ?AnalysisGroup
     {
         return $this->analysisGroup;
     }
 
+    /**
+     * @param AnalysisGroup|null $analysisGroup
+     * @return $this
+     */
     public function setAnalysisGroup(?AnalysisGroup $analysisGroup): self
     {
         $this->analysisGroup = $analysisGroup;
-
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 
@@ -122,16 +147,23 @@ class Analysis
         return $this->analysisRates;
     }
 
+    /**
+     * @param AnalysisRate $analysisRate
+     * @return $this
+     */
     public function addAnalysisRate(AnalysisRate $analysisRate): self
     {
         if (!$this->analysisRates->contains($analysisRate)) {
             $this->analysisRates[] = $analysisRate;
             $analysisRate->setAnalysis($this);
         }
-
         return $this;
     }
 
+    /**
+     * @param AnalysisRate $analysisRate
+     * @return $this
+     */
     public function removeAnalysisRate(AnalysisRate $analysisRate): self
     {
         if ($this->analysisRates->contains($analysisRate)) {
@@ -141,7 +173,6 @@ class Analysis
                 $analysisRate->setAnalysis(null);
             }
         }
-
         return $this;
     }
 }

@@ -13,7 +13,7 @@ use App\Entity\PatientTesting;
 class PatientTestingInfoService
 {
     /** @var string Format of patient testing date */
-    public const PATIENT_TESTING_DATE_FORMAT = 'd.m.Y H:m';
+    public const PATIENT_TESTING_DATE_FORMAT = 'd.m.Y H:i';
 
     /**
      * Возвращает строку с описанием анализа пациента
@@ -24,7 +24,8 @@ class PatientTestingInfoService
      */
     static public function getPatientTestingInfoString(PatientTesting $patientTesting)
     {
-        $patientInfo = 'Пациент: '. AuthUserInfoService::getFIO($patientTesting->getMedicalHistory()->getPatient()->getAuthUser(), true);
+        $patientInfo = 'Пациент: '.
+            AuthUserInfoService::getFIO($patientTesting->getMedicalHistory()->getPatient()->getAuthUser(), true);
         if ($patientTesting->getPrescriptionTesting()) {
             $plannedDateTimeString = ', '.$patientTesting->getPrescriptionTesting()->getPlannedDate()
                     ->format(self::PATIENT_TESTING_DATE_FORMAT);

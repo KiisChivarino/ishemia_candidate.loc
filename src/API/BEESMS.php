@@ -9,7 +9,6 @@ class BEESMS {
 	var $hostname='beeline.amega-inform.ru';
 	var $path='/sms_send/';
 	var $proxy_data=false;
-	
 	var $post_data=array();
 	var $multipost=false;
 	
@@ -199,7 +198,7 @@ if(!function_exists('http_build_query')) {
 			
 			if(is_array($v) || is_object($v))	array_push($ret,http_build_query($v,"",$sep,$k));
 			else	 array_push($ret,$k."=".urlencode($v));
-		};
+		}
 		if(empty($sep)) $sep = ini_get("arg_separator.output");		
 		return		implode($sep, $ret);
 	}

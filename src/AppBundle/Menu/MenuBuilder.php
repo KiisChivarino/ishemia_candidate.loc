@@ -304,6 +304,12 @@ class MenuBuilder
                 'route' => 'template_parameter_text_list'
             ]
         );
+        $menu['medical_guides']->addChild(
+            'startingPoints', [
+                'label' => 'Точки отсчета',
+                'route' => 'starting_point_list'
+            ]
+        );
         $menu->addChild(
             'locations', [
                 'label' => 'Управление локациями',

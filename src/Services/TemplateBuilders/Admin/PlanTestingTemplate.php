@@ -45,6 +45,10 @@ class PlanTestingTemplate extends AdminTemplateBuilder
     protected const FORM_CONTENT = [
         'analysisGroupPlaceholder' => 'Выберите обследование',
     ];
+    /** @var string[] Common form_show content */
+    protected const FORM_SHOW_CONTENT = [
+        'startingPoint' => StartingPointTemplate::ENTITY_CONTENT['startingPoint'],
+    ];
 
     /**
      * PlanTestingTemplate constructor.

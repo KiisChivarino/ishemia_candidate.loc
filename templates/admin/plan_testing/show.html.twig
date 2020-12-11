@@ -21,6 +21,16 @@
         </p>
     </li>
     <li>
+        <span class="title">{{ template.items.show.content.startingPoint }}</span>
+        <p>
+            {% if entity.startingPoint %}
+                <a href="{{ path('starting_point_show', {'id': entity.startingPoint.id}) }}">
+                    {{ entity.startingPoint.title }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
         <span class="title">{{ template.items.show.content.timeRangeCount }}</span>
         <p>{{ entity.timeRangeCount }}</p>
     </li>

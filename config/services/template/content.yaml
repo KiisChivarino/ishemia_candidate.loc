@@ -6,3 +6,4 @@ parameters:
   falseValue: нет
   description: Описание
   name: Название
+  title: Заголовок

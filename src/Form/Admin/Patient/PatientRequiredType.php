@@ -52,6 +52,7 @@ class PatientRequiredType extends AbstractType
                     'label' => $templateItem->getContentValue('dateBirth'),
                     'widget' => 'single_text',
                     'format' => 'yyyy-MM-dd',
+                    'required' => true,
                 ]
             )
             ->add('address', null, ['label' => $templateItem->getContentValue('address')])
@@ -88,6 +89,17 @@ class PatientRequiredType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('hospitalPlaceholder'),
                     'remote_params' => ['city' => '0'],
+                    'required' => true,
+                ]
+            )
+            ->add(
+                'heartAttackDate',
+                DateType::class,
+                [
+                    'label' => $templateItem->getContentValue('heartAttackDate'),
+                    'widget' => 'single_text',
+                    'format' => 'yyyy-MM-dd',
+                    'required' => true,
                 ]
             );
     }

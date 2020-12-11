@@ -57,8 +57,5 @@ services:
     arguments: ['@doctrine.orm.entity_manager']
     tags: [form.type]
 
-  App\Services\FilterService\FilterServie:
-    autowire: true
-
   App\Services\Notification\SMSNotificationService:
     autowire: true

@@ -7,8 +7,10 @@ import './tabs';
 import '../css/admin.scss'
 import './mask';
 import './hospitalByCity';
-import './tinymce';
+ // import './tinymce';
 import './fileUpload';
+
+
 
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
@@ -16,28 +18,48 @@ require('../images/operation-icon-3.svg');
 require('../images/favicons/adm-fav.ico');
 require('fancybox')($);
 
+
+// // Import TinyMCE
+// var tinymce = require('tinymce/tinymce');
+//
+// // Default icons are required for TinyMCE 5.3 or above
+// require('tinymce/icons/default');
+//
+// // A theme is also required
+// require('tinymce/themes/silver');
+//
+// // Any plugins you want to use has to be imported
+// require('tinymce/plugins/paste');
+// require('tinymce/plugins/link');
+//
+// // Initialize the app
+// tinymce.init({
+//     selector: '.tinymce',
+//     language: 'ru',
+//     plugins: ['paste', 'link']
+// });
+
+
 $(document).ready(function () {
-    $(document).ready(function () {
-        $('.fancybox').fancybox({
-            buttons : [
-                'close'
-            ],
-            helpers: {
-                title: null
-            },
-            tpl: {
-                closeBtn: '<a title="Close" class="fancybox-item fancybox-close"></a>'
-            },
-            afterShow: function () {
-                let click = 1;
-                $('.fancybox-wrap').click(function () {
-                    let n = 90 * ++click;
-                    $('.fancybox-skin')
-                        .css('webkitTransform', 'rotate(-' + n + 'deg)')
-                        .css('mozTransform', 'rotate(-' + n + 'deg)');
-                });
-            }
-        });
+    $('.fancybox').fancybox({
+        buttons: [
+            'close'
+        ],
+        helpers: {
+            title: null
+        },
+        tpl: {
+            closeBtn: '<a title="Close" class="fancybox-item fancybox-close"></a>'
+        },
+        afterShow: function () {
+            let click = 1;
+            $('.fancybox-wrap').click(function () {
+                let n = 90 * ++click;
+                $('.fancybox-skin')
+                    .css('webkitTransform', 'rotate(-' + n + 'deg)')
+                    .css('mozTransform', 'rotate(-' + n + 'deg)');
+            });
+        }
     });
 
     //view hospitals for ROLE_DOCTOR_HOSPITAL

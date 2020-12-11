@@ -22,3 +22,5 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 .htaccess
 /data/patient_files/
+/web/bundles
+/web/

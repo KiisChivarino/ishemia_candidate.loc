@@ -27,8 +27,7 @@ class SMSNotificationService
     const
         SENDER = '3303',
         SMS_USER = '775000',
-        SMS_PASSWORD = 'Yandex10241024'
-    ;
+        SMS_PASSWORD = 'Yandex10241024';
 
     /** @var string Standard sms statuses */
     const
@@ -74,7 +73,7 @@ class SMSNotificationService
      */
     private function send(string $text, string $target): string
     {
-        $sms = new BEESMS(self::SMS_USER,self::SMS_PASSWORD);
+        $sms = new BEESMS(self::SMS_USER, self::SMS_PASSWORD);
         return $sms->post_message($text, $target, self::SENDER);
     }
 
@@ -86,7 +85,7 @@ class SMSNotificationService
      */
     private function check(string $dateFrom, string $dateTo): string
     {
-        $sms = new BEESMS(self::SMS_USER,self::SMS_PASSWORD);
+        $sms = new BEESMS(self::SMS_USER, self::SMS_PASSWORD);
         return $sms->status_sms_date($dateFrom, $dateTo);
     }
 
@@ -108,11 +107,12 @@ class SMSNotificationService
      */
     public function sendSMS(): bool
     {
-        $result = new SimpleXMLElement($this->send(
-            $this->text,
-            self::PHONE_PREFIX_RU . $this->target
-        ));
-
+        $result = new SimpleXMLElement(
+            $this->send(
+                $this->text,
+                self::PHONE_PREFIX_RU . $this->target
+            )
+        );
         $sMSNotification = new SMSNotification();
         $sMSNotification->setUser(
             $this->em->getRepository(AuthUser::class)->findOneBy([
@@ -122,7 +122,7 @@ class SMSNotificationService
         $sMSNotification->setText($this->text);
         $sMSNotification->setCreatedAt(new DateTime('now'));
         $sMSNotification->setStatus(self::WAIT);
-        $sMSNotification->setExternalId((string) $result->result->sms['id']);
+        $sMSNotification->setExternalId((string)$result->result->sms['id']);
 
         $this->em->persist($sMSNotification);
         $this->em->flush();
@@ -137,14 +137,15 @@ class SMSNotificationService
      */
     public function reSendSMS(SMSNotification $notification): bool
     {
-        $result = new SimpleXMLElement($this->send(
-            $notification->getText(),
-            self::PHONE_PREFIX_RU . $notification->getUser()->getPhone()
-        ));
-
+        $result = new SimpleXMLElement(
+            $this->send(
+                $notification->getText(),
+                self::PHONE_PREFIX_RU . $notification->getUser()->getPhone()
+            )
+        );
         $notification->setCreatedAt(new DateTime('now'));
-        $notification->setExternalId((string) $result->result->sms['id']);
-        $notification->setAttempt((int) $notification->getAttempt() + 1);
+        $notification->setExternalId((string)$result->result->sms['id']);
+        $notification->setAttempt((int)$notification->getAttempt() + 1);
 
         $this->em->persist($notification);
         $this->em->flush();

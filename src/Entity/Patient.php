@@ -135,7 +135,7 @@ class Patient
     private $passportIssuingAuthorityCode;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="date", nullable=false, options={"comment"="Дата возникновения инфаркта"})
      */
     private $heartAttackDate;
 

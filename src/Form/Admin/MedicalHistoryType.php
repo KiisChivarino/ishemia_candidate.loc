@@ -48,6 +48,24 @@ class MedicalHistoryType extends AbstractType
                 ]
             )
             ->add(
+                'mainDisease', Select2EntityType::class, [
+                    'label' => $templateItem->getContentValue('mainDisease'),
+                    'method' => 'POST',
+                    'remote_route' => 'find_diagnosis_ajax',
+                    'class' => Diagnosis::class,
+                    'primary_key' => 'id',
+                    'text_property' => 'name',
+                    'minimum_input_length' => 3,
+                    'page_limit' => 1,
+                    'allow_clear' => true,
+                    'delay' => 250,
+                    'language' => 'ru',
+                    'placeholder' => $templateItem->getContentValue('mainDiseasePlaceholder'),
+                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
+                    'required' => false
+                ]
+            )
+            ->add(
                 'backgroundDiseases', Select2EntityType::class, [
                     'label' => $templateItem->getContentValue('backgroundDiseases'),
                     'method' => 'POST',
@@ -105,6 +123,7 @@ class MedicalHistoryType extends AbstractType
                 'diseaseHistory', null, [
                     'label' => $templateItem->getContentValue('diseaseHistory'),
                     'attr' => ['class' => 'tinymce'],
+                    'required'=>false,
                 ]
             )
             ->add(
@@ -112,6 +131,7 @@ class MedicalHistoryType extends AbstractType
                     'label' => $templateItem->getContentValue('lifeHistory'),
                     'attr' => ['class' => 'tinymce'],
                     'data' => $options['anamnesOfLifeText'],
+                    'required'=>false,
                     'mapped' => false
                 ]
             )
