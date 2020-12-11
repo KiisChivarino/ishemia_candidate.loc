@@ -23,7 +23,6 @@ class ReceivedSMSTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'fullName' => 'Полное название',
         'userString' => 'Пользователь',
-        'logAction' => 'Тип лога',
         'createdAt' => 'Дата и время создания',
         'patient' => 'Пациент',
         'phone' => 'Номер телефона',
@@ -40,14 +39,9 @@ class ReceivedSMSTemplate extends AdminTemplateBuilder
     /** @var string[] Common list content for staff templates */
     protected const LIST_CONTENT = [
         'h1' => 'Список полученных SMS',
-        'title' => 'Логи',
+        'title' => 'Список полученных SMS',
     ];
 
-    /** @var string[] Common new content for staff templates */
-    protected const NEW_CONTENT = [
-        'h1' => 'Новый лог',
-        'title' => 'Новый лог',
-    ];
     /** @var string[] Common show content for staff templates */
     protected const SHOW_CONTENT = [
         'logs' => 'SMS',

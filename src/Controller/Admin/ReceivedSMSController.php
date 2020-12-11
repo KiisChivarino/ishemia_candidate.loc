@@ -32,7 +32,6 @@ class ReceivedSMSController extends AdminAbstractController
 
     /**
      * Received SMS constructor.
-     *
      * @param Environment $twig
      * @param RouterInterface $router
      */
@@ -45,7 +44,6 @@ class ReceivedSMSController extends AdminAbstractController
     /**
      * Список полученных смс
      * @Route("/", name="sms_list", methods={"GET", "POST"})
-     *
      * @param Request $request
      * @param SMSDataTableService $sMSDataTableService
      * @return Response
@@ -58,7 +56,6 @@ class ReceivedSMSController extends AdminAbstractController
     /**
      * Edit sms
      * @Route("/{id}/edit", name="sms_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
-     *
      * @param Request $request
      * @param ReceivedSMS $receivedSMS
      * @return Response
@@ -72,7 +69,6 @@ class ReceivedSMSController extends AdminAbstractController
     /**
      * Delete sms
      * @Route("/{id}", name="sms_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-     *
      * @param Request $request
      * @param ReceivedSMS $receivedSMS
      * @return Response
