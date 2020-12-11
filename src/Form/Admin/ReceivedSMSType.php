@@ -12,8 +12,17 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ReceivedSMSType
+ * @package App\Form\Admin
+ */
 class ReceivedSMSType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @throws \Exception
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FormTemplateItem $templateItem */
@@ -44,6 +53,9 @@ class ReceivedSMSType extends AbstractType
         ;
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver

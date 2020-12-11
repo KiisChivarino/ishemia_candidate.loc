@@ -2,7 +2,6 @@
 
 namespace App\Services\DataTable\Admin;
 
-use App\Entity\Logger\Log;
 use App\Entity\Patient;
 use App\Entity\ReceivedSMS;
 use App\Services\InfoService\AuthUserInfoService;
@@ -18,7 +17,6 @@ use Omines\DataTablesBundle\DataTable;
 /**
  * Class DataTableService
  * methods for adding data tables
- *
  * @package App\DataTable
  */
 class SMSDataTableService extends AdminDatatableService
@@ -44,7 +42,8 @@ class SMSDataTableService extends AdminDatatableService
                         /** @var Patient $patient */
                         $patient = $receivedSMS->getPatient();
                         return $patient
-                            ? $this->getLink((new AuthUserInfoService())->getFIO($patient->getAuthUser()), $patient->getId(), 'patient_show')
+                            ? $this->getLink((new AuthUserInfoService())
+                                ->getFIO($patient->getAuthUser()), $patient->getId(), 'patient_show')
                             : '';
                     }
                 ]
