@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -282,7 +281,7 @@ class AuthUser implements UserInterface
     {
         if (!$this->sMSNotifications->contains($sMSNotification)) {
             $this->sMSNotifications[] = $sMSNotification;
-            $sMSNotification->setгыuser($this);
+            $sMSNotification->setuser($this);
         }
 
         return $this;
@@ -296,8 +295,8 @@ class AuthUser implements UserInterface
     {
         if ($this->sMSNotifications->removeElement($sMSNotification)) {
             // set the owning side to null (unless already changed)
-            if ($sMSNotification->getгыuser() === $this) {
-                $sMSNotification->setгыuser(null);
+            if ($sMSNotification->getuser() === $this) {
+                $sMSNotification->setuser(null);
             }
         }
 

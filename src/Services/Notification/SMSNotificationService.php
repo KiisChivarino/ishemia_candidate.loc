@@ -3,12 +3,13 @@
 
 namespace App\Services\Notification;
 
-
 use App\API\BEESMS;
 use App\Entity\AuthUser;
 use App\Entity\SMSNotification;
+use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use SimpleXMLElement;
 
 /**
@@ -17,6 +18,12 @@ use SimpleXMLElement;
  */
 class SMSNotificationService
 {
+    /** @var int Update time in hours */
+    const
+        PERIOD_TO_UPDATE_EMAIL = 25,
+        PERIOD_TO_CHECK_EMAIL = 2
+    ;
+
     /** @var string Auth data for sms service */
     const
         SENDER = '3303',
@@ -84,6 +91,18 @@ class SMSNotificationService
     }
 
     /**
+     * Get SMS form inbox
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return string
+     */
+    private function getMessages(string $dateFrom, string $dateTo): string
+    {
+        $sms = new BEESMS(self::SMS_USER,self::SMS_PASSWORD);
+        return $sms->status_inbox(false,0,$dateFrom,$dateTo);
+    }
+
+    /**
      * SMS Sender and result parser
      * @return bool
      */
@@ -137,12 +156,30 @@ class SMSNotificationService
     /**
      * SMS Checker and result parser
      * @return SimpleXMLElement
+     * @throws Exception
      */
     public function checkSMS()
     {
         return new SimpleXMLElement($this->check(
-            (new DateTime('today'))->format('d.m.Y') . ' 00:00:00',
-            (new DateTime('today'))->format('d.m.Y') . ' 23:59:59'
+            (new DateTime('now'))
+                ->sub(new DateInterval('PT'. self::PERIOD_TO_UPDATE_EMAIL .'H'))
+                ->format('d.m.Y H:i:s'),
+            (new DateTime('now'))->format('d.m.Y H:i:s')
+        ));
+    }
+
+    /**
+     * SMS Getter and result parser
+     * @return SimpleXMLElement
+     * @throws Exception
+     */
+    public function getUnreadSMS()
+    {
+        return new SimpleXMLElement($this->getMessages(
+            (new DateTime('now'))
+                ->sub(new DateInterval('PT'. self::PERIOD_TO_CHECK_EMAIL .'H'))
+                ->format('d.m.Y H:i:s'),
+            (new DateTime('now'))->format('d.m.Y H:i:s')
         ));
     }
 

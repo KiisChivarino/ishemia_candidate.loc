@@ -140,11 +140,17 @@ class Patient
     private $heartAttackDate;
 
     /**
+     * @ORM\OneToMany(targetEntity=ReceivedSMS::class, mappedBy="patient", orphanRemoval=true)
+     */
+    private $receivedSMS;
+
+    /**
      * Patient constructor.
      */
     public function __construct()
     {
         $this->medicalHistories = new ArrayCollection();
+        $this->receivedSMS = new ArrayCollection();
     }
 
     /**
@@ -513,5 +519,49 @@ class Patient
     {
         $this->heartAttackDate = $heartAttackDate;
         return $this;
+    }
+
+    /**
+     * @return Collection|ReceivedSMS[]
+     */
+    public function getReceivedSMS(): Collection
+    {
+        return $this->receivedSMS;
+    }
+
+    /**
+     * @param ReceivedSMS $receivedSM
+     * @return $this
+     */
+    public function addReceivedSM(ReceivedSMS $receivedSM): self
+    {
+        if (!$this->receivedSMS->contains($receivedSM)) {
+            $this->receivedSMS[] = $receivedSM;
+            $receivedSM->setPatient($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param ReceivedSMS $receivedSM
+     * @return $this
+     */
+    public function removeReceivedSM(ReceivedSMS $receivedSM): self
+    {
+        if ($this->receivedSMS->removeElement($receivedSM)) {
+            // set the owning side to null (unless already changed)
+            if ($receivedSM->getPatient() === $this) {
+                $receivedSM->setPatient(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getAuthUser()->getFirstName() . ' ' . $this->getAuthUser()->getLastName();
     }
 }

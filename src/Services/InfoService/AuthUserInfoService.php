@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Services\InfoService;
-
 
 use App\Entity\AuthUser;
 use App\Entity\Role;
@@ -108,6 +106,9 @@ class AuthUserInfoService
             . '-' . substr($phone, 6, 4);
     }
 
+    /**
+     * @return string
+     */
     static public function randomPassword() {
         $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789(_).,!$%^&*+-=";
         $pass = array(); //remember to declare $pass as an array

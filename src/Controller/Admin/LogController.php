@@ -6,7 +6,7 @@ use App\Entity\Logger\Log;
 use App\Entity\Logger\LogAction;
 use App\Services\DataTable\Admin\LogDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\Admin\LogTemplate;
+use App\Services\TemplateBuilders\Admin\ReceivedSMSTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,7 +32,7 @@ class LogController extends AdminAbstractController
      */
     public function __construct(Environment $twig, RouterInterface $router)
     {
-        $this->templateService = new LogTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new ReceivedSMSTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -52,10 +52,8 @@ class LogController extends AdminAbstractController
     /**
      * Template parameter info
      * @Route("/{id}", name="log_show", methods={"GET"}, requirements={"id"="\d+"})
-     *
      * @param LogAction $logAction
      * @param FilterService $filterService
-     *
      * @return Response
      */
     public function show(LogAction $logAction, FilterService $filterService): Response
