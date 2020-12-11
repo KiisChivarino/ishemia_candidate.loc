@@ -55,7 +55,7 @@ class SMSDataTableService extends AdminDatatableService
                     'render' => function (string $data, ReceivedSMS $receivedSMS) {
                         /** @var Patient $patient */
                         $patient = $receivedSMS->getPatient();
-                        return '+7' . $patient->getAuthUser()->getPhone();
+                        return (new AuthUserInfoService())->getPhone($patient->getAuthUser());
                     }
                 ]
             )
