@@ -3,7 +3,6 @@
 
 namespace App\Services\InfoService;
 
-
 use App\Entity\AuthUser;
 use App\Entity\Role;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;

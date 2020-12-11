@@ -6,10 +6,12 @@ use App\Repository\SMSNotificationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * SMS Notification
  * @ORM\Entity(repositoryClass=SMSNotificationRepository::class)
  */
 class SMSNotification
 {
+    /** @var int Перввая попытка */
     const FIRST_ATTEMPT = 1;
 
     /**
@@ -58,16 +60,26 @@ class SMSNotification
         $this->attempt = self::FIRST_ATTEMPT;
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return AuthUser|null
+     */
     public function getUser(): ?AuthUser
     {
         return $this->user;
     }
 
+    /**
+     * @param AuthUser|null $user
+     * @return $this
+     */
     public function setUser(?AuthUser $user): self
     {
         $this->user = $user;
@@ -75,11 +87,18 @@ class SMSNotification
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->created_at;
     }
 
+    /**
+     * @param \DateTimeInterface $created_at
+     * @return $this
+     */
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
@@ -87,11 +106,18 @@ class SMSNotification
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getExternalId(): ?string
     {
         return $this->externalId;
     }
 
+    /**
+     * @param string $externalId
+     * @return $this
+     */
     public function setExternalId(string $externalId): self
     {
         $this->externalId = $externalId;
@@ -115,11 +141,18 @@ class SMSNotification
         $this->text = $text;
     }
 
+    /**
+     * @return string|null
+     */
     public function getStatus(): ?string
     {
         return $this->status;
     }
 
+    /**
+     * @param string $status
+     * @return $this
+     */
     public function setStatus(string $status): self
     {
         $this->status = $status;
