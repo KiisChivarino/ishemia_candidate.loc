@@ -362,6 +362,17 @@ class MenuBuilder
                 'route' => 'log_action_list'
             ]
         );
+        $menu->addChild(
+            'sms', [
+                'label' => 'Смс',
+            ]
+        )->setAttribute('class', 'sublist');
+        $menu['sms']->addChild(
+            'sms', [
+                'label' => 'Принятые СМС',
+                'route' => 'sms_list'
+            ]
+        );
         foreach ($menu->getChildren() as $item) {
             foreach ($item->getChildren() as $childrenItem) {
                 if ($childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()) {
