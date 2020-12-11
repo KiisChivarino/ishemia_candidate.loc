@@ -2,11 +2,16 @@
 
 namespace App\Controller\Admin;
 
+use App\Repository\PatientRepository;
+use App\Services\Notification\EmailNotificationService;
 use App\Services\Notification\SMSNotificationService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Michelf\Markdown;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Class AdminController
@@ -37,14 +42,26 @@ class AdminController extends AdminAbstractController
     /** KernelInterface $appKernel */
     private $appKernel;
 
-    public function __construct(KernelInterface $appKernel, SMSNotificationService $sms)
+    /**
+     * @var SMSNotificationService
+     */
+    private $sms;
+
+    /**
+     * @var EmailNotificationService
+     */
+    private $email;
+
+    public function __construct(KernelInterface $appKernel, SMSNotificationService $sms, EmailNotificationService $emailNotificationService)
     {
+        $this->sms = $sms;
         $this->appKernel = $appKernel;
+        $this->email = $emailNotificationService;
     }
 
     /**
      * @Route("/admin", name="admin")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function index()
     {
@@ -57,8 +74,36 @@ class AdminController extends AdminAbstractController
     }
 
     /**
+     * @Route("/admin/testemail", name="testemail")
+     * @param PatientRepository $patientRepository
+     * @return Response
+     */
+    public function testemail(PatientRepository $patientRepository)
+    {
+        try {
+            $this->email
+                ->setPatient($patientRepository->findAll()[0])
+                ->setHeader('Ура, а вот и вы!')
+                ->setContent('Ну здраствуй...')
+                ->setButtonText('Перейти на сайт')
+                ->setButtonLink('http://shemia.test')
+                ->sendDefaultEmail();
+        } catch (\ErrorException $e) {
+            // TODO: Написать кэтч
+        } catch (LoaderError $e) {
+            // TODO: Написать кэтч
+        } catch (RuntimeError $e) {
+            // TODO: Написать кэтч
+        } catch (SyntaxError $e) {
+            // TODO: Написать кэтч
+        }
+
+        return new Response(true);
+    }
+
+    /**
      * @Route("/admin/testsms", name="testsms")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function testsms()
     {

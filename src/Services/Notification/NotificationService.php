@@ -5,6 +5,9 @@ namespace App\Services\Notification;
 
 use App\Entity\Patient;
 use Doctrine\ORM\EntityManagerInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Class SMSNotificationService
@@ -33,14 +36,20 @@ class NotificationService
     private $patient;
 
     /**
+     * @var EmailNotificationService
+     */
+    private $email;
+
+    /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
      * @param SMSNotificationService $sMSnotificationService
      */
-    public function __construct(EntityManagerInterface $em, SMSNotificationService $sMSnotificationService)
+    public function __construct(EntityManagerInterface $em, SMSNotificationService $sMSnotificationService, EmailNotificationService $emailNotificationService)
     {
         $this->em = $em;
         $this->sms = $sMSnotificationService;
+        $this->email = $emailNotificationService;
     }
 
     /**
@@ -71,8 +80,25 @@ class NotificationService
                 $this->patient->getAuthUser()->getPhone()
             );
         }
+
         if ($this->patient->getEmailInforming()) {
-            // TODO: Add email notification
+            try {
+                $this->email
+                    ->setPatient($this->patient)
+                    ->setHeader('Ура, а вот и вы!')
+                    ->setContent($this->text)
+                    ->setButtonText('Перейти на сайт')
+                    ->setButtonLink('http://shemia.test')
+                    ->sendDefaultEmail();
+            } catch (\ErrorException $e) {
+                // TODO: Написать кэтч
+            } catch (LoaderError $e) {
+                // TODO: Написать кэтч
+            } catch (RuntimeError $e) {
+                // TODO: Написать кэтч
+            } catch (SyntaxError $e) {
+                // TODO: Написать кэтч
+            }
         }
         return true;
     }
