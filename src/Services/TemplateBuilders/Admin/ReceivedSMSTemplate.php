@@ -3,7 +3,6 @@
 namespace App\Services\TemplateBuilders\Admin;
 
 use App\Services\FilterService\FilterService;
-use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
@@ -111,6 +110,7 @@ class ReceivedSMSTemplate extends AdminTemplateBuilder
             );
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
+        $this->setRedirectRoute('sms_list');
         return $this;
     }
 }

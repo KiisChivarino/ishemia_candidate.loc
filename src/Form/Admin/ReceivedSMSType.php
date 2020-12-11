@@ -33,15 +33,13 @@ class ReceivedSMSType extends AbstractType
             ])
             ->add('isProcessed', CheckboxType::class, [
                 'label' => $templateItem->getContentValue('processed'),
-                'required' => true
+                'required' => false
             ])
-            ->add('patient', TextType::class, [
+            ->add('patient', null, [
                 'label' => $templateItem->getContentValue('patient'),
                 'required' => false,
-                'mapped' => false,
-                'attr' => [
-                    'readonly' => true
-                ]
+                'mapped' => true,
+                'disabled' => true
             ])
         ;
     }

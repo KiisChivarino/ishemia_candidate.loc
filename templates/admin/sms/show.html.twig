@@ -1,19 +1,5 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
-    <li>
-        <span class="title">{{ template.items.show.content.isProcessed }}</span>
-        <p>{{ entity.name }}</p>
-    </li>
-{#    <li>#}
-{#        <span class="title">{{ template.items.show.content.log }}</span>#}
-{#        <p>#}
-{#            {% if entity.log %}#}
-{#                <a href="{{ path('template_type_show', {'id': entity.log.id}) }}">#}
-{#                    {{ entity.log.name }}#}
-{#                </a>#}
-{#            {% endif %}#}
-{#        </p>#}
-{#    </li>#}
 {% endblock %}
 {% block custom_actions %}
     <div class="buttons">
