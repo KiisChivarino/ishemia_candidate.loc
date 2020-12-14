@@ -1,0 +1,11 @@
+parameters:
+#  Параметры почты
+  account_name: 'lpvs@kvokka.com'
+  account_password: 'ipkh159fpos6'
+  smtp_host: 'smtp.yandex.ru'
+  smtp_port: 465
+  smtp_encryption: 'ssl'
+#  Параметры компании
+  site_name: 'Медицина'
+  address_line_1: 'ул. Ленина д.30'
+  address_line_2: 'Курск, Россия'
