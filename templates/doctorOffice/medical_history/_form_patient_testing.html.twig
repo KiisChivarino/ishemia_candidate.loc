@@ -1,3 +1,43 @@
 {{ form_start(form) }}
-{{ include('files_form.html.twig', {'filesForm' : form.patientTestingFiles} ) }}
+{# {{ include('files_form.html.twig', {'filesForm' : form.patientTestingNotRequired.patientTestingFiles} ) }} #}
+{% import "recursive_form_macro.html.twig" as recursive_form_macro %}
+{% set filesForm = form.patientTestingNotRequired.patientTestingFiles %}
+<ul>
+    <li>
+        <div id="fileBox">
+            {% set pos = 0 %}
+            <div id="jsFileWidgetExample" style="display: none;">
+                {{ form_widget(filesForm.vars.prototype) }}
+                {% do filesForm.setRendered %}
+            </div>
+            {% for doc in filesForm %}
+                <div class="jsFile" data-pos="{{ pos }}">
+                    <div id="jsView{{ pos }}">
+                        <span id="jsName{{ pos }}">
+                            {{ doc.vars.value ? doc.vars.value.fileName : '' }}
+                        </span>
+                        <span id="jsRemove{{ pos }}">
+                            <button type="button" class="js-remove-file">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <div id="jsWidget{{ pos }}" style="display: none;">
+                        {{ form_widget(doc) }}
+                    </div>
+                </div>
+                {% set pos = pos + 1 %}
+            {% endfor %}
+        </div>
+    </li>
+    {% for item in filesForm %}
+    <li>
+        {{ form_widget(item) }}
+    </li>
+    {% endfor %}
+</ul>
+
+<div class="buttons">
+    <button class="btn btn--mode">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
+</div>
 {{ form_end(form) }}

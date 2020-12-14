@@ -54,6 +54,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'analysisResultsLink' => 'Результаты анализов',
         'isByPlan' => 'По плану обследований',
         'planTesting' => 'План обследований',
+        'prescriptionTesting' => PrescriptionTestingTemplate::ENTITY_CONTENT['prescriptionTesting'],
     ];
 
     /** @var string[] Common EDIT_CONTENT */

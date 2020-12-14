@@ -11,6 +11,7 @@ use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -23,7 +24,7 @@ class PatientTestingResultTemplate extends AdminTemplateBuilder
 {
 
     /** @var string[] Common content for analysis templates */
-    protected const COMMON_CONTENT = [
+    public const COMMON_CONTENT = [
         'patientTesting' => 'Обследование',
         'analysis' => 'Анализ',
         'analysisRate' => 'Референтные значения',
@@ -88,6 +89,7 @@ class PatientTestingResultTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

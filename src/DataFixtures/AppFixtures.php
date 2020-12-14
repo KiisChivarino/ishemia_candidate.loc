@@ -81,7 +81,7 @@ class AppFixtures extends Fixture
         $manager->flush();
         $manager->getRepository(Gender::class)->addGenderFromFixtures('ж', 'женщина');
         $manager->flush();
-        $manager->getRepository(Gender::class)->addGenderFromFixtures('не важен', 'не важен');
+        $manager->getRepository(Gender::class)->addGenderFromFixtures('н', 'не важен');
         /** end Пол */
 
         /** begin Роли*/

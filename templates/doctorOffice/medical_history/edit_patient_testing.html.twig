@@ -19,26 +19,4 @@
     <div class="adm-users-edit">
         {{ include( template.items.form.path~'_form_patient_testing.html.twig') }}
     </div>
-    <div class="table-wrapper table-history">
-    <table>
-        <thead>
-        <tr>
-            <th>Анализ</th>
-            <th>Результат</th>
-            <th>Управление</th>
-        </tr>
-        </thead>
-        {% for patientTestingResult in patientTestingResults %}
-        <tr>
-            <td>{{ patientTestingResult.analysis.name }}</td>
-            <td>
-                <label>
-                    <input type="text" name="test" />
-                </label>
-            </td>
-            <td><button>Внести</button></td>
-        </tr>
-        {% endfor %}
-    </table>
-    </div>
 {% endblock %}

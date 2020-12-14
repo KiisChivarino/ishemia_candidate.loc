@@ -15,6 +15,7 @@ use App\Form\Admin\Patient\PatientOptionalType;
 use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointmentType;
 use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
+use App\Form\Admin\PatientTestingResultType;
 use App\Form\DischargeEpicrisisFileType;
 use App\Form\DischargeEpicrisisType;
 use App\Form\Doctor\AuthUserPersonalDataType;
@@ -46,6 +47,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\VarDumper\VarDumper;
 use Twig\Environment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -371,6 +373,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
      * @param PatientTestingResultRepository $patientTestingResultRepository
      * @return RedirectResponse|Response
      * @throws ReflectionException
+     * @throws Exception
      */
     public function editPatientTesting(
         Request $request,
@@ -379,6 +382,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         PatientTestingResultRepository $patientTestingResultRepository
     )
     {
+        $this->templateService->edit();
         $this->setRedirectMedicalHistoryRoute($patientTesting->getMedicalHistory()->getPatient()->getId());
 //        $form = $this->createForm(
 //            PatientTestingNotRequiredType::class,
@@ -387,11 +391,19 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
 //                $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),]
 //        );
 
+        $patientTestingResultData = [];
+        foreach ($patientTestingResultRepository->getNotEnabledTestingResults($patientTesting) as $key => $patientTestingResult) {
+            $patientTestingResultData[MultiFormService::getFormName(PatientTestingResultType::class) . (string)$key] = $patientTestingResult;
+        }
+
         $formBuilder = $this->createFormBuilder();
         $formBuilder->setData(
-            [
-                MultiFormService::getFormName(PatientTestingNotRequiredType::class) => $patientTesting,
-            ]
+            array_merge(
+                $patientTestingResultData,
+                [
+                    MultiFormService::getFormName(PatientTestingNotRequiredType::class) => $patientTesting,
+                ]
+            )
         );
         $formBuilder->add(
             MultiFormService::getFormName(PatientTestingNotRequiredType::class),
@@ -401,12 +413,26 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
                     $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
             ]
         );
+        foreach ($patientTestingResultRepository->getNotEnabledTestingResults($patientTesting) as $key => $patientTestingResult) {
+            $formBuilder->add(
+                MultiFormService::getFormName(PatientTestingResultType::class) . (string)$key,
+                PatientTestingResultType::class,
+                [
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE =>
+                        $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+                    'patientTesting' => $patientTestingResult->getPatientTesting(),
+                    'analysis' => $patientTestingResult->getAnalysis()
+                ]
+            );
+        }
         $form = $formBuilder->getForm();
+        VarDumper::dump($form);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $fileService->prepareFiles(
-                $form->get(MultiFormService::getFormName(PatientTestingFileType::class) . 's')
+                $form->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
+                    ->get(MultiFormService::getFormName(PatientTestingFileType::class) . 's')
             );
             $entityManager->persist($patientTesting);
             $entityManager->flush();
