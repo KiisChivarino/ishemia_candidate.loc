@@ -20,26 +20,7 @@ use Twig\Error\SyntaxError;
  */
 class AdminController extends AdminAbstractController
 {
-
-    /** @var string Auth data for sms service */
-    const
-        SENDER = '3303',
-        SMS_USER = '775000',
-        SMS_PASSWORD = 'Yandex10241024'
-    ;
-
-    /** @var string Standard sms statuses */
-    const
-        DELIVERED = 'delivered', // Статус sms - Доставлено
-        NOT_DELIVERED = 'not_delivered', // Статус sms - Не доставлено
-        WAIT = 'wait', // Статус sms - Ожидание доставки
-        FAILED = 'failed' // Статус sms - Ошибка
-    ;
-
-    /** @var string prefix for RU phone numbers */
-    const PHONE_PREFIX_RU = '+7';
-
-    /** KernelInterface $appKernel */
+    /** @var KernelInterface  */
     private $appKernel;
 
     /**
@@ -52,6 +33,12 @@ class AdminController extends AdminAbstractController
      */
     private $email;
 
+    /**
+     * AdminController constructor.
+     * @param KernelInterface $appKernel
+     * @param SMSNotificationService $sms
+     * @param EmailNotificationService $emailNotificationService
+     */
     public function __construct(KernelInterface $appKernel, SMSNotificationService $sms, EmailNotificationService $emailNotificationService)
     {
         $this->sms = $sms;
@@ -78,7 +65,7 @@ class AdminController extends AdminAbstractController
      * @param PatientRepository $patientRepository
      * @return Response
      */
-    public function testemail(PatientRepository $patientRepository)
+    public function testEmail(PatientRepository $patientRepository)
     {
         try {
             $this->email
@@ -105,7 +92,7 @@ class AdminController extends AdminAbstractController
      * @Route("/admin/testsms", name="testsms")
      * @return Response
      */
-    public function testsms()
+    public function testSMS()
     {
         header("Content-Type: text/xml; charset=UTF-8");
         $sms = $this->sms
@@ -113,33 +100,7 @@ class AdminController extends AdminAbstractController
             ->setTarget('0000000000')
 //            ->setTarget('9611672720')
             ->sendSMS();
-
 //        $this->sms->checkSMS();
-///
-///
-//
-//        $sms = $this->sms->getUnreadSMS();
-//        dd($sms);
-//        return new Response(dd(new \SimpleXMLElement($data)));
-//        $em = $this->container->get('doctrine')->getManager();
-//        $patients = $em->getRepository(Patient::class)->findAll();
-//
-//        $result = $this->sms->getUnreadSMS();
-//        foreach ($result->MESSAGES->MESSAGE as $message) {
-//            if ((string) $message->SMS_TARGET == self::SENDER) {
-//                foreach ($patients as $patient) {
-//                    if ((string) $message->SMS_SENDER == (string) self::PHONE_PREFIX_RU . $patient->getAuthUser()->getPhone()) {
-//                        $sms = new ReceivedSMS();
-//                        $sms->setPatient($patient);
-//                        $sms->setText((string) $message->SMS_TEXT);
-//                        $sms->setCreatedAt(new \DateTime('now'));
-//                        $em->persist($sms);
-//                    }
-//                }
-//            }
-//        }
-////        dd($sms);
-//        $em->flush();
         return new Response(true);
     }
 }

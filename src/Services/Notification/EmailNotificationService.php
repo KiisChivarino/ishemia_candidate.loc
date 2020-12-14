@@ -20,15 +20,6 @@ use Twig\Error\SyntaxError;
  */
 class EmailNotificationService
 {
-    /** main smtp configuration */
-    const
-        ACCOUNT_NAME = 'lpvs@kvokka.com',
-        ACCOUNT_PASSWORD = 'ipkh159fpos6',
-        SMTP_HOST = 'smtp.yandex.ru',
-        SMTP_PORT = 465,
-        SMTP_ENCRYPTION = 'ssl'
-    ;
-
     /** list of email templates */
     const
         DEFAULT_EMAIL_TEMPLATE = '/email/default.html.twig'
@@ -36,9 +27,6 @@ class EmailNotificationService
 
     /** Константы для email */
     const
-        SITE_NAME = 'Медицина',
-        ADDRESS_LINE_1 = 'ул. Ленина д.30',
-        ADDRESS_LINE_2 = 'Курск, Россия',
         GREETINGS = 'Уважаемый, %s'
     ;
 
@@ -87,17 +75,54 @@ class EmailNotificationService
     /** @var string  */
     private $addressLine1;
 
+    /** @var string */
+    private $accountName;
+
+    /** @var string */
+    private $accountPassword;
+
+    /** @var string */
+    private $smtpHost;
+
+    /** @var integer */
+    private $smtpPort;
+
+    /** @var string */
+    private $smtpEncryption;
+
     /**
      * EmailNotification constructor.
      * @param Environment $twig
+     * @param $accountName
+     * @param $accountPassword
+     * @param $smtpHost
+     * @param $smtpPort
+     * @param $smtpEncryption
+     * @param $siteName
+     * @param $addressLine1
+     * @param $addressLine2
      */
     public function __construct(
-        Environment $twig
+        Environment $twig,
+        $accountName,
+        $accountPassword,
+        $smtpHost,
+        $smtpPort,
+        $smtpEncryption,
+        $siteName,
+        $addressLine1,
+        $addressLine2
     )
     {
-        $this->siteName = self::SITE_NAME;
-        $this->addressLine1 = self::ADDRESS_LINE_1;
-        $this->addressLine2 = self::ADDRESS_LINE_2;
+        $this->accountName = $accountName;
+        $this->accountPassword = $accountPassword;
+        $this->smtpHost = $smtpHost;
+        $this->smtpPort = $smtpPort;
+        $this->smtpEncryption = $smtpEncryption;
+        $this->siteName = $siteName;
+        $this->addressLine1 = $addressLine1;
+        $this->addressLine2 = $addressLine2;
+
         $this->twig = $twig;
         $this->serverHost = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
             . "://"
@@ -108,17 +133,17 @@ class EmailNotificationService
     /**
      * @throws ErrorException
      */
-    private function sendEmail()
+    private function sendEmail() :void
     {
         $transport = new Swift_SmtpTransport(
-            self::SMTP_HOST,
-            self::SMTP_PORT,
-            self::SMTP_ENCRYPTION
+            $this->smtpHost,
+            $this->smtpPort,
+            $this->smtpEncryption
         );
 
         $transport
-            ->setUsername(self::ACCOUNT_NAME)
-            ->setPassword(self::ACCOUNT_PASSWORD);
+            ->setUsername($this->accountName)
+            ->setPassword($this->accountPassword);
 
         if (is_null($this->recipient)) {
             throw new ErrorException('Recipient email is null. Please provide correct email',
@@ -154,12 +179,13 @@ class EmailNotificationService
     }
 
     /**
+     * Sends Default Email
      * @throws ErrorException
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function sendDefaultEmail()
+    public function sendDefaultEmail() :void
     {
         $params = [
             'siteName' => $this->siteName,
@@ -168,12 +194,12 @@ class EmailNotificationService
             'content' => $this->content,
             'buttonLink' => $this->buttonLink,
             'buttonText' => $this->buttonText,
-            'addressLine1' => self::ADDRESS_LINE_1,
-            'addressLine2' => self::ADDRESS_LINE_2
+            'addressLine1' => $this->addressLine1,
+            'addressLine2' => $this->addressLine2
         ];
 
         $this->subject = 'Дефолтная тема письма';
-        $this->sender = self::ACCOUNT_NAME;
+        $this->sender = $this->accountName;
 
         $this->mailBody = $this->twig->render(
             self::DEFAULT_EMAIL_TEMPLATE,
@@ -189,10 +215,12 @@ class EmailNotificationService
 
     /**
      * @param array $list
+     * @return $this
      */
     public function addRecipientsArray(array $list=[])
     {
         $this->recipientList = $list;
+        return $this;
     }
 
     /**
