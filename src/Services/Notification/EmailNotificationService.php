@@ -3,17 +3,9 @@
 
 namespace App\Services\Notification;
 
-use App\API\BEESMS;
-use App\Entity\AuthUser;
 use App\Entity\Patient;
-use App\Entity\SMSNotification;
 use App\Services\InfoService\AuthUserInfoService;
-use App\Services\InfoService\PatientInfoService;
-use DateInterval;
-use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
-use SimpleXMLElement;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
@@ -198,7 +190,7 @@ class EmailNotificationService
     /**
      * @param array $list
      */
-    public function addRecipentsArray(array $list=[])
+    public function addRecipientsArray(array $list=[])
     {
         $this->recipientList = $list;
     }
