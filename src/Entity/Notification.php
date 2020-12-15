@@ -22,7 +22,7 @@ class Notification
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="Тип уведомления"})
      */
     private $notificationType;
 

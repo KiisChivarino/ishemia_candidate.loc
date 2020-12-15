@@ -14,7 +14,7 @@ class ReceivedSMS
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Ключ полученной sms"})
      */
     private $id;
 
@@ -25,17 +25,17 @@ class ReceivedSMS
     private $patient;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"comment"="ата и время отправки sms"})
      */
     private $created_at;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true, options={"comment"="Текст полученной sms"})
      */
     private $text;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="ID sms сообщения на стороне провайдера"})
      */
     private $externalId;
 

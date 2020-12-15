@@ -17,27 +17,27 @@ class SMSNotification
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Ключ sms уведомления"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="ID sms сообщения на стороне провайдера"})
      */
     private $externalId;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="Телефон получателя sms сообщения"})
      */
     private $smsTo;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="Статус доставки sms сообщения"})
      */
     private $status;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Кол-во попыток отправки сообщения"})
      */
     private $attempt;
 
