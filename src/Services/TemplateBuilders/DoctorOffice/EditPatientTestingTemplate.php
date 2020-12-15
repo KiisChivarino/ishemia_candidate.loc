@@ -24,6 +24,19 @@ class EditPatientTestingTemplate extends DoctorOfficeTemplateBuilder
         'discharge_epicrisis' => 'Редактирование выписных эпикризов',
     ];
 
+    /** @var array Common form content for form templates */
+    protected const FORM_CONTENT = [
+        'analysisDate' => PatientTestingTemplate::COMMON_CONTENT['analysisDate'],
+        'processed' => PatientTestingTemplate::COMMON_CONTENT['processed'],
+    ];
+
+    /** @var array Common content for form and edit templates */
+    protected const FORM_EDIT_CONTENT = [
+        'analysis' => PatientTestingResultTemplate::COMMON_CONTENT['analysis'],
+        'analysisRate' => PatientTestingResultTemplate::COMMON_CONTENT['analysisRate'],
+        'result' => PatientTestingResultTemplate::COMMON_CONTENT['result'],
+    ];
+
     /**
      * EditPatientTestingTemplate constructor.
      * @param RouteCollection $routeCollection
@@ -56,15 +69,9 @@ class EditPatientTestingTemplate extends DoctorOfficeTemplateBuilder
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
             ->setContent('h1', PatientTestingInfoService::getPatientTestingInfoString($patientTesting))
             ->setPath($this->getTemplatePath())
-        ;
+            ->setContents(self::FORM_EDIT_CONTENT);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath())
-            ->setContents(
-                array_merge(
-                    PatientTestingTemplate::COMMON_CONTENT,
-                    PatientTestingResultTemplate::COMMON_CONTENT
-                )
-        );
+            ->setPath($this->getTemplatePath());
         return $this;
     }
 }
