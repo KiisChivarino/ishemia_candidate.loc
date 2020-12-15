@@ -370,13 +370,31 @@ class MenuBuilder
         );
         $menu->addChild(
             'sms', [
-                'label' => 'Смс',
+                'label' => 'Принятые SMS',
+                'route' => 'sms_list'
+            ]
+        );
+        $menu->addChild(
+            'notification', [
+                'label' => 'Уведомления',
             ]
         )->setAttribute('class', 'sublist');
-        $menu['sms']->addChild(
-            'sms', [
-                'label' => 'Принятые СМС',
-                'route' => 'sms_list'
+        $menu['notification']->addChild(
+            'notification', [
+                'label' => 'Уведомления',
+                'route' => 'notification_list'
+            ]
+        );
+        $menu['notification']->addChild(
+            'smsNotifications', [
+                'label' => 'SMS Уведомления',
+                'route' => 'sms_notification_list'
+            ]
+        );
+        $menu['notification']->addChild(
+            'emailNotifications', [
+                'label' => 'Email Уведомления',
+                'route' => 'email_notification_list'
             ]
         );
         foreach ($menu->getChildren() as $item) {

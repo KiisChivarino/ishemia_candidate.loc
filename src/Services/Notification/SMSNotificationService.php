@@ -151,7 +151,7 @@ class SMSNotificationService
      * @return SimpleXMLElement
      * @throws Exception
      */
-    public function checkSMS()
+    public function checkSMS(): SimpleXMLElement
     {
         return new SimpleXMLElement($this->check(
             (new DateTime('now'))
@@ -166,7 +166,7 @@ class SMSNotificationService
      * @return SimpleXMLElement
      * @throws Exception
      */
-    public function getUnreadSMS()
+    public function getUnreadSMS(): SimpleXMLElement
     {
         return new SimpleXMLElement($this->getMessages(
             (new DateTime('now'))

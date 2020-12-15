@@ -1,47 +1,23 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
     <li>
-        <span class="title">{{ template.items.show.content.medicalHistory }}</span>
-        <p>
-            {% if entity.medicalHistory %}
-                <a href="{{ path('medical_history_show', {'id': entity.medicalHistory.id}) }}">
-                    {{ medicalHistoryTitle }}
-                </a>
-            {% endif %}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.medicalRecord }}</span>
-        <p>
-            {% if entity.medicalRecord %}
-                <a href="{{ path('medical_record_show', {'id': entity.medicalRecord.id}) }}">{{ medicalRecordTitle }}</a>
-            {% endif %}
-        </p>
-    </li>
-    <li>
         <span class="title">{{ template.items.show.content.notificationType }}</span>
-        <p>
-            {% if entity.notificationType %}
-                <a href="{{ path('notification_type_show', {'id': entity.notificationType.id}) }}">
-                    {{ entity.notificationType.name }}
-                </a>
-            {% endif %}
-        </p>
+        <p>{{ entity.notificationType }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.staff }}</span>
-        <p>
-            {% if entity.staff %}
-                <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffFio }}</a>
-            {% endif %}
-        </p>
+        <span class="title">{{ template.items.show.content.patient }}</span>
+        <p>{{ entity.patient }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.from }}</span>
+        <p>{{ fio(entity.from) }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.notificationTime }}</span>
-        <p>{{ notification.notificationTime ? notification.notificationTime|date('Y-m-d H:i:s') : '' }}</p>
+        <p>{{ entity.notificationTime|date('Y-m-d H:i:s') }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.text }}</span>
-        <p>{{ notification.text }}</p>
+        <p>{{ entity.text }}</p>
     </li>
 {% endblock %}

@@ -35,13 +35,13 @@ class SMSNotificationTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common list content for staff templates */
     protected const LIST_CONTENT = [
-        'h1' => 'Список уведомлений e-mail',
-        'title' => 'E-mail уведомления',
+        'h1' => 'Список SMS уведомлений',
+        'title' => 'SMS уведомления',
     ];
 
     /** @var string[] Common show content for staff templates */
     protected const SHOW_CONTENT = [
-        'emailNotifications' => 'E-mail уведомления',
+        'emailNotifications' => 'SMS уведомления',
     ];
 
 

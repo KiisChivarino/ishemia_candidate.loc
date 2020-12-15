@@ -6,11 +6,13 @@ use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Repository\PatientRepository;
 use App\Services\FilterService\FilterService;
-use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\DeleteTemplateItem;
+use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use App\Services\TemplateItems\TableActionsTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -27,6 +29,8 @@ class NotificationTemplate extends AdminTemplateBuilder
         'notificationTime' => 'Дата и время отправки',
         'text' => 'Текст',
         'patient' => 'Пациент',
+        'from' => 'Отправитель',
+        'smsNotification' => 'SMS уведомление'
     ];
     /** @var string[] Common FORM_SHOW_CONTENT */
     protected const FORM_SHOW_CONTENT = [
@@ -90,7 +94,10 @@ class NotificationTemplate extends AdminTemplateBuilder
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
         parent::list();
-        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);
+        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
+            ->setIsEnabled(false);
+        $this->getItem(TableActionsTemplateItem::TEMPLATE_ITEM_SHOW_ACTIONS_NAME)
+            ->setIsEnabled(false);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->setFilters(
                 $filterService,
@@ -115,6 +122,37 @@ class NotificationTemplate extends AdminTemplateBuilder
                     ),
                 ]
             );
+        return $this;
+    }
+    /**
+     * Builds edit template settings of Patient controller
+     *
+     * @param object|null $entity
+     *
+     * @return $this|AdminTemplateBuilder
+     */
+    public function edit(?object $entity = null): AppTemplateBuilder
+    {
+        parent::edit();
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->setIsEnabled(false);
+        return $this;
+    }
+
+    /**
+     * Builds show template settings of Patient controller
+     *
+     * @param object|null $entity
+     *
+     * @return $this|AdminTemplateBuilder
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show();
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->setIsEnabled(false);
+        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
+            ->setIsEnabled(false);
         return $this;
     }
 }

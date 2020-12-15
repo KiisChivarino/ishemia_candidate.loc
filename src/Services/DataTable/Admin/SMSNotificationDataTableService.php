@@ -2,7 +2,6 @@
 
 namespace App\Services\DataTable\Admin;
 
-use App\Entity\EmailNotification;
 use App\Entity\Notification;
 use App\Entity\SMSNotification;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -41,7 +40,7 @@ class SMSNotificationDataTableService extends AdminDatatableService
                         /** @var Notification $notification */
                         $notification = $smsNotification->getNotification();
                         return $notification
-                            ? $this->getLink($notification->getText(), $notification->getId(), 'log_action_show')
+                            ? $this->getLink($notification->getText(), $notification->getId(), 'notification_show')
                             : '';
                     }
                 ]

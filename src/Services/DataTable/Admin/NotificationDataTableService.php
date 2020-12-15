@@ -18,7 +18,6 @@ use Omines\DataTablesBundle\DataTable;
 
 /**
  * Class NotificationDataTableService
- *
  * @package App\Services\DataTable\Admin
  */
 class NotificationDataTableService extends AdminDatatableService
@@ -68,34 +67,32 @@ class NotificationDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
+                'text', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('text'),
+                ]
+            )
+            ->add(
                 'notificationTime', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('notificationTime'),
                     'searchable' => false,
                     'format' => 'd.m.Y H:i'
                 ]
             )
-            ->add(
-                'text', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('text'),
-                ]
-            )
         ;
 
-
-        $this->addOperations($renderOperationsFunction, $listTemplateItem);
         /** @var Patient $patient */
-        $patient = $filters[AppAbstractController::FILTER_LABELS['PATIENT']];
+        $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']]) ? $filters[AppAbstractController::FILTER_LABELS['PATIENT']] : null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
                     'entity' => Notification::class,
                     'query' => function (QueryBuilder $builder) use ($patient) {
                         $builder
-                            ->select('m')
-                            ->from(Notification::class, 'm');
+                            ->select('n')
+                            ->from(Notification::class, 'n');
                         if ($patient) {
                             $builder
-                                ->andWhere('m.patient = :patient')
+                                ->andWhere('n.patient = :patient')
                                 ->setParameter('patient', $patient);
                         }
                     },

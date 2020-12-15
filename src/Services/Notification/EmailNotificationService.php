@@ -137,7 +137,6 @@ class EmailNotificationService
                 }
             }
         }
-
         $sm = new Swift_Mailer($transport);
         $sm->send($message);
     }
@@ -169,7 +168,6 @@ class EmailNotificationService
             self::DEFAULT_EMAIL_TEMPLATE,
             $params
         );
-
         try {
             $this->sendEmail();
         } catch (ErrorException $e) {

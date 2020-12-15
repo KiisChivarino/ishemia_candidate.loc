@@ -7,7 +7,6 @@ use App\Entity\Patient;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\NotificationDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\Admin\EmailNotificationTemplate;
 use App\Services\TemplateBuilders\Admin\NotificationTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,33 +54,21 @@ class NotificationController extends AdminAbstractController
         );
     }
 
-//    /**
-//     * Notification info
-//     * @Route("/{id}", name="notification_show", methods={"GET"}, requirements={"id"="\d+"})
-//     * @param Notification $notification
-//     * @param FilterService $filterService
-//     * @return Response
-//     */
-//    public function show(Notification $notification, FilterService $filterService): Response
-//    {
-//        return $this->responseShow(
-//            self::TEMPLATE_PATH,
-//            $notification,
-//            [
-//                'templateParameterFilterName' => $filterService->generateFilterName('patient', Patient::class)
-//            ]
-//        );
-//    }
-
-//    /**
-//     * Delete Notification
-//     * @Route("/{id}", name="notification_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-//     * @param Request $request
-//     * @param Notification $notification
-//     * @return Response
-//     */
-//    public function delete(Request $request, Notification $notification): Response
-//    {
-//        return $this->responseDelete($request, $notification);
-//    }
+    /**
+     * Notification info
+     * @Route("/{id}", name="notification_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @param Notification $notification
+     * @param FilterService $filterService
+     * @return Response
+     */
+    public function show(Notification $notification, FilterService $filterService): Response
+    {
+        return $this->responseShow(
+            self::TEMPLATE_PATH,
+            $notification,
+            [
+                'templateParameterFilterName' => $filterService->generateFilterName('patient', Patient::class)
+            ]
+        );
+    }
 }

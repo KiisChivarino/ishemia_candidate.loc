@@ -42,7 +42,7 @@ class EmailNotificationDataTableService extends AdminDatatableService
                         /** @var Notification $notification */
                         $notification = $emailNotification->getNotification();
                         return $notification
-                            ? $this->getLink($notification->getText(), $notification->getId(), 'log_action_show')
+                            ? $this->getLink($notification->getText(), $notification->getId(), 'notification_show')
                             : '';
                     }
                 ]

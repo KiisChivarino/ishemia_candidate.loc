@@ -78,7 +78,6 @@ class NotificationService
     private function notifyUserViaEmail(): EmailNotification
     {
         $emailNotification = new EmailNotification();
-        $emailNotification->setText($this->text);
         $emailNotification->setEmailTo($this->patient->getAuthUser()->getEmail());
 
         try {

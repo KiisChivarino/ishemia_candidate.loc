@@ -2,11 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\EmailNotification;
-use App\Services\DataTable\Admin\EmailNotificationDataTableService;
 use App\Services\DataTable\Admin\SMSNotificationDataTableService;
-use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\Admin\EmailNotificationTemplate;
 use App\Services\TemplateBuilders\Admin\SMSNotificationTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
