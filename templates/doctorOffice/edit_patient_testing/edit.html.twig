@@ -4,13 +4,13 @@
     <div class="content-wrapper__top">
         <ul>
             <li>
-                <h1>Редактирование результатов обследования</h1>
+                <h1>{{ template.items.edit.content.h1 }}</h1>
             </li>
             <li>
                 {% if template.items.list.isEnabled %}
                     <a
                             class="back-page"
-                            href="{{ path(template.routes.main, {id: entity.medicalHistory.patient.id}) }}"
+                            href="{{ path('doctor_medical_history', {id: entity.medicalHistory.patient.id}) }}"
                     >История болезни</a>
                 {% endif %}
             </li>

@@ -529,16 +529,23 @@ class Patient
         return $this->receivedSMS;
     }
 
+    /**
+     * @param ReceivedSMS $receivedSM
+     * @return $this
+     */
     public function addReceivedSM(ReceivedSMS $receivedSM): self
     {
         if (!$this->receivedSMS->contains($receivedSM)) {
             $this->receivedSMS[] = $receivedSM;
             $receivedSM->setPatient($this);
         }
-
         return $this;
     }
 
+    /**
+     * @param ReceivedSMS $receivedSM
+     * @return $this
+     */
     public function removeReceivedSM(ReceivedSMS $receivedSM): self
     {
         if ($this->receivedSMS->removeElement($receivedSM)) {
@@ -547,10 +554,12 @@ class Patient
                 $receivedSM->setPatient(null);
             }
         }
-
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getAuthUser()->getFirstName() . ' ' . $this->getAuthUser()->getLastName();

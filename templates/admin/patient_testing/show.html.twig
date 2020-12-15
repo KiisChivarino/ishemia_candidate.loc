@@ -11,6 +11,16 @@
         </p>
     </li>
     <li>
+        <span class="title">{{ template.items.show.content.prescriptionTesting }}</span>
+        <p>
+            {% if entity.prescriptionTesting %}
+                <a href="{{ path('prescription_testing_show', {'id': entity.prescriptionTesting.id}) }}">
+                    {{ prescriptionTestingTitle(entity.prescriptionTesting) }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
         <span class="title">{{ template.items.show.content.analysisDate }}</span>
         <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : '' }}</p>
     </li>

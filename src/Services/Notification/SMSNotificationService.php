@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services\Notification;
 
 use App\API\BEESMS;
@@ -9,6 +8,7 @@ use App\Entity\SMSNotification;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use SimpleXMLElement;
 
 /**
@@ -19,8 +19,8 @@ class SMSNotificationService
 {
     /** @var int Update time in hours */
     const
-        PREIOD_TO_UPDATE_EMAIL = 25,
-        PREIOD_TO_CHACK_EMAIL = 2
+        PERIOD_TO_UPDATE_EMAIL = 25,
+        PERIOD_TO_CHECK_EMAIL = 2
     ;
 
     /** @var string Auth data for sms service */
@@ -155,12 +155,13 @@ class SMSNotificationService
     /**
      * SMS Checker and result parser
      * @return SimpleXMLElement
+     * @throws Exception
      */
     public function checkSMS()
     {
         return new SimpleXMLElement($this->check(
             (new DateTime('now'))
-                ->sub(new DateInterval('PT'. self::PREIOD_TO_UPDATE_EMAIL .'H'))
+                ->sub(new DateInterval('PT'. self::PERIOD_TO_UPDATE_EMAIL .'H'))
                 ->format('d.m.Y H:i:s'),
             (new DateTime('now'))->format('d.m.Y H:i:s')
         ));
@@ -169,12 +170,13 @@ class SMSNotificationService
     /**
      * SMS Getter and result parser
      * @return SimpleXMLElement
+     * @throws Exception
      */
     public function getUnreadSMS()
     {
         return new SimpleXMLElement($this->getMessages(
             (new DateTime('now'))
-                ->sub(new DateInterval('PT'. self::PREIOD_TO_CHACK_EMAIL .'H'))
+                ->sub(new DateInterval('PT'. self::PERIOD_TO_CHECK_EMAIL .'H'))
                 ->format('d.m.Y H:i:s'),
             (new DateTime('now'))->format('d.m.Y H:i:s')
         ));

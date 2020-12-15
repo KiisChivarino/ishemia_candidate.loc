@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\SMSNotificationRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * SMS Notification
  * @ORM\Entity(repositoryClass=SMSNotificationRepository::class)
+ * @ORM\Table(options={"comment":"Смс-уведомления"});
  */
 class SMSNotification
 {
@@ -88,18 +90,18 @@ class SMSNotification
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
     }
 
     /**
-     * @param \DateTimeInterface $created_at
+     * @param DateTimeInterface $created_at
      * @return $this
      */
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
 

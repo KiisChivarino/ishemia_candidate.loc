@@ -13,6 +13,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ReceivedSMSRepository extends AppRepository
 {
+    /**
+     * ReceivedSMSRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ReceivedSMS::class);

@@ -2,8 +2,6 @@
 
 namespace App\Services\MultiFormService;
 
-use ReflectionException;
-
 /**
  * Class FormData
  * creates object of data for generating form using formBuilder
@@ -12,9 +10,6 @@ use ReflectionException;
  */
 class FormData
 {
-    /** @var string $formTitle Title of form */
-    private $formTitle;
-
     /** @var object $entity Entity object */
     private $entity;
 
@@ -27,29 +22,24 @@ class FormData
     /** @var bool $isAddFormData Is add entity into form data array? */
     private $isAddFormData;
 
+    /** @var int|null $formNamePostfix Numeric postfix for form, created in cycle */
+    private $formNamePostfix;
+
     /**
      * FormData constructor.
      * @param object $entity
      * @param string $formClassName
      * @param array $formOptions
      * @param bool $isAddFormData
-     * @throws ReflectionException
+     * @param int|null $formNamePostfix
      */
-    public function __construct(object $entity, string $formClassName, array $formOptions = [], bool $isAddFormData = true)
+    public function __construct(object $entity, string $formClassName, array $formOptions = [], bool $isAddFormData = true, int $formNamePostfix = null)
     {
-        $this->formTitle = MultiFormService::getFormName($formClassName);
         $this->entity = $entity;
         $this->formClassName = $formClassName;
         $this->formOptions = $formOptions;
         $this->isAddFormData = $isAddFormData;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFormTitle(): string
-    {
-        return $this->formTitle;
+        $this->formNamePostfix = $formNamePostfix;
     }
 
     /**
@@ -89,8 +79,26 @@ class FormData
     /**
      * @return bool
      */
-    public function getIsAddFormData()
+    public function getIsAddFormData(): bool
     {
         return $this->isAddFormData;
+    }
+
+    /**
+     * @param int $postfix
+     * @return $this
+     */
+    public function setFormPostfix(int $postfix): self
+    {
+        $this->formNamePostfix = $postfix;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFormPostfix(): ?int
+    {
+        return $this->formNamePostfix;
     }
 }

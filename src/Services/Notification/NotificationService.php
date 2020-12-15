@@ -1,10 +1,10 @@
 <?php
 
-
 namespace App\Services\Notification;
 
 use App\Entity\Patient;
 use Doctrine\ORM\EntityManagerInterface;
+use ErrorException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -43,12 +43,17 @@ class NotificationService
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
-     * @param SMSNotificationService $sMSnotificationService
+     * @param SMSNotificationService $SMSNotificationService
+     * @param EmailNotificationService $emailNotificationService
      */
-    public function __construct(EntityManagerInterface $em, SMSNotificationService $sMSnotificationService, EmailNotificationService $emailNotificationService)
+    public function __construct(
+        EntityManagerInterface $em,
+        SMSNotificationService $SMSNotificationService,
+        EmailNotificationService $emailNotificationService
+    )
     {
         $this->em = $em;
-        $this->sms = $sMSnotificationService;
+        $this->sms = $SMSNotificationService;
         $this->email = $emailNotificationService;
     }
 
@@ -90,7 +95,7 @@ class NotificationService
                     ->setButtonText('Перейти на сайт')
                     ->setButtonLink('http://shemia.test')
                     ->sendDefaultEmail();
-            } catch (\ErrorException $e) {
+            } catch (ErrorException $e) {
                 // TODO: Написать кэтч
             } catch (LoaderError $e) {
                 // TODO: Написать кэтч
@@ -117,7 +122,7 @@ class NotificationService
      * @param string $text
      * @return NotificationService
      */
-    public function setText (string $text)
+    public function setText(string $text)
     {
         $this->text = $text;
         return $this;

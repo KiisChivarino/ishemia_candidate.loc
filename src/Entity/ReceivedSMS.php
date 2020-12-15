@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\ReceivedSMSRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ReceivedSMSRepository::class)
+ * @ORM\Table(options={"comment":"Переданные СМС"});
  */
 class ReceivedSMS
 {
@@ -76,21 +78,20 @@ class ReceivedSMS
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
     }
 
     /**
-     * @param \DateTimeInterface $created_at
+     * @param DateTimeInterface $created_at
      * @return $this
      */
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
-
         return $this;
     }
 
@@ -109,7 +110,6 @@ class ReceivedSMS
     public function setText(?string $text): self
     {
         $this->text = $text;
-
         return $this;
     }
 
@@ -128,7 +128,6 @@ class ReceivedSMS
     public function setIsProcessed(bool $isProcessed): self
     {
         $this->isProcessed = $isProcessed;
-
         return $this;
     }
 
@@ -147,8 +146,6 @@ class ReceivedSMS
     public function setPatient(?Patient $patient): self
     {
         $this->patient = $patient;
-
         return $this;
     }
-
 }

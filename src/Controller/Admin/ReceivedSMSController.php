@@ -2,17 +2,11 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Logger\Log;
-use App\Entity\Logger\LogAction;
 use App\Entity\ReceivedSMS;
-use App\Form\Admin\LogActionType;
 use App\Form\Admin\ReceivedSMSType;
-use App\Repository\ReceivedSMSRepository;
-use App\Services\DataTable\Admin\LogDataTableService;
 use App\Services\DataTable\Admin\SMSDataTableService;
-use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\Admin\LogTemplate;
 use App\Services\TemplateBuilders\Admin\ReceivedSMSTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,7 +53,7 @@ class ReceivedSMSController extends AdminAbstractController
      * @param Request $request
      * @param ReceivedSMS $receivedSMS
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function edit(Request $request, ReceivedSMS $receivedSMS): Response
     {

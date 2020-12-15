@@ -8,11 +8,13 @@ use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\PatientTestingResult;
 use App\Entity\PlanTesting;
+use App\Entity\PrescriptionTesting;
 use App\Services\InfoService\AnalysisRateInfoService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\InfoService\PlanTestingInfoService;
+use App\Services\InfoService\PrescriptionTestingInfoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -88,6 +90,24 @@ class AppExtension extends AbstractExtension
                 'planTestingTitle', [
                     $this,
                     'getPlanTestingTitle',
+                ]
+            ),
+            new TwigFunction(
+                'prescriptionTestingTitle', [
+                    $this,
+                    'getPrescriptionTestingTitle'
+                ]
+            ),
+            new TwigFunction(
+                'analysisRateTitle', [
+                    $this,
+                    'getAnalysisRateTitle'
+                ]
+            ),
+            new TwigFunction(
+                'isEmptyPatientTestingResults', [
+                    $this,
+                    'isEmptyPatientTestingResults'
                 ]
             )
         ];
@@ -180,5 +200,34 @@ class AppExtension extends AbstractExtension
     public function getPlanTestingTitle(PlanTesting $planTesting): string
     {
         return PlanTestingInfoService::getPlanTestingInfoString($planTesting);
+    }
+
+    /**
+     * Get prescription testing info string
+     * @param PrescriptionTesting $prescriptionTesting
+     * @return string
+     */
+    public function getPrescriptionTestingTitle(PrescriptionTesting $prescriptionTesting)
+    {
+        return PrescriptionTestingInfoService::getPrescriptionTestingTitle($prescriptionTesting);
+    }
+
+    /**
+     * Get analysis rate info string
+     * @param AnalysisRate $analysisRate
+     * @return string
+     */
+    public function getAnalysisRateTitle(AnalysisRate $analysisRate)
+    {
+        return AnalysisRateInfoService::getAnalysisRateInfoString($analysisRate);
+    }
+
+    /**
+     * Check for empty all patient testing results
+     * @param PatientTesting $patientTesting
+     * @return bool
+     */
+    public function isEmptyPatientTestingResults(PatientTesting $patientTesting){
+        return PatientTestingInfoService::isEmptyPatientTestingResults($patientTesting);
     }
 }
