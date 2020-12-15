@@ -31,8 +31,7 @@
         </div>
     </li>
     <li>
-        <span class="title">{{ form_label(form) }}</span>
-        {{ form_widget(form) }}
+        <span class="title">{{ form_label(form.patientTestingNotRequired.analysisDate) }}</span>
         <small>{{ form_help(form) }}</small>
         <div class="form-error">
             {{ form_errors(form) }}
@@ -41,7 +40,33 @@
     </li>
     {% do form.patientTestingNotRequired.setRendered %}
 </ul>
-
+<div class="table-wrapper table-history">
+    <table>
+        <thead>
+        <tr>
+            <th>Анализ</th>
+            <th>Результат</th>
+            <th>Референтные значения</th>
+        </tr>
+        </thead>
+        {% for patientTestingResultForm in form %}
+            {% if patientTestingResultForm.vars.name != 'patientTestingNotRequired' %}
+                <tr>
+                    {% for resultForm in patientTestingResultForm %}
+                        {% if(resultForm.vars.name == 'analysis') %}
+                            <td>{{ resultForm.vars.value }}</td>
+                            {% do resultForm.setRendered %}
+                        {% else %}
+                            <td>
+                                {{ form_widget(resultForm) }}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+</div>
 <div class="buttons">
     <button class="btn btn--mode">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
 </div>

@@ -19,13 +19,18 @@ class MultiFormService
      * @param FormBuilderInterface $formBuilder
      * @param array $formDataArray
      * @return FormInterface
+     * @throws ReflectionException
      */
     public function generateForm(FormBuilderInterface $formBuilder, array $formDataArray): FormInterface
     {
         $formBuilder->setData($this->getFormBuilderData($formDataArray));
         /** @var FormData $formData */
         foreach ($formDataArray as $formData) {
-            $formBuilder->add($formData->getFormTitle(), $formData->getFormClassName(), $formData->getFormOptions());
+            $formBuilder->add(
+                self::getFormName($formData->getFormClassName(), $formData->getFormPostfix()),
+                $formData->getFormClassName(),
+                $formData->getFormOptions()
+            );
         }
         return $formBuilder->getForm();
     }
@@ -34,6 +39,7 @@ class MultiFormService
      * Get data array for FormBuilder
      * @param array $formDataArray
      * @return array
+     * @throws ReflectionException
      */
     public function getFormBuilderData(array $formDataArray): array
     {
@@ -41,7 +47,7 @@ class MultiFormService
         /** @var FormData $formData */
         foreach ($formDataArray as $formData) {
             if ($formData->getIsAddFormData()) {
-                $builderDataArray[$formData->getFormTitle()] = $formData->getEntity();
+                $builderDataArray[self::getFormName($formData->getFormClassName(), $formData->getFormPostfix())] = $formData->getEntity();
             }
         }
         return $builderDataArray;
@@ -69,11 +75,25 @@ class MultiFormService
 
     /** Returns form name by class name
      * @param string $formClassName
+     * @param int|null $postfix
      * @return string|string[]
      * @throws ReflectionException
      */
-    public static function getFormName(string $formClassName)
+    public static function getFormName(string $formClassName, ?int $postfix = null)
     {
-        return str_replace('Type', '', lcfirst((new ReflectionClass($formClassName))->getShortName()));
+        return self::addFormPostfix(
+            str_replace('Type', '', lcfirst((new ReflectionClass($formClassName))->getShortName())),
+            $postfix
+        );
+    }
+
+    /**
+     * @param string $formName
+     * @param int|null $postfix
+     * @return string
+     */
+    public static function addFormPostfix(string $formName, ?int $postfix = null){
+        $formName .= $postfix ? '_' .(string)$postfix : '';
+        return $formName;
     }
 }

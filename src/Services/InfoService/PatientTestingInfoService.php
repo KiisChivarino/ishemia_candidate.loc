@@ -49,4 +49,19 @@ class PatientTestingInfoService
                 .', '.$patientTesting->getAnalysisGroup()->getName()
                 .$analysisDateString;
     }
+
+    /**
+     * Check for empty all patient testing results
+     * @param PatientTesting $patientTesting
+     * @return bool
+     */
+    static public function isEmptyPatientTestingResults(PatientTesting $patientTesting): bool
+    {
+        foreach ($patientTesting->getPatientTestingResults() as $result) {
+            if($result->getResult() !== null){
+                return false;
+            }
+        }
+        return true;
+    }
 }
