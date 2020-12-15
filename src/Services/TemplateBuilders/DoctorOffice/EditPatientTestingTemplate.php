@@ -71,7 +71,8 @@ class EditPatientTestingTemplate extends DoctorOfficeTemplateBuilder
             ->setPath($this->getTemplatePath())
             ->setContents(self::FORM_EDIT_CONTENT);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath());
+            ->setPath($this->getTemplatePath())
+            ->setContents(self::FORM_EDIT_CONTENT);
         return $this;
     }
 }
