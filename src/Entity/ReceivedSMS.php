@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ReceivedSMSRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -64,7 +65,7 @@ class ReceivedSMS
      */
     public function __construct()
     {
-        $this->isProcessed = 1;
+        $this->isProcessed = false;
     }
 
     /**
@@ -76,18 +77,18 @@ class ReceivedSMS
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
     }
 
     /**
-     * @param \DateTimeInterface $created_at
+     * @param DateTimeInterface $created_at
      * @return $this
      */
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
 

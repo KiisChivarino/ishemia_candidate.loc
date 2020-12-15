@@ -63,9 +63,9 @@ class AuthUser implements UserInterface
     private $enabled;
 
     /**
-     * @ORM\OneToMany(targetEntity=SMSNotification::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="from")
      */
-    private $sMSNotifications;
+    private $notifications;
 
     /**
      * AuthUser constructor.
@@ -73,6 +73,7 @@ class AuthUser implements UserInterface
     public function __construct()
     {
         $this->sMSNotifications = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -267,37 +268,37 @@ class AuthUser implements UserInterface
     }
 
     /**
-     * @return Collection|SMSNotification[]
+     * @return Collection|Notification[]
      */
-    public function getSMSNotifications(): Collection
+    public function getNotifications(): Collection
     {
-        return $this->sMSNotifications;
+        return $this->notifications;
     }
 
     /**
-     * @param SMSNotification $sMSNotification
+     * @param Notification $notification
      * @return $this
      */
-    public function addSMSNotification(SMSNotification $sMSNotification): self
+    public function addNotification(Notification $notification): self
     {
-        if (!$this->sMSNotifications->contains($sMSNotification)) {
-            $this->sMSNotifications[] = $sMSNotification;
-            $sMSNotification->setuser($this);
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setFrom($this);
         }
 
         return $this;
     }
 
     /**
-     * @param SMSNotification $sMSNotification
+     * @param Notification $notification
      * @return $this
      */
-    public function removeSMSNotification(SMSNotification $sMSNotification): self
+    public function removeNotification(Notification $notification): self
     {
-        if ($this->sMSNotifications->removeElement($sMSNotification)) {
+        if ($this->notifications->removeElement($notification)) {
             // set the owning side to null (unless already changed)
-            if ($sMSNotification->getuser() === $this) {
-                $sMSNotification->setuser(null);
+            if ($notification->getFrom() === $this) {
+                $notification->setFrom(null);
             }
         }
 

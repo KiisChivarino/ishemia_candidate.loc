@@ -5,6 +5,7 @@ namespace App\Command;
 
 use App\Entity\SMSNotification;
 use App\Services\Notification\SMSNotificationService;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,33 +23,30 @@ class UpdateSMSNotificationsCommand extends Command
     /** @var int Max attempts for resend sms */
     const MAX_ATTEMPTS = 1;
 
-    /** @var string Standard sms statuses */
-    const
-        DELIVERED = 'delivered', // Статус sms - Доставлено
-        NOT_DELIVERED = 'not_delivered', // Статус sms - Не доставлено
-        WAIT = 'wait', // Статус sms - Ожидание доставки
-        FAILED = 'failed' // Статус sms - Ошибка
-    ;
-    /**
-     * @var ContainerInterface
-     */
+    /** @var ContainerInterface */
     private $container;
 
-    /**
-     * @var SMSNotificationService
-     */
+    /** @var SMSNotificationService */
     private $sms;
+
+    /** @var array */
+    private $smsStatuses;
 
     /**
      * UpdateSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
      * @param SMSNotificationService $SMSNotificationService
+     * @param $smsStatuses
      */
-    public function __construct(ContainerInterface $container, SMSNotificationService $SMSNotificationService)
+    public function __construct(
+        ContainerInterface $container,
+        SMSNotificationService $SMSNotificationService,
+        $smsStatuses)
     {
         parent::__construct();
         $this->container = $container;
         $this->sms = $SMSNotificationService;
+        $this->smsStatuses = $smsStatuses;
     }
 
     protected function configure()
@@ -65,12 +63,13 @@ class UpdateSMSNotificationsCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $em = $this->container->get('doctrine')->getManager();
         $notifications = $em->getRepository(SMSNotification::class)->findBy([
-            'status' => self::WAIT
+            'status' => $this->smsStatuses['wait']
         ]);
 
         $result = $this->sms->checkSMS();
@@ -78,25 +77,25 @@ class UpdateSMSNotificationsCommand extends Command
             foreach ($notifications as $notification) {
                 if (
                     (string) $message['SMS_ID'] == (string) $notification->getExternalId()
-                    && $notification->getStatus() != self::NOT_DELIVERED
+                    && $notification->getStatus() != $this->smsStatuses['not_delivered']
                 ) {
                     switch ((string)$message->SMSSTC_CODE) {
-                        case self::DELIVERED:
-                            $notification->setStatus(self::DELIVERED);
+                        case $this->smsStatuses['delivered']:
+                            $notification->setStatus($this->smsStatuses['delivered']);
                             $em->persist($notification);
                             break;
-                        case self::WAIT:
+                        case $this->smsStatuses['wait']:
                             break;
-                        case self::NOT_DELIVERED:
+                        case $this->smsStatuses['not_delivered']:
                             if ($notification->getAttempt() <= self::MAX_ATTEMPTS || self::MAX_ATTEMPTS == '-1') {
                                 $this->sms->resendSMS($notification);
                             } else {
-                                $notification->setStatus(self::NOT_DELIVERED);
+                                $notification->setStatus($this->smsStatuses['not_delivered']);
                                 $em->persist($notification);
                             }
                             break;
-                        case self::FAILED:
-                            $notification->setStatus(self::FAILED);
+                        case $this->smsStatuses['failed']:
+                            $notification->setStatus($this->smsStatuses['failed']);
                             $em->persist($notification);
                             break;
                     }

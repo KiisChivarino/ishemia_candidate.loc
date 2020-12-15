@@ -18,14 +18,12 @@ services:
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
     bind:
       $rootPath : '%kernel.project_dir%'
-      $accountName: '%account_name%'
-      $accountPassword: '%account_password%'
-      $smtpHost: '%smtp_host%'
-      $smtpPort: '%smtp_port%'
-      $smtpEncryption: '%smtp_encryption%'
-      $siteName: '%site_name%'
-      $addressLine1: '%address_line_1%'
-      $addressLine2: '%address_line_2%'
+      $projectInfo: '%project_info%'
+      $emailParameters: '%email_parameters%'
+      $smsParameters: '%sms_parameters%'
+      $smsStatuses: '%sms_statuses%'
+      $smsUpdateTimes: '%sms_update_times%'
+      $phoneParameters: '%phone_parameters%'
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name

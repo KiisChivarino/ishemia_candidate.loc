@@ -22,17 +22,6 @@ class SMSNotification
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=AuthUser::class, inversedBy="sMSNotifications")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $user;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $created_at;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $externalId;
@@ -40,7 +29,7 @@ class SMSNotification
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $text;
+    private $smsTo;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -53,8 +42,10 @@ class SMSNotification
     private $attempt;
 
     /**
-     * SMSNotification constructor.
-     */
+    * @ORM\OneToOne(targetEntity=Notification::class, inversedBy="smsNotification", cascade={"persist", "remove"})
+    */
+    private $notification;
+
     public function __construct()
     {
         $this->attempt = self::FIRST_ATTEMPT;
@@ -66,44 +57,6 @@ class SMSNotification
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return AuthUser|null
-     */
-    public function getUser(): ?AuthUser
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param AuthUser|null $user
-     * @return $this
-     */
-    public function setUser(?AuthUser $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    /**
-     * @param \DateTimeInterface $created_at
-     * @return $this
-     */
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
     }
 
     /**
@@ -126,19 +79,22 @@ class SMSNotification
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getText()
+    public function getSmsTo(): ?string
     {
-        return $this->text;
+        return $this->smsTo;
     }
 
     /**
-     * @param mixed $text
+     * @param string $smsTo
+     * @return $this
      */
-    public function setText($text): void
+    public function setSmsTo(string $smsTo): self
     {
-        $this->text = $text;
+        $this->smsTo = $smsTo;
+
+        return $this;
     }
 
     /**
@@ -161,18 +117,40 @@ class SMSNotification
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getAttempt()
+    public function getAttempt(): ?int
     {
         return $this->attempt;
     }
 
     /**
-     * @param mixed $attempt
+     * @param int $attempt
+     * @return $this
      */
-    public function setAttempt($attempt): void
+    public function setAttempt(int $attempt): self
     {
         $this->attempt = $attempt;
+
+        return $this;
+    }
+
+    /**
+     * @return Notification|null
+     */
+    public function getNotification(): ?Notification
+    {
+        return $this->notification;
+    }
+
+    /**
+     * @param Notification|null $notification
+     * @return $this
+     */
+    public function setNotification(?Notification $notification): self
+    {
+        $this->notification = $notification;
+
+        return $this;
     }
 }

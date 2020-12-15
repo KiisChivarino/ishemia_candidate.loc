@@ -145,12 +145,18 @@ class Patient
     private $receivedSMS;
 
     /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="patient")
+     */
+    private $notifications;
+
+    /**
      * Patient constructor.
      */
     public function __construct()
     {
         $this->medicalHistories = new ArrayCollection();
         $this->receivedSMS = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -529,6 +535,10 @@ class Patient
         return $this->receivedSMS;
     }
 
+    /**
+     * @param ReceivedSMS $receivedSM
+     * @return $this
+     */
     public function addReceivedSM(ReceivedSMS $receivedSM): self
     {
         if (!$this->receivedSMS->contains($receivedSM)) {
@@ -551,8 +561,49 @@ class Patient
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getAuthUser()->getFirstName() . ' ' . $this->getAuthUser()->getLastName();
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getPatient() === $this) {
+                $notification->setPatient(null);
+            }
+        }
+
+        return $this;
     }
 }

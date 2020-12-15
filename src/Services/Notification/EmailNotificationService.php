@@ -43,9 +43,6 @@ class EmailNotificationService
     private $mailBody;
 
     /** @var string  */
-    private $siteName;
-
-    /** @var string  */
     private $serverHost;
 
     /** @var Environment  */
@@ -69,60 +66,26 @@ class EmailNotificationService
     /** @var string  */
     private $buttonText;
 
-    /** @var string  */
-    private $addressLine2;
+    /** @var array  */
+    private $projectInfo;
 
-    /** @var string  */
-    private $addressLine1;
-
-    /** @var string */
-    private $accountName;
-
-    /** @var string */
-    private $accountPassword;
-
-    /** @var string */
-    private $smtpHost;
-
-    /** @var integer */
-    private $smtpPort;
-
-    /** @var string */
-    private $smtpEncryption;
+    /** @var array  */
+    private $emailParameters;
 
     /**
      * EmailNotification constructor.
      * @param Environment $twig
-     * @param $accountName
-     * @param $accountPassword
-     * @param $smtpHost
-     * @param $smtpPort
-     * @param $smtpEncryption
-     * @param $siteName
-     * @param $addressLine1
-     * @param $addressLine2
+     * @param $projectInfo
+     * @param $emailParameters
      */
     public function __construct(
         Environment $twig,
-        $accountName,
-        $accountPassword,
-        $smtpHost,
-        $smtpPort,
-        $smtpEncryption,
-        $siteName,
-        $addressLine1,
-        $addressLine2
+        $projectInfo,
+        $emailParameters
     )
     {
-        $this->accountName = $accountName;
-        $this->accountPassword = $accountPassword;
-        $this->smtpHost = $smtpHost;
-        $this->smtpPort = $smtpPort;
-        $this->smtpEncryption = $smtpEncryption;
-        $this->siteName = $siteName;
-        $this->addressLine1 = $addressLine1;
-        $this->addressLine2 = $addressLine2;
-
+        $this->projectInfo = $projectInfo;
+        $this->emailParameters = $emailParameters;
         $this->twig = $twig;
         $this->serverHost = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
             . "://"
@@ -131,19 +94,20 @@ class EmailNotificationService
     }
 
     /**
+     * Sends Email
      * @throws ErrorException
      */
     private function sendEmail() :void
     {
         $transport = new Swift_SmtpTransport(
-            $this->smtpHost,
-            $this->smtpPort,
-            $this->smtpEncryption
+            $this->emailParameters['smtp_host'],
+            $this->emailParameters['smtp_port'],
+            $this->emailParameters['smtp_encryption']
         );
 
         $transport
-            ->setUsername($this->accountName)
-            ->setPassword($this->accountPassword);
+            ->setUsername($this->emailParameters['account_name'])
+            ->setPassword($this->emailParameters['account_password']);
 
         if (is_null($this->recipient)) {
             throw new ErrorException('Recipient email is null. Please provide correct email',
@@ -188,18 +152,18 @@ class EmailNotificationService
     public function sendDefaultEmail() :void
     {
         $params = [
-            'siteName' => $this->siteName,
+            'siteName' => $this->projectInfo['site_name'],
             'greetings' => sprintf(self::GREETINGS, AuthUserInfoService::getFIO($this->patient->getAuthUser())),
             'header' => $this->header,
             'content' => $this->content,
             'buttonLink' => $this->buttonLink,
             'buttonText' => $this->buttonText,
-            'addressLine1' => $this->addressLine1,
-            'addressLine2' => $this->addressLine2
+            'addressLine1' => $this->projectInfo['address_line_1'],
+            'addressLine2' => $this->projectInfo['address_line_2']
         ];
 
         $this->subject = 'Дефолтная тема письма';
-        $this->sender = $this->accountName;
+        $this->sender = $this->emailParameters['account_name'];
 
         $this->mailBody = $this->twig->render(
             self::DEFAULT_EMAIL_TEMPLATE,

@@ -3,8 +3,8 @@
 namespace App\Services\TemplateBuilders\Admin;
 
 use App\Controller\AppAbstractController;
-use App\Entity\MedicalHistory;
-use App\Repository\MedicalHistoryRepository;
+use App\Entity\Patient;
+use App\Repository\PatientRepository;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Template\TemplateFilter;
@@ -23,9 +23,10 @@ class NotificationTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
         'notificationType' => 'Тип уведомления',
-        'medicalRecord' => 'История болезни',
         'staff' => 'Отправивший врач',
         'notificationTime' => 'Дата и время отправки',
+        'text' => 'Текст',
+        'patient' => 'Пациент',
     ];
     /** @var string[] Common FORM_SHOW_CONTENT */
     protected const FORM_SHOW_CONTENT = [
@@ -48,7 +49,6 @@ class NotificationTemplate extends AdminTemplateBuilder
     protected const SHOW_CONTENT = [
         'h1' => 'Просмотр уведомления',
         'title' => 'Просмотр уведомления',
-        'medicalHistory' => 'История болезни',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
@@ -58,7 +58,7 @@ class NotificationTemplate extends AdminTemplateBuilder
     ];
 
     protected const FILTER_CONTENT = [
-        'medicalHistory' => 'Фильтр по истории болезни',
+        'patientFilter' => 'Пациент'
     ];
 
     /**
@@ -96,20 +96,20 @@ class NotificationTemplate extends AdminTemplateBuilder
                 $filterService,
                 [
                     new TemplateFilter(
-                        AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY'],
-                        MedicalHistory::class,
+                        AppAbstractController::FILTER_LABELS['PATIENT'],
+                        Patient::class,
                         [
-                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getContentValue('medicalHistory'),
-                            'class' => MedicalHistory::class,
+                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                                ->getContentValue('patientFilter'),
+                            'class' => Patient::class,
                             'required' => false,
-                            'choice_label' => function (MedicalHistory $value) {
-                                return (new AuthUserInfoService())->getFIO($value->getPatient()->getAuthUser()) . ': ' . $value->getDateBegin()->format('d.m.Y');
+                            'choice_label' => function ($value) {
+                                return $value->getAuthUser()->getLastName() . ' ' . $value->getAuthUser()->getFirstName();
                             },
-                            'query_builder' => function (MedicalHistoryRepository $er) {
-                                return $er->createQueryBuilder('mh')
-                                    ->leftJoin('mh.patient', 'p')
-                                    ->leftJoin('p.AuthUser', 'a')
-                                    ->where('a.enabled = true');
+                            'query_builder' => function (PatientRepository $er) {
+                                return $er->createQueryBuilder('p')
+                                    ->leftJoin('p.AuthUser', 'au')
+                                    ->where('au.enabled = true');
                             },
                         ]
                     ),
