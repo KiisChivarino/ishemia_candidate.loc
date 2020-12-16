@@ -3,13 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Entity\PatientTestingResult;
+use App\Form\Admin\PatientTestingResult\EnabledType;
 use App\Form\Admin\PatientTestingResultType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PatientTestingResultDataTableService;
-use App\Services\ControllerGetters\EntityActions;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AnalysisRateInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
+use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PatientTestingResultTemplate;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,19 +106,16 @@ class PatientTestingResultController extends AdminAbstractController
      */
     public function edit(Request $request, PatientTestingResult $patientTestingResult): Response
     {
-        return $this->responseEdit(
+        return $this->responseEditMultiForm(
             $request,
             $patientTestingResult,
-            PatientTestingResultType::class,
             [
-                'patientTesting' => $patientTestingResult->getPatientTesting(),
-                'analysis' => $patientTestingResult->getAnalysis()
-            ],
-            function (EntityActions $actions) {
-                if (!is_null($actions->getEntity()->getResult())) {
-                    $actions->getEntity()->setEnabled(true);
-                }
-            }
+                new FormData($patientTestingResult, PatientTestingResultType::class, [
+                    'patientTesting' => $patientTestingResult->getPatientTesting(),
+                    'analysis' => $patientTestingResult->getAnalysis()
+                ]),
+                new FormData($patientTestingResult, EnabledType::class)
+            ]
         );
     }
 

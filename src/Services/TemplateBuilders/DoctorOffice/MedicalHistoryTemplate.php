@@ -3,6 +3,7 @@
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\Admin\PatientTestingResultTemplate;
 use App\Services\TemplateBuilders\Admin\PatientTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
@@ -65,7 +66,6 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'anamnestic_title' => 'Редактирование анамнестических данных',
         'objective_h2' => 'Редактирование объективных данных',
         'objective_title' => 'Редактирование объективных данных',
-        'discharge_epicrisis' => 'Редактирование выписных эпикризов',
     ];
 
     protected const NEW_CONTENT = [
@@ -124,7 +124,8 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
                     PatientTemplate::COMMON_CONTENT,
                     PatientTemplate::FORM_SHOW_CONTENT,
                     PatientTemplate::FORM_CONTENT,
-                    PatientTestingTemplate::COMMON_CONTENT
+                    PatientTestingTemplate::COMMON_CONTENT,
+                    PatientTestingResultTemplate::COMMON_CONTENT
                 )
             );
         return $this;

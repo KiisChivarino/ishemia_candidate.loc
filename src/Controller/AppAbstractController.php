@@ -14,6 +14,7 @@ use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\DBAL\DBALException;
 use Exception;
+use ReflectionException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -283,8 +284,9 @@ abstract class AppAbstractController extends AbstractController
      * @param array $formDataArray
      * @param Closure|null $entityActions
      *
-     * @param string $formName
+     * @param string $templateEditName
      * @return RedirectResponse|Response
+     * @throws ReflectionException
      * @throws Exception
      */
     public function responseEditMultiForm(
@@ -292,7 +294,7 @@ abstract class AppAbstractController extends AbstractController
         object $entity,
         array $formDataArray,
         ?Closure $entityActions = null,
-        string $formName = self::RESPONSE_FORM_TYPE_EDIT
+        string $templateEditName = self::RESPONSE_FORM_TYPE_EDIT
     )
     {
         $template = $this->templateService->edit($entity);
@@ -308,7 +310,7 @@ abstract class AppAbstractController extends AbstractController
             $request,
             $entity,
             $formGeneratorService->generateForm($this->createFormBuilder(), $formDataArray),
-            $formName,
+            $templateEditName,
             $entityActions
         );
     }

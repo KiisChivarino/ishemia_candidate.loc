@@ -334,12 +334,6 @@ class MenuBuilder
             ]
         );
         $menu->addChild(
-            'logout', [
-                'label' => 'Выйти',
-                'route' => 'app_logout'
-            ]
-        );
-        $menu->addChild(
             'log', [
                 'label' => 'Логи',
             ]
@@ -410,6 +404,21 @@ class MenuBuilder
                 'route' => 'adding_patient_by_doctor'
             ]
         );
+        $menu->addChild(
+            'logout', [
+                'label' => 'Выйти',
+                'route' => 'app_logout'
+            ]
+        );
+        return $menu;
+    }
+
+    /**
+     * @return ItemInterface
+     */
+    public function createAdminHeaderMenu(){
+        $menu = $this->factory->createItem('root');
+        $menu->setChildrenAttribute('class', 'main-nav__list');
         $menu->addChild(
             'logout', [
                 'label' => 'Выйти',

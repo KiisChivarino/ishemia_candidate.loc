@@ -63,6 +63,11 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
         'prescriptionFilter' => 'Фильтр по назначению',
     ];
 
+    /** @var string[] COMMON ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'prescriptionTesting' => 'Назначение на обследование',
+    ];
+
     /**
      * PrescriptionTestingTemplate constructor.
      *

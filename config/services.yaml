@@ -55,6 +55,12 @@ services:
     arguments: ["@request_stack"]
     tags:
       - { name: knp_menu.menu, alias: doctorOfficeHeader}
+  app.admin_header_menu:
+    class: Knp\Menu\MenuItem # the service definition requires setting the class
+    factory: [ "@app.menu_builder", createAdminHeaderMenu ]
+    arguments: [ "@request_stack" ]
+    tags:
+      - { name: knp_menu.menu, alias: adminHeader }
   app.doctor_office_sidebar_menu:
     class: Knp\Menu\MenuItem # the service definition requires setting the class
     factory: ["@app.menu_builder", createDoctorOfficeSidebarMenu]

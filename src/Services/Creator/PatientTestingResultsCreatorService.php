@@ -51,6 +51,6 @@ class PatientTestingResultsCreatorService
         return (new PatientTestingResult())
             ->setPatientTesting($patientTesting)
             ->setAnalysis($analysis)
-            ->setEnabled(false);
+            ->setEnabled(true);
     }
 }

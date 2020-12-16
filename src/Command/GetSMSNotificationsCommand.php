@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Command;
 
 use App\Entity\Patient;

@@ -5,6 +5,7 @@
             {% set pos = 0 %}
             <div id="jsFileWidgetExample" style="display: none;">
                 {{ form_widget(filesForm.vars.prototype) }}
+                {% do filesForm.setRendered %}
             </div>
             {% for doc in filesForm %}
                 <div class="jsFile" data-pos="{{ pos }}">

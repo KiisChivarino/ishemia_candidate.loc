@@ -14,6 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PatientTestingResultRepository extends AppRepository
 {
+    /**
+     * PatientTestingResultRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PatientTestingResult::class);
@@ -27,5 +31,14 @@ class PatientTestingResultRepository extends AppRepository
     public function getEnabledTestingResults(PatientTesting $testing)
     {
         return $this->findBy(['patientTesting' => $testing, 'enabled' => true]);
+    }
+
+    /**
+     * Get not enabled patient testing results
+     * @param PatientTesting $testing
+     * @return PatientTestingResult[]
+     */
+    public function getNotEnabledTestingResults(PatientTesting $testing){
+        return $this->findBy(['patientTesting' => $testing, 'enabled' => false]);
     }
 }

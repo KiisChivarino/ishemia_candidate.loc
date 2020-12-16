@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * Пользователь
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(options={"comment":"Пользователь"});
  */
 class AuthUser implements UserInterface
 {
@@ -281,7 +282,7 @@ class AuthUser implements UserInterface
     {
         if (!$this->notifications->contains($notification)) {
             $this->notifications[] = $notification;
-            $notification->setFrom($this);
+            $notification->setAuthUserSender($this);
         }
 
         return $this;
@@ -295,8 +296,8 @@ class AuthUser implements UserInterface
     {
         if ($this->notifications->removeElement($notification)) {
             // set the owning side to null (unless already changed)
-            if ($notification->getFrom() === $this) {
-                $notification->setFrom(null);
+            if ($notification->getAuthUserSender() === $this) {
+                $notification->setAuthUserSender(null);
             }
         }
 
