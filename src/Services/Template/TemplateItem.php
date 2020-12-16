@@ -269,7 +269,6 @@ abstract class TemplateItem
 
     /**
      * Устанавливает контент для шаблона
-     *
      * @param array|null $contents
      * @return TemplateItem
      */

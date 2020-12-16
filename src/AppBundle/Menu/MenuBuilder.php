@@ -191,12 +191,6 @@ class MenuBuilder
                 'route' => 'prescription_appointment_list'
             ]
         );
-        $menu['medicalHistory']->addChild(
-            'notificationList', [
-                'label' => 'Уведомления',
-                'route' => 'notification_list'
-            ]
-        );
         $menu->addChild(
             'medical_guides', [
                 'label' => 'Медицинские справочники',
@@ -272,12 +266,6 @@ class MenuBuilder
             'timeRangeList', [
                 'label' => 'Временные диапазоны',
                 'route' => 'time_range_list'
-            ]
-        );
-        $menu['medical_guides']->addChild(
-            'notificationTypeList', [
-                'label' => 'Виды уведомления',
-                'route' => 'notification_type_list'
             ]
         );
         $menu['medical_guides']->addChild(
@@ -364,13 +352,31 @@ class MenuBuilder
         );
         $menu->addChild(
             'sms', [
-                'label' => 'Смс',
+                'label' => 'Принятые SMS',
+                'route' => 'patient_sms_list'
+            ]
+        );
+        $menu->addChild(
+            'notification', [
+                'label' => 'Уведомления',
             ]
         )->setAttribute('class', 'sublist');
-        $menu['sms']->addChild(
-            'sms', [
-                'label' => 'Принятые СМС',
-                'route' => 'sms_list'
+        $menu['notification']->addChild(
+            'notification', [
+                'label' => 'Уведомления',
+                'route' => 'notification_list'
+            ]
+        );
+        $menu['notification']->addChild(
+            'smsNotifications', [
+                'label' => 'SMS Уведомления',
+                'route' => 'sms_notification_list'
+            ]
+        );
+        $menu['notification']->addChild(
+            'emailNotifications', [
+                'label' => 'Email Уведомления',
+                'route' => 'email_notification_list'
             ]
         );
         foreach ($menu->getChildren() as $item) {

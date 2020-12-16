@@ -1,10 +1,17 @@
 <?php
 
+
 namespace App\Services\Notification;
 
+use App\Entity\AuthUser;
+use App\Entity\EmailNotification;
+use App\Entity\Notification;
 use App\Entity\Patient;
+use App\Entity\SMSNotification;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -15,104 +22,119 @@ use Twig\Error\SyntaxError;
  */
 class NotificationService
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $text;
 
-    /**
-     * @var SMSNotificationService
-     */
+    /** @var SMSNotificationService */
     private $sms;
 
-    /**
-     * @var Patient
-     */
+    /** @var Patient */
     private $patient;
 
-    /**
-     * @var EmailNotificationService
-     */
+    /** @var EmailNotificationService */
     private $email;
+
+    /** @var AuthUser */
+    private $user;
 
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
-     * @param SMSNotificationService $SMSNotificationService
+     * @param SMSNotificationService $sMSNotificationService
      * @param EmailNotificationService $emailNotificationService
+     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
         EntityManagerInterface $em,
-        SMSNotificationService $SMSNotificationService,
-        EmailNotificationService $emailNotificationService
-    )
-    {
+        SMSNotificationService $sMSNotificationService,
+        EmailNotificationService $emailNotificationService,
+        TokenStorageInterface $tokenStorage
+    ) {
         $this->em = $em;
-        $this->sms = $SMSNotificationService;
+        $this->sms = $sMSNotificationService;
         $this->email = $emailNotificationService;
+        $this->user = $tokenStorage->getToken()->getUser();
     }
 
     /**
-     * Send SMS
-     * @param $text
-     * @param $target
-     * @return false|string
+     * Send SMS notification
+     * @return SMSNotification
      */
-    private function notifyUserViaSMS($text, $target): string
+    private function notifyUserViaSMS(): SMSNotification
     {
-        $this->sms
-            ->setText($text)
-            ->setTarget($target)
+        return $this->sms
+            ->setText($this->text)
+            ->setPatient($this->patient)
             ->sendSMS();
-
-        return true;
     }
 
     /**
-     * Send SMS
-     * @return false|string
+     * Send Email notification
+     * @return EmailNotification
      */
-    public function notifyUser(): string
+    private function notifyUserViaEmail(): EmailNotification
     {
+        $emailNotification = new EmailNotification();
+        $emailNotification->setPatientRecipientEmail($this->patient->getAuthUser()->getEmail());
+
+        try {
+            $this->email
+                ->setPatient($this->patient)
+                ->setHeader('Ура, а вот и вы!')
+                ->setContent($this->text)
+                ->setButtonText('Перейти на сайт')
+                ->setButtonLink('http://shemia.test')
+                ->sendDefaultEmail();
+            $this->em->persist($emailNotification);
+            $this->em->flush();
+        } catch (ErrorException $e) {
+            // TODO: Написать кэтч
+        } catch (LoaderError $e) {
+            // TODO: Написать кэтч
+        } catch (RuntimeError $e) {
+            // TODO: Написать кэтч
+        } catch (SyntaxError $e) {
+            // TODO: Написать кэтч
+        }
+
+        return $emailNotification;
+    }
+
+    /**
+     * Notification sender
+     * @return void
+     */
+    public function notifyUser(): void
+    {
+        $notification = new Notification();
+        $notification->setPatient($this->patient);
+        $notification->setText($this->text);
+        $notification->setAuthUserSender($this->user);
+        $notification->setNotificationType('test');
+        $notification->setNotificationTime(new DateTime('now'));
+
         if ($this->patient->getSmsInforming()) {
-            $this->notifyUserViaSMS(
-                $this->text,
-                $this->patient->getAuthUser()->getPhone()
+            $notification->setSmsNotification(
+                $this->notifyUserViaSMS()
             );
         }
-
         if ($this->patient->getEmailInforming()) {
-            try {
-                $this->email
-                    ->setPatient($this->patient)
-                    ->setHeader('Ура, а вот и вы!')
-                    ->setContent($this->text)
-                    ->setButtonText('Перейти на сайт')
-                    ->setButtonLink('http://shemia.test')
-                    ->sendDefaultEmail();
-            } catch (ErrorException $e) {
-                // TODO: Написать кэтч
-            } catch (LoaderError $e) {
-                // TODO: Написать кэтч
-            } catch (RuntimeError $e) {
-                // TODO: Написать кэтч
-            } catch (SyntaxError $e) {
-                // TODO: Написать кэтч
-            }
+            $notification->setEmailNotification(
+                $this->notifyUserViaEmail()
+            );
         }
-        return true;
+        $this->em->persist($notification);
+        $this->em->flush();
     }
 
     /**
      * @param Patient $patient
      * @return NotificationService
      */
-    public function setPatient(Patient $patient)
+    public function setPatient(Patient $patient): NotificationService
     {
         $this->patient = $patient;
         return $this;
@@ -122,7 +144,7 @@ class NotificationService
      * @param string $text
      * @return NotificationService
      */
-    public function setText(string $text)
+    public function setText (string $text): NotificationService
     {
         $this->text = $text;
         return $this;

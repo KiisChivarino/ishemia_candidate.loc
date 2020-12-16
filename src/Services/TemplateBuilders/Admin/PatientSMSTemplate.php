@@ -9,56 +9,52 @@ use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
-use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
-use App\Services\TemplateItems\TableActionsTemplateItem;
+use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Class NotificationTemplate
+ * Class AnalysisGroupTemplate
+ * builds template settings for AnalysisGroup controller
  *
  * @package App\Services\TemplateBuilders
  */
-class NotificationTemplate extends AdminTemplateBuilder
+class PatientSMSTemplate extends AdminTemplateBuilder
 {
-    /** @var string[] Common content for analysis templates */
+    /** @var string[] Common content for staff templates */
     protected const COMMON_CONTENT = [
-        'notificationType' => 'Тип уведомления',
-        'staff' => 'Отправивший врач',
-        'notificationTime' => 'Дата и время отправки',
-        'text' => 'Текст',
+        'fullName' => 'Полное название',
+        'userString' => 'Пользователь',
+        'createdAt' => 'Дата и время создания',
         'patient' => 'Пациент',
-        'from' => 'Отправитель',
-        'smsNotification' => 'SMS уведомление'
-    ];
-    /** @var string[] Common FORM_SHOW_CONTENT */
-    protected const FORM_SHOW_CONTENT = [
-        'text' => 'Текст уведомления',
+        'phone' => 'Номер телефона',
+        'text' => 'Сообщение',
+        'created_at' => 'Дата и время создания',
+        'isProcessed' => 'Обработано',
     ];
 
-    /** @var string[] Common LIST_CONTENT */
+    /** @var string[] Common form content for staff templates */
+    protected const FORM_CONTENT = [
+        'hospitalPlaceholder' => 'Выберите больницу',
+    ];
+
+    /** @var string[] Common list content for staff templates */
     protected const LIST_CONTENT = [
-        'h1' => 'Уведомления',
-        'title' => 'Список уведомлений',
+        'h1' => 'Список полученных SMS',
+        'title' => 'Список полученных SMS',
     ];
 
-    /** @var string[] Common NEW_CONTENT */
-    protected const NEW_CONTENT = [
-        'h1' => 'Добавление уведомления',
-        'title' => 'Добавление уведомления',
-    ];
-
-    /** @var string[] Common SHOW_CONTENT */
+    /** @var string[] Common show content for staff templates */
     protected const SHOW_CONTENT = [
-        'h1' => 'Просмотр уведомления',
-        'title' => 'Просмотр уведомления',
+        'logs' => 'SMS',
     ];
 
-    /** @var string[] Common EDIT_CONTENT */
+    /** @var string[] Common edit content for staff templates */
     protected const EDIT_CONTENT = [
-        'h1' => 'Редактирование уведомления',
-        'title' => 'Редактирование уведомления',
+        'h1' => 'Редактирование SMS',
+        'title' => 'Редактирование SMS',
     ];
 
     protected const FILTER_CONTENT = [
@@ -66,7 +62,7 @@ class NotificationTemplate extends AdminTemplateBuilder
     ];
 
     /**
-     * NotificationTemplate constructor.
+     * Received SMS constructor.
      *
      * @param RouteCollection $routeCollection
      * @param string $className
@@ -81,24 +77,26 @@ class NotificationTemplate extends AdminTemplateBuilder
             self::EDIT_CONTENT,
             self::FORM_CONTENT,
             self::FORM_SHOW_CONTENT,
-            self::COMMON_CONTENT,
-            self::FILTER_CONTENT
+            self::COMMON_CONTENT
         );
     }
 
     /**
      * @param FilterService|null $filterService
      *
-     * @return AppTemplateBuilder
+     * @return $this|AdminTemplateBuilder
+     * @throws \Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
-        parent::list();
+        parent::list($filterService);
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
             ->setIsEnabled(false);
-        $this->getItem(TableActionsTemplateItem::TEMPLATE_ITEM_SHOW_ACTIONS_NAME)
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
-        $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+        $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
+            ->setIsEnabled(false);
+        $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->setContents(self::FILTER_CONTENT)
             ->setFilters(
                 $filterService,
                 [
@@ -122,8 +120,10 @@ class NotificationTemplate extends AdminTemplateBuilder
                     ),
                 ]
             );
+
         return $this;
     }
+
     /**
      * Builds edit template settings of Patient controller
      *
@@ -134,25 +134,17 @@ class NotificationTemplate extends AdminTemplateBuilder
     public function edit(?object $entity = null): AppTemplateBuilder
     {
         parent::edit();
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+            ->addContentArray(
+                array_merge(
+                    AuthUserTemplate::COMMON_CONTENT,
+                    AuthUserTemplate::FORM_CONTENT,
+                    AuthUserTemplate::FORM_SHOW_CONTENT
+                )
+            );
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
-        return $this;
-    }
-
-    /**
-     * Builds show template settings of Patient controller
-     *
-     * @param object|null $entity
-     *
-     * @return $this|AdminTemplateBuilder
-     */
-    public function show(?object $entity = null): AppTemplateBuilder
-    {
-        parent::show();
-        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
-            ->setIsEnabled(false);
-        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
-            ->setIsEnabled(false);
+        $this->setRedirectRoute('sms_list');
         return $this;
     }
 }

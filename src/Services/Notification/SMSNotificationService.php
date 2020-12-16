@@ -3,7 +3,7 @@
 namespace App\Services\Notification;
 
 use App\API\BEESMS;
-use App\Entity\AuthUser;
+use App\Entity\Patient;
 use App\Entity\SMSNotification;
 use DateInterval;
 use DateTime;
@@ -17,52 +17,57 @@ use SimpleXMLElement;
  */
 class SMSNotificationService
 {
-    /** @var int Update time in hours */
-    const
-        PERIOD_TO_UPDATE_EMAIL = 25,
-        PERIOD_TO_CHECK_EMAIL = 2
-    ;
-
-    /** @var string Auth data for sms service */
-    const
-        SENDER = '3303',
-        SMS_USER = '775000',
-        SMS_PASSWORD = 'Yandex10241024';
-
-    /** @var string Standard sms statuses */
-    const
-        DELIVERED = 'delivered', // Статус sms - Доставлено
-        NOT_DELIVERED = 'not_delivered', // Статус sms - Не доставлено
-        WAIT = 'wait', // Статус sms - Ожидание доставки
-        FAILED = 'failed' // Статус sms - Ошибка
-    ;
-
-    /** @var string prefix for RU phone numbers */
-    const PHONE_PREFIX_RU = '+7';
-
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $text;
 
-    /**
-     * @var string
-     */
-    private $target;
+    /** @var Patient */
+    private $patient;
 
+    /** @var array */
+    private $smsParameters;
+
+    /** @var BEESMS */
+    private $sms;
+
+    /** @var array */
+    private $smsStatuses;
+
+    /** @var array */
+    private $phoneParameters;
+
+    /** @var array */
+    private $smsUpdateTimes;
+
+    /** @var array */
+    private $timeFormats;
 
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
+     * @param array $smsParameters
+     * @param array $smsStatuses
+     * @param array $smsUpdateTimes
+     * @param array $phoneParameters
+     * @param array $timeFormats
      */
-    public function __construct(EntityManagerInterface $em)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        array $smsParameters,
+        array $smsStatuses,
+        array $smsUpdateTimes,
+        array $phoneParameters,
+        array $timeFormats
+    ) {
         $this->em = $em;
+        $this->smsParameters = $smsParameters;
+        $this->smsStatuses = $smsStatuses;
+        $this->smsUpdateTimes = $smsUpdateTimes;
+        $this->phoneParameters = $phoneParameters;
+        $this->timeFormats = $timeFormats;
+        $this->sms = new BEESMS($this->smsParameters['user'], $this->smsParameters['password']);
     }
 
     /**
@@ -73,8 +78,7 @@ class SMSNotificationService
      */
     private function send(string $text, string $target): string
     {
-        $sms = new BEESMS(self::SMS_USER, self::SMS_PASSWORD);
-        return $sms->post_message($text, $target, self::SENDER);
+        return $this->sms->post_message($text, $target, $this->smsParameters['sender']);
     }
 
     /**
@@ -85,8 +89,7 @@ class SMSNotificationService
      */
     private function check(string $dateFrom, string $dateTo): string
     {
-        $sms = new BEESMS(self::SMS_USER, self::SMS_PASSWORD);
-        return $sms->status_sms_date($dateFrom, $dateTo);
+        return $this->sms->status_sms_date($dateFrom, $dateTo);
     }
 
     /**
@@ -97,57 +100,50 @@ class SMSNotificationService
      */
     private function getMessages(string $dateFrom, string $dateTo): string
     {
-        $sms = new BEESMS(self::SMS_USER,self::SMS_PASSWORD);
-        return $sms->status_inbox(false,0,$dateFrom,$dateTo);
+        return $this->sms->status_inbox(false,0,$dateFrom,$dateTo);
     }
 
     /**
      * SMS Sender and result parser
-     * @return bool
+     * @return SMSNotification
      */
-    public function sendSMS(): bool
+    public function sendSMS(): SMSNotification
     {
         $result = new SimpleXMLElement(
             $this->send(
                 $this->text,
-                self::PHONE_PREFIX_RU . $this->target
+                $this->phoneParameters['phone_prefix_ru'] . $this->patient->getAuthUser()->getPhone()
             )
         );
         $sMSNotification = new SMSNotification();
-        $sMSNotification->setUser(
-            $this->em->getRepository(AuthUser::class)->findOneBy([
-                'phone' => $this->target
-            ])
-        );
-        $sMSNotification->setText($this->text);
-        $sMSNotification->setCreatedAt(new DateTime('now'));
-        $sMSNotification->setStatus(self::WAIT);
+        $sMSNotification->setSmsPatientRecipientPhone($this->patient->getAuthUser()->getPhone());
+        $sMSNotification->setStatus($this->smsStatuses['wait']);
         $sMSNotification->setExternalId((string)$result->result->sms['id']);
 
         $this->em->persist($sMSNotification);
         $this->em->flush();
 
-        return true;
+        return $sMSNotification;
     }
 
     /**
      * SMS RE-Sender and result parser
-     * @param SMSNotification $notification
+     * @param SMSNotification $sMSNotification
      * @return bool
      */
-    public function reSendSMS(SMSNotification $notification): bool
+    public function reSendSMS(SMSNotification $sMSNotification): bool
     {
         $result = new SimpleXMLElement(
             $this->send(
-                $notification->getText(),
-                self::PHONE_PREFIX_RU . $notification->getUser()->getPhone()
+                $sMSNotification->getNotification()->getText(),
+                $this->phoneParameters['phone_prefix_ru'] .
+                    $sMSNotification->getNotification()->getPatient()->getAuthUser()->getPhone()
             )
         );
-        $notification->setCreatedAt(new DateTime('now'));
-        $notification->setExternalId((string)$result->result->sms['id']);
-        $notification->setAttempt((int)$notification->getAttempt() + 1);
+        $sMSNotification->setExternalId((string)$result->result->sms['id']);
+        $sMSNotification->setAttemptCount((int)$sMSNotification->getAttemptCount() + 1);
 
-        $this->em->persist($notification);
+        $this->em->persist($sMSNotification);
         $this->em->flush();
         return true;
     }
@@ -157,13 +153,13 @@ class SMSNotificationService
      * @return SimpleXMLElement
      * @throws Exception
      */
-    public function checkSMS()
+    public function checkSMS(): SimpleXMLElement
     {
         return new SimpleXMLElement($this->check(
             (new DateTime('now'))
-                ->sub(new DateInterval('PT'. self::PERIOD_TO_UPDATE_EMAIL .'H'))
-                ->format('d.m.Y H:i:s'),
-            (new DateTime('now'))->format('d.m.Y H:i:s')
+                ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_update'] . 'H'))
+                ->format($this->timeFormats['besms']),
+            (new DateTime('now'))->format($this->timeFormats['besms'])
         ));
     }
 
@@ -172,13 +168,13 @@ class SMSNotificationService
      * @return SimpleXMLElement
      * @throws Exception
      */
-    public function getUnreadSMS()
+    public function getUnreadSMS(): SimpleXMLElement
     {
         return new SimpleXMLElement($this->getMessages(
             (new DateTime('now'))
-                ->sub(new DateInterval('PT'. self::PERIOD_TO_CHECK_EMAIL .'H'))
-                ->format('d.m.Y H:i:s'),
-            (new DateTime('now'))->format('d.m.Y H:i:s')
+                ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
+                ->format($this->timeFormats['besms']),
+            (new DateTime('now'))->format($this->timeFormats['besms'])
         ));
     }
 
@@ -193,12 +189,12 @@ class SMSNotificationService
     }
 
     /**
-     * @param string $target
-     * @return SMSNotificationService
+     * @param Patient $patient
+     * @return $this
      */
-    public function setTarget(string $target): SMSNotificationService
+    public function setPatient(Patient $patient): SMSNotificationService
     {
-        $this->target = $target;
+        $this->patient = $patient;
         return $this;
     }
 }

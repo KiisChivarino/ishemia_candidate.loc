@@ -2,62 +2,47 @@
 
 namespace App\Entity;
 
-use App\Repository\ReceivedSMSRepository;
+use App\Repository\PatientSMSRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ReceivedSMSRepository::class)
- * @ORM\Table(options={"comment":"Переданные СМС"});
+ * Patient SMS
+ * @ORM\Entity(repositoryClass=PatientSMSRepository::class)
+ * @ORM\Table(options={"comment":"Полученыые SMS от пациента"});
  */
-class ReceivedSMS
+class PatientSMS
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Ключ полученной sms"})
      */
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="receivedSMS")
+     * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="patientSMS")
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $patient;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"comment"="Дата и время отправки sms"})
      */
     private $created_at;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true, options={"comment"="Текст полученной sms"})
      */
     private $text;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="ID sms сообщения на стороне провайдера"})
      */
     private $externalId;
 
     /**
-     * @return mixed
-     */
-    public function getExternalId()
-    {
-        return $this->externalId;
-    }
-
-    /**
-     * @param mixed $externalId
-     */
-    public function setExternalId($externalId): void
-    {
-        $this->externalId = $externalId;
-    }
-
-    /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"comment"="Статус обработано врачом"})
      */
     private $isProcessed;
 
@@ -66,7 +51,7 @@ class ReceivedSMS
      */
     public function __construct()
     {
-        $this->isProcessed = 1;
+        $this->isProcessed = false;
     }
 
     /**
@@ -92,6 +77,7 @@ class ReceivedSMS
     public function setCreatedAt(DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
         return $this;
     }
 
@@ -110,6 +96,7 @@ class ReceivedSMS
     public function setText(?string $text): self
     {
         $this->text = $text;
+
         return $this;
     }
 
@@ -128,6 +115,7 @@ class ReceivedSMS
     public function setIsProcessed(bool $isProcessed): self
     {
         $this->isProcessed = $isProcessed;
+
         return $this;
     }
 
@@ -146,6 +134,23 @@ class ReceivedSMS
     public function setPatient(?Patient $patient): self
     {
         $this->patient = $patient;
+
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExternalId()
+    {
+        return $this->externalId;
+    }
+
+    /**
+     * @param mixed $externalId
+     */
+    public function setExternalId($externalId): void
+    {
+        $this->externalId = $externalId;
     }
 }
