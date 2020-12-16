@@ -60,6 +60,10 @@ class LogTemplate extends AdminTemplateBuilder
         'logActionFilter' => 'Тип лога'
     ];
 
+    protected const ENTITY_CONTENT = [
+        'entity' => 'Лог'
+    ];
+
     /**
      * CountryTemplate constructor.
      *
