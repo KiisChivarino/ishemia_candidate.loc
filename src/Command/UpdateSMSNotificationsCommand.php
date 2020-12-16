@@ -49,6 +49,9 @@ class UpdateSMSNotificationsCommand extends Command
         $this->smsStatuses = $smsStatuses;
     }
 
+    /**
+     * Конфигурация для команды UpdateSMSNotifications
+     */
     protected function configure()
     {
         $this
