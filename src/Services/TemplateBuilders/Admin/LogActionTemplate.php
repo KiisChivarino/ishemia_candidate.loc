@@ -100,6 +100,7 @@ class LogActionTemplate extends AdminTemplateBuilder
         parent::edit();
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
+        $this->setRedirectRoute('log_action_list');
         return $this;
     }
 }

@@ -43,9 +43,7 @@ class LogDataTableService extends AdminDatatableService
                     'render' => function (string $data, Log $log) {
                         /** @var AnalysisGroup $analysisGroup */
                         $logAction= $log->getAction();
-                        return $logAction
-                            ? $this->getLink($logAction->getName(), $logAction->getId(), 'log_action_show')
-                            : '';
+                        return $logAction->getName();
                     }
                 ]
             )
