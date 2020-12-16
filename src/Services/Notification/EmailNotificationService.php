@@ -73,15 +73,15 @@ class EmailNotificationService
     private $emailParameters;
 
     /**
-     * EmailNotification constructor.
+     * EmailNotificationService constructor.
      * @param Environment $twig
-     * @param $projectInfo
-     * @param $emailParameters
+     * @param array $projectInfo
+     * @param array $emailParameters
      */
     public function __construct(
         Environment $twig,
-        $projectInfo,
-        $emailParameters
+        array $projectInfo,
+        array $emailParameters
     )
     {
         $this->projectInfo = $projectInfo;
@@ -179,7 +179,7 @@ class EmailNotificationService
      * @param array $list
      * @return $this
      */
-    public function addRecipientsArray(array $list=[])
+    public function addRecipientsArray(array $list=[]): EmailNotificationService
     {
         $this->recipientList = $list;
         return $this;

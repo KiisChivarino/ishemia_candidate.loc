@@ -37,8 +37,8 @@ class GetSMSNotificationsCommand extends Command
      * GetSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
      * @param SMSNotificationService $SMSNotificationService
-     * @param $smsParameters
-     * @param $phoneParameters
+     * @param array $smsParameters
+     * @param array $phoneParameters
      */
     public function __construct(
         ContainerInterface $container,

@@ -36,12 +36,12 @@ class UpdateSMSNotificationsCommand extends Command
      * UpdateSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
      * @param SMSNotificationService $SMSNotificationService
-     * @param $smsStatuses
+     * @param array $smsStatuses
      */
     public function __construct(
         ContainerInterface $container,
         SMSNotificationService $SMSNotificationService,
-        $smsStatuses)
+        array $smsStatuses)
     {
         parent::__construct();
         $this->container = $container;
