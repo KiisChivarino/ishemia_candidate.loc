@@ -407,7 +407,7 @@ class MenuBuilder
         $menu->addChild(
             'logout', [
                 'label' => 'Выйти',
-                'route' => 'app_logout'
+                'route' => 'logout_from_app'
             ]
         );
         return $menu;
@@ -422,7 +422,7 @@ class MenuBuilder
         $menu->addChild(
             'logout', [
                 'label' => 'Выйти',
-                'route' => 'app_logout'
+                'route' => 'logout_from_app'
             ]
         );
         return $menu;
