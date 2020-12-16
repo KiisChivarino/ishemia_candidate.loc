@@ -30,7 +30,7 @@ class SMSNotification
     /**
      * @ORM\Column(type="string", length=255, options={"comment"="Телефон получателя sms сообщения"})
      */
-    private $smsTo;
+    private $smsPatientRecipientPhone;
 
     /**
      * @ORM\Column(type="string", length=255, options={"comment"="Статус доставки sms сообщения"})
@@ -40,16 +40,19 @@ class SMSNotification
     /**
      * @ORM\Column(type="integer", options={"comment"="Кол-во попыток отправки сообщения"})
      */
-    private $attempt;
+    private $attemptCount;
 
     /**
     * @ORM\OneToOne(targetEntity=Notification::class, inversedBy="smsNotification", cascade={"persist", "remove"})
     */
     private $notification;
 
+    /**
+     * SMSNotification constructor.
+     */
     public function __construct()
     {
-        $this->attempt = self::FIRST_ATTEMPT;
+        $this->attemptCount = self::FIRST_ATTEMPT;
     }
 
     /**
@@ -82,25 +85,6 @@ class SMSNotification
     /**
      * @return string|null
      */
-    public function getSmsTo(): ?string
-    {
-        return $this->smsTo;
-    }
-
-    /**
-     * @param string $smsTo
-     * @return $this
-     */
-    public function setSmsTo(string $smsTo): self
-    {
-        $this->smsTo = $smsTo;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getStatus(): ?string
     {
         return $this->status;
@@ -120,18 +104,18 @@ class SMSNotification
     /**
      * @return int|null
      */
-    public function getAttempt(): ?int
+    public function getAttemptCount(): ?int
     {
-        return $this->attempt;
+        return $this->attemptCount;
     }
 
     /**
-     * @param int $attempt
+     * @param int $attemptCount
      * @return $this
      */
-    public function setAttempt(int $attempt): self
+    public function setAttemptCount(int $attemptCount): self
     {
-        $this->attempt = $attempt;
+        $this->attemptCount = $attemptCount;
 
         return $this;
     }
@@ -151,6 +135,25 @@ class SMSNotification
     public function setNotification(?Notification $notification): self
     {
         $this->notification = $notification;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSmsPatientRecipientPhone(): ?string
+    {
+        return $this->smsPatientRecipientPhone;
+    }
+
+    /**
+     * @param string $smsPatientRecipientPhone
+     * @return $this
+     */
+    public function setSmsPatientRecipientPhone(string $smsPatientRecipientPhone): self
+    {
+        $this->smsPatientRecipientPhone = $smsPatientRecipientPhone;
 
         return $this;
     }

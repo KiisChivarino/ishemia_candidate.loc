@@ -4,7 +4,6 @@ namespace App\Services\DataTable\Admin;
 
 use App\Entity\EmailNotification;
 use App\Entity\Notification;
-use App\Entity\SMSNotification;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
@@ -48,7 +47,7 @@ class EmailNotificationDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'emailTo', TextColumn::class, [
+                'patientRecipientEmail', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('emailTo'),
                 ]
             )

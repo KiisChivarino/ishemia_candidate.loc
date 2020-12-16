@@ -78,7 +78,7 @@ class NotificationService
     private function notifyUserViaEmail(): EmailNotification
     {
         $emailNotification = new EmailNotification();
-        $emailNotification->setEmailTo($this->patient->getAuthUser()->getEmail());
+        $emailNotification->setPatientRecipientEmail($this->patient->getAuthUser()->getEmail());
 
         try {
             $this->email
@@ -112,7 +112,7 @@ class NotificationService
         $notification = new Notification();
         $notification->setPatient($this->patient);
         $notification->setText($this->text);
-        $notification->setFrom($this->user);
+        $notification->setAuthUserSender($this->user);
         $notification->setNotificationType('test');
         $notification->setNotificationTime(new DateTime('now'));
 

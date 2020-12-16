@@ -27,7 +27,7 @@ class PatientSMS
     private $patient;
 
     /**
-     * @ORM\Column(type="datetime", options={"comment"="ата и время отправки sms"})
+     * @ORM\Column(type="datetime", options={"comment"="Дата и время отправки sms"})
      */
     private $created_at;
 
@@ -42,7 +42,7 @@ class PatientSMS
     private $externalId;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"comment"="Статус обработано врачом"})
      */
     private $isProcessed;
 

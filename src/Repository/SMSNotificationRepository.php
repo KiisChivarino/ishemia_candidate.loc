@@ -12,7 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method SMSNotification[]    findAll()
  * @method SMSNotification[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SMSNotificationRepository extends ServiceEntityRepository
+class SMSNotificationRepository extends AppRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

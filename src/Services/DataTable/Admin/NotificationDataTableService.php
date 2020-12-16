@@ -29,8 +29,11 @@ class NotificationDataTableService extends AdminDatatableService
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
-    {
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
@@ -39,11 +42,11 @@ class NotificationDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'from', TextColumn::class, [
+                'authUserSender', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staff'),
                     'render' => function (string $data, Notification $notification): string {
                         /** @var AuthUser $authUser */
-                        $authUser = $notification->getFrom();
+                        $authUser = $notification->getAuthUserSender();
                         return $authUser ? $this->getLink(
                             (new AuthUserInfoService())->getFIO($authUser, true),
                             $authUser->getId(),
@@ -81,7 +84,8 @@ class NotificationDataTableService extends AdminDatatableService
         ;
 
         /** @var Patient $patient */
-        $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']]) ? $filters[AppAbstractController::FILTER_LABELS['PATIENT']] : null;
+        $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']])
+            ? $filters[AppAbstractController::FILTER_LABELS['PATIENT']] : null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

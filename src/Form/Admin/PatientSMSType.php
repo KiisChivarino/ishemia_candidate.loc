@@ -41,7 +41,7 @@ class PatientSMSType extends AbstractType
                 ]
             ])
             ->add('isProcessed', CheckboxType::class, [
-                'label' => $templateItem->getContentValue('processed'),
+                'label' => $templateItem->getContentValue('isProcessed'),
                 'required' => false
             ])
             ->add('patient', null, [

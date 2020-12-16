@@ -92,7 +92,7 @@ class UpdateSMSNotificationsCommand extends Command
                         case $this->smsStatuses['wait']:
                             break;
                         case $this->smsStatuses['not_delivered']:
-                            if ($smsNotification->getAttempt() <= self::MAX_ATTEMPTS || self::MAX_ATTEMPTS == '-1') {
+                            if ($smsNotification->getAttemptCount() <= self::MAX_ATTEMPTS || self::MAX_ATTEMPTS == '-1') {
                                 $this->sms->resendSMS($smsNotification);
                             } else {
                                 $smsNotification->setStatus($this->smsStatuses['not_delivered']);

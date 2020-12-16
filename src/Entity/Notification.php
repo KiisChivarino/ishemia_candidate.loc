@@ -36,7 +36,7 @@ class Notification
      * @ORM\ManyToOne(targetEntity=AuthUser::class, inversedBy="notifications")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $from;
+    private $authUserSender;
 
     /**
      * @ORM\Column(type="datetime", options={"comment"="Дата и время создания уведомления"})
@@ -143,25 +143,6 @@ class Notification
     }
 
     /**
-     * @return AuthUser|null
-     */
-    public function getFrom(): ?AuthUser
-    {
-        return $this->from;
-    }
-
-    /**
-     * @param AuthUser|null $from
-     * @return $this
-     */
-    public function setFrom(?AuthUser $from): self
-    {
-        $this->from = $from;
-
-        return $this;
-    }
-
-    /**
      * @return SMSNotification|null
      */
     public function getSmsNotification(): ?SMSNotification
@@ -215,6 +196,25 @@ class Notification
         }
 
         $this->emailNotification = $emailNotification;
+
+        return $this;
+    }
+
+    /**
+     * @return AuthUser|null
+     */
+    public function getAuthUserSender(): ?AuthUser
+    {
+        return $this->authUserSender;
+    }
+
+    /**
+     * @param AuthUser|null $authUserSender
+     * @return $this
+     */
+    public function setAuthUserSender(?AuthUser $authUserSender): self
+    {
+        $this->authUserSender = $authUserSender;
 
         return $this;
     }

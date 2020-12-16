@@ -4,8 +4,11 @@ namespace App\Controller\Admin;
 
 use App\Entity\PatientSMS;
 use App\Form\Admin\PatientSMSType;
+use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PatientSMSDataTableService;
+use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\PatientSMSTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,11 +42,20 @@ class PatientSMSController extends AdminAbstractController
      * @Route("/", name="patient_sms_list", methods={"GET", "POST"})
      * @param Request $request
      * @param PatientSMSDataTableService $patientSMSDataTableService
+     * @param FilterService $filterService
      * @return Response
      */
-    public function list(Request $request, PatientSMSDataTableService $patientSMSDataTableService): Response
-    {
-        return $this->responseList($request, $patientSMSDataTableService);
+    public function list(
+        Request $request,
+        PatientSMSDataTableService $patientSMSDataTableService,
+        FilterService $filterService
+    ): Response {
+        return $this->responseList(
+            $request, $patientSMSDataTableService,
+            (new FilterLabels($filterService))->setFilterLabelsArray(
+                [self::FILTER_LABELS['PATIENT'],]
+            )
+        );
     }
 
     /**
@@ -52,7 +64,7 @@ class PatientSMSController extends AdminAbstractController
      * @param Request $request
      * @param PatientSMS $patientSMS
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function edit(Request $request, PatientSMS $patientSMS): Response
     {

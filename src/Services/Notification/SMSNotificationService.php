@@ -17,14 +17,10 @@ use SimpleXMLElement;
  */
 class SMSNotificationService
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $text;
 
     /** @var Patient */
@@ -120,7 +116,7 @@ class SMSNotificationService
             )
         );
         $sMSNotification = new SMSNotification();
-        $sMSNotification->setSmsTo($this->patient->getAuthUser()->getPhone());
+        $sMSNotification->setSmsPatientRecipientPhone($this->patient->getAuthUser()->getPhone());
         $sMSNotification->setStatus($this->smsStatuses['wait']);
         $sMSNotification->setExternalId((string)$result->result->sms['id']);
 
@@ -145,7 +141,7 @@ class SMSNotificationService
             )
         );
         $sMSNotification->setExternalId((string)$result->result->sms['id']);
-        $sMSNotification->setAttempt((int)$sMSNotification->getAttempt() + 1);
+        $sMSNotification->setAttemptCount((int)$sMSNotification->getAttemptCount() + 1);
 
         $this->em->persist($sMSNotification);
         $this->em->flush();

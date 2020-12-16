@@ -62,7 +62,7 @@ class AuthUser implements UserInterface
     private $enabled;
 
     /**
-     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="from")
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="authUserSender")
      */
     private $notifications;
 

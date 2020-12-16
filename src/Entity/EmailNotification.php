@@ -22,7 +22,7 @@ class EmailNotification
     /**
      * @ORM\Column(type="string", length=255, options={"comment"="Email получателя"})
      */
-    private $emailTo;
+    private $patientRecipientEmail;
 
     /**
      * @ORM\OneToOne(targetEntity=Notification::class, inversedBy="emailNotification", cascade={"persist", "remove"})
@@ -35,25 +35,6 @@ class EmailNotification
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getEmailTo(): ?string
-    {
-        return $this->emailTo;
-    }
-
-    /**
-     * @param string $emailTo
-     * @return $this
-     */
-    public function setEmailTo(string $emailTo): self
-    {
-        $this->emailTo = $emailTo;
-
-        return $this;
     }
 
     /**
@@ -71,6 +52,25 @@ class EmailNotification
     public function setNotification(?Notification $notification): self
     {
         $this->notification = $notification;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPatientRecipientEmail(): ?string
+    {
+        return $this->patientRecipientEmail;
+    }
+
+    /**
+     * @param string $patientRecipientEmail
+     * @return $this
+     */
+    public function setPatientRecipientEmail(string $patientRecipientEmail): self
+    {
+        $this->patientRecipientEmail = $patientRecipientEmail;
 
         return $this;
     }

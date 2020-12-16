@@ -269,13 +269,14 @@ abstract class TemplateItem
 
     /**
      * Устанавливает контент для шаблона
-     *
      * @param array|null $contents
+     * @return TemplateItem
      */
-    public function setContents(?array $contents = []): void
+    public function setContents(?array $contents = []): self
     {
         foreach ($contents as $key => $value) {
             $this->setContent($key, $value);
         }
+        return $this;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\DataTable\Admin;
 
+use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Entity\PatientSMS;
 use App\Services\InfoService\AuthUserInfoService;
@@ -79,20 +80,29 @@ class PatientSMSDataTableService extends AdminDatatableService
             )
             ;
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
+
+        /** @var Patient $patient */
+        $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']])
+            ? $filters[AppAbstractController::FILTER_LABELS['PATIENT']] : null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
                     'entity' => PatientSMS::class,
-                    'query' => function (QueryBuilder $builder) {
+                    'query' => function (QueryBuilder $builder) use ($patient) {
                         $builder
-                            ->select('l')
-                            ->from(PatientSMS::class, 'l')
-                            ->leftJoin('l.patient', 'p')
+                            ->select('ps')
+                            ->from(PatientSMS::class, 'ps')
+                            ->leftJoin('ps.patient', 'p')
                             ->leftJoin('p.AuthUser', 'u')
                             ->andWhere('u.enabled = :val')
                             ->setParameter('val', true)
-                            ->orderBy('l.id', 'desc')
+                            ->orderBy('ps.id', 'desc')
                         ;
+                        if ($patient) {
+                            $builder
+                                ->andWhere('ps.patient = :patient')
+                                ->setParameter('patient', $patient);
+                        }
                     },
                 ]
             );

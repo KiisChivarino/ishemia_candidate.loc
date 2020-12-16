@@ -2,9 +2,14 @@
 
 namespace App\Services\TemplateBuilders\Admin;
 
+use App\Controller\AppAbstractController;
+use App\Entity\Patient;
+use App\Repository\PatientRepository;
 use App\Services\FilterService\FilterService;
+use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
+use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
@@ -27,8 +32,7 @@ class PatientSMSTemplate extends AdminTemplateBuilder
         'phone' => 'Номер телефона',
         'text' => 'Сообщение',
         'created_at' => 'Дата и время создания',
-        'processed' => 'Обработано',
-        'isProcessed' => 'Обработано'
+        'isProcessed' => 'Обработано',
     ];
 
     /** @var string[] Common form content for staff templates */
@@ -51,6 +55,10 @@ class PatientSMSTemplate extends AdminTemplateBuilder
     protected const EDIT_CONTENT = [
         'h1' => 'Редактирование SMS',
         'title' => 'Редактирование SMS',
+    ];
+
+    protected const FILTER_CONTENT = [
+        'patientFilter' => 'Пациент'
     ];
 
     /**
@@ -77,6 +85,7 @@ class PatientSMSTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return $this|AdminTemplateBuilder
+     * @throws \Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
@@ -87,6 +96,30 @@ class PatientSMSTemplate extends AdminTemplateBuilder
             ->setIsEnabled(false);
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
             ->setIsEnabled(false);
+        $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->setContents(self::FILTER_CONTENT)
+            ->setFilters(
+                $filterService,
+                [
+                    new TemplateFilter(
+                        AppAbstractController::FILTER_LABELS['PATIENT'],
+                        Patient::class,
+                        [
+                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                                ->getContentValue('patientFilter'),
+                            'class' => Patient::class,
+                            'required' => false,
+                            'choice_label' => function ($value) {
+                                return $value->getAuthUser()->getLastName() . ' ' . $value->getAuthUser()->getFirstName();
+                            },
+                            'query_builder' => function (PatientRepository $er) {
+                                return $er->createQueryBuilder('p')
+                                    ->leftJoin('p.AuthUser', 'au')
+                                    ->where('au.enabled = true');
+                            },
+                        ]
+                    ),
+                ]
+            );
 
         return $this;
     }

@@ -582,22 +582,22 @@ class Patient
         return $this->patientSMS;
     }
 
-    public function addPatientSM(PatientSMS $patientSM): self
+    public function addPatientSMS(PatientSMS $patientSMS): self
     {
-        if (!$this->patientSMS->contains($patientSM)) {
-            $this->patientSMS[] = $patientSM;
-            $patientSM->setPatient($this);
+        if (!$this->patientSMS->contains($patientSMS)) {
+            $this->patientSMS[] = $patientSMS;
+            $patientSMS->setPatient($this);
         }
 
         return $this;
     }
 
-    public function removePatientSM(PatientSMS $patientSM): self
+    public function removePatientSMS(PatientSMS $patientSMS): self
     {
-        if ($this->patientSMS->removeElement($patientSM)) {
+        if ($this->patientSMS->removeElement($patientSMS)) {
             // set the owning side to null (unless already changed)
-            if ($patientSM->getPatient() === $this) {
-                $patientSM->setPatient(null);
+            if ($patientSMS->getPatient() === $this) {
+                $patientSMS->setPatient(null);
             }
         }
 
