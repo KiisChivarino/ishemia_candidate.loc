@@ -45,8 +45,7 @@ class GetSMSNotificationsCommand extends Command
         SMSNotificationService $SMSNotificationService,
         array $smsParameters,
         array $phoneParameters
-    )
-    {
+    ) {
         parent::__construct();
         $this->container = $container;
         $this->sms = $SMSNotificationService;
