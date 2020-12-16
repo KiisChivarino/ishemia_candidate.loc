@@ -2,11 +2,10 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Logger\Log;
-use App\Entity\Logger\LogAction;
+use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\LogDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\Admin\ReceivedSMSTemplate;
+use App\Services\TemplateBuilders\Admin\LogTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,14 +24,13 @@ class LogController extends AdminAbstractController
     public const TEMPLATE_PATH = 'admin/log/';
 
     /**
-     * AnalysisGroupController constructor.
-     *
+     * LogController constructor.
      * @param Environment $twig
      * @param RouterInterface $router
      */
     public function __construct(Environment $twig, RouterInterface $router)
     {
-        $this->templateService = new ReceivedSMSTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new LogTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -42,41 +40,16 @@ class LogController extends AdminAbstractController
      *
      * @param Request $request
      * @param LogDataTableService $logDataTableService
-     * @return Response
-     */
-    public function list(Request $request, LogDataTableService $logDataTableService): Response
-    {
-        return $this->responseList($request, $logDataTableService);
-    }
-
-    /**
-     * Template parameter info
-     * @Route("/{id}", name="log_show", methods={"GET"}, requirements={"id"="\d+"})
-     * @param LogAction $logAction
      * @param FilterService $filterService
      * @return Response
      */
-    public function show(LogAction $logAction, FilterService $filterService): Response
+    public function list(Request $request, LogDataTableService $logDataTableService, FilterService $filterService): Response
     {
-        return $this->responseShow(
-            self::TEMPLATE_PATH,
-            $logAction,
-            [
-                'templateParameterFilterName' => $filterService->generateFilterName('log', LogAction::class)
-            ]
+        return $this->responseList(
+            $request, $logDataTableService,
+            (new FilterLabels($filterService))->setFilterLabelsArray(
+                [self::FILTER_LABELS['LOG_ACTION'],]
+            )
         );
-    }
-
-    /**
-     * Delete template type
-     * @Route("/{id}", name="log_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-     *
-     * @param Request $request
-     * @param Log $log
-     * @return Response
-     */
-    public function delete(Request $request, Log $log): Response
-    {
-        return $this->responseDelete($request, $log);
     }
 }
