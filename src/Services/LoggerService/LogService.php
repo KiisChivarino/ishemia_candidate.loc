@@ -19,7 +19,8 @@ class LogService
     /** Стандартные варианты описаний логов */
     const
         DEFAULT_USER_LOGIN_DESCRIPTION = 'User successfully logged in.',
-        DEFAULT_USER_LOGOUT_DESCRIPTION = 'User successfully logged out.';
+        DEFAULT_USER_LOGOUT_DESCRIPTION = 'User successfully logged out.',
+        DEFAULT_SUCCESS_DESCRIPTION = 'Command successfully executed.';
 
     /** @var string */
     private $description;
@@ -158,6 +159,21 @@ class LogService
                 'enabled' => true
             ]),
             $this->description,
+            new DateTime('now')
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function logSuccessEvent(): bool {
+        return $this->createLog(
+            $this->user,
+            $this->em->getRepository(LogAction::class)->findOneBy([
+                'name' => 'success',
+                'enabled' => true
+            ]),
+            $this->description ?? self::DEFAULT_SUCCESS_DESCRIPTION,
             new DateTime('now')
         );
     }
