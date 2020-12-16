@@ -29,3 +29,6 @@ parameters:
 # Параметры номеров
   phone_parameters:
     phone_prefix_ru: '+7'
+# Параметры номеров
+  time_formats:
+    besms: 'd.m.Y H:i:s'

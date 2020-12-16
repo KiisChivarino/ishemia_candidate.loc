@@ -45,26 +45,32 @@ class SMSNotificationService
     /** @var array */
     private $smsUpdateTimes;
 
+    /** @var array */
+    private $timeFormats;
+
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
-     * @param $smsParameters
-     * @param $smsStatuses
-     * @param $smsUpdateTimes
-     * @param $phoneParameters
+     * @param array $smsParameters
+     * @param array $smsStatuses
+     * @param array $smsUpdateTimes
+     * @param array $phoneParameters
+     * @param array $timeFormats
      */
     public function __construct(
         EntityManagerInterface $em,
-        $smsParameters,
-        $smsStatuses,
-        $smsUpdateTimes,
-        $phoneParameters
+        array $smsParameters,
+        array $smsStatuses,
+        array $smsUpdateTimes,
+        array $phoneParameters,
+        array $timeFormats
     ) {
         $this->em = $em;
         $this->smsParameters = $smsParameters;
         $this->smsStatuses = $smsStatuses;
         $this->smsUpdateTimes = $smsUpdateTimes;
         $this->phoneParameters = $phoneParameters;
+        $this->timeFormats = $timeFormats;
         $this->sms = new BEESMS($this->smsParameters['user'], $this->smsParameters['password']);
     }
 
@@ -156,8 +162,8 @@ class SMSNotificationService
         return new SimpleXMLElement($this->check(
             (new DateTime('now'))
                 ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_update'] . 'H'))
-                ->format('d.m.Y H:i:s'),
-            (new DateTime('now'))->format('d.m.Y H:i:s')
+                ->format($this->timeFormats['besms']),
+            (new DateTime('now'))->format($this->timeFormats['besms'])
         ));
     }
 
@@ -171,8 +177,8 @@ class SMSNotificationService
         return new SimpleXMLElement($this->getMessages(
             (new DateTime('now'))
                 ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
-                ->format('d.m.Y H:i:s'),
-            (new DateTime('now'))->format('d.m.Y H:i:s')
+                ->format($this->timeFormats['besms']),
+            (new DateTime('now'))->format($this->timeFormats['besms'])
         ));
     }
 

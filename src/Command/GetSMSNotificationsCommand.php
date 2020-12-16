@@ -43,8 +43,8 @@ class GetSMSNotificationsCommand extends Command
     public function __construct(
         ContainerInterface $container,
         SMSNotificationService $SMSNotificationService,
-        $smsParameters,
-        $phoneParameters
+        array $smsParameters,
+        array $phoneParameters
     )
     {
         parent::__construct();
@@ -54,7 +54,10 @@ class GetSMSNotificationsCommand extends Command
         $this->phoneParameters = $phoneParameters;
     }
 
-    protected function configure()
+    /**
+     * Конфигурация для команды GetSMSNotifications
+     */
+    protected function configure(): void
     {
         $this
             ->setDescription('Get SMS notification`s')
@@ -73,15 +76,18 @@ class GetSMSNotificationsCommand extends Command
     {
         $em = $this->container->get('doctrine')->getManager();
         $patients = $em->getRepository(Patient::class)->findAll();
-        $smses = $em->getRepository(ReceivedSMS::class)->findAll();
+        $smsCollection = $em->getRepository(ReceivedSMS::class)->findAll();
 
         $result = $this->sms->getUnreadSMS();
         foreach ($result->MESSAGES->MESSAGE as $message) {
             if ((string) $message->SMS_TARGET == $this->smsParameters['sender']) {
                 foreach ($patients as $patient) {
-                    if ((string) $message->SMS_SENDER == (string) $this->phoneParameters['phone_prefix_ru'] . $patient->getAuthUser()->getPhone()) {
+                    if (
+                        (string) $message->SMS_SENDER == (string) $this->phoneParameters['phone_prefix_ru'] .
+                        $patient->getAuthUser()->getPhone()
+                    ) {
                         $check = false;
-                        foreach ($smses as $sms) {
+                        foreach ($smsCollection as $sms) {
                             if ($sms->getExternalId() == (string) $message['SMS_ID']) {
                                 $check = true;
                             }
@@ -91,7 +97,9 @@ class GetSMSNotificationsCommand extends Command
                             $sms->setPatient($patient);
                             $sms->setText((string) $message->SMS_TEXT);
                             $sms->setExternalId((string) $message['SMS_ID']);
-                            $sms->setCreatedAt(date_create_from_format('d.m.y H:i:s', (string) $message->SMS_CLOSE_TIME));
+                            $sms->setCreatedAt(
+                                date_create_from_format('d.m.y H:i:s', (string) $message->SMS_CLOSE_TIME)
+                            );
                             $em->persist($sms);
                         }
                     }
@@ -99,6 +107,6 @@ class GetSMSNotificationsCommand extends Command
             }
         }
         $em->flush();
-        return 0;
+        return 0; // TODO: При ошибки лог с ошибкой добавить
     }
 }
