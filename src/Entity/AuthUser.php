@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -72,7 +71,6 @@ class AuthUser implements UserInterface
      */
     public function __construct()
     {
-        $this->sMSNotifications = new ArrayCollection();
         $this->notifications = new ArrayCollection();
     }
 

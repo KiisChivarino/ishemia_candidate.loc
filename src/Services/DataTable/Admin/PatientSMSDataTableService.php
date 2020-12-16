@@ -3,13 +3,14 @@
 namespace App\Services\DataTable\Admin;
 
 use App\Entity\Patient;
-use App\Entity\ReceivedSMS;
+use App\Entity\PatientSMS;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -19,7 +20,7 @@ use Omines\DataTablesBundle\DataTable;
  * methods for adding data tables
  * @package App\DataTable
  */
-class SMSDataTableService extends AdminDatatableService
+class PatientSMSDataTableService extends AdminDatatableService
 {
     /**
      * Таблица полученных sms
@@ -38,9 +39,9 @@ class SMSDataTableService extends AdminDatatableService
                     'field' => 'u.lastName',
                     'orderable' => true,
                     'orderField' => 'u.lastName',
-                    'render' => function (string $data, ReceivedSMS $receivedSMS) {
+                    'render' => function (string $data, PatientSMS $patientSMS) {
                         /** @var Patient $patient */
-                        $patient = $receivedSMS->getPatient();
+                        $patient = $patientSMS->getPatient();
                         return $patient
                             ? $this->getLink((new AuthUserInfoService())
                                 ->getFIO($patient->getAuthUser()), $patient->getId(), 'patient_show')
@@ -51,9 +52,9 @@ class SMSDataTableService extends AdminDatatableService
             ->add(
                 'phone', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('phone'),
-                    'render' => function (string $data, ReceivedSMS $receivedSMS) {
+                    'render' => function (string $data, PatientSMS $patientSMS) {
                         /** @var Patient $patient */
-                        $patient = $receivedSMS->getPatient();
+                        $patient = $patientSMS->getPatient();
                         return (new AuthUserInfoService())->getPhone($patient->getAuthUser());
                     }
                 ]
@@ -61,6 +62,12 @@ class SMSDataTableService extends AdminDatatableService
             ->add(
                 'text', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('text'),
+                ]
+            )
+            ->add(
+                'isProcessed', BoolColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('isProcessed'),
+                    'searchable' => false,
                 ]
             )
             ->add(
@@ -75,11 +82,11 @@ class SMSDataTableService extends AdminDatatableService
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
-                    'entity' => ReceivedSMS::class,
+                    'entity' => PatientSMS::class,
                     'query' => function (QueryBuilder $builder) {
                         $builder
                             ->select('l')
-                            ->from(ReceivedSMS::class, 'l')
+                            ->from(PatientSMS::class, 'l')
                             ->leftJoin('l.patient', 'p')
                             ->leftJoin('p.AuthUser', 'u')
                             ->andWhere('u.enabled = :val')

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * SMS Notification
  * @ORM\Entity(repositoryClass=SMSNotificationRepository::class)
+ * @ORM\Table(options={"comment":"SMS уведомления"});
  */
 class SMSNotification
 {

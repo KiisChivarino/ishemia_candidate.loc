@@ -359,7 +359,7 @@ class MenuBuilder
         $menu->addChild(
             'sms', [
                 'label' => 'Принятые SMS',
-                'route' => 'sms_list'
+                'route' => 'patient_sms_list'
             ]
         );
         $menu->addChild(

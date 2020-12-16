@@ -140,9 +140,9 @@ class Patient
     private $heartAttackDate;
 
     /**
-     * @ORM\OneToMany(targetEntity=ReceivedSMS::class, mappedBy="patient", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PatientSMS::class, mappedBy="patient", orphanRemoval=true)
      */
-    private $receivedSMS;
+    private $patientSMS;
 
     /**
      * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="patient")
@@ -155,8 +155,9 @@ class Patient
     public function __construct()
     {
         $this->medicalHistories = new ArrayCollection();
-        $this->receivedSMS = new ArrayCollection();
+        $this->sendedSMS = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->patientSMS = new ArrayCollection();
     }
 
     /**
@@ -528,40 +529,6 @@ class Patient
     }
 
     /**
-     * @return Collection|ReceivedSMS[]
-     */
-    public function getReceivedSMS(): Collection
-    {
-        return $this->receivedSMS;
-    }
-
-    /**
-     * @param ReceivedSMS $receivedSM
-     * @return $this
-     */
-    public function addReceivedSM(ReceivedSMS $receivedSM): self
-    {
-        if (!$this->receivedSMS->contains($receivedSM)) {
-            $this->receivedSMS[] = $receivedSM;
-            $receivedSM->setPatient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReceivedSM(ReceivedSMS $receivedSM): self
-    {
-        if ($this->receivedSMS->removeElement($receivedSM)) {
-            // set the owning side to null (unless already changed)
-            if ($receivedSM->getPatient() === $this) {
-                $receivedSM->setPatient(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function __toString()
@@ -601,6 +568,36 @@ class Patient
             // set the owning side to null (unless already changed)
             if ($notification->getPatient() === $this) {
                 $notification->setPatient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PatientSMS[]
+     */
+    public function getPatientSMS(): Collection
+    {
+        return $this->patientSMS;
+    }
+
+    public function addPatientSM(PatientSMS $patientSM): self
+    {
+        if (!$this->patientSMS->contains($patientSM)) {
+            $this->patientSMS[] = $patientSM;
+            $patientSM->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removePatientSM(PatientSMS $patientSM): self
+    {
+        if ($this->patientSMS->removeElement($patientSM)) {
+            // set the owning side to null (unless already changed)
+            if ($patientSM->getPatient() === $this) {
+                $patientSM->setPatient(null);
             }
         }
 

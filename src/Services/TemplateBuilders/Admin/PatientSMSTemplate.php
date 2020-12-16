@@ -16,7 +16,7 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * @package App\Services\TemplateBuilders
  */
-class ReceivedSMSTemplate extends AdminTemplateBuilder
+class PatientSMSTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for staff templates */
     protected const COMMON_CONTENT = [
@@ -27,7 +27,8 @@ class ReceivedSMSTemplate extends AdminTemplateBuilder
         'phone' => 'Номер телефона',
         'text' => 'Сообщение',
         'created_at' => 'Дата и время создания',
-        'processed' => 'Обработано'
+        'processed' => 'Обработано',
+        'isProcessed' => 'Обработано'
     ];
 
     /** @var string[] Common form content for staff templates */

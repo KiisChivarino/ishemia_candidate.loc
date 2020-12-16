@@ -39,8 +39,10 @@ class EmailNotificationController extends AdminAbstractController
      * @param EmailNotificationDataTableService $emailNotificationDataTableService
      * @return Response
      */
-    public function list(Request $request, EmailNotificationDataTableService $emailNotificationDataTableService): Response
-    {
+    public function list(
+        Request $request,
+        EmailNotificationDataTableService $emailNotificationDataTableService
+    ): Response {
         return $this->responseList($request, $emailNotificationDataTableService);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
-use App\Entity\ReceivedSMS;
+use App\Entity\PatientSMS;
 use App\Services\TemplateItems\FormTemplateItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class ReceivedSMSType
  * @package App\Form\Admin
  */
-class ReceivedSMSType extends AbstractType
+class PatientSMSType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -59,7 +59,7 @@ class ReceivedSMSType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => ReceivedSMS::class,])
+            ->setDefaults(['data_class' => PatientSMS::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

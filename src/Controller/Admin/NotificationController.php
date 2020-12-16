@@ -44,8 +44,11 @@ class NotificationController extends AdminAbstractController
      * @param FilterService $filterService
      * @return Response
      */
-    public function list(Request $request, NotificationDataTableService $notificationDataTableService, FilterService $filterService): Response
-    {
+    public function list(
+        Request $request,
+        NotificationDataTableService $notificationDataTableService,
+        FilterService $filterService
+    ): Response {
         return $this->responseList(
             $request, $notificationDataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
@@ -67,7 +70,10 @@ class NotificationController extends AdminAbstractController
             self::TEMPLATE_PATH,
             $notification,
             [
-                'templateParameterFilterName' => $filterService->generateFilterName('patient', Patient::class)
+                'templateParameterFilterName' => $filterService->generateFilterName(
+                    'patient',
+                    Patient::class
+                )
             ]
         );
     }

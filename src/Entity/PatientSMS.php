@@ -2,14 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\ReceivedSMSRepository;
+use App\Repository\PatientSMSRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ReceivedSMSRepository::class)
+ * Patient SMS
+ * @ORM\Entity(repositoryClass=PatientSMSRepository::class)
+ * @ORM\Table(options={"comment":"Полученыые SMS от пациента"});
  */
-class ReceivedSMS
+class PatientSMS
 {
     /**
      * @ORM\Id
@@ -19,7 +21,7 @@ class ReceivedSMS
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="receivedSMS")
+     * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="patientSMS")
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $patient;
@@ -38,22 +40,6 @@ class ReceivedSMS
      * @ORM\Column(type="string", length=255, options={"comment"="ID sms сообщения на стороне провайдера"})
      */
     private $externalId;
-
-    /**
-     * @return mixed
-     */
-    public function getExternalId()
-    {
-        return $this->externalId;
-    }
-
-    /**
-     * @param mixed $externalId
-     */
-    public function setExternalId($externalId): void
-    {
-        $this->externalId = $externalId;
-    }
 
     /**
      * @ORM\Column(type="boolean")
@@ -152,4 +138,19 @@ class ReceivedSMS
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getExternalId()
+    {
+        return $this->externalId;
+    }
+
+    /**
+     * @param mixed $externalId
+     */
+    public function setExternalId($externalId): void
+    {
+        $this->externalId = $externalId;
+    }
 }

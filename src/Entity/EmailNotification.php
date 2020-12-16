@@ -6,7 +6,9 @@ use App\Repository\EmailNotificationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Email Notification
  * @ORM\Entity(repositoryClass=EmailNotificationRepository::class)
+ * @ORM\Table(options={"comment":"Email уведомления"});
  */
 class EmailNotification
 {

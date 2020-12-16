@@ -4,7 +4,7 @@
 namespace App\Command;
 
 use App\Entity\Patient;
-use App\Entity\ReceivedSMS;
+use App\Entity\PatientSMS;
 use App\Services\Notification\SMSNotificationService;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -75,7 +75,7 @@ class GetSMSNotificationsCommand extends Command
     {
         $em = $this->container->get('doctrine')->getManager();
         $patients = $em->getRepository(Patient::class)->findAll();
-        $smsCollection = $em->getRepository(ReceivedSMS::class)->findAll();
+        $smsCollection = $em->getRepository(PatientSMS::class)->findAll();
 
         $result = $this->sms->getUnreadSMS();
         foreach ($result->MESSAGES->MESSAGE as $message) {
@@ -92,7 +92,7 @@ class GetSMSNotificationsCommand extends Command
                             }
                         }
                         if (!$check) {
-                            $sms = new ReceivedSMS();
+                            $sms = new PatientSMS();
                             $sms->setPatient($patient);
                             $sms->setText((string) $message->SMS_TEXT);
                             $sms->setExternalId((string) $message['SMS_ID']);
