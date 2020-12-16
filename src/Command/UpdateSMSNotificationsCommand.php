@@ -68,14 +68,14 @@ class UpdateSMSNotificationsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $em = $this->container->get('doctrine')->getManager();
+
+        /** @var SMSNotification[] $smsNotifications */
         $smsNotifications = $em->getRepository(SMSNotification::class)->findBy([
             'status' => $this->smsStatuses['wait']
         ]);
 
         $result = $this->sms->checkSMS();
-        /** @var $message */
         foreach ($result->MESSAGES->MESSAGE as $message) {
-            /** @var SMSNotification $smsNotification */
             foreach ($smsNotifications as $smsNotification) {
                 if (
                     (string) $message['SMS_ID'] == (string) $smsNotification->getExternalId()
