@@ -20,24 +20,16 @@ class LogService
         DEFAULT_USER_LOGIN_DESCRIPTION = 'User successfully logged in.',
         DEFAULT_USER_LOGOUT_DESCRIPTION = 'User successfully logged out.';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $description;
 
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
 
-    /**
-     * @var
-     */
+    /** @var */
     private $error;
 
-    /**
-     * @var AuthUser
-     */
+    /** @var AuthUser */
     private $user;
 
     /**
@@ -155,10 +147,25 @@ class LogService
     }
 
     /**
+     * @return bool
+     */
+    public function logErrorEvent(): bool {
+        return $this->createLog(
+            $this->user,
+            $this->em->getRepository(LogAction::class)->findOneBy([
+                'name' => 'error',
+                'enabled' => true
+            ]),
+            $this->description,
+            new DateTime('now')
+        );
+    }
+
+    /**
      * @param $user
      * @return LogService
      */
-    public function setUser(AuthUser $user) {
+    public function setUser(AuthUser $user): self {
 
         $this->user =
             'id: '
@@ -174,7 +181,7 @@ class LogService
      * @param $error
      * @return LogService
      */
-    public function setError($error) {
+    public function setError($error): self {
         $this->error = $error;
         return $this;
     }
@@ -190,16 +197,16 @@ class LogService
      * @param $description
      * @return LogService
      */
-    public function setDescription($description) {
+    public function setDescription($description): self {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * @return bool
+     * @return LogService
      */
-    public function setCritical() {
+    public function setCritical(): self {
         // TODO: telegram or email notifications?
-        return true;
+        return $this;
     }
 }
