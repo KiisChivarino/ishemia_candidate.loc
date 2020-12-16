@@ -134,7 +134,7 @@ class NotificationService
      * @param Patient $patient
      * @return NotificationService
      */
-    public function setPatient(Patient $patient)
+    public function setPatient(Patient $patient): NotificationService
     {
         $this->patient = $patient;
         return $this;
@@ -144,7 +144,7 @@ class NotificationService
      * @param string $text
      * @return NotificationService
      */
-    public function setText (string $text)
+    public function setText (string $text): NotificationService
     {
         $this->text = $text;
         return $this;
