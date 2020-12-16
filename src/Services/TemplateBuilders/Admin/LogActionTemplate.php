@@ -6,6 +6,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -82,20 +83,7 @@ class LogActionTemplate extends AdminTemplateBuilder
             ->setIsEnabled(false);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
-        return $this;
-    }
-
-    /**
-     *  Builds show template settings of AnalysisGroup controller
-     *
-     * @param object|null $analysisGroup
-     *
-     * @return $this
-     */
-    public function show(?object $analysisGroup = null): AppTemplateBuilder
-    {
-        parent::show();
-        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+        $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
             ->setIsEnabled(false);
         return $this;
     }
