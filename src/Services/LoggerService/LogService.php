@@ -16,6 +16,7 @@ use Exception;
  */
 class LogService
 {
+    /** Стандартные варианты описаний логов */
     const
         DEFAULT_USER_LOGIN_DESCRIPTION = 'User successfully logged in.',
         DEFAULT_USER_LOGOUT_DESCRIPTION = 'User successfully logged out.';
