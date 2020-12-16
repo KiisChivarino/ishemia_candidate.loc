@@ -68,35 +68,37 @@ class UpdateSMSNotificationsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $em = $this->container->get('doctrine')->getManager();
-        $notifications = $em->getRepository(SMSNotification::class)->findBy([
+        $smsNotifications = $em->getRepository(SMSNotification::class)->findBy([
             'status' => $this->smsStatuses['wait']
         ]);
 
         $result = $this->sms->checkSMS();
+        /** @var $message */
         foreach ($result->MESSAGES->MESSAGE as $message) {
-            foreach ($notifications as $notification) {
+            /** @var SMSNotification $smsNotification */
+            foreach ($smsNotifications as $smsNotification) {
                 if (
-                    (string) $message['SMS_ID'] == (string) $notification->getExternalId()
-                    && $notification->getStatus() != $this->smsStatuses['not_delivered']
+                    (string) $message['SMS_ID'] == (string) $smsNotification->getExternalId()
+                    && $smsNotification->getStatus() != $this->smsStatuses['not_delivered']
                 ) {
                     switch ((string)$message->SMSSTC_CODE) {
                         case $this->smsStatuses['delivered']:
-                            $notification->setStatus($this->smsStatuses['delivered']);
-                            $em->persist($notification);
+                            $smsNotification->setStatus($this->smsStatuses['delivered']);
+                            $em->persist($smsNotification);
                             break;
                         case $this->smsStatuses['wait']:
                             break;
                         case $this->smsStatuses['not_delivered']:
-                            if ($notification->getAttempt() <= self::MAX_ATTEMPTS || self::MAX_ATTEMPTS == '-1') {
-                                $this->sms->resendSMS($notification);
+                            if ($smsNotification->getAttempt() <= self::MAX_ATTEMPTS || self::MAX_ATTEMPTS == '-1') {
+                                $this->sms->resendSMS($smsNotification);
                             } else {
-                                $notification->setStatus($this->smsStatuses['not_delivered']);
-                                $em->persist($notification);
+                                $smsNotification->setStatus($this->smsStatuses['not_delivered']);
+                                $em->persist($smsNotification);
                             }
                             break;
                         case $this->smsStatuses['failed']:
-                            $notification->setStatus($this->smsStatuses['failed']);
-                            $em->persist($notification);
+                            $smsNotification->setStatus($this->smsStatuses['failed']);
+                            $em->persist($smsNotification);
                             break;
                     }
                 }

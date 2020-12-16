@@ -54,7 +54,7 @@ class AdminController extends AdminAbstractController
      * @Route("/admin", name="admin")
      * @return Response
      */
-    public function index()
+    public function index(): Response
     {
         return $this->render(
             'admin/index.html.twig', [
@@ -70,7 +70,7 @@ class AdminController extends AdminAbstractController
      * @param PatientRepository $patientRepository
      * @return Response
      */
-    public function testNotification(PatientRepository $patientRepository)
+    public function testNotification(PatientRepository $patientRepository): Response
     {
         $this->notification->setText('Тестовое уведомление')->setPatient($patientRepository->find([
             'id' => 1
