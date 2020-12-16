@@ -43,5 +43,4 @@ class SMSNotificationController extends AdminAbstractController
     {
         return $this->responseList($request, $smsNotificationDataTableService);
     }
-
 }

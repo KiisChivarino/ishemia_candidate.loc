@@ -2,9 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\EmailNotification;
 use App\Services\DataTable\Admin\EmailNotificationDataTableService;
-use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\EmailNotificationTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,35 +42,5 @@ class EmailNotificationController extends AdminAbstractController
     public function list(Request $request, EmailNotificationDataTableService $emailNotificationDataTableService): Response
     {
         return $this->responseList($request, $emailNotificationDataTableService);
-    }
-
-    /**
-     * Email Notification info
-     * @Route("/{id}", name="email_notification_show", methods={"GET"}, requirements={"id"="\d+"})
-     * @param EmailNotification $emailNotification
-     * @param FilterService $filterService
-     * @return Response
-     */
-    public function show(EmailNotification $emailNotification, FilterService $filterService): Response
-    {
-        return $this->responseShow(
-            self::TEMPLATE_PATH,
-            $emailNotification,
-            [
-                'templateParameterFilterName' => $filterService->generateFilterName('emailNotifications', EmailNotification::class)
-            ]
-        );
-    }
-
-    /**
-     * Delete Email Notification
-     * @Route("/{id}", name="email_notification_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-     * @param Request $request
-     * @param EmailNotification $emailNotification
-     * @return Response
-     */
-    public function delete(Request $request, EmailNotification $emailNotification): Response
-    {
-        return $this->responseDelete($request, $emailNotification);
     }
 }
