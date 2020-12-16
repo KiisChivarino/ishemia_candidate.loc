@@ -3,3 +3,5 @@ login/logout
 create
 update
 delete
+error
+success

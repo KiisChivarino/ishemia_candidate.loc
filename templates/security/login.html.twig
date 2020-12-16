@@ -16,7 +16,7 @@
 
                     {% if app.user %}
                         <div class="mb-3">
-                            Вы вошли как {{ app.user.username }}, <a href="{{ path('app_logout') }}">Выйти</a>
+                            Вы вошли как {{ app.user.username }}, <a href="{{ path('logout_from_app') }}">Выйти</a>
                         </div>
                     {% endif %}
                     <div class="authorization__inputs">

@@ -47,6 +47,7 @@ abstract class AppAbstractController extends AbstractController
         'PRESCRIPTION' => 'prescription',
         'TEMPLATE_TYPE' => 'templateType',
         'TEMPLATE_PARAMETER' => 'templateParameter',
+        'LOG_ACTION' => 'logAction',
     ];
 
     /** @var string Label of form option for adding formTemplateItem in form */
