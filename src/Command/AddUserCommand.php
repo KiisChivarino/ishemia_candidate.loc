@@ -236,7 +236,7 @@ class AddUserCommand extends Command
             );
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function validateUserData($firstName, $lastName, $phone, $plainPassword, $email): void

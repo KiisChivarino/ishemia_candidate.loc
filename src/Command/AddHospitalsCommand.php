@@ -105,6 +105,6 @@ class AddHospitalsCommand extends Command
 
         $this->io->success('Больницы успешно добавлены!');
 
-        return 0;
+        return Command::SUCCESS;
     }
 }
