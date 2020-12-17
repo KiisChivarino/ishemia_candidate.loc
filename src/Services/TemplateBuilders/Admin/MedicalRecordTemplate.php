@@ -82,7 +82,8 @@ class MedicalRecordTemplate extends AdminTemplateBuilder
             self::FORM_CONTENT,
             self::FORM_SHOW_CONTENT,
             self::COMMON_CONTENT,
-            self::FILTER_CONTENT
+            self::FILTER_CONTENT,
+            self::ENTITY_CONTENT
         );
     }
 
@@ -92,6 +93,7 @@ class MedicalRecordTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return AppTemplateBuilder
+     * @throws \Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

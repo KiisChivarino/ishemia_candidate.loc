@@ -119,7 +119,7 @@ class TemplateService
      *
      * @return string
      */
-    public function getCommonTemplatePath()
+    public function getCommonTemplatePath(): string
     {
         return $this->commonTemplatePath;
     }
@@ -128,7 +128,7 @@ class TemplateService
      * @param string $commonTemplatePath
      * @return $this
      */
-    public function setCommonTemplatePath(string $commonTemplatePath)
+    public function setCommonTemplatePath(string $commonTemplatePath): TemplateService
     {
         $this->commonTemplatePath = $commonTemplatePath;
         return $this;
@@ -159,12 +159,10 @@ class TemplateService
 
     /**
      * Get route of controller by route name
-     *
      * @param string $route
-     *
-     * @return mixed|null
+     * @return string|null
      */
-    public function getRoute(string $route)
+    public function getRoute(string $route): ?string
     {
         return array_key_exists($route, $this->getRoutes()) ? $this->getRoutes()[$route] : $this->redirectRouteName;
     }
@@ -194,6 +192,7 @@ class TemplateService
     }
 
     /**
+     * Sets redirect route
      * @param string $redirectRouteName
      * @param array $redirectRouteParameters
      * @return TemplateService
