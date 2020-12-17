@@ -109,7 +109,7 @@ class UpdateSMSNotificationsCommand extends Command
         }
 
         $em->flush();
-        return 0;
+        return Command::SUCCESS;
     }
 
 }

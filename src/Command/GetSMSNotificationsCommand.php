@@ -105,6 +105,6 @@ class GetSMSNotificationsCommand extends Command
             }
         }
         $em->flush();
-        return 0; // TODO: При ошибки лог с ошибкой добавить
+        return Command::SUCCESS; // TODO: При ошибки лог с ошибкой добавить
     }
 }
