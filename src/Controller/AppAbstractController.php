@@ -93,6 +93,7 @@ abstract class AppAbstractController extends AbstractController
      * @param FilterLabels|null $filterLabels
      *
      * @return Response
+     * @throws Exception
      */
     public function responseList(
         Request $request,
@@ -113,6 +114,7 @@ abstract class AppAbstractController extends AbstractController
         if ($table->isCallback()) {
             return $table->getResponse();
         }
+        $entityName = $this->templateService->getItem('list')->getContentValue('entity');
         return $this->render(
             $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath() . 'list.html.twig',
             [
@@ -151,11 +153,13 @@ abstract class AppAbstractController extends AbstractController
      * @param array $parameters
      *
      * @return Response
+     * @throws Exception
      */
     public function responseShow(string $templatePath, object $entity, array $parameters = []): Response
     {
         $this->templateService->show($entity);
         $parameters['entity'] = $entity;
+        $entityName = $this->templateService->getItem('show')->getContentValue('entity');
         return $this->render($templatePath . 'show.html.twig', $parameters);
     }
 
@@ -307,6 +311,7 @@ abstract class AppAbstractController extends AbstractController
                 self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
             ]
         );
+        $entityName =$this->templateService->getItem('edit')->getContentValue('entity');
         return $this->responseFormTemplate(
             $request,
             $entity,
@@ -348,6 +353,7 @@ abstract class AppAbstractController extends AbstractController
                 self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
             ]
         );
+        $entityName = $this->templateService->getItem('new')->getContentValue('entity');
         return $this->responseFormTemplate(
             $request,
             $entity,
@@ -381,6 +387,7 @@ abstract class AppAbstractController extends AbstractController
         object $formEntity = null
     )
     {
+        $entityName =$this->templateService->getItem('edit')->getContentValue('entity');
         return $this->responseFormTemplate(
             $request,
             $entity,
@@ -427,6 +434,7 @@ abstract class AppAbstractController extends AbstractController
             $filterLabels ? $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray()) : []
         );
         $options[self::FORM_TEMPLATE_ITEM_OPTION_TITLE] = $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME);
+        $entityName = $this->templateService->getItem('new')->getContentValue('entity');
         return $this->responseFormTemplate(
             $request,
             $entity,
@@ -443,9 +451,11 @@ abstract class AppAbstractController extends AbstractController
      * @param object $entity
      *
      * @return RedirectResponse|Response
+     * @throws Exception
      */
     public function responseDelete(Request $request, object $entity)
     {
+        $entityName = $this->templateService->getItem('delete')->getContentValue('entity');
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             try {

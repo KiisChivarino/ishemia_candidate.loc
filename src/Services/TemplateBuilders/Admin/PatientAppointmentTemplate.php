@@ -74,7 +74,7 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
 
     protected const FILTER_CONTENT = [
         'medicalHistoryFilter' => 'Фильтр по истории болезни',
-        'medicalHistory' => MedicalHistoryTemplate::ENTITY_CONTENT['medicalHistory'],
+        'medicalHistory' => MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /**
@@ -94,7 +94,8 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
             self::FORM_CONTENT,
             self::FORM_SHOW_CONTENT,
             self::COMMON_CONTENT,
-            self::FILTER_CONTENT
+            self::FILTER_CONTENT,
+            self::ENTITY_CONTENT
         );
     }
 

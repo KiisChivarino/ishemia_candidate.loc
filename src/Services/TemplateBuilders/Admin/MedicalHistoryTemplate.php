@@ -29,6 +29,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'mainDisease' => 'Основное заболевание',
     ];
 
+    /** @var string[] FORM_SHOW_CONTENT */
     public const FORM_SHOW_CONTENT = [
         'mainDiseasePlaceholder' => 'Выберите заболевание',
         'backgroundDiseases' => 'Фоновые заболевания',
@@ -82,8 +83,9 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'patientFilter' => 'Фильтр по пациенту',
     ];
 
+    /** @var string[] Common ENTITY_CONTENT */
     public const ENTITY_CONTENT = [
-        'medicalHistory' => 'История болезни',
+        'entity' => 'История болезни',
     ];
 
     /**
@@ -103,7 +105,8 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
             self::FORM_CONTENT,
             self::FORM_SHOW_CONTENT,
             self::COMMON_CONTENT,
-            self::FILTER_CONTENT
+            self::FILTER_CONTENT,
+            self::ENTITY_CONTENT
         );
     }
 

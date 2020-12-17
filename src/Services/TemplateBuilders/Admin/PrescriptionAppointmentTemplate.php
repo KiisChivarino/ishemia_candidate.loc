@@ -81,7 +81,8 @@ class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
             self::FORM_CONTENT,
             self::FORM_SHOW_CONTENT,
             self::COMMON_CONTENT,
-            self::FILTER_CONTENT
+            self::FILTER_CONTENT,
+            self::ENTITY_CONTENT
         );
     }
 

@@ -9,6 +9,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -86,13 +87,15 @@ class AnalysisRateTemplate extends AdminTemplateBuilder
             self::FORM_CONTENT,
             self::FORM_SHOW_CONTENT,
             self::COMMON_CONTENT,
-            self::FILTER_CONTENT
+            self::FILTER_CONTENT,
+            self::ENTITY_CONTENT
         );
     }
 
     /**
      * @param FilterService|null $filterService
      * @return $this|AppTemplateBuilder
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
@@ -124,6 +127,7 @@ class AnalysisRateTemplate extends AdminTemplateBuilder
     /**
      * @param FilterService|null $filterService
      * @return $this|AppTemplateBuilder
+     * @throws Exception
      */
     public function new(?FilterService $filterService = null): AppTemplateBuilder
     {

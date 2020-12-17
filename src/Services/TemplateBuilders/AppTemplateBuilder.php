@@ -14,6 +14,10 @@ use App\Services\TemplateItems\ShowTemplateItem;
 use App\Services\TemplateItems\TemplateItemsFactory;
 use Symfony\Component\Routing\RouteCollection;
 
+/**
+ * Class AppTemplateBuilder
+ * @package App\Services\TemplateBuilders
+ */
 class AppTemplateBuilder extends TemplateService
 {
     /** @var string[] Common content */
@@ -52,6 +56,11 @@ class AppTemplateBuilder extends TemplateService
     /** @var string[] Common FILTER_CONTENT */
     protected const FILTER_CONTENT = [];
 
+    /** @var string[] Common ENTITY_CONTENT */
+    protected const ENTITY_CONTENT = [
+        'entity' => 'Запись',
+    ];
+
     /** @var TemplateItemsFactory $templateItemsFactory */
     protected $templateItemsFactory;
 
@@ -79,6 +88,9 @@ class AppTemplateBuilder extends TemplateService
     /** @var string[] $filterContent */
     protected $filterContent;
 
+    /** @var string[] $entityContent */
+    protected $entityContent;
+
     /**
      * CountryTemplate constructor.
      *
@@ -87,7 +99,12 @@ class AppTemplateBuilder extends TemplateService
      * @param string $defaultCommonTemplatePath
      * @param string $defaultRedirectRouteName
      */
-    public function __construct(RouteCollection $routeCollection, string $className, string $defaultCommonTemplatePath, string $defaultRedirectRouteName)
+    public function __construct(
+        RouteCollection $routeCollection,
+        string $className,
+        string $defaultCommonTemplatePath,
+        string $defaultRedirectRouteName
+    )
     {
         parent::__construct(
             $routeCollection,
@@ -104,9 +121,9 @@ class AppTemplateBuilder extends TemplateService
             self::FORM_CONTENT,
             self::FORM_SHOW_CONTENT,
             self::COMMON_CONTENT,
-            self::FILTER_CONTENT
+            self::FILTER_CONTENT,
+            self::ENTITY_CONTENT
         );
-
     }
 
     /**
@@ -121,7 +138,8 @@ class AppTemplateBuilder extends TemplateService
         $this->setTemplateItems($this->templateItemsFactory->getListTemplateItems());
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
             ->addContentArray($this->commonContent)
-            ->addContentArray($this->listContent);
+            ->addContentArray($this->listContent)
+            ->addContentArray($this->entityContent);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->addContentArray($this->filterContent);
         return $this;
@@ -140,7 +158,8 @@ class AppTemplateBuilder extends TemplateService
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
             ->addContentArray($this->commonContent)
             ->addContentArray($this->formShowContent)
-            ->addContentArray($this->showContent);
+            ->addContentArray($this->showContent)
+            ->addContentArray($this->entityContent);
         return $this;
     }
 
@@ -156,7 +175,8 @@ class AppTemplateBuilder extends TemplateService
         $this->setTemplateItems($this->templateItemsFactory->getEditTemplateItems());
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
             ->addContentArray($this->commonContent)
-            ->addContentArray($this->editContent);
+            ->addContentArray($this->editContent)
+            ->addContentArray($this->entityContent);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
             ->addContentArray($this->commonContent)
             ->addContentArray($this->formShowContent)
@@ -174,11 +194,13 @@ class AppTemplateBuilder extends TemplateService
     public function new(?FilterService $filterService = null): self
     {
         $this->setTemplateItems($this->templateItemsFactory->getNewTemplateItems());
+        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
+            ->addContentArray($this->newContent)
+            ->addContentArray($this->entityContent);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
             ->addContentArray($this->commonContent)
             ->addContentArray($this->formShowContent)
             ->addContentArray($this->formContent);
-        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->addContentArray($this->newContent);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->addContentArray($this->filterContent);
         return $this;
@@ -195,7 +217,7 @@ class AppTemplateBuilder extends TemplateService
      * @param array|null $formShowContent
      * @param array|null $commonContent
      * @param array|null $filterContent
-     *
+     * @param array|null $entityContent
      * @return AdminTemplateBuilder
      */
     protected function addContent(
@@ -206,7 +228,8 @@ class AppTemplateBuilder extends TemplateService
         ?array $formContent = [],
         ?array $formShowContent = [],
         ?array $commonContent = [],
-        ?array $filterContent = []
+        ?array $filterContent = [],
+        ?array $entityContent = []
     ): self
     {
         $this->commonContent = $commonContent;
@@ -217,6 +240,7 @@ class AppTemplateBuilder extends TemplateService
         $this->showContent = $showContent;
         $this->editContent = $editContent;
         $this->filterContent = $filterContent;
+        $this->entityContent = $entityContent;
         return $this;
     }
 }
