@@ -102,11 +102,6 @@ class MedicalHistory
     private $patientAppointments;
 
     /**
-     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="medicalHistory", orphanRemoval=true)
-     */
-    private $notifications;
-
-    /**
      * @ORM\OneToOne(targetEntity=PatientDischargeEpicrisis::class, mappedBy="medicalHistory", cascade={"persist", "remove"})
      */
     private $patientDischargeEpicrisis;
@@ -125,7 +120,6 @@ class MedicalHistory
         $this->prescriptions = new ArrayCollection();
         $this->patientTestings = new ArrayCollection();
         $this->patientAppointments = new ArrayCollection();
-        $this->notifications = new ArrayCollection();
         $this->backgroundDiseases = new ArrayCollection();
         $this->complications = new ArrayCollection();
         $this->concomitantDiseases = new ArrayCollection();
@@ -367,45 +361,6 @@ class MedicalHistory
             // set the owning side to null (unless already changed)
             if ($patientAppointment->getMedicalHistory() === $this) {
                 $patientAppointment->setMedicalHistory(null);
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * @return Collection|Notification[]
-     */
-    public function getNotifications(): Collection
-    {
-        return $this->notifications;
-    }
-
-    /**
-     * @param Notification $notification
-     *
-     * @return $this
-     */
-    public function addNotification(Notification $notification): self
-    {
-        if (!$this->notifications->contains($notification)) {
-            $this->notifications[] = $notification;
-            $notification->setMedicalHistory($this);
-        }
-        return $this;
-    }
-
-    /**
-     * @param Notification $notification
-     *
-     * @return $this
-     */
-    public function removeNotification(Notification $notification): self
-    {
-        if ($this->notifications->contains($notification)) {
-            $this->notifications->removeElement($notification);
-            // set the owning side to null (unless already changed)
-            if ($notification->getMedicalHistory() === $this) {
-                $notification->setMedicalHistory(null);
             }
         }
         return $this;
