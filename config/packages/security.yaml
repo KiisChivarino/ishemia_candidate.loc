@@ -54,6 +54,7 @@ security:
     - { path: ^/doctor_office$, roles: [ ROLE_DOCTOR_HOSPITAL, ROLE_DOCTOR_CONSULTANT ] }
     - { path: ^/patient_office$, roles: [ ROLE_PATIENT ] }
   role_hierarchy:
+    ROLE_SYSTEM: ROLE_ADMIN
     ROLE_ADMIN: ROLE_DOCTOR_CONSULTANT
     ROLE_DOCTOR_CONSULTANT: ROLE_DOCTOR_HOSPITAL
     ROLE_DOCTOR_HOSPITAL: ROLE_USER
