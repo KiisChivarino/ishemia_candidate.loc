@@ -56,10 +56,12 @@ class LogTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование лога',
     ];
 
+    /** @var string[] Common FILTER CONTENT */
     protected const FILTER_CONTENT = [
         'logActionFilter' => 'Тип лога'
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
     protected const ENTITY_CONTENT = [
         'entity' => 'Лог'
     ];

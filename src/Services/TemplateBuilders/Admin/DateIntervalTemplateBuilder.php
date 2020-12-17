@@ -9,8 +9,8 @@ namespace App\Services\TemplateBuilders\Admin;
  */
 class DateIntervalTemplateBuilder extends AdminTemplateBuilder
 {
-    /** @var string[] Common ENTITY_CONTENT */
+    /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
-        'dateInterval' => 'Интервал',
+        'entity' => 'Интервал',
     ];
 }

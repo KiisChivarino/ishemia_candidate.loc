@@ -44,6 +44,11 @@ class CityTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование города',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Город',
+    ];
+
     /**
      * CityTemplate constructor.
      *

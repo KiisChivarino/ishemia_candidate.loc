@@ -61,6 +61,11 @@ class PatientListTemplate extends DoctorOfficeTemplateBuilder
         'label' => 'Фильтр по пациенту',
     ];
 
+    /** @var string[] Common ENTITY_CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Список пациентов',
+    ];
+
     /**
      * PatientListTemplate constructor.
      *

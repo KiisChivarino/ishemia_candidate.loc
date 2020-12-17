@@ -9,7 +9,7 @@ class PlanAppointmentTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
         'timeRangeCount' => 'Срок выполнения',
-        'timeRange' => TimeRangeTemplate::ENTITY_CONTENT['timeRange'],
+        'timeRange' => TimeRangeTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -36,8 +36,14 @@ class PlanAppointmentTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование приема по плану',
     ];
 
+    /** @var string[] Common FORM SHOW CONTENT */
     protected const FORM_SHOW_CONTENT = [
-        'startingPoint' => StartingPointTemplate::ENTITY_CONTENT['startingPoint'],
+        'startingPoint' => StartingPointTemplate::ENTITY_CONTENT['entity'],
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Прием по плану',
     ];
 
     /**

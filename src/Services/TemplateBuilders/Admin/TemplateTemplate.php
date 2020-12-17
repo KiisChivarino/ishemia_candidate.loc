@@ -60,8 +60,14 @@ class TemplateTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование шаблона',
     ];
 
+    /** @var string[] Common FILTER CONTENT */
     protected const FILTER_CONTENT = [
         'templateTypeFilter' => 'Тип шаблона',
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Шаблон',
     ];
 
     /**

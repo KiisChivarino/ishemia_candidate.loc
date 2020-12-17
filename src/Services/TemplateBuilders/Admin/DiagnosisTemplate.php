@@ -42,6 +42,11 @@ class DiagnosisTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование диагноза',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Диагноз',
+    ];
+
     /**
      * DiagnosisTemplate constructor.
      *

@@ -72,6 +72,11 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'discharge_epicrisis' => 'Добавление выписных эпикризов',
     ];
 
+    /** @var string[] Common ENTITY_CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
+    ];
+
     /**
      * MedicalHistoryTemplate constructor.
      *

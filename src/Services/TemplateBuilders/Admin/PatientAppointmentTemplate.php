@@ -24,8 +24,8 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for analysis templates */
     public const COMMON_CONTENT = [
         'medicalRecord' => 'Запись в историю',
-        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
-        'appointmentType' => AppointmentTypeTemplate::ENTITY_CONTENT['appointmentType'],
+        'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
+        'appointmentType' => AppointmentTypeTemplate::ENTITY_CONTENT['entity'],
         'appointmentTime' => 'Дата приема',
         'isConfirmed' => 'Подтверждено',
     ];
@@ -75,6 +75,11 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
     protected const FILTER_CONTENT = [
         'medicalHistoryFilter' => 'Фильтр по истории болезни',
         'medicalHistory' => MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Прием пациента',
     ];
 
     /**

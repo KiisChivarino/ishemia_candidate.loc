@@ -49,6 +49,11 @@ class TemplateTypeTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование типа шаблона',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Тип шаблона',
+    ];
+
     /**
      * CountryTemplate constructor.
      *

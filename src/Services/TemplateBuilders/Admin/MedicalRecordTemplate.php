@@ -65,6 +65,11 @@ class MedicalRecordTemplate extends AdminTemplateBuilder
         'medicalHistoryFilter' => 'Фильтр по истории болезни',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'История болезни',
+    ];
+
     /**
      * MedicalRecordTemplate constructor.
      *

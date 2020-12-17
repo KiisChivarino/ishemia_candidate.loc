@@ -51,6 +51,11 @@ class LogActionTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование типа лога',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Тип лога',
+    ];
+
     /**
      * CountryTemplate constructor.
      *

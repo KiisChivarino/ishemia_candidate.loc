@@ -52,6 +52,11 @@ class HospitalTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование больницы',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Больница',
+    ];
+
     /**
      * HospitalTemplate constructor.
      *

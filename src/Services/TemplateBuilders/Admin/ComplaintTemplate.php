@@ -34,6 +34,11 @@ class ComplaintTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование жалобы',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Жалоба',
+    ];
+
     /**
      * ComplaintTemplate constructor.
      *

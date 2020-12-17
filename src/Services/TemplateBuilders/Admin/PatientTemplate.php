@@ -22,8 +22,8 @@ class PatientTemplate extends AdminTemplateBuilder
         'insuranceNumber' => 'Номер страховки',
         'dateBirth' => 'Дата рождения',
         'phone' => 'Телефон',
-        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
-        'appointmentType' => AppointmentTypeTemplate::ENTITY_CONTENT['appointmentType'],
+        'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
+        'appointmentType' => AppointmentTypeTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /** @var string[] Common content for form, show templates */
@@ -77,6 +77,11 @@ class PatientTemplate extends AdminTemplateBuilder
     protected const EDIT_CONTENT = [
         'h1' => 'Редактирование пациента',
         'title' => 'Редактирование пациента',
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Пациент',
     ];
 
     /**

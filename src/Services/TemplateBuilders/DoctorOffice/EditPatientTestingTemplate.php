@@ -37,6 +37,11 @@ class EditPatientTestingTemplate extends DoctorOfficeTemplateBuilder
         'result' => PatientTestingResultTemplate::COMMON_CONTENT['result'],
     ];
 
+    /** @var string[] Common ENTITY_CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Обследование',
+    ];
+
     /**
      * EditPatientTestingTemplate constructor.
      * @param RouteCollection $routeCollection

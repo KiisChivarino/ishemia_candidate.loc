@@ -46,6 +46,11 @@ class AnalysisGroupTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование группы анализов',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Группа анализов',
+    ];
+
     /**
      * CountryTemplate constructor.
      *

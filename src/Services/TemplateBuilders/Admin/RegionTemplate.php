@@ -40,6 +40,11 @@ class RegionTemplate extends AdminTemplateBuilder
         'h1' => 'Редактирование региона',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Регион',
+    ];
+
     public function __construct(RouteCollection $routeCollection, string $className)
     {
         parent::__construct($routeCollection, $className);

@@ -32,9 +32,9 @@ class StartingPointTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование точки отсчета',
     ];
 
-    /** @var string[] ENTITY_CONTENT */
+    /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
-        'startingPoint' => 'Точка отсчета',
+        'entity' => 'Точка отсчета',
     ];
 
     /**

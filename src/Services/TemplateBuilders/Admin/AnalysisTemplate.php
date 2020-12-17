@@ -58,6 +58,12 @@ class AnalysisTemplate extends AdminTemplateBuilder
     protected const FILTER_CONTENT = [
         'analysisGroupFilter' => 'Фильтр группы анализов',
     ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Анализ',
+    ];
+
     /**
      * CountryTemplate constructor.
      *
