@@ -166,6 +166,21 @@ class LogService
     /**
      * @return bool
      */
+    public function logFailEvent(): bool {
+        return $this->createLog(
+            $this->user,
+            $this->em->getRepository(LogAction::class)->findOneBy([
+                'name' => 'fail',
+                'enabled' => true
+            ]),
+            $this->description,
+            new DateTime('now')
+        );
+    }
+
+    /**
+     * @return bool
+     */
     public function logSuccessEvent(): bool {
         return $this->createLog(
             $this->user,

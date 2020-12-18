@@ -3,7 +3,9 @@
 
 namespace App\Command;
 
+use App\Entity\AuthUser;
 use App\Entity\SMSNotification;
+use App\Services\LoggerService\LogService;
 use App\Services\Notification\SMSNotificationService;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -32,21 +34,34 @@ class UpdateSMSNotificationsCommand extends Command
     /** @var array */
     private $smsStatuses;
 
+    /** @var LogService */
+    private $logger;
+
+    /** @var string */
+    private $systemUserPhone;
+
+
     /**
      * UpdateSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
      * @param SMSNotificationService $SMSNotificationService
+     * @param LogService $logger
      * @param array $smsStatuses
+     * @param string $systemUserPhone
      */
     public function __construct(
         ContainerInterface $container,
         SMSNotificationService $SMSNotificationService,
-        array $smsStatuses
+        LogService $logger,
+        array $smsStatuses,
+        string $systemUserPhone
     ) {
         parent::__construct();
         $this->container = $container;
         $this->sms = $SMSNotificationService;
+        $this->logger = $logger;
         $this->smsStatuses = $smsStatuses;
+        $this->systemUserPhone = $systemUserPhone;
     }
 
     /**
@@ -96,17 +111,29 @@ class UpdateSMSNotificationsCommand extends Command
                                 $this->sms->resendSMS($smsNotification);
                             } else {
                                 $smsNotification->setStatus($this->smsStatuses['not_delivered']);
+                                $this->logger
+                                    ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
+                                    ->setDescription('SMS Уведомление (id:'. $smsNotification->getId() . ') не доставлено.')
+                                    ->logFailEvent();
                                 $em->persist($smsNotification);
                             }
                             break;
                         case $this->smsStatuses['failed']:
                             $smsNotification->setStatus($this->smsStatuses['failed']);
+                            $this->logger
+                                ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
+                                ->setDescription('SMS Уведомление (id:'. $smsNotification->getId() . ') не доставлено.')
+                                ->logFailEvent();
                             $em->persist($smsNotification);
                             break;
                     }
                 }
             }
         }
+        $this->logger
+            ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
+            ->setDescription('Команда - '. self::$defaultName . ' успешно выполнена.')
+            ->logSuccessEvent();
 
         $em->flush();
         return Command::SUCCESS;
