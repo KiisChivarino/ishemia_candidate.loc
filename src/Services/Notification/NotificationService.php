@@ -44,7 +44,7 @@ class NotificationService
     /** @var LogService */
     private $logger;
 
-    /** @var array */
+    /** @var string */
     private $systemUserPhone;
 
     /**
@@ -54,7 +54,7 @@ class NotificationService
      * @param EmailNotificationService $emailNotificationService
      * @param TokenStorageInterface $tokenStorage
      * @param LogService $logService
-     * @param array $systemUserPhone
+     * @param string $systemUserPhone
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -62,7 +62,7 @@ class NotificationService
         EmailNotificationService $emailNotificationService,
         TokenStorageInterface $tokenStorage,
         LogService $logService,
-        array $systemUserPhone
+        string $systemUserPhone
     ) {
         $this->em = $em;
         $this->sms = $sMSNotificationService;
@@ -107,7 +107,10 @@ class NotificationService
                 ->setDescription('Сущность - Email Уведомление (id:'.$emailNotification->getId().') успешно создана.')
                 ->logSuccessEvent();
         } catch (ErrorException | LoaderError | RuntimeError | SyntaxError $e) {
-            // TODO: Написать кэтч
+            $this->logger
+                ->setUser($this->user)
+                ->setDescription($e)
+                ->logErrorEvent();
         }
 
         return $emailNotification;

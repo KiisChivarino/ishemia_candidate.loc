@@ -73,7 +73,7 @@ class AdminController extends AdminAbstractController
     public function testNotification(PatientRepository $patientRepository): Response
     {
         $this->notification->setText('Тестовое уведомление')->setPatient($patientRepository->find([
-            'id' => 1
+            'id' => 2
         ]))->notifyUser();
 
         return new Response(true);

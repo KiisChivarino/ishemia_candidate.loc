@@ -61,7 +61,7 @@ class LogDataTableService extends AdminDatatableService
                 'created_at', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('createdAt'),
                     'searchable' => false,
-                    'format' => 'd.m.Y H:m',
+                    'format' => 'd.m.Y H:i',
                 ]
             )
             ;

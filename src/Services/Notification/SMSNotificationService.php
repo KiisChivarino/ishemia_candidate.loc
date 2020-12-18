@@ -47,7 +47,7 @@ class SMSNotificationService
     /** @var array */
     private $timeFormats;
 
-    /** @var array */
+    /** @var string */
     private $systemUserPhone;
 
     /** @var LogService */
@@ -66,7 +66,7 @@ class SMSNotificationService
      * @param array $smsUpdateTimes
      * @param array $phoneParameters
      * @param array $timeFormats
-     * @param array $systemUserPhone
+     * @param string $systemUserPhone
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -77,7 +77,7 @@ class SMSNotificationService
         array $smsUpdateTimes,
         array $phoneParameters,
         array $timeFormats,
-        array $systemUserPhone
+        string $systemUserPhone
     ) {
         $this->em = $em;
         $this->logger = $logService;
@@ -146,7 +146,6 @@ class SMSNotificationService
             ->setUser($this->user)
             ->setDescription('Сущность - CМC Уведомление (id:'.$sMSNotification->getId().') успешно создана.')
             ->logSuccessEvent();
-        $this->em->flush();
 
         return $sMSNotification;
     }
