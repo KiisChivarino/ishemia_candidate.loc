@@ -32,3 +32,5 @@ parameters:
 # Параметры номеров
   time_formats:
     besms: 'd.m.Y H:i:s'
+# Пользователь Система
+  system_user_phone: '9999999999'

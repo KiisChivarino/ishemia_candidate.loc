@@ -18,9 +18,9 @@ class LogService
 {
     /** Стандартные варианты описаний логов */
     const
-        DEFAULT_USER_LOGIN_DESCRIPTION = 'User successfully logged in.',
-        DEFAULT_USER_LOGOUT_DESCRIPTION = 'User successfully logged out.',
-        DEFAULT_SUCCESS_DESCRIPTION = 'Command successfully executed.';
+        DEFAULT_USER_LOGIN_DESCRIPTION = 'Пользователь успешно вошел.',
+        DEFAULT_USER_LOGOUT_DESCRIPTION = 'Пользователь вышел из системы.'
+    ;
 
     /** @var string */
     private $description;
@@ -173,7 +173,7 @@ class LogService
                 'name' => 'success',
                 'enabled' => true
             ]),
-            $this->description ?? self::DEFAULT_SUCCESS_DESCRIPTION,
+            $this->description,
             new DateTime('now')
         );
     }
