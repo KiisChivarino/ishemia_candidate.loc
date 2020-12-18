@@ -46,7 +46,7 @@ class SMSNotificationDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'smsTo', TextColumn::class, [
+                'smsPatientRecipientPhone', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('smsTo'),
                 ]
             )
@@ -61,7 +61,7 @@ class SMSNotificationDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'attempt', TextColumn::class, [
+                'attemptCount', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('attempt'),
                     'searchable' => false,
                 ]
