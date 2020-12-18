@@ -3,13 +3,16 @@
 namespace App\Services\Notification;
 
 use App\API\BEESMS;
+use App\Entity\AuthUser;
 use App\Entity\Patient;
 use App\Entity\SMSNotification;
+use App\Services\LoggerService\LogService;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use SimpleXMLElement;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class SMSNotificationService
@@ -44,29 +47,47 @@ class SMSNotificationService
     /** @var array */
     private $timeFormats;
 
+    /** @var array */
+    private $systemUserPhone;
+
+    /** @var LogService */
+    private $logger;
+
+    /** @var AuthUser */
+    private $user;
+
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
+     * @param LogService $logService
+     * @param TokenStorageInterface $tokenStorage
      * @param array $smsParameters
      * @param array $smsStatuses
      * @param array $smsUpdateTimes
      * @param array $phoneParameters
      * @param array $timeFormats
+     * @param array $systemUserPhone
      */
     public function __construct(
         EntityManagerInterface $em,
+        LogService $logService,
+        TokenStorageInterface $tokenStorage,
         array $smsParameters,
         array $smsStatuses,
         array $smsUpdateTimes,
         array $phoneParameters,
-        array $timeFormats
+        array $timeFormats,
+        array $systemUserPhone
     ) {
         $this->em = $em;
+        $this->logger = $logService;
+        $this->user = $tokenStorage->getToken()->getUser();
         $this->smsParameters = $smsParameters;
         $this->smsStatuses = $smsStatuses;
         $this->smsUpdateTimes = $smsUpdateTimes;
         $this->phoneParameters = $phoneParameters;
         $this->timeFormats = $timeFormats;
+        $this->systemUserPhone = $systemUserPhone;
         $this->sms = new BEESMS($this->smsParameters['user'], $this->smsParameters['password']);
     }
 
@@ -121,6 +142,10 @@ class SMSNotificationService
         $sMSNotification->setExternalId((string)$result->result->sms['id']);
 
         $this->em->persist($sMSNotification);
+        $this->logger
+            ->setUser($this->user)
+            ->setDescription('Сущность - CМC Уведомление (id:'.$sMSNotification->getId().') успешно создана.')
+            ->logSuccessEvent();
         $this->em->flush();
 
         return $sMSNotification;

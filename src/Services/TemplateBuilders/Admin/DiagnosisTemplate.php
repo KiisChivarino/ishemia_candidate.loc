@@ -42,10 +42,6 @@ class DiagnosisTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование диагноза',
     ];
 
-    protected const ENTITY_CONTENT = [
-        'entity' => 'Диагноз'
-    ];
-
     /**
      * DiagnosisTemplate constructor.
      *

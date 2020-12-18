@@ -8,6 +8,7 @@ use App\Entity\EmailNotification;
 use App\Entity\Notification;
 use App\Entity\Patient;
 use App\Entity\SMSNotification;
+use App\Services\LoggerService\LogService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
@@ -40,23 +41,35 @@ class NotificationService
     /** @var AuthUser */
     private $user;
 
+    /** @var LogService */
+    private $logger;
+
+    /** @var array */
+    private $systemUserPhone;
+
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
      * @param SMSNotificationService $sMSNotificationService
      * @param EmailNotificationService $emailNotificationService
      * @param TokenStorageInterface $tokenStorage
+     * @param LogService $logService
+     * @param array $systemUserPhone
      */
     public function __construct(
         EntityManagerInterface $em,
         SMSNotificationService $sMSNotificationService,
         EmailNotificationService $emailNotificationService,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        LogService $logService,
+        array $systemUserPhone
     ) {
         $this->em = $em;
         $this->sms = $sMSNotificationService;
         $this->email = $emailNotificationService;
         $this->user = $tokenStorage->getToken()->getUser();
+        $this->logger = $logService;
+        $this->systemUserPhone = $systemUserPhone;
     }
 
     /**
@@ -89,14 +102,11 @@ class NotificationService
                 ->setButtonLink('http://shemia.test')
                 ->sendDefaultEmail();
             $this->em->persist($emailNotification);
-            $this->em->flush();
-        } catch (ErrorException $e) {
-            // TODO: Написать кэтч
-        } catch (LoaderError $e) {
-            // TODO: Написать кэтч
-        } catch (RuntimeError $e) {
-            // TODO: Написать кэтч
-        } catch (SyntaxError $e) {
+            $this->logger
+                ->setUser($this->user)
+                ->setDescription('Сущность - Email Уведомление (id:'.$emailNotification->getId().') успешно создана.')
+                ->logSuccessEvent();
+        } catch (ErrorException | LoaderError | RuntimeError | SyntaxError $e) {
             // TODO: Написать кэтч
         }
 
@@ -127,6 +137,10 @@ class NotificationService
             );
         }
         $this->em->persist($notification);
+        $this->logger
+            ->setUser($this->user)
+            ->setDescription('Сущность - Уведомление (id:'.$notification->getId().') успешно создана.')
+            ->logSuccessEvent();
         $this->em->flush();
     }
 
