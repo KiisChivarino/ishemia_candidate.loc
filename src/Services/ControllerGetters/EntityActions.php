@@ -3,7 +3,6 @@
 namespace App\Services\ControllerGetters;
 
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -37,7 +36,7 @@ class EntityActions
     /**
      * @return object
      */
-    public function getEntity()
+    public function getEntity(): object
     {
         return $this->entity;
     }
@@ -45,7 +44,7 @@ class EntityActions
     /**
      * @return Request|null
      */
-    public function getRequest()
+    public function getRequest(): ?Request
     {
         return $this->request;
     }
@@ -53,7 +52,7 @@ class EntityActions
     /**
      * @return ObjectManager|null
      */
-    public function getEntityManager()
+    public function getEntityManager(): ?ObjectManager
     {
         return $this->entityManager;
     }
@@ -61,7 +60,7 @@ class EntityActions
     /**
      * @return FormInterface|null
      */
-    public function getForm()
+    public function getForm(): ?FormInterface
     {
         return $this->form;
     }

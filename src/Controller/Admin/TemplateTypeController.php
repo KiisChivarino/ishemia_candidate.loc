@@ -68,6 +68,7 @@ class TemplateTypeController extends AdminAbstractController
      * @param TemplateTypeDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, TemplateTypeDataTableService $dataTableService): Response
     {
@@ -82,6 +83,7 @@ class TemplateTypeController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function show(TemplateType $templateType, FilterService $filterService): Response
     {
@@ -117,6 +119,7 @@ class TemplateTypeController extends AdminAbstractController
      * @param Request $request
      * @param TemplateType $templateType
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, TemplateType $templateType): Response
     {

@@ -30,7 +30,7 @@ class PatientAppointmentDataTableService extends AdminDatatableService
     /**
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     *
+     * @param array $filters
      * @return DataTable
      * @throws Exception
      */

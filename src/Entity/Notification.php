@@ -81,14 +81,13 @@ class Notification
     public function setNotificationType(string $notificationType): self
     {
         $this->notificationType = $notificationType;
-
         return $this;
     }
 
     /**
      * @return DateTimeInterface|null
      */
-    public function getNotificationTime(): ?\DateTimeInterface
+    public function getNotificationTime(): ?DateTimeInterface
     {
         return $this->notificationTime;
     }
@@ -97,10 +96,9 @@ class Notification
      * @param DateTimeInterface $notificationTime
      * @return $this
      */
-    public function setNotificationTime(\DateTimeInterface $notificationTime): self
+    public function setNotificationTime(DateTimeInterface $notificationTime): self
     {
         $this->notificationTime = $notificationTime;
-
         return $this;
     }
 
@@ -119,7 +117,6 @@ class Notification
     public function setText(?string $text): self
     {
         $this->text = $text;
-
         return $this;
     }
 
@@ -138,7 +135,6 @@ class Notification
     public function setPatient(?Patient $patient): self
     {
         $this->patient = $patient;
-
         return $this;
     }
 
@@ -160,14 +156,11 @@ class Notification
         if ($smsNotification === null && $this->smsNotification !== null) {
             $this->smsNotification->setNotification(null);
         }
-
         // set the owning side of the relation if necessary
         if ($smsNotification !== null && $smsNotification->getNotification() !== $this) {
             $smsNotification->setNotification($this);
         }
-
         $this->smsNotification = $smsNotification;
-
         return $this;
     }
 
@@ -189,14 +182,11 @@ class Notification
         if ($emailNotification === null && $this->emailNotification !== null) {
             $this->emailNotification->setNotification(null);
         }
-
         // set the owning side of the relation if necessary
         if ($emailNotification !== null && $emailNotification->getNotification() !== $this) {
             $emailNotification->setNotification($this);
         }
-
         $this->emailNotification = $emailNotification;
-
         return $this;
     }
 
@@ -215,7 +205,6 @@ class Notification
     public function setAuthUserSender(?AuthUser $authUserSender): self
     {
         $this->authUserSender = $authUserSender;
-
         return $this;
     }
 }

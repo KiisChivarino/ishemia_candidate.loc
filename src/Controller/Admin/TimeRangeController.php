@@ -46,6 +46,7 @@ class TimeRangeController extends AdminAbstractController
      * @param TimeRangeDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, TimeRangeDataTableService $dataTableService): Response
     {
@@ -80,6 +81,7 @@ class TimeRangeController extends AdminAbstractController
      * @param TimeRange $timeRange
      *
      * @return Response
+     * @throws Exception
      */
     public function show(TimeRange $timeRange): Response
     {
@@ -109,6 +111,7 @@ class TimeRangeController extends AdminAbstractController
      * @param TimeRange $timeRange
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, TimeRange $timeRange): Response
     {

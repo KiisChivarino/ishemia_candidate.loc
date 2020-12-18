@@ -48,6 +48,7 @@ class RoleController extends AdminAbstractController
      * @param RoleDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, RoleDataTableService $dataTableService): Response
     {
@@ -61,6 +62,7 @@ class RoleController extends AdminAbstractController
      * @param Role $role
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Role $role): Response
     {

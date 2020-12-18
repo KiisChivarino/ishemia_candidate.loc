@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Services\DataTable\Admin\SMSNotificationDataTableService;
 use App\Services\TemplateBuilders\Admin\SMSNotificationTemplate;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,6 +39,7 @@ class SMSNotificationController extends AdminAbstractController
      * @param Request $request
      * @param SMSNotificationDataTableService $smsNotificationDataTableService
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, SMSNotificationDataTableService $smsNotificationDataTableService): Response
     {

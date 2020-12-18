@@ -11,6 +11,7 @@ use App\Repository\ReceptionMethodRepository;
 use App\Repository\StaffRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -28,6 +29,7 @@ class PrescriptionMedicineType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

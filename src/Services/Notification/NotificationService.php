@@ -90,13 +90,7 @@ class NotificationService
                 ->sendDefaultEmail();
             $this->em->persist($emailNotification);
             $this->em->flush();
-        } catch (ErrorException $e) {
-            // TODO: Написать кэтч
-        } catch (LoaderError $e) {
-            // TODO: Написать кэтч
-        } catch (RuntimeError $e) {
-            // TODO: Написать кэтч
-        } catch (SyntaxError $e) {
+        } catch (ErrorException | LoaderError | RuntimeError | SyntaxError $e) {
             // TODO: Написать кэтч
         }
 

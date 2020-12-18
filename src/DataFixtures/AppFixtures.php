@@ -59,12 +59,12 @@ class AppFixtures extends Fixture
     {
         /** begin Должности */
         echo "Заполнение справочника \"Должности\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'position.csv', Position::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv($manager,self::PATH_TO_CSV . 'position.csv', Position::class, '|', [], ['enabled' => true]);
         /** end Должности */
 
         /** begin Виды приема */
         echo "Заполнение справочника \"Вид приема\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'appointment_type.csv', AppointmentType::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv($manager,self::PATH_TO_CSV . 'appointment_type.csv', AppointmentType::class, '|', [], ['enabled' => true]);
         /** end Виды приема */
 
         /** begin Пользователи */
@@ -92,7 +92,7 @@ class AppFixtures extends Fixture
 
         /** begin Роли*/
         echo "Внесение ролей\n";
-        $this->dataSowing->addRoles($manager);
+        $this->dataSowing->addRoles();
         /** end Роли*/
 
         /** begin OKSM */
@@ -103,7 +103,6 @@ class AppFixtures extends Fixture
         /** begin Страна */
         echo "Добавление России\n";
         $this->dataSowing->addEntitiesFromCatalog(
-            $manager,
             $manager->getRepository(OKSM::class)->getRussiaCountry(),
             Country::class,
             [
@@ -145,7 +144,6 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника районов\n";
         $kurskRegion = $manager->getRepository(Region::class)->getKurskRegion();
         $this->dataSowing->addEntitiesFromCatalog(
-            $manager,
             $manager->getRepository(Oktmo::class)->getKurskRegionDistricts(),
             District::class,
             [
@@ -160,7 +158,6 @@ class AppFixtures extends Fixture
         // /** begin Города */
         echo "Добавление городов по Курской области\n";
         $this->dataSowing->addEntitiesFromCatalog(
-            $manager,
             $manager->getRepository(Oktmo::class)->getKurskRegionCities(),
             City::class,
             [
@@ -181,7 +178,6 @@ class AppFixtures extends Fixture
         /** begin Больницы */
         echo "Добавление ЛПУ по Курской области\n";
         $this->dataSowing->addEntitiesFromCatalog(
-            $manager,
             $manager->getRepository(LPU::class)->getKurskRegionLPU(),
             Hospital::class,
             [

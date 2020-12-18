@@ -46,6 +46,7 @@ class PositionController extends AdminAbstractController
      * @param PositionDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, PositionDataTableService $dataTableService): Response
     {
@@ -73,6 +74,7 @@ class PositionController extends AdminAbstractController
      * @param Position $position
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Position $position): Response
     {
@@ -102,6 +104,7 @@ class PositionController extends AdminAbstractController
      * @param Position $position
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Position $position): Response
     {

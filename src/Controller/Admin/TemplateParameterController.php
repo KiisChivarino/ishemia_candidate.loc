@@ -68,6 +68,7 @@ class TemplateParameterController extends AdminAbstractController
      *
      * @param FilterService $filterService
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -92,6 +93,7 @@ class TemplateParameterController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function show(TemplateParameter $templateParameter, FilterService $filterService): Response
     {
@@ -128,6 +130,7 @@ class TemplateParameterController extends AdminAbstractController
      * @param Request $request
      * @param TemplateParameter $templateParameter
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, TemplateParameter $templateParameter): Response
     {

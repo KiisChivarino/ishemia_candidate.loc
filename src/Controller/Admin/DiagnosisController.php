@@ -37,6 +37,7 @@ class DiagnosisController extends AdminAbstractController
      * @param DiagnosisDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, DiagnosisDataTableService $dataTableService): Response
     {
@@ -64,6 +65,7 @@ class DiagnosisController extends AdminAbstractController
      * @param Diagnosis $diagnosis
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Diagnosis $diagnosis): Response
     {
@@ -93,6 +95,7 @@ class DiagnosisController extends AdminAbstractController
      * @param Diagnosis $diagnosis
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Diagnosis $diagnosis): Response
     {

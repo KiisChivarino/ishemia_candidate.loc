@@ -67,6 +67,7 @@ class StaffController extends AdminAbstractController
      * @param StaffDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, StaffDataTableService $dataTableService): Response
     {
@@ -148,6 +149,7 @@ class StaffController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Staff $staff, FilterService $filterService): Response
     {
@@ -202,6 +204,7 @@ class StaffController extends AdminAbstractController
      * @param Staff $staff
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Staff $staff): Response
     {

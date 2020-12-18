@@ -46,6 +46,7 @@ class ComplaintController extends AdminAbstractController
      * @param ComplaintDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, ComplaintDataTableService $dataTableService): Response
     {
@@ -73,6 +74,7 @@ class ComplaintController extends AdminAbstractController
      * @param Complaint $complaint
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Complaint $complaint): Response
     {
@@ -102,6 +104,7 @@ class ComplaintController extends AdminAbstractController
      * @param Complaint $complaint
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Complaint $complaint): Response
     {

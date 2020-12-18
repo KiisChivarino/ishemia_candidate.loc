@@ -18,7 +18,6 @@ use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use DateTime;
 use Exception;
-use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,6 +58,7 @@ class PrescriptionTestingController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -84,7 +84,6 @@ class PrescriptionTestingController extends AdminAbstractController
      *
      * @param PrescriptionRepository $prescriptionRepository
      * @return Response
-     * @throws ReflectionException
      * @throws Exception
      */
     public function new(Request $request, PrescriptionRepository $prescriptionRepository): Response
@@ -134,6 +133,7 @@ class PrescriptionTestingController extends AdminAbstractController
      * @param PrescriptionTesting $prescriptionTesting
      *
      * @return Response
+     * @throws Exception
      */
     public function show(PrescriptionTesting $prescriptionTesting): Response
     {
@@ -172,6 +172,7 @@ class PrescriptionTestingController extends AdminAbstractController
      * @param PrescriptionTesting $prescriptionTesting
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PrescriptionTesting $prescriptionTesting): Response
     {

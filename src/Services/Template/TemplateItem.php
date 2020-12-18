@@ -163,7 +163,7 @@ abstract class TemplateItem
      *
      * @return FilterData[]
      */
-    public function getFilterData(): array
+    public function getFilterData(): ?array
     {
         return $this->filterData;
     }
@@ -192,7 +192,7 @@ abstract class TemplateItem
     public function getFiltersViews(): array
     {
         $views = [];
-        $filterData = $this->getFilterData() ?? [];
+        $filterData = $this->getFilterData() ? $this->getFilterData() : [];
         foreach ($filterData as $filterDataOne) {
             $views[] = $filterDataOne->getForm()->createView();
         }

@@ -7,6 +7,7 @@ use App\Entity\AuthUser;
 use App\Entity\Role;
 use App\Services\TemplateItems\FormTemplateItem;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,6 +38,7 @@ class AuthUserRoleType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

@@ -28,7 +28,8 @@ class MedicalHistoryCreatorService
     /**
      * @return MedicalHistory
      */
-    public function createMedicalHistory(){
+    public function createMedicalHistory(): MedicalHistory
+    {
         return new MedicalHistory();
     }
 

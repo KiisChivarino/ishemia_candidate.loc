@@ -46,6 +46,7 @@ class DistrictController extends AdminAbstractController
      * @param DistrictDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, DistrictDataTableService $dataTableService): Response
     {
@@ -73,6 +74,7 @@ class DistrictController extends AdminAbstractController
      * @param District $district
      *
      * @return Response
+     * @throws Exception
      */
     public function show(District $district): Response
     {
@@ -102,6 +104,7 @@ class DistrictController extends AdminAbstractController
      * @param District $district
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, District $district): Response
     {

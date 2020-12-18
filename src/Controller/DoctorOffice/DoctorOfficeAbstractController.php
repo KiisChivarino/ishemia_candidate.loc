@@ -4,7 +4,6 @@ namespace App\Controller\DoctorOffice;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Controller\AppAbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class DoctorOfficeAbstractController

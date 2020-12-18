@@ -89,7 +89,7 @@ class AuthUserInfoService
      *
      * @return string
      */
-    static public function clearUserPhone(string $phone)
+    static public function clearUserPhone(string $phone): string
     {
         return preg_replace('/[^0-9]/', '', ltrim($phone, '+7'));
     }
@@ -101,7 +101,7 @@ class AuthUserInfoService
      *
      * @return string
      */
-    static public function getPhone(AuthUser $authUser)
+    static public function getPhone(AuthUser $authUser): string
     {
         $phone = $authUser->getPhone();
         return
@@ -113,7 +113,8 @@ class AuthUserInfoService
     /**
      * @return string
      */
-    static public function randomPassword() {
+    static public function randomPassword(): string
+    {
         $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789(_).,!$%^&*+-=";
         $pass = array(); //remember to declare $pass as an array
         $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache

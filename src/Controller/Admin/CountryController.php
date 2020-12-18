@@ -46,6 +46,7 @@ class CountryController extends AdminAbstractController
      * @param CountryDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, CountryDataTableService $dataTableService): Response
     {
@@ -73,6 +74,7 @@ class CountryController extends AdminAbstractController
      * @param Country $country
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Country $country): Response
     {
@@ -102,6 +104,7 @@ class CountryController extends AdminAbstractController
      * @param Country $country
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Country $country): Response
     {

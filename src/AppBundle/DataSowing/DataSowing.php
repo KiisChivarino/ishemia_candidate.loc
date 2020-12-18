@@ -3,6 +3,7 @@
 namespace App\AppBundle\DataSowing;
 
 use App\Entity\Role;
+use App\Repository\AppRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Yaml\Yaml;
@@ -16,7 +17,19 @@ use RuntimeException;
  */
 class DataSowing
 {
-    const PATH_TO_CSV = 'data/AppFixtures/';
+    //    const PATH_TO_CSV = 'data/AppFixtures/';
+
+    /** @var AppRepository $appRepository */
+    private $appRepository;
+
+    /**
+     * DataSowing constructor.
+     * @param AppRepository $appRepository
+     */
+    public function __construct(AppRepository $appRepository)
+    {
+        $this->appRepository = $appRepository;
+    }
 
     /**
      * Заполняет справочники из csv файла
@@ -34,6 +47,7 @@ class DataSowing
      * @param array $replaceFieldNameArr
      * @param array $persistArr
      * @param array $foreignkeyArr
+     * @throws ORMException
      */
     public function setEntitiesFromCsv(
         ObjectManager $manager,
@@ -46,7 +60,7 @@ class DataSowing
     ) {
         if (!(is_readable($file))) {
             throw new RuntimeException(sprintf('Не удалось прочитать файл '.$file.'!'));
-        };
+        }
         if (($handle = fopen($file, "r")) !== false) {
             $headers = array_flip(fgetcsv($handle, null, $delimiter)); //заголовки csv файла
             while (($data = fgetcsv($handle, null, $delimiter)) !== false) {
@@ -77,9 +91,7 @@ class DataSowing
                 }
 
                 //выполнение сеттеров по подготовленным свойствам
-                $manager
-                    ->getRepository($entityClass)
-                    ->setEntityData(
+                $this->appRepository->setEntityData(
                         $entityData,
                         (new $entityClass()),
                         $persistArr
@@ -92,17 +104,14 @@ class DataSowing
 
     /**
      * Добавляет роли из yaml файла
-     * @param ObjectManager $manager
      * @throws ORMException
      */
-    public function addRoles(ObjectManager $manager)
+    public function addRoles()
     {
         $const = Yaml::parseFile('config/services/roles.yaml');
         foreach ($const['parameters'] as $roleData) {
             unset($roleData['route']);
-            $manager
-                ->getRepository(Role::class)
-                ->setEntityData(
+            $this->appRepository->setEntityData(
                     $roleData,
                     (new Role())
                 );
@@ -117,12 +126,12 @@ class DataSowing
      * $catalog - объекты справочника
      * $entityClass - класс заполняемой сущности
      * $params - массив параметров: ключ - свойство заполняемой сущности, значение - свойство справочника, имя класса справочника или любое другое значение
-     * @param ObjectManager $manager
      * @param array $catalog
      * @param string $entityClass
      * @param array $params
+     * @throws ORMException
      */
-    public function addEntitiesFromCatalog(ObjectManager $manager, array $catalog, string $entityClass, array $params)
+    public function addEntitiesFromCatalog(array $catalog, string $entityClass, array $params)
     {
         foreach ($catalog as $catalogItem) {
             $data = [];
@@ -144,9 +153,7 @@ class DataSowing
                 }
             }
             //внесение подготовленных данных в бд
-            $manager
-                ->getRepository($entityClass)
-                ->setEntityData(
+            $this->appRepository->setEntityData(
                     $data,
                     (new $entityClass())
                 );

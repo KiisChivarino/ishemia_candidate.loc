@@ -155,7 +155,6 @@ class Patient
     public function __construct()
     {
         $this->medicalHistories = new ArrayCollection();
-        $this->sendedSMS = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->patientSMS = new ArrayCollection();
     }
@@ -531,7 +530,7 @@ class Patient
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getAuthUser()->getFirstName() . ' ' . $this->getAuthUser()->getLastName();
     }

@@ -41,7 +41,7 @@ class MenuBuilder
      *
      * @return ItemInterface
      */
-    public function createMainMenu()
+    public function createMainMenu(): ItemInterface
     {
         $menu = $this->factory->createItem('root');
         $menu->addChild(
@@ -88,7 +88,7 @@ class MenuBuilder
      *
      * @return ItemInterface
      */
-    public function createAdminMenu(RequestStack $requestStack)
+    public function createAdminMenu(RequestStack $requestStack): ItemInterface
     {
         $menu = $this->factory->createItem('root');
         $menu->addChild(
@@ -394,7 +394,7 @@ class MenuBuilder
      *
      * @return ItemInterface
      */
-    public function createDoctorOfficeHeaderMenu()
+    public function createDoctorOfficeHeaderMenu(): ItemInterface
     {
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'main-nav__list');
@@ -416,7 +416,8 @@ class MenuBuilder
     /**
      * @return ItemInterface
      */
-    public function createAdminHeaderMenu(){
+    public function createAdminHeaderMenu(): ItemInterface
+    {
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'main-nav__list');
         $menu->addChild(
@@ -433,7 +434,7 @@ class MenuBuilder
      *
      * @return ItemInterface
      */
-    public function createDoctorOfficeSidebarMenu()
+    public function createDoctorOfficeSidebarMenu(): ItemInterface
     {
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'sidebar__list');

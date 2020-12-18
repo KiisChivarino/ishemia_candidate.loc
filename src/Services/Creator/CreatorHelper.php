@@ -68,7 +68,7 @@ class CreatorHelper
         string $startingPointName,
         DateTimeInterface $medicalHistoryDateBegin,
         DateTimeInterface $patientHeartAttackDate
-    )
+    ): DateTimeInterface
     {
         switch ($startingPointName) {
             case self::MEDICAL_HISTORY_DATE_BEGIN_PROPERTY :

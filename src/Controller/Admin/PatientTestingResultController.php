@@ -54,6 +54,7 @@ class PatientTestingResultController extends AdminAbstractController
      *
      * @return Response
      * @Route("/", name="patient_testing_result_list", methods={"GET","POST"})
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -79,6 +80,7 @@ class PatientTestingResultController extends AdminAbstractController
      * @Route("/{id}", name="patient_testing_result_show", methods={"GET"}, requirements={"id"="\d+"})
      *
      * @return Response
+     * @throws Exception
      */
     public function show(PatientTestingResult $patientTestingResult): Response
     {
@@ -127,6 +129,7 @@ class PatientTestingResultController extends AdminAbstractController
      * @param PatientTestingResult $patientTestingResult
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PatientTestingResult $patientTestingResult): Response
     {

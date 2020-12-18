@@ -20,14 +20,12 @@ use App\Form\Admin\AuthUser\AuthUserOptionalType;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
-use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PatientTemplate;
 use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Log\Logger;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -48,24 +46,21 @@ class PatientController extends AdminAbstractController
     private $passwordEncoder;
 
     /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
      * PatientController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param LogService $logger
      */
-    public function __construct(Environment $twig, RouterInterface $router, UserPasswordEncoderInterface $passwordEncoder, LogService $logger)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        UserPasswordEncoderInterface $passwordEncoder
+    )
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new PatientTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
-        $this->logger = $logger;
     }
 
     /**
@@ -76,6 +71,7 @@ class PatientController extends AdminAbstractController
      * @param PatientDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, PatientDataTableService $dataTableService): Response
     {
@@ -93,7 +89,6 @@ class PatientController extends AdminAbstractController
      * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
      * @param PatientCreatorService $patientCreator
      * @return Response
-     * @throws ReflectionException
      * @throws Exception
      */
     public function new(
@@ -137,17 +132,6 @@ class PatientController extends AdminAbstractController
                             $patient, $authUser, $medicalHistory, $patientAppointment, $patientAppointment->getStaff()
                         );
                     $em->flush();
-                    $logger = $this->logger
-                        ->setUser($this->getUser())
-                        ->setDescription(
-                            'Patient with id: ' . $patient->getId() .
-                            ' and FIO: ' . (new AuthUserInfoService())->getFIO($patient->getAuthUser()).
-                            ' successfully created!')
-                        ->logCreateEvent();
-                    if (!$logger) {
-                        $this->logger->getError();
-                        // TODO:  when creating log fails
-                    }
                     $em->getConnection()->commit();
                 } catch (Exception $e) {
                     $em->getConnection()->rollBack();
@@ -165,6 +149,7 @@ class PatientController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Patient $patient, FilterService $filterService): Response
     {
@@ -210,17 +195,6 @@ class PatientController extends AdminAbstractController
             function () use ($authUser, $oldPassword, $patient) {
                 $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
                 $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
-                $logger = $this->logger
-                    ->setUser($this->getUser())
-                    ->setDescription(
-                        'Patient with id: ' . $patient->getId() .
-                        ' and FIO: ' . (new AuthUserInfoService())->getFIO($patient->getAuthUser()).
-                        ' successfully updated!')
-                    ->logUpdateEvent();
-                if (!$logger) {
-                    $this->logger->getError();
-                    // TODO:  when creating log fails
-                }
             }
         );
     }
@@ -233,20 +207,10 @@ class PatientController extends AdminAbstractController
      * @param Patient $patient
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Patient $patient): Response
     {
-        $logger = $this->logger
-            ->setUser($this->getUser())
-            ->setDescription(
-                'Patient with id: ' . $patient->getId() .
-                ' and FIO: ' . (new AuthUserInfoService())->getFIO($patient->getAuthUser()).
-                ' successfully updated!')
-            ->logDeleteEvent();
-        if (!$logger) {
-            $this->logger->getError();
-            // TODO:  when creating log fails
-        }
         return $this->responseDelete($request, $patient);
     }
 }

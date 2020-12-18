@@ -66,6 +66,7 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'anamnestic_title' => 'Редактирование анамнестических данных',
         'objective_h2' => 'Редактирование объективных данных',
         'objective_title' => 'Редактирование объективных данных',
+        'discharge_epicrisis' => 'Выписные эпикризы',
     ];
 
     protected const NEW_CONTENT = [

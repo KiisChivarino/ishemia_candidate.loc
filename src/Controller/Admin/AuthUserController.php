@@ -64,6 +64,7 @@ class AuthUserController extends AdminAbstractController
      * @param AuthUserDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, AuthUserDataTableService $dataTableService): Response
     {
@@ -78,6 +79,7 @@ class AuthUserController extends AdminAbstractController
      *
      * @param UserRepository $userRepository
      * @return Response
+     * @throws Exception
      */
     public function show(AuthUser $authUser, UserRepository $userRepository): Response
     {
@@ -151,6 +153,7 @@ class AuthUserController extends AdminAbstractController
      * @param AuthUser $authUser
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, AuthUser $authUser): Response
     {

@@ -48,6 +48,7 @@ class AnalysisController extends AdminAbstractController
      * @param AnalysisDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -91,6 +92,7 @@ class AnalysisController extends AdminAbstractController
      * @param Analysis $analysis
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Analysis $analysis): Response
     {
@@ -120,6 +122,7 @@ class AnalysisController extends AdminAbstractController
      * @param Analysis $analysis
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Analysis $analysis): Response
     {

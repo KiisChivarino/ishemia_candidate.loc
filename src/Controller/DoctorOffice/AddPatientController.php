@@ -14,7 +14,6 @@ use App\Services\Creator\PatientAppointmentCreatorService;
 use App\Services\Creator\PatientCreatorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
-use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -68,7 +67,6 @@ class AddPatientController extends DoctorOfficeAbstractController
      * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
      * @param PatientCreatorService $patientCreator
      * @return Response
-     * @throws ReflectionException
      * @throws Exception
      */
     public function createNew(

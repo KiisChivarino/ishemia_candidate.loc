@@ -12,7 +12,7 @@ class IndexController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index()
+    public function index(): RedirectResponse
     {
         return $this->redirectToRoute('app_login');
     }
@@ -22,7 +22,7 @@ class IndexController extends AbstractController
      * @param LogService $logService
      * @return RedirectResponse
      */
-    public function logout(LogService $logService)
+    public function logout(LogService $logService): RedirectResponse
     {
         $logger = $logService
             ->setUser($this->getUser())

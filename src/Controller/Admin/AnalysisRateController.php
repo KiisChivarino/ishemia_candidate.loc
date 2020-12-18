@@ -48,6 +48,7 @@ class AnalysisRateController extends AdminAbstractController
      * @param AnalysisRateDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -90,6 +91,7 @@ class AnalysisRateController extends AdminAbstractController
      * @param AnalysisRate $analysisRate
      *
      * @return Response
+     * @throws Exception
      */
     public function show(AnalysisRate $analysisRate): Response
     {
@@ -119,6 +121,7 @@ class AnalysisRateController extends AdminAbstractController
      * @param AnalysisRate $analysisRate
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, AnalysisRate $analysisRate): Response
     {

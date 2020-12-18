@@ -44,6 +44,7 @@ class PatientSMSController extends AdminAbstractController
      * @param PatientSMSDataTableService $patientSMSDataTableService
      * @param FilterService $filterService
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -77,6 +78,7 @@ class PatientSMSController extends AdminAbstractController
      * @param Request $request
      * @param PatientSMS $patientSMS
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PatientSMS $patientSMS): Response
     {

@@ -28,7 +28,7 @@ class PatientTestingResultRepository extends AppRepository
      * @param PatientTesting $testing
      * @return PatientTestingResult[]
      */
-    public function getEnabledTestingResults(PatientTesting $testing)
+    public function getEnabledTestingResults(PatientTesting $testing): array
     {
         return $this->findBy(['patientTesting' => $testing, 'enabled' => true]);
     }
@@ -38,7 +38,8 @@ class PatientTestingResultRepository extends AppRepository
      * @param PatientTesting $testing
      * @return PatientTestingResult[]
      */
-    public function getNotEnabledTestingResults(PatientTesting $testing){
+    public function getNotEnabledTestingResults(PatientTesting $testing): array
+    {
         return $this->findBy(['patientTesting' => $testing, 'enabled' => false]);
     }
 }
