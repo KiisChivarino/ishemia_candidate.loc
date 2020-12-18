@@ -163,7 +163,7 @@ abstract class TemplateItem
      *
      * @return FilterData[]
      */
-    public function getFilterData()
+    public function getFilterData(): array
     {
         return $this->filterData;
     }
@@ -189,7 +189,7 @@ abstract class TemplateItem
      *
      * @return array
      */
-    public function getFiltersViews()
+    public function getFiltersViews(): array
     {
         $views = [];
         $filterData = $this->getFilterData() ?? [];
@@ -204,7 +204,7 @@ abstract class TemplateItem
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }

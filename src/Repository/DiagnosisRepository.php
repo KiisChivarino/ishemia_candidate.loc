@@ -3,17 +3,23 @@
 namespace App\Repository;
 
 use App\Entity\Diagnosis;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 
 /**
+ * Class DiagnosisRepository
  * @method Diagnosis|null find($id, $lockMode = null, $lockVersion = null)
  * @method Diagnosis|null findOneBy(array $criteria, array $orderBy = null)
  * @method Diagnosis[]    findAll()
  * @method Diagnosis[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class DiagnosisRepository extends AppRepository
 {
+    /**
+     * DiagnosisRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Diagnosis::class);

@@ -3,7 +3,8 @@
 namespace App\AppBundle\DataSowing;
 
 use App\Entity\Role;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\ORMException;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Yaml\Yaml;
 use RuntimeException;
 
@@ -91,6 +92,8 @@ class DataSowing
 
     /**
      * Добавляет роли из yaml файла
+     * @param ObjectManager $manager
+     * @throws ORMException
      */
     public function addRoles(ObjectManager $manager)
     {
@@ -114,6 +117,10 @@ class DataSowing
      * $catalog - объекты справочника
      * $entityClass - класс заполняемой сущности
      * $params - массив параметров: ключ - свойство заполняемой сущности, значение - свойство справочника, имя класса справочника или любое другое значение
+     * @param ObjectManager $manager
+     * @param array $catalog
+     * @param string $entityClass
+     * @param array $params
      */
     public function addEntitiesFromCatalog(ObjectManager $manager, array $catalog, string $entityClass, array $params)
     {

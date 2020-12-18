@@ -3,22 +3,30 @@
 namespace App\Repository;
 
 use App\Entity\Oktmo;
-use App\Repository\AppRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class OktmoRepository
  * @method Oktmo|null find($id, $lockMode = null, $lockVersion = null)
  * @method Oktmo|null findOneBy(array $criteria, array $orderBy = null)
  * @method Oktmo[]    findAll()
  * @method Oktmo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class OktmoRepository extends AppRepository
 {
+    /**
+     * OktmoRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Oktmo::class);
     }
 
+    /**
+     * @return array
+     */
     public function getKurskRegionDistricts(): array
     {
         return $this->createQueryBuilder('o')
@@ -34,6 +42,10 @@ class OktmoRepository extends AppRepository
             ->getResult();
     }
 
+    /**
+     * Get cities of region Kursk
+     * @return array
+     */
     public function getKurskRegionCities(): array
     {
         return $this->createQueryBuilder('c')
@@ -41,32 +53,4 @@ class OktmoRepository extends AppRepository
             ->getQuery()
             ->getResult();
     }
-    // /**
-    //  * @return Oktmo[] Returns an array of Oktmo objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-    return $this->createQueryBuilder('o')
-    ->andWhere('o.exampleField = :val')
-    ->setParameter('val', $value)
-    ->orderBy('o.id', 'ASC')
-    ->setMaxResults(10)
-    ->getQuery()
-    ->getResult()
-    ;
-    }
-     */
-
-    /*
-public function findOneBySomeField($value): ?Oktmo
-{
-return $this->createQueryBuilder('o')
-->andWhere('o.exampleField = :val')
-->setParameter('val', $value)
-->getQuery()
-->getOneOrNullResult()
-;
-}
- */
 }
