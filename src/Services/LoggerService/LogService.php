@@ -63,7 +63,6 @@ class LogService
         $log->setCreatedAt($createdAt);
         try {
             $this->em->persist($log);
-            $this->em->flush();
         } catch (Exception $e) {
             $this->setError($e);
             return false;
@@ -106,7 +105,8 @@ class LogService
     /**
      * @return bool
      */
-    public function logCreateEvent(): bool {
+    public function logCreateEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -121,7 +121,8 @@ class LogService
     /**
      * @return bool
      */
-    public function logUpdateEvent(): bool {
+    public function logUpdateEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -136,7 +137,8 @@ class LogService
     /**
      * @return bool
      */
-    public function logDeleteEvent(): bool {
+    public function logDeleteEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -151,7 +153,8 @@ class LogService
     /**
      * @return bool
      */
-    public function logErrorEvent(): bool {
+    public function logErrorEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -166,7 +169,8 @@ class LogService
     /**
      * @return bool
      */
-    public function logSuccessEvent(): bool {
+    public function logSuccessEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -182,8 +186,8 @@ class LogService
      * @param $user
      * @return LogService
      */
-    public function setUser(AuthUser $user): self {
-
+    public function setUser(AuthUser $user): self
+    {
         $this->user =
             'id: '
             . $user->getId()
@@ -198,7 +202,8 @@ class LogService
      * @param $error
      * @return LogService
      */
-    public function setError($error): self {
+    public function setError($error): self
+    {
         $this->error = $error;
         return $this;
     }
@@ -206,7 +211,8 @@ class LogService
     /**
      * @return LogService
      */
-    public function getError() {
+    public function getError()
+    {
         return $this->error;
     }
 
@@ -214,7 +220,8 @@ class LogService
      * @param $description
      * @return LogService
      */
-    public function setDescription($description): self {
+    public function setDescription($description): self
+    {
         $this->description = $description;
         return $this;
     }
@@ -222,7 +229,8 @@ class LogService
     /**
      * @return LogService
      */
-    public function setCritical(): self {
+    public function setCritical(): self
+    {
         // TODO: telegram or email notifications?
         return $this;
     }

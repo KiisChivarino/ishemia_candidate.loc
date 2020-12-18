@@ -5,6 +5,7 @@ namespace App\Services\TemplateBuilders;
 use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateService;
 use App\Services\TemplateBuilders\Admin\AdminTemplateBuilder;
+use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
@@ -203,6 +204,21 @@ class AppTemplateBuilder extends TemplateService
             ->addContentArray($this->formContent);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->addContentArray($this->filterContent);
+        return $this;
+    }
+
+    /**
+     * Builds Delete template settings
+     *
+     * @param FilterService|null $filterService
+     *
+     * @return $this
+     */
+    public function delete(?FilterService $filterService = null): self
+    {
+        $this->setTemplateItems($this->templateItemsFactory->getDeleteTemplateItems());
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->addContentArray($this->entityContent);
         return $this;
     }
 

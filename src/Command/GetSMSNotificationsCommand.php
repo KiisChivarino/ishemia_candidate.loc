@@ -124,12 +124,12 @@ class GetSMSNotificationsCommand extends Command
                 }
             }
         }
-        $em->flush();
-
         $this->logger
             ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
-            ->setDescription('Команда '. self::$defaultName . ' успешно выполнена.')
+            ->setDescription('Команда - '. self::$defaultName . ' успешно выполнена.')
             ->logSuccessEvent();
+
+        $em->flush();
 
         return Command::SUCCESS; // TODO: При ошибки лог с ошибкой добавить
     }
