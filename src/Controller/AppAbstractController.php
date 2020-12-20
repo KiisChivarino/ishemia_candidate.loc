@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\AuthUser;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
@@ -20,7 +19,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Twig\Environment;
 
 /**
@@ -257,32 +255,6 @@ abstract class AppAbstractController extends AbstractController
                         ->getFiltersViews(),
             ]
         );
-    }
-
-    /**
-     * Edit password for AuthUser
-     *
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param AuthUser $authUser
-     * @param string $oldPassword
-     *
-     * @return AuthUser
-     */
-    protected function editPassword(
-        UserPasswordEncoderInterface $passwordEncoder,
-        AuthUser $authUser,
-        string $oldPassword
-    ): AuthUser
-    {
-        $newPassword = $authUser->getPassword();
-        $authUser->setPassword($oldPassword);
-        if ($newPassword) {
-            $encodedPassword = $passwordEncoder->encodePassword($authUser, $newPassword);
-            if ($encodedPassword !== $oldPassword) {
-                $authUser->setPassword($encodedPassword);
-            }
-        }
-        return $authUser;
     }
 
     /**

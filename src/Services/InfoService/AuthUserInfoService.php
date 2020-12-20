@@ -4,7 +4,6 @@ namespace App\Services\InfoService;
 
 use App\Entity\AuthUser;
 use App\Entity\Role;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class AuthUserInfoService
@@ -38,31 +37,6 @@ class AuthUserInfoService
                 . '.' : $authUser->getPatronymicName();
         }
         return $lastName . $firstName . $patronymicName;
-    }
-
-    /**
-     * Устанавливает новый пароль пользователю, если он введен
-     *
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param AuthUser $authUser
-     * @param string $oldPassword
-     */
-    static public function updatePassword(
-        UserPasswordEncoderInterface $passwordEncoder,
-        AuthUser $authUser,
-        string $oldPassword
-    ): void
-    {
-        $newPassword = $authUser->getPassword();
-        $authUser->setPassword($oldPassword);
-        if ($newPassword) {
-
-            // See https://symfony.com/doc/current/security.html#c-encoding-passwords
-            $encodedPassword = $passwordEncoder->encodePassword($authUser, $newPassword);
-            if ($encodedPassword !== $oldPassword) {
-                $authUser->setPassword($newPassword);
-            }
-        }
     }
 
     /**

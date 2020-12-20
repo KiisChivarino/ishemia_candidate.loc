@@ -125,7 +125,7 @@ class PatientController extends AdminAbstractController
                 $em = $actions->getEntityManager();
                 $em->getConnection()->beginTransaction();
                 try {
-                    $authUserCreatorService->persistAuthUser($authUser);
+                    $authUserCreatorService->persistNewPatientAuthUser($authUser);
                     $em->flush();
                     $patientCreator
                         ->persistPatient(
@@ -193,7 +193,7 @@ class PatientController extends AdminAbstractController
                 new FormData($patient, PatientOptionalType::class),
             ],
             function () use ($authUser, $oldPassword, $patient) {
-                $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
+                AuthUserCreatorService::updatePassword($this->passwordEncoder, $authUser, $oldPassword);
                 $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
             }
         );

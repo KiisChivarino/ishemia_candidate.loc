@@ -25,6 +25,7 @@ use App\Repository\TemplateParameterRepository;
 use App\Repository\TemplateRepository;
 use App\Repository\TemplateTypeRepository;
 use App\Services\ControllerGetters\EntityActions;
+use App\Services\Creator\AuthUserCreatorService;
 use App\Services\FileService\FileService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
@@ -186,7 +187,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
                 new FormData($patient, PatientOptionalType::class),
             ],
             function () use ($authUser, $oldPassword, $passwordEncoder) {
-                $this->editPassword($passwordEncoder, $authUser, $oldPassword);
+                AuthUserCreatorService::updatePassword($passwordEncoder, $authUser, $oldPassword);
                 $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
             },
             self::EDIT_PERSONAL_DATA_TEMPLATE_NAME

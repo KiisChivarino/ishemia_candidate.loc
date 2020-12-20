@@ -106,7 +106,7 @@ class AddPatientController extends DoctorOfficeAbstractController
                 $em = $actions->getEntityManager();
                 $em->getConnection()->beginTransaction();
                 try {
-                    $authUserCreatorService->persistAuthUser($patientAuthUser);
+                    $authUserCreatorService->persistNewPatientAuthUser($patientAuthUser);
                     $em->flush();
                     $patientCreator
                         ->persistPatient($patient, $patientAuthUser, $medicalHistory, $firstPatientAppointment, $staff);

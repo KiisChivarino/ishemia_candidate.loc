@@ -8,9 +8,8 @@ use App\Form\Admin\AuthUser\AuthUserRoleType;
 use App\Form\Admin\AuthUser\AuthUserOptionalType;
 use App\Form\Admin\AuthUser\AuthUserPasswordType;
 use App\Repository\UserRepository;
-use App\Services\ControllerGetters\EntityActions;
+use App\Services\Creator\AuthUserCreatorService;
 use App\Services\DataTable\Admin\AuthUserDataTableService;
-use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
 use Exception;
@@ -98,17 +97,14 @@ class AuthUserController extends AdminAbstractController
      *
      * @param Request $request
      * @param AuthUser $authUser
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param UserRepository $userRepository
+     * @param AuthUserCreatorService $authUserCreatorService
      * @return Response
      * @throws ReflectionException
-     * @throws Exception
      */
     public function edit(
         Request $request,
         AuthUser $authUser,
-        UserPasswordEncoderInterface $passwordEncoder,
-        UserRepository $userRepository
+        AuthUserCreatorService $authUserCreatorService
     ): Response
     {
         $oldPassword = $authUser->getPassword();
@@ -125,16 +121,10 @@ class AuthUserController extends AdminAbstractController
                 ),
                 new FormData($authUser, AuthUserRoleType::class, [], false),
             ],
-            function (EntityActions $actions)
-            use ($oldPassword, $passwordEncoder, $userRepository, $authUser) {
-                AuthUserInfoService::updatePassword($this->passwordEncoder, $authUser, $oldPassword);
-                $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
+            function ()
+            use ($oldPassword, $authUser, $authUserCreatorService) {
                 try {
-                    $authUser->setRoles($authUser->getRoles()[0]);
-                    // See https://symfony.com/doc/current/security.html#c-encoding-passwords
-                    $encodedPassword = $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword());
-                    $authUser->setPassword($encodedPassword);
-                    $actions->getEntityManager()->persist($authUser);
+                    $authUserCreatorService->updateAuthUser($authUser, $oldPassword);
                 } catch (Exception $e) {
                     $this->addFlash(
                         'error',
