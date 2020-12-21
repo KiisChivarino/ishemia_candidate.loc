@@ -181,10 +181,10 @@ class SMSNotificationService
     {
         return new SimpleXMLElement(
             $this->beelineSMSProvider
-                ->setDateFrom((new DateTime('now'))
+                ->setDateTimeStart((new DateTime('now'))
                     ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_update'] . 'H'))
                     ->format($this->timeFormats['besms']))
-                ->setDateTo((new DateTime('now'))->format($this->timeFormats['besms']))
+                ->setDateTimeEnd((new DateTime('now'))->format($this->timeFormats['besms']))
                 ->check()
         );
     }
@@ -198,10 +198,10 @@ class SMSNotificationService
     {
         return new SimpleXMLElement(
             $this->beelineSMSProvider
-                ->setDateFrom((new DateTime('now'))
+                ->setDateTimeStart((new DateTime('now'))
                     ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
                     ->format($this->timeFormats['besms']))
-                ->setDateTo((new DateTime('now'))->format($this->timeFormats['besms']))
+                ->setDateTimeEnd((new DateTime('now'))->format($this->timeFormats['besms']))
                 ->check()
         );
     }

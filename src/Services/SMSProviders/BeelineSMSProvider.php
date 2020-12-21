@@ -4,26 +4,30 @@ namespace App\Services\SMSProviders;
 
 use App\API\BEESMS;
 
+/**
+ * Class BeelineSMSProvider
+ * Сервис для работы с Beeline SMS
+ * @package App\Services\SMSProviders
+ */
 class BeelineSMSProvider
 {
     /** @var array */
     private $smsParameters;
 
-    /** @var BEESMS */
+    /** @var BEESMS Класс для работы с API Beeline SMS */
     private $sms;
 
-    /** @var string */
+    /** @var string Текст сообщения для отправки */
     private $text;
 
-    /** @var string */
-
+    /** @var string Получатель сообщения */
     private $target;
 
-    /** @var string */
-    private $dateFrom;
+    /** @var string Дата и время начала выборки в стандартизированном формате */
+    private $dateTimeStart;
 
-    /** @var string */
-    private $dateTo;
+    /** @var string Дата и время окончания выборки в стандартизированном формате */
+    private $dateTimeEnd;
 
     /**
      * SMS notification constructor.
@@ -49,7 +53,7 @@ class BeelineSMSProvider
      */
     public function check(): string
     {
-        return $this->sms->status_sms_date($this->dateFrom, $this->dateTo);
+        return $this->sms->status_sms_date($this->dateTimeStart, $this->dateTimeEnd);
     }
 
     /**
@@ -58,7 +62,7 @@ class BeelineSMSProvider
      */
     public function getMessages(): string
     {
-        return $this->sms->status_inbox(false,0, $this->dateFrom, $this->dateTo);
+        return $this->sms->status_inbox(false,0, $this->dateTimeStart, $this->dateTimeEnd);
     }
 
     /**
@@ -82,22 +86,22 @@ class BeelineSMSProvider
     }
 
     /**
-     * @param string $dateFrom
+     * @param string $dateTimeStart
      * @return BeelineSMSProvider
      */
-    public function setDateFrom(string $dateFrom): BeelineSMSProvider
+    public function setDateTimeStart(string $dateTimeStart): BeelineSMSProvider
     {
-        $this->dateFrom = $dateFrom;
+        $this->dateTimeStart = $dateTimeStart;
         return $this;
     }
 
     /**
-     * @param string $dateTo
+     * @param string $dateTimeEnd
      * @return BeelineSMSProvider
      */
-    public function setDateTo(string $dateTo): BeelineSMSProvider
+    public function setDateTimeEnd(string $dateTimeEnd): BeelineSMSProvider
     {
-        $this->dateTo = $dateTo;
+        $this->dateTimeEnd = $dateTimeEnd;
         return $this;
     }
 
