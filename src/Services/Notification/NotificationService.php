@@ -5,6 +5,8 @@ namespace App\Services\Notification;
 
 use App\Entity\AuthUser;
 use App\Entity\EmailNotification;
+use App\Entity\MedicalHistory;
+use App\Entity\MedicalRecord;
 use App\Entity\Notification;
 use App\Entity\Patient;
 use App\Entity\SMSNotification;
@@ -48,6 +50,12 @@ class NotificationService
 
     /** @var string */
     private $systemUserPhone;
+
+    /** @var MedicalHistory */
+    private $medicalHistory;
+
+    /** @var MedicalRecord */
+    private $medicalRecord;
 
     /**
      * SMS notification constructor.
@@ -131,6 +139,8 @@ class NotificationService
         $notification->setAuthUserSender($this->user);
         $notification->setNotificationType(self::DUMMY_NOTIFICATION_TYPE);
         $notification->setNotificationTime(new DateTime('now'));
+        $notification->setMedicalHistory($this->medicalHistory);
+        $notification->setMedicalRecord($this->medicalRecord);
 
         if ($this->patient->getSmsInforming()) {
             $notification->setSmsNotification(
@@ -167,6 +177,26 @@ class NotificationService
     public function setText (string $text): NotificationService
     {
         $this->text = $text;
+        return $this;
+    }
+
+    /**
+     * @param MedicalHistory $medicalHistory
+     * @return NotificationService
+     */
+    public function setMedicalHistory (MedicalHistory $medicalHistory): NotificationService
+    {
+        $this->medicalHistory = $medicalHistory;
+        return $this;
+    }
+
+    /**
+     * @param MedicalRecord $medicalRecord
+     * @return NotificationService
+     */
+    public function setMedicalRecord (MedicalRecord $medicalRecord): NotificationService
+    {
+        $this->medicalRecord = $medicalRecord;
         return $this;
     }
 
