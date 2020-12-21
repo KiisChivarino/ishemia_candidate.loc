@@ -58,7 +58,7 @@ class PatientCreatorService
     }
 
     /**
-     * Persist patient
+     * Persist new patient
      * @param Patient $patient
      * @param AuthUser $patientAuthUser
      * @param MedicalHistory $medicalHistory
@@ -66,7 +66,7 @@ class PatientCreatorService
      * @param Staff $staff
      * @throws Exception
      */
-    public function persistPatient(
+    public function persistNewPatient(
         Patient $patient,
         AuthUser $patientAuthUser,
         MedicalHistory $medicalHistory,
@@ -75,11 +75,7 @@ class PatientCreatorService
     ): void
     {
         $this->preparePatient($patient, $patientAuthUser);
-        $this->medicalHistoryCreator->persistMedicalHistory($medicalHistory, $patient);
-        $this->patientTestingCreator->persistFirstPatientTestsByPlan($medicalHistory);
-        $this->patientTestingCreator->persistPatientTestsByPlan($medicalHistory, $staff);
-        $this->patientAppointmentCreator->persistFirstPatientAppointment($firstPatientAppointment, $medicalHistory, $staff);
-        $this->patientAppointmentCreator->persistPatientAppointmentsByPlan($medicalHistory, $staff);
+        $this->medicalHistoryCreator->persistNewMedicalHistory($medicalHistory, $patient, $staff, $firstPatientAppointment);
         $this->entityManager->persist($patient);
     }
 

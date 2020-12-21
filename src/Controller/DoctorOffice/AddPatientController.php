@@ -109,7 +109,7 @@ class AddPatientController extends DoctorOfficeAbstractController
                     $authUserCreatorService->persistNewPatientAuthUser($patientAuthUser);
                     $em->flush();
                     $patientCreator
-                        ->persistPatient($patient, $patientAuthUser, $medicalHistory, $firstPatientAppointment, $staff);
+                        ->persistNewPatient($patient, $patientAuthUser, $medicalHistory, $firstPatientAppointment, $staff);
                     $em->flush();
                     $em->getConnection()->commit();
                 } catch (Exception $e) {
