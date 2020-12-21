@@ -170,11 +170,11 @@ class TemplateService
     /**
      * Get template item
      *
-     * @param string $itemName
+     * @param string|null $itemName
      *
      * @return mixed|null
      */
-    public function getItem(string $itemName): ?TemplateItem
+    public function getItem(?string $itemName): ?TemplateItem
     {
         return array_key_exists($itemName, $this->getItems()) ? $this->getItems()[$itemName] : null;
     }
