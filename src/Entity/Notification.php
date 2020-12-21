@@ -220,11 +220,18 @@ class Notification
         return $this;
     }
 
+    /**
+     * @return MedicalHistory|null
+     */
     public function getMedicalHistory(): ?MedicalHistory
     {
         return $this->medicalHistory;
     }
 
+    /**
+     * @param MedicalHistory|null $medicalHistory
+     * @return $this
+     */
     public function setMedicalHistory(?MedicalHistory $medicalHistory): self
     {
         $this->medicalHistory = $medicalHistory;
@@ -232,11 +239,18 @@ class Notification
         return $this;
     }
 
+    /**
+     * @return MedicalRecord|null
+     */
     public function getMedicalRecord(): ?MedicalRecord
     {
         return $this->medicalRecord;
     }
 
+    /**
+     * @param MedicalRecord|null $medicalRecord
+     * @return $this
+     */
     public function setMedicalRecord(?MedicalRecord $medicalRecord): self
     {
         $this->medicalRecord = $medicalRecord;

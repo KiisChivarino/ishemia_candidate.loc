@@ -291,6 +291,10 @@ class MedicalRecord
         return $this->prescriptions;
     }
 
+    /**
+     * @param Prescription $prescription
+     * @return $this
+     */
     public function addPrescription(Prescription $prescription): self
     {
         if (!$this->prescriptions->contains($prescription)) {
@@ -301,6 +305,10 @@ class MedicalRecord
         return $this;
     }
 
+    /**
+     * @param Prescription $prescription
+     * @return $this
+     */
     public function removePrescription(Prescription $prescription): self
     {
         if ($this->prescriptions->contains($prescription)) {

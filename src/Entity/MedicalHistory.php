@@ -579,6 +579,10 @@ class MedicalHistory
         return $this->notification;
     }
 
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
     public function addNotification(Notification $notification): self
     {
         if (!$this->notification->contains($notification)) {
@@ -589,6 +593,10 @@ class MedicalHistory
         return $this;
     }
 
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
     public function removeNotification(Notification $notification): self
     {
         if ($this->notification->removeElement($notification)) {
