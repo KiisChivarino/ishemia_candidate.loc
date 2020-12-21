@@ -17,7 +17,6 @@ use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionAppointmentTemplate;
 use DateTime;
 use Exception;
-use ReflectionException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,6 +54,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * @param PrescriptionAppointmentDataTableService $dataTableService
      * @param FilterService $filterService
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -78,7 +78,6 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * @param Request $request
      * @param PrescriptionRepository $prescriptionRepository
      * @return Response
-     * @throws ReflectionException
      * @throws Exception
      */
     public function new(Request $request, PrescriptionRepository $prescriptionRepository): Response
@@ -124,6 +123,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * @Route("/{id}", name="prescription_appointment_show", methods={"GET"}, requirements={"id"="\d+"})
      * @param PrescriptionAppointment $prescriptionAppointment
      * @return Response
+     * @throws Exception
      */
     public function show(PrescriptionAppointment $prescriptionAppointment): Response
     {
@@ -158,6 +158,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * @param Request $request
      * @param PrescriptionAppointment $prescriptionAppointment
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PrescriptionAppointment $prescriptionAppointment): Response
     {

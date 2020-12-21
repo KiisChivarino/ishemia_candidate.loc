@@ -46,7 +46,7 @@ abstract class AdminDatatableService extends DataTableService
      *
      * @return DataTable
      */
-    protected function addSerialNumber()
+    protected function addSerialNumber(): DataTable
     {
         return $this->dataTable
             ->add(
@@ -66,7 +66,7 @@ abstract class AdminDatatableService extends DataTableService
      * @return DataTable
      * @throws Exception
      */
-    protected function addEnabled(TemplateItem $templateItem, string $prefix = '')
+    protected function addEnabled(TemplateItem $templateItem, string $prefix = ''): DataTable
     {
         $addParameters = [
             'trueValue' => $templateItem->getContentValue('trueValue'),
@@ -90,7 +90,7 @@ abstract class AdminDatatableService extends DataTableService
      * @return DataTable
      * @throws Exception
      */
-    protected function addOperations(Closure $renderOperationsFunction, TemplateItem $templateItem)
+    protected function addOperations(Closure $renderOperationsFunction, TemplateItem $templateItem): DataTable
     {
         return $this->dataTable
             ->add(
@@ -113,7 +113,7 @@ abstract class AdminDatatableService extends DataTableService
      *
      * @return string
      */
-    protected function getLink(string $value, int $id, string $route)
+    protected function getLink(string $value, int $id, string $route): string
     {
         return '<a href="'.$this->router->generate($route, ['id' => $id]).'">'.$value.'</a>';
     }

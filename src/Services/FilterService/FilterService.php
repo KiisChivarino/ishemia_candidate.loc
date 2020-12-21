@@ -54,7 +54,7 @@ class FilterService
      *
      * @return bool
      */
-    public function putFilterInSession(Filter $filter)
+    public function putFilterInSession(Filter $filter): bool
     {
         if (!$filter->getValue()) {
             return false;
@@ -95,7 +95,7 @@ class FilterService
      *
      * @return bool
      */
-    public function setFilerValueFromSession(Filter $filter)
+    public function setFilerValueFromSession(Filter $filter): bool
     {
         if (!$this->session->has($filter->getName())) {
             return false;
@@ -113,7 +113,7 @@ class FilterService
      *
      * @return Filter
      */
-    public function createFilter(string $name, string $entityClass, string $value = null)
+    public function createFilter(string $name, string $entityClass, string $value = null): Filter
     {
         return new Filter($name, $entityClass, $value);
     }
@@ -145,7 +145,7 @@ class FilterService
      *
      * @return FilterData
      */
-    public function generateFilter(string $entityClassName, array $formBuilderData, string $filterName = null)
+    public function generateFilter(string $entityClassName, array $formBuilderData, string $filterName = null): FilterData
     {
         $request = $this->requestStack->getCurrentRequest();
         $filterName = $filterName ? $filterName : $this->generateFilterName($request->get('_route'), $entityClassName);
@@ -160,7 +160,7 @@ class FilterService
         }
         $entity = $this->getEntityByFilterValue($filter);
         $entityName = mb_strtolower(substr($entityClassName, strripos($entityClassName, '\\') + 1));
-        $formBuilderData['data'] = $entity ? $entity : '';
+        $formBuilderData['data'] = $entity ? $entity : null;
         $formBuilderData['attr']['data-filter_name'] = $filterName;
         $form = $this->createFormBuilder($filterName)->add($entityName, EntityType::class, $formBuilderData)->getForm();
         $form->handleRequest($request);
@@ -188,7 +188,7 @@ class FilterService
      *
      * @return FormBuilderInterface
      */
-    protected function createFormBuilder(string $name, $data = null, array $options = [])
+    protected function createFormBuilder(string $name, $data = null, array $options = []): FormBuilderInterface
     {
         return $this->formFactory->createNamedBuilder($name, FormType::class, $data, $options);
     }
@@ -201,7 +201,7 @@ class FilterService
      *
      * @return string
      */
-    public function generateFilterName(string $routeName, string $entityClassName)
+    public function generateFilterName(string $routeName, string $entityClassName): string
     {
         return
             'filter_'

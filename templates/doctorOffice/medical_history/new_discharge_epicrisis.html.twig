@@ -8,8 +8,10 @@
                 </li>
                 <li>
                     {% if template.items.list.isEnabled %}
-                        <a class="back-page" href="{{ path(template.routes.main, {id: entity.medicalHistory.id}) }}">История
-                            болезни</a>
+                        <a
+                                class="back-page"
+                                href="{{ path(template.routes.main, {id: entity.medicalHistory.id}) }}">История болезни
+                        </a>
                     {% endif %}
                 </li>
             </ul>

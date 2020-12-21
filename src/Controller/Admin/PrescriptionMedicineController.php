@@ -55,6 +55,7 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -106,6 +107,7 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param PrescriptionMedicine $prescriptionMedicine
      *
      * @return Response
+     * @throws Exception
      */
     public function show(PrescriptionMedicine $prescriptionMedicine): Response
     {
@@ -142,6 +144,7 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param PrescriptionMedicine $prescriptionMedicine
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PrescriptionMedicine $prescriptionMedicine): Response
     {

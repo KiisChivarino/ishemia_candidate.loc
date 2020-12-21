@@ -2,6 +2,7 @@
 
 namespace App\Controller\PatientOffice;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -18,7 +19,7 @@ class PatientMainController extends PatientOfficeAbstractController
      * Main page of patient office
      * @Route("/main", name="patient_office_main")
      */
-    public function main()
+    public function main(): Response
     {
         return $this->render(
             'patientOffice/main/main.html.twig'

@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\AuthUser;
 use App\Entity\Position;
 use App\Entity\Staff;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -24,9 +24,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class StaffRepository extends AppRepository implements PasswordUpgraderInterface
 {
-
+    /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;
 
+    /**
+     * StaffRepository constructor.
+     * @param ManagerRegistry $registry
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     */
     public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder)
     {
         parent::__construct($registry, Staff::class);
@@ -54,7 +59,8 @@ class StaffRepository extends AppRepository implements PasswordUpgraderInterface
         string $password,
         bool $enabled,
         Position $position
-    ): void {
+    ): void
+    {
         $user = (new AuthUser())
             ->setPhone($phone)
             ->setEnabled($enabled);
@@ -98,7 +104,8 @@ class StaffRepository extends AppRepository implements PasswordUpgraderInterface
      * @param UserInterface $authUser
      * @return object|null
      */
-    public function getStaff(UserInterface $authUser){
-        return $this->findOneBy(['AuthUser'=>$authUser]);
+    public function getStaff(UserInterface $authUser): ?object
+    {
+        return $this->findOneBy(['AuthUser' => $authUser]);
     }
 }

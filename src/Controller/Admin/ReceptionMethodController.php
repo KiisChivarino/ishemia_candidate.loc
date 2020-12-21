@@ -46,6 +46,7 @@ class ReceptionMethodController extends AdminAbstractController
      * @param ReceptionMethodDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, ReceptionMethodDataTableService $dataTableService): Response
     {
@@ -73,6 +74,7 @@ class ReceptionMethodController extends AdminAbstractController
      * @param ReceptionMethod $receptionMethod
      *
      * @return Response
+     * @throws Exception
      */
     public function show(ReceptionMethod $receptionMethod): Response
     {
@@ -102,6 +104,7 @@ class ReceptionMethodController extends AdminAbstractController
      * @param ReceptionMethod $receptionMethod
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, ReceptionMethod $receptionMethod): Response
     {

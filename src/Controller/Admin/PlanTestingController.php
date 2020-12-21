@@ -47,6 +47,7 @@ class PlanTestingController extends AdminAbstractController
      * @param PlanTestingDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, PlanTestingDataTableService $dataTableService): Response
     {
@@ -74,6 +75,7 @@ class PlanTestingController extends AdminAbstractController
      * @param PlanTesting $planTesting
      *
      * @return Response
+     * @throws Exception
      */
     public function show(PlanTesting $planTesting): Response
     {
@@ -103,6 +105,7 @@ class PlanTestingController extends AdminAbstractController
      * @param PlanTesting $planTesting
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PlanTesting $planTesting): Response
     {

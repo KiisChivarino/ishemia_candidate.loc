@@ -31,7 +31,7 @@ class PrescriptionRepository extends AppRepository
      *
      * @return Prescription|null
      */
-    public function findNotCompletedPrescription(MedicalHistory $medicalHistory)
+    public function findNotCompletedPrescription(MedicalHistory $medicalHistory): ?Prescription
     {
         return $this->findOneBy(
             [

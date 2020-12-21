@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Services\DataTable\Admin\EmailNotificationDataTableService;
 use App\Services\TemplateBuilders\Admin\EmailNotificationTemplate;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,6 +39,7 @@ class EmailNotificationController extends AdminAbstractController
      * @param Request $request
      * @param EmailNotificationDataTableService $emailNotificationDataTableService
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,

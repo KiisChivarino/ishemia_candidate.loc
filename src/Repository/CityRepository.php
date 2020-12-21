@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\City;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method City|null find($id, $lockMode = null, $lockVersion = null)

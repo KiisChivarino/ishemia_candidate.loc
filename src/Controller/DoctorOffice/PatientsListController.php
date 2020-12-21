@@ -6,6 +6,7 @@ use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientsListDataTableService;
 use App\Services\TemplateBuilders\DoctorOffice\PatientListTemplate;
 use App\Services\FilterService\FilterService;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,6 +46,7 @@ class PatientsListController extends DoctorOfficeAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, PatientsListDataTableService $dataTableService, FilterService $filterService): Response
     {

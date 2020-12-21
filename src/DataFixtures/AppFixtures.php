@@ -31,15 +31,21 @@ use App\Entity\TemplateParameterText;
 use App\Entity\TemplateType;
 use App\Entity\TimeRange;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\ORMException;
 
 class AppFixtures extends Fixture
 {
+    /** @var string PATH_TO_CSV */
     const PATH_TO_CSV = 'data/AppFixtures/';
 
+    /** @var DataSowing $dataSowing */
     private $dataSowing;
 
+    /**
+     * AppFixtures constructor.
+     * @param DataSowing $dataSowing
+     */
     public function __construct(DataSowing $dataSowing)
     {
         $this->dataSowing = $dataSowing;
@@ -53,26 +59,26 @@ class AppFixtures extends Fixture
     {
         /** begin Должности */
         echo "Заполнение справочника \"Должности\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'position.csv', Position::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv($manager,self::PATH_TO_CSV . 'position.csv', Position::class, '|', [], ['enabled' => true]);
         /** end Должности */
 
         /** begin Виды приема */
         echo "Заполнение справочника \"Вид приема\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'appointment_type.csv', AppointmentType::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv($manager,self::PATH_TO_CSV . 'appointment_type.csv', AppointmentType::class, '|', [], ['enabled' => true]);
         /** end Виды приема */
 
         /** begin Пользователи */
         echo "Добавление пользователей\n";
         $manager->getRepository(AuthUser::class)->addUserFromFixtures('8888888888', 'Admin', 'Admin', 'ROLE_ADMIN', '111111', true);
         /** @var Position $positionDoctor */
-        $positionDoctor = $manager->getRepository(Position::class)->findOneBy(['name'=>'Врач']);
+        $positionDoctor = $manager->getRepository(Position::class)->findOneBy(['name' => 'Врач']);
         $manager->getRepository(Staff::class)->addStaffFromFixtures('0000000000', 'Максим', 'Хруслов', 'ROLE_DOCTOR_CONSULTANT', '111111', true, $positionDoctor);
         /** end Пользователи */
 
         /** begin Точки отсчета */
         echo "Добавление точек отсчета\n";
         $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(1, 'dateBegin', 'Включение в историю болезни');
-        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(2,'heartAttackDate', 'Дата возникновения инфаркта');
+        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(2, 'heartAttackDate', 'Дата возникновения инфаркта');
         /** end Точки отсчета */
 
         /** begin Пол */
@@ -86,18 +92,17 @@ class AppFixtures extends Fixture
 
         /** begin Роли*/
         echo "Внесение ролей\n";
-        $this->dataSowing->addRoles($manager);
+        $this->dataSowing->addRoles();
         /** end Роли*/
 
         /** begin OKSM */
         echo "Заполнение справочника ОКСМ\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'OKSM.csv', OKSM::class, ';');
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'OKSM.csv', OKSM::class);
         /** end OKSM */
 
         /** begin Страна */
         echo "Добавление России\n";
         $this->dataSowing->addEntitiesFromCatalog(
-            $manager,
             $manager->getRepository(OKSM::class)->getRussiaCountry(),
             Country::class,
             [
@@ -113,7 +118,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника регионов\n";
         $russia = $manager->getRepository(Country::class)->getRussiaCountry();
         $this->dataSowing->setEntitiesFromCsv(
-            $manager, self::PATH_TO_CSV.'regions.csv', Region::class, ';',
+            $manager, self::PATH_TO_CSV . 'regions.csv', Region::class, ';',
             [
                 'code' => 'regionNumber',
                 'oktmo_region_id' => null,
@@ -132,14 +137,13 @@ class AppFixtures extends Fixture
         /** begin Адреса */
         //todo Изменить запрос с использованием "in"
         echo "Заполнение справочника адресов\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'Oktmo.csv', Oktmo::class, ';', ['ID' => null]);
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'Oktmo.csv', Oktmo::class, ';', ['ID' => null]);
         /** end Адреса */
 
         /** begin Районы */
         echo "Заполнение справочника районов\n";
         $kurskRegion = $manager->getRepository(Region::class)->getKurskRegion();
         $this->dataSowing->addEntitiesFromCatalog(
-            $manager,
             $manager->getRepository(Oktmo::class)->getKurskRegionDistricts(),
             District::class,
             [
@@ -154,7 +158,6 @@ class AppFixtures extends Fixture
         // /** begin Города */
         echo "Добавление городов по Курской области\n";
         $this->dataSowing->addEntitiesFromCatalog(
-            $manager,
             $manager->getRepository(Oktmo::class)->getKurskRegionCities(),
             City::class,
             [
@@ -168,14 +171,13 @@ class AppFixtures extends Fixture
 
         /** begin LPU */
         echo "Заполнение справочника ЛПУ\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'LPU.csv', LPU::class, '|');
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'LPU.csv', LPU::class, '|');
         $manager->flush();
         /** end LPU */
 
         /** begin Больницы */
         echo "Добавление ЛПУ по Курской области\n";
         $this->dataSowing->addEntitiesFromCatalog(
-            $manager,
             $manager->getRepository(LPU::class)->getKurskRegionLPU(),
             Hospital::class,
             [
@@ -195,25 +197,25 @@ class AppFixtures extends Fixture
 
         /** begin Патологии (диагнозы) */
         echo "Добавление патологий (диагнозов)\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'mkb10.csv', Diagnosis::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'mkb10.csv', Diagnosis::class, '|', [], ['enabled' => true]);
         /** end Патологии */
 
         /** begin Группы анализов (тестирования) */
         echo "Заполнение справочника \"Группы анализов\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'analysis_group.csv', AnalysisGroup::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'analysis_group.csv', AnalysisGroup::class, '|', [], ['enabled' => true]);
         /** end Группы анализов (тестирования) */
 
         /** begin Интервал даты */
         echo "Заполнение справочника \"Интервал даты\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV.'date_interval.csv', DateInterval::class, '|');
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'date_interval.csv', DateInterval::class, '|');
         /** end Интервал даты */
 
         /** begin Временной диапазон */
         echo "Заполнение справочника \"Временной диапазон\"\n";
         $this->dataSowing->setEntitiesFromCsv(
-            $manager, self::PATH_TO_CSV.'time_range.csv', TimeRange::class, '|', [], [], [
-            'dateInterval' => DateInterval::class,
-        ]
+            $manager, self::PATH_TO_CSV . 'time_range.csv', TimeRange::class, '|', [], [], [
+                'dateInterval' => DateInterval::class,
+            ]
         );
         /** end Временной диапазон */
 
@@ -221,7 +223,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника \"Стандартный план тестирования\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'plan_testing.csv',
+            self::PATH_TO_CSV . 'plan_testing.csv',
             PlanTesting::class,
             '|',
             [],
@@ -238,7 +240,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника \"Стандартный план приемов\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'plan_appointment.csv',
+            self::PATH_TO_CSV . 'plan_appointment.csv',
             PlanAppointment::class,
             '|',
             [],
@@ -254,7 +256,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника \"Анализы\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'analysis.csv',
+            self::PATH_TO_CSV . 'analysis.csv',
             Analysis::class, '|',
             ['enabled' => null],
             ['enabled' => true],
@@ -266,7 +268,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника \"Единицы измерения\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'measure.csv',
+            self::PATH_TO_CSV . 'measure.csv',
             Measure::class,
             '|',
             [],
@@ -278,7 +280,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника \"Референтные значения\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'analysis_rate.csv',
+            self::PATH_TO_CSV . 'analysis_rate.csv',
             AnalysisRate::class,
             '|',
             [
@@ -298,7 +300,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника \"Типы шаблонов\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'template_types.csv',
+            self::PATH_TO_CSV . 'template_types.csv',
             TemplateType::class,
             ',',
             [],
@@ -312,7 +314,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника \"Параметры шаблонов\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'template_parameters.csv',
+            self::PATH_TO_CSV . 'template_parameters.csv',
             TemplateParameter::class,
             ',',
             [],
@@ -329,7 +331,7 @@ class AppFixtures extends Fixture
         echo "Заполнение справочника \"Тексты параметров шаблонов\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'template_parameters_texts.csv',
+            self::PATH_TO_CSV . 'template_parameters_texts.csv',
             TemplateParameterText::class,
             ';',
             [],
@@ -346,7 +348,7 @@ class AppFixtures extends Fixture
         echo "Заполнение \"Типов логов\"\n";
         $this->dataSowing->setEntitiesFromCsv(
             $manager,
-            self::PATH_TO_CSV.'log_actions.csv',
+            self::PATH_TO_CSV . 'log_actions.csv',
             LogAction::class,
             '|',
             [],

@@ -45,6 +45,7 @@ class AnalysisGroupController extends AdminAbstractController
      * @param AnalysisGroupDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, AnalysisGroupDataTableService $dataTableService): Response
     {
@@ -80,6 +81,7 @@ class AnalysisGroupController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function show(AnalysisGroup $analysisGroup, FilterService $filterService): Response
     {
@@ -115,6 +117,7 @@ class AnalysisGroupController extends AdminAbstractController
      * @param AnalysisGroup $analysisGroup
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, AnalysisGroup $analysisGroup): Response
     {

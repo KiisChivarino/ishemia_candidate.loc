@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\RegionRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -66,7 +65,6 @@ class Region
      */
     public function __construct()
     {
-        $this->city = new ArrayCollection();
         $this->cities = new ArrayCollection();
         $this->hospitals = new ArrayCollection();
         $this->districts = new ArrayCollection();

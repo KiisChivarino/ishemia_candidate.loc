@@ -5,14 +5,24 @@ namespace App\Form\Admin;
 use App\Controller\AppAbstractController;
 use App\Entity\MedicalRecord;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class MedicalRecordType
+ * @package App\Form\Admin
+ */
 class MedicalRecordType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @throws Exception
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FormTemplateItem $templateItem */

@@ -43,6 +43,7 @@ class LogActionController extends AdminAbstractController
      * @param Request $request
      * @param LogActionDataTableService $logActionDataTableService
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, LogActionDataTableService $logActionDataTableService): Response
     {

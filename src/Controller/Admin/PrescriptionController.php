@@ -65,6 +65,7 @@ class PrescriptionController extends AdminAbstractController
      * @param PrescriptionDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -132,6 +133,7 @@ class PrescriptionController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function show(
         Prescription $prescription,
@@ -208,6 +210,7 @@ class PrescriptionController extends AdminAbstractController
      * @param Prescription $prescription
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Prescription $prescription): Response
     {

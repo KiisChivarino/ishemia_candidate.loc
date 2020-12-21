@@ -13,6 +13,7 @@ use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\TableActionsTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -91,6 +92,7 @@ class NotificationTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

@@ -68,6 +68,7 @@ class PatientAppointmentController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -94,7 +95,6 @@ class PatientAppointmentController extends AdminAbstractController
      * @param MedicalRecordRepository $medicalRecordRepository
      * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return Response
-     * @throws ReflectionException
      * @throws Exception
      */
     public function new(
@@ -139,6 +139,7 @@ class PatientAppointmentController extends AdminAbstractController
      * @param PatientAppointment $patientAppointment
      *
      * @return Response
+     * @throws Exception
      */
     public function show(PatientAppointment $patientAppointment): Response
     {
@@ -196,6 +197,7 @@ class PatientAppointmentController extends AdminAbstractController
      * @param PatientAppointment $patientAppointment
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PatientAppointment $patientAppointment): Response
     {

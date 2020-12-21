@@ -36,7 +36,7 @@ class PrescriptionInfoService
      *
      * @return int
      */
-    static public function countChildren(Prescription $prescription)
+    static public function countChildren(Prescription $prescription): int
     {
         $prescriptionMedicines = count(
             array_filter(

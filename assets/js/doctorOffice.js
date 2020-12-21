@@ -15,8 +15,8 @@ require('../images/operation-icon-3.svg');
 require('../images/favicons/doc-fav.ico');
 require('fancybox')($);
 
-var acc = document.getElementsByClassName("accordion");
-var i;
+let acc = document.getElementsByClassName("accordion");
+let i;
 for (i = 0; i < acc.length; i++) {
     if ($(acc[i]).hasClass('active')) {
         let panel = acc[i].nextElementSibling;
@@ -24,7 +24,7 @@ for (i = 0; i < acc.length; i++) {
     }
     acc[i].addEventListener("click", function () {
         this.classList.toggle("active");
-        var panel = this.nextElementSibling;
+        let panel = this.nextElementSibling;
         if (panel.style.maxHeight) {
             panel.style.maxHeight = null;
         } else {

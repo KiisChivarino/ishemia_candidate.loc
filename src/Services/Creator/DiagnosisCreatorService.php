@@ -30,7 +30,8 @@ class DiagnosisCreatorService
         $this->entityManager = $entityManager;
     }
 
-    public function createDiagnosis(){
+    public function createDiagnosis(): Diagnosis
+    {
         return (new Diagnosis())
             ->setEnabled(true);
     }

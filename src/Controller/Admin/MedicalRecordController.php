@@ -52,6 +52,7 @@ class MedicalRecordController extends AdminAbstractController
      *
      * @param FilterService $filterService
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, MedicalRecordDataTableService $dataTableService, FilterService $filterService): Response
     {
@@ -97,6 +98,7 @@ class MedicalRecordController extends AdminAbstractController
      * @param MedicalRecord $medicalRecord
      *
      * @return Response
+     * @throws Exception
      */
     public function show(MedicalRecord $medicalRecord): Response
     {
@@ -131,6 +133,7 @@ class MedicalRecordController extends AdminAbstractController
      * @param MedicalRecord $medicalRecord
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, MedicalRecord $medicalRecord): Response
     {

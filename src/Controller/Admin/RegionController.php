@@ -47,6 +47,7 @@ class RegionController extends AdminAbstractController
      * @param RegionDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, RegionDataTableService $dataTableService): Response
     {
@@ -74,6 +75,7 @@ class RegionController extends AdminAbstractController
      * @param Region $region
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Region $region): Response
     {
@@ -103,6 +105,7 @@ class RegionController extends AdminAbstractController
      * @param Region $region
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Region $region): Response
     {

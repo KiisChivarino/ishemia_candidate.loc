@@ -123,7 +123,7 @@ class TemplateTemplate extends AdminTemplateBuilder
         return $this;
     }
 
-    public function newTemplate(TemplateType $templateType)
+    public function newTemplate(TemplateType $templateType): TemplateTemplate
     {
         $this->new();
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)

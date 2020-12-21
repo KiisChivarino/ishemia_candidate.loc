@@ -95,7 +95,7 @@ class TemplateType
         return $this->templateParameters;
     }
 
-    public function __toString()
+    public function __toString(): ?string
     {
         return $this->getName();
     }

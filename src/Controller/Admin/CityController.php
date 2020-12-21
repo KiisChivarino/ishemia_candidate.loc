@@ -46,6 +46,7 @@ class CityController extends AdminAbstractController
      * @param CityDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, CityDataTableService $dataTableService): Response
     {
@@ -73,6 +74,7 @@ class CityController extends AdminAbstractController
      * @param City $city
      *
      * @return Response
+     * @throws Exception
      */
     public function show(City $city): Response
     {
@@ -102,6 +104,7 @@ class CityController extends AdminAbstractController
      * @param City $city
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, City $city): Response
     {

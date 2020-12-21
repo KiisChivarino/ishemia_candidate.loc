@@ -22,7 +22,7 @@ class PatientTestingInfoService
      *
      * @return string
      */
-    static public function getPatientTestingInfoString(PatientTesting $patientTesting)
+    static public function getPatientTestingInfoString(PatientTesting $patientTesting): string
     {
         $patientInfo = 'Пациент: '.
             AuthUserInfoService::getFIO($patientTesting->getMedicalHistory()->getPatient()->getAuthUser(), true);

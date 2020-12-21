@@ -19,7 +19,7 @@ class AnalysisRateInfoService
      *
      * @return string
      */
-    static public function getAnalysisRateInfoString(?AnalysisRate $analysisRate)
+    static public function getAnalysisRateInfoString(?AnalysisRate $analysisRate): string
     {
         return
             $analysisRate ?

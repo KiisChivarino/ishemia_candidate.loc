@@ -43,6 +43,7 @@ class StartingPointController extends AdminAbstractController
      * @param Request $request
      * @param StartingPointDataTableService $dataTableService
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, StartingPointDataTableService $dataTableService): Response
     {
@@ -54,6 +55,7 @@ class StartingPointController extends AdminAbstractController
      * @Route("/{id}", name="starting_point_show", methods={"GET"}, requirements={"id"="\d+"})
      * @param StartingPoint $startingPoint
      * @return Response
+     * @throws Exception
      */
     public function show(StartingPoint $startingPoint): Response
     {
