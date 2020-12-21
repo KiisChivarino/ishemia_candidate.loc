@@ -12,12 +12,17 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+    public function __construct(string $environment, bool $debug)
+    {
+        parent::__construct($environment, $debug);
+        date_default_timezone_set("Europe/Moscow");
+    }
+
     /**
      * @param ContainerConfigurator $container
      */
     protected function configureContainer(ContainerConfigurator $container): void
     {
-        date_default_timezone_set("Europe/Moscow");
         $container->import('../config/{packages}/*.yaml');
         $container->import('../config/{packages}/'.$this->environment.'/*.yaml');
 
