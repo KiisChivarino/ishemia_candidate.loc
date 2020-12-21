@@ -72,6 +72,7 @@ class LogService
     }
 
     /**
+     * Creates LOGOUT log event
      * @return bool
      */
     public function logLogoutEvent(): bool
@@ -88,6 +89,7 @@ class LogService
     }
 
     /**
+     * Creates LOGIN log event
      * @return bool
      */
     public function logLoginEvent(): bool
@@ -104,6 +106,7 @@ class LogService
     }
 
     /**
+     * Creates CREATE log event
      * @return bool
      */
     public function logCreateEvent(): bool {
@@ -119,6 +122,7 @@ class LogService
     }
 
     /**
+     * Creates UPDATE log event
      * @return bool
      */
     public function logUpdateEvent(): bool {
@@ -134,6 +138,7 @@ class LogService
     }
 
     /**
+     * Creates DELETE log event
      * @return bool
      */
     public function logDeleteEvent(): bool {
@@ -149,6 +154,7 @@ class LogService
     }
 
     /**
+     * Creates ERROR log event
      * @return bool
      */
     public function logErrorEvent(): bool {
@@ -164,6 +170,23 @@ class LogService
     }
 
     /**
+     * Creates FAIL log event
+     * @return bool
+     */
+    public function logFailEvent(): bool {
+        return $this->createLog(
+            $this->user,
+            $this->em->getRepository(LogAction::class)->findOneBy([
+                'name' => 'fail',
+                'enabled' => true
+            ]),
+            $this->description,
+            new DateTime('now')
+        );
+    }
+
+    /**
+     * Creates SUCCESS log event
      * @return bool
      */
     public function logSuccessEvent(): bool {
