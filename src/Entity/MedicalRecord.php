@@ -63,7 +63,7 @@ class MedicalRecord
     /**
      * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="medicalRecord", orphanRemoval=true,cascade={"persist"})
      */
-    private $notification;
+    private $notifications;
 
     /**
      * MedicalRecord constructor.
@@ -73,7 +73,7 @@ class MedicalRecord
         $this->patientTestings = new ArrayCollection();
         $this->patientAppointments = new ArrayCollection();
         $this->prescriptions = new ArrayCollection();
-        $this->notification = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -280,9 +280,9 @@ class MedicalRecord
     /**
      * @return Collection|Notification[]
      */
-    public function getNotification(): Collection
+    public function getNotifications(): Collection
     {
-        return $this->notification;
+        return $this->notifications;
     }
 
     /**
@@ -291,8 +291,8 @@ class MedicalRecord
      */
     public function addNotification(Notification $notification): self
     {
-        if (!$this->notification->contains($notification)) {
-            $this->notification[] = $notification;
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
             $notification->setMedicalRecord($this);
         }
 
@@ -305,7 +305,7 @@ class MedicalRecord
      */
     public function removeNotification(Notification $notification): self
     {
-        if ($this->notification->removeElement($notification)) {
+        if ($this->notifications->removeElement($notification)) {
             // set the owning side to null (unless already changed)
             if ($notification->getMedicalRecord() === $this) {
                 $notification->setMedicalRecord(null);
