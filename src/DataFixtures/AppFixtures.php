@@ -69,6 +69,7 @@ class AppFixtures extends Fixture
 
         /** begin Пользователи */
         echo "Добавление пользователей\n";
+        $manager->getRepository(AuthUser::class)->addUserFromFixtures('9999999999', 'System', 'System', 'ROLE_SYSTEM', '111111', true);
         $manager->getRepository(AuthUser::class)->addUserFromFixtures('8888888888', 'Admin', 'Admin', 'ROLE_ADMIN', '111111', true);
         /** @var Position $positionDoctor */
         $positionDoctor = $manager->getRepository(Position::class)->findOneBy(['name' => 'Врач']);

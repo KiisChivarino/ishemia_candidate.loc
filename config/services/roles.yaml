@@ -19,3 +19,8 @@ parameters:
     techName: ROLE_PATIENT
     route: patient_office_main
     description: Пациент
+  9:
+    name: Система
+    techName: ROLE_SYSTEM
+    route: admin
+    description: Системный пользователь
