@@ -5,7 +5,8 @@ namespace App\Repository;
 use App\Entity\AuthUser;
 use App\Entity\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -15,27 +16,24 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use function get_class;
 
 /**
- * Class UserRepository
  * @method AuthUser|null find($id, $lockMode = null, $lockVersion = null)
  * @method AuthUser|null findOneBy(array $criteria, array $orderBy = null)
  * @method AuthUser[]    findAll()
  * @method AuthUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @package App\Repository
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
     /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;
 
-    /**
-     * UserRepository constructor.
-     * @param ManagerRegistry $registry
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     */
-    public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder)
+    /** @var array */
+    private $systemUserPhone;
+
+    public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder, string $systemUserPhone)
     {
         parent::__construct($registry, AuthUser::class);
         $this->passwordEncoder = $passwordEncoder;
+        $this->systemUserPhone = $systemUserPhone;
     }
 
     /**
@@ -79,6 +77,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         bool $enabled
     ): ?AuthUser
     {
+
         $user = (new AuthUser())
             ->setPhone($phone)
             ->setEnabled($enabled);
@@ -112,5 +111,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->add('where', $qb->expr()->in('r.tech_name', $user->getRoles() ?? []))
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return AuthUser|null
+     * @throws NonUniqueResultException
+     */
+    public function getSystemUser(): AuthUser
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.phone = :val')
+            ->setParameter('val', $this->systemUserPhone)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
     }
 }

@@ -66,16 +66,13 @@ class AdminController extends AdminAbstractController
     }
 
     /**
-     * @Route("/admin/testnotification", name="testnotification")
+     * @Route("/testNotification", name="testNotification")
      * @param PatientRepository $patientRepository
      * @return Response
      */
     public function testNotification(PatientRepository $patientRepository): Response
     {
-        $this->notification->setText('Тестовое уведомление')->setPatient($patientRepository->find([
-            'id' => 1
-        ]))->notifyUser();
-
-        return new Response(true);
+       $this->notification->setText('Тестик')->setPatient($patientRepository->findAll()[0])->notifyUser();
+       return new Response(true);
     }
 }

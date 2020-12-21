@@ -18,9 +18,9 @@ class LogService
 {
     /** Стандартные варианты описаний логов */
     const
-        DEFAULT_USER_LOGIN_DESCRIPTION = 'User successfully logged in.',
-        DEFAULT_USER_LOGOUT_DESCRIPTION = 'User successfully logged out.',
-        DEFAULT_SUCCESS_DESCRIPTION = 'Command successfully executed.';
+        DEFAULT_USER_LOGIN_DESCRIPTION = 'Пользователь успешно вошел.',
+        DEFAULT_USER_LOGOUT_DESCRIPTION = 'Пользователь вышел из системы.'
+    ;
 
     /** @var string */
     private $description;
@@ -63,7 +63,6 @@ class LogService
         $log->setCreatedAt($createdAt);
         try {
             $this->em->persist($log);
-            $this->em->flush();
         } catch (Exception $e) {
             $this->setError($e);
             return false;
@@ -109,7 +108,8 @@ class LogService
      * Creates CREATE log event
      * @return bool
      */
-    public function logCreateEvent(): bool {
+    public function logCreateEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -125,7 +125,8 @@ class LogService
      * Creates UPDATE log event
      * @return bool
      */
-    public function logUpdateEvent(): bool {
+    public function logUpdateEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -141,7 +142,8 @@ class LogService
      * Creates DELETE log event
      * @return bool
      */
-    public function logDeleteEvent(): bool {
+    public function logDeleteEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -157,7 +159,8 @@ class LogService
      * Creates ERROR log event
      * @return bool
      */
-    public function logErrorEvent(): bool {
+    public function logErrorEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
@@ -189,14 +192,15 @@ class LogService
      * Creates SUCCESS log event
      * @return bool
      */
-    public function logSuccessEvent(): bool {
+    public function logSuccessEvent(): bool
+    {
         return $this->createLog(
             $this->user,
             $this->em->getRepository(LogAction::class)->findOneBy([
                 'name' => 'success',
                 'enabled' => true
             ]),
-            $this->description ?? self::DEFAULT_SUCCESS_DESCRIPTION,
+            $this->description,
             new DateTime('now')
         );
     }
@@ -205,8 +209,8 @@ class LogService
      * @param $user
      * @return LogService
      */
-    public function setUser(AuthUser $user): self {
-
+    public function setUser(AuthUser $user): self
+    {
         $this->user =
             'id: '
             . $user->getId()
@@ -221,7 +225,8 @@ class LogService
      * @param $error
      * @return LogService
      */
-    public function setError($error): self {
+    public function setError($error): self
+    {
         $this->error = $error;
         return $this;
     }
@@ -238,16 +243,9 @@ class LogService
      * @param $description
      * @return LogService
      */
-    public function setDescription($description): self {
+    public function setDescription($description): self
+    {
         $this->description = $description;
-        return $this;
-    }
-
-    /**
-     * @return LogService
-     */
-    public function setCritical(): self {
-        // TODO: telegram or email notifications?
         return $this;
     }
 }

@@ -25,6 +25,7 @@ services:
             $smsUpdateTimes: '%sms_update_times%'
             $phoneParameters: '%phone_parameters%'
             $timeFormats: '%time_formats%'
+            $systemUserPhone: '%system_user_phone%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

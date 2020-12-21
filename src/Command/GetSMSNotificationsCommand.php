@@ -2,8 +2,10 @@
 
 namespace App\Command;
 
+use App\Entity\AuthUser;
 use App\Entity\Patient;
 use App\Entity\PatientSMS;
+use App\Services\LoggerService\LogService;
 use App\Services\Notification\SMSNotificationService;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -32,22 +34,28 @@ class GetSMSNotificationsCommand extends Command
     /** @var array */
     private $phoneParameters;
 
+    /** @var LogService */
+    private $logger;
+
     /**
      * GetSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
      * @param SMSNotificationService $SMSNotificationService
+     * @param LogService $logger
      * @param array $smsParameters
      * @param array $phoneParameters
      */
     public function __construct(
         ContainerInterface $container,
         SMSNotificationService $SMSNotificationService,
+        LogService $logger,
         array $smsParameters,
         array $phoneParameters
     ) {
         parent::__construct();
         $this->container = $container;
         $this->sms = $SMSNotificationService;
+        $this->logger = $logger;
         $this->smsParameters = $smsParameters;
         $this->phoneParameters = $phoneParameters;
     }
@@ -75,6 +83,7 @@ class GetSMSNotificationsCommand extends Command
         $em = $this->container->get('doctrine')->getManager();
         $patients = $em->getRepository(Patient::class)->findAll();
         $smsCollection = $em->getRepository(PatientSMS::class)->findAll();
+        $systemUser = $em->getRepository(AuthUser::class)->getSystemUser();
 
         $result = $this->sms->getUnreadSMS();
         foreach ($result->MESSAGES->MESSAGE as $message) {
@@ -98,13 +107,28 @@ class GetSMSNotificationsCommand extends Command
                             $sms->setCreatedAt(
                                 date_create_from_format('d.m.y H:i:s', (string) $message->SMS_CLOSE_TIME)
                             );
+
                             $em->persist($sms);
+
+                            $this->logger
+                                ->setUser($systemUser)
+                                ->setDescription(
+                                    'Новая запись - Сообщение пользователя (id:' . $sms->getId()
+                                    . ') успешна создана.'
+                                )
+                                ->logCreateEvent();
                         }
                     }
                 }
             }
         }
+        $this->logger
+            ->setUser($systemUser)
+            ->setDescription('Команда - '. self::$defaultName . ' успешно выполнена.')
+            ->logSuccessEvent();
+
         $em->flush();
+
         return Command::SUCCESS; // TODO: При ошибки лог с ошибкой добавить
     }
 }

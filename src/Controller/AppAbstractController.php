@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\Template\TemplateService;
 use App\Services\TemplateItems\FilterTemplateItem;
@@ -33,6 +34,8 @@ abstract class AppAbstractController extends AbstractController
 
     /** @var string "new" type of form */
     protected const RESPONSE_FORM_TYPE_NEW = 'new';
+
+    const FOREIGN_KEY_ERROR = '23503';
 
     /** @var string[] Labels of filters */
     public const FILTER_LABELS = [
@@ -167,7 +170,7 @@ abstract class AppAbstractController extends AbstractController
      * @param FormInterface $form
      * @param string $formName
      * @param Closure|null $entityActions
-     *
+     * @param string|null $type
      * @return RedirectResponse|Response
      * @throws Exception
      */
@@ -176,7 +179,8 @@ abstract class AppAbstractController extends AbstractController
         object $entity,
         FormInterface $form,
         string $formName,
-        ?Closure $entityActions = null
+        ?Closure $entityActions = null,
+        string $type = null
     )
     {
         try {
@@ -210,7 +214,23 @@ abstract class AppAbstractController extends AbstractController
                         return $actionsResult;
                     }
                 }
+                $entityName = $this->templateService->getItem($type)->getContentValue('entity');
                 $entityManager->persist($entity);
+
+                switch ($type) {
+                    case 'new':
+                        (new LogService($entityManager))
+                            ->setUser($this->getUser())
+                            ->setDescription('Новая запись - '. $entityName .' (id:' . $entity->getId() . ') успешна создана.')
+                            ->logCreateEvent();
+                        break;
+                    case 'edit':
+                        (new LogService($entityManager))
+                            ->setUser($this->getUser())
+                            ->setDescription('Запись - '. $entityName .' (id:' . $entity->getId() . ') успешна обновлена.')
+                            ->logUpdateEvent();
+                        break;
+                }
                 $entityManager->flush();
             } catch (DBALException $e) {
                 $this->addFlash('error', 'Не удалось сохранить запись!');
@@ -370,7 +390,8 @@ abstract class AppAbstractController extends AbstractController
                     $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),])
             ),
             $formName,
-            $entityActions
+            $entityActions,
+            self::RESPONSE_FORM_TYPE_EDIT
         );
     }
 
@@ -412,7 +433,8 @@ abstract class AppAbstractController extends AbstractController
             $entity,
             $this->createForm($typeClass, $entity, $options),
             $formName,
-            $entityActions
+            $entityActions,
+            self::RESPONSE_FORM_TYPE_NEW
         );
     }
 
@@ -427,13 +449,19 @@ abstract class AppAbstractController extends AbstractController
      */
     public function responseDelete(Request $request, object $entity)
     {
+        $this->templateService->delete();
+        $entityName = $this->templateService->getItem('delete')->getContentValue('entity');
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             try {
+                (new LogService($entityManager))
+                    ->setUser($this->getUser())
+                    ->setDescription('Запись - '. $entityName .' (id:' . $entity->getId() . ') удалена.')
+                    ->logDeleteEvent();
                 $entityManager->remove($entity);
                 $entityManager->flush();
             } catch (DBALException $e) {
-                if ($e->getPrevious()->getCode() == 23503) {
+                if ($e->getPrevious()->getCode() == self::FOREIGN_KEY_ERROR) {
                     $this->addFlash(
                         'error',
                         'Запись не удалена! Удалите все дочерние элементы!'
