@@ -35,6 +35,8 @@ abstract class AppAbstractController extends AbstractController
     /** @var string "new" type of form */
     protected const RESPONSE_FORM_TYPE_NEW = 'new';
 
+    const FOREIGN_KEY_ERROR = '23503';
+
     /** @var string[] Labels of filters */
     public const FILTER_LABELS = [
         'ANALYSIS_GROUP' => 'analysisGroup',
@@ -459,7 +461,7 @@ abstract class AppAbstractController extends AbstractController
                 $entityManager->remove($entity);
                 $entityManager->flush();
             } catch (DBALException $e) {
-                if ($e->getPrevious()->getCode() == 23503) {
+                if ($e->getPrevious()->getCode() == self::FOREIGN_KEY_ERROR) {
                     $this->addFlash(
                         'error',
                         'Запись не удалена! Удалите все дочерние элементы!'

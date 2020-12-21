@@ -37,9 +37,6 @@ class GetSMSNotificationsCommand extends Command
     /** @var LogService */
     private $logger;
 
-    /** @var string */
-    private $systemUserPhone;
-
     /**
      * GetSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
@@ -47,15 +44,13 @@ class GetSMSNotificationsCommand extends Command
      * @param LogService $logger
      * @param array $smsParameters
      * @param array $phoneParameters
-     * @param string $systemUserPhone
      */
     public function __construct(
         ContainerInterface $container,
         SMSNotificationService $SMSNotificationService,
         LogService $logger,
         array $smsParameters,
-        array $phoneParameters,
-        string $systemUserPhone
+        array $phoneParameters
     ) {
         parent::__construct();
         $this->container = $container;
@@ -63,7 +58,6 @@ class GetSMSNotificationsCommand extends Command
         $this->logger = $logger;
         $this->smsParameters = $smsParameters;
         $this->phoneParameters = $phoneParameters;
-        $this->systemUserPhone = $systemUserPhone;
     }
 
     /**
@@ -89,6 +83,7 @@ class GetSMSNotificationsCommand extends Command
         $em = $this->container->get('doctrine')->getManager();
         $patients = $em->getRepository(Patient::class)->findAll();
         $smsCollection = $em->getRepository(PatientSMS::class)->findAll();
+        $systemUser = $em->getRepository(AuthUser::class)->getSystemUser();
 
         $result = $this->sms->getUnreadSMS();
         foreach ($result->MESSAGES->MESSAGE as $message) {
@@ -116,8 +111,11 @@ class GetSMSNotificationsCommand extends Command
                             $em->persist($sms);
 
                             $this->logger
-                                ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
-                                ->setDescription('Новая запись - Сообщение пользователя (id:' . $sms->getId() . ') успешна создана.')
+                                ->setUser($systemUser)
+                                ->setDescription(
+                                    'Новая запись - Сообщение пользователя (id:' . $sms->getId()
+                                    . ') успешна создана.'
+                                )
                                 ->logCreateEvent();
                         }
                     }
@@ -125,7 +123,7 @@ class GetSMSNotificationsCommand extends Command
             }
         }
         $this->logger
-            ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
+            ->setUser($systemUser)
             ->setDescription('Команда - '. self::$defaultName . ' успешно выполнена.')
             ->logSuccessEvent();
 

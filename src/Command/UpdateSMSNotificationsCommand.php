@@ -25,6 +25,9 @@ class UpdateSMSNotificationsCommand extends Command
     /** @var int Max attempts for resend sms */
     const MAX_ATTEMPTS = 1;
 
+    /** @var int Option to resend sms unlimited times */
+    const UNLIMITED_ATTEMPTS = false;
+
     /** @var ContainerInterface */
     private $container;
 
@@ -37,31 +40,24 @@ class UpdateSMSNotificationsCommand extends Command
     /** @var LogService */
     private $logger;
 
-    /** @var string */
-    private $systemUserPhone;
-
-
     /**
      * UpdateSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
      * @param SMSNotificationService $SMSNotificationService
      * @param LogService $logger
      * @param array $smsStatuses
-     * @param string $systemUserPhone
      */
     public function __construct(
         ContainerInterface $container,
         SMSNotificationService $SMSNotificationService,
         LogService $logger,
-        array $smsStatuses,
-        string $systemUserPhone
+        array $smsStatuses
     ) {
         parent::__construct();
         $this->container = $container;
         $this->sms = $SMSNotificationService;
         $this->logger = $logger;
         $this->smsStatuses = $smsStatuses;
-        $this->systemUserPhone = $systemUserPhone;
     }
 
     /**
@@ -107,7 +103,7 @@ class UpdateSMSNotificationsCommand extends Command
                         case $this->smsStatuses['wait']:
                             break;
                         case $this->smsStatuses['not_delivered']:
-                            if ($smsNotification->getAttemptCount() <= self::MAX_ATTEMPTS || self::MAX_ATTEMPTS == '-1') {
+                            if ($smsNotification->getAttemptCount() <= self::MAX_ATTEMPTS || self::UNLIMITED_ATTEMPTS) {
                                 $this->sms->resendSMS($smsNotification);
                             } else {
                                 $smsNotification->setStatus($this->smsStatuses['not_delivered']);
@@ -123,7 +119,7 @@ class UpdateSMSNotificationsCommand extends Command
             }
         }
         $this->logger
-            ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
+            ->setUser($em->getRepository(AuthUser::class)->getSystemUser())
             ->setDescription('Команда - '. self::$defaultName . ' успешно выполнена.')
             ->logSuccessEvent();
 
