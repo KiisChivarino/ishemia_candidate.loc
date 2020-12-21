@@ -11,7 +11,7 @@ use App\API\BEESMS;
  */
 class BeelineSMSProvider
 {
-    /** @var array */
+    /** @var array Параметры СМС */
     private $smsParameters;
 
     /** @var BEESMS Класс для работы с API Beeline SMS */
