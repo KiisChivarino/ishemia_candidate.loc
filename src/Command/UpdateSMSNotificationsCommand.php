@@ -46,6 +46,7 @@ class UpdateSMSNotificationsCommand extends Command
      * @param SMSNotificationService $SMSNotificationService
      * @param LogService $logger
      * @param array $smsStatuses
+     * @param string $systemUserPhone
      */
     public function __construct(
         ContainerInterface $container,
@@ -58,6 +59,7 @@ class UpdateSMSNotificationsCommand extends Command
         $this->sms = $SMSNotificationService;
         $this->logger = $logger;
         $this->smsStatuses = $smsStatuses;
+        $this->systemUserPhone = $systemUserPhone;
     }
 
     /**
@@ -107,11 +109,31 @@ class UpdateSMSNotificationsCommand extends Command
                                 $this->sms->resendSMS($smsNotification);
                             } else {
                                 $smsNotification->setStatus($this->smsStatuses['not_delivered']);
+                                $this->logger
+                                    ->setUser(
+                                        $em->getRepository(AuthUser::class)->findOneBy(
+                                            ['phone' => $this->systemUserPhone]
+                                        )
+                                    )
+                                    ->setDescription(
+                                        'SMS Уведомление (id:'. $smsNotification->getId() .
+                                        ') не доставлено (ошибка на стороне провайдера).'
+                                    )
+                                    ->logFailEvent();
                                 $em->persist($smsNotification);
                             }
                             break;
                         case $this->smsStatuses['failed']:
                             $smsNotification->setStatus($this->smsStatuses['failed']);
+                            $this->logger
+                                ->setUser(
+                                    $em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone])
+                                )
+                                ->setDescription(
+                                    'SMS Уведомление (id:'. $smsNotification->getId() .
+                                    ') не доставлено (неверный номер).'
+                                )
+                                ->logFailEvent();
                             $em->persist($smsNotification);
                             break;
                     }
