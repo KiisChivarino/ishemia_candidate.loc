@@ -157,6 +157,7 @@ class Patient
         $this->medicalHistories = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->patientSMS = new ArrayCollection();
+        $this->smsInforming = true;
     }
 
     /**
