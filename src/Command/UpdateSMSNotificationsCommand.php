@@ -107,13 +107,21 @@ class UpdateSMSNotificationsCommand extends Command
                         case $this->smsStatuses['wait']:
                             break;
                         case $this->smsStatuses['not_delivered']:
-                            if ($smsNotification->getAttemptCount() <= self::MAX_ATTEMPTS || self::MAX_ATTEMPTS == '-1') {
+                            if ($smsNotification->getAttemptCount() <= self::MAX_ATTEMPTS
+                                || self::MAX_ATTEMPTS == '-1') {
                                 $this->sms->resendSMS($smsNotification);
                             } else {
                                 $smsNotification->setStatus($this->smsStatuses['not_delivered']);
                                 $this->logger
-                                    ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
-                                    ->setDescription('SMS Уведомление (id:'. $smsNotification->getId() . ') не доставлено (ошибка на стороне провайдера).')
+                                    ->setUser(
+                                        $em->getRepository(AuthUser::class)->findOneBy(
+                                            ['phone' => $this->systemUserPhone]
+                                        )
+                                    )
+                                    ->setDescription(
+                                        'SMS Уведомление (id:'. $smsNotification->getId() .
+                                        ') не доставлено (ошибка на стороне провайдера).'
+                                    )
                                     ->logFailEvent();
                                 $em->persist($smsNotification);
                             }
@@ -121,8 +129,13 @@ class UpdateSMSNotificationsCommand extends Command
                         case $this->smsStatuses['failed']:
                             $smsNotification->setStatus($this->smsStatuses['failed']);
                             $this->logger
-                                ->setUser($em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]))
-                                ->setDescription('SMS Уведомление (id:'. $smsNotification->getId() . ') не доставлено (неверный номер).')
+                                ->setUser(
+                                    $em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone])
+                                )
+                                ->setDescription(
+                                    'SMS Уведомление (id:'. $smsNotification->getId() .
+                                    ') не доставлено (неверный номер).'
+                                )
                                 ->logFailEvent();
                             $em->persist($smsNotification);
                             break;
