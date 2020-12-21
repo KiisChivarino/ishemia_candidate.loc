@@ -14,7 +14,7 @@ class TimeRangeTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
         'rangeTitle' => 'Заголовок',
-        'dateInterval' => DateIntervalTemplateBuilder::ENTITY_CONTENT['dateInterval'],
+        'dateInterval' => DateIntervalTemplateBuilder::ENTITY_CONTENT['entity'],
         'multiplier' => 'Множитель',
         'isRegular' => 'Регулярно',
     ];
@@ -45,8 +45,9 @@ class TimeRangeTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common ENTITY_CONTENT */
     public const ENTITY_CONTENT = [
-        'timeRange' => 'Временной диапазон',
+        'entity' => 'Временной диапазон',
     ];
+
 
     /**
      * TimeRangeTemplate constructor.

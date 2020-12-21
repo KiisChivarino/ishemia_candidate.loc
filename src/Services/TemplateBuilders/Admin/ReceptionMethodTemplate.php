@@ -34,6 +34,11 @@ class ReceptionMethodTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование способа приема лекарства',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Способ приема лекарства',
+    ];
+
     /**
      * ReceptionMethodTemplate constructor.
      *

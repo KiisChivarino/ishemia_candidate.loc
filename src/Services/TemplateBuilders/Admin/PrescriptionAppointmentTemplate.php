@@ -26,7 +26,7 @@ class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'prescription' => 'Назначение',
         'patientAppointment' => 'Прием',
-        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
+        'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
         'plannedDateTime' => 'Дата и время приема по плану',
         'inclusionTime' => 'Дата и время включения назначения на прием в назначение',
         'confirmedByStaff' => 'Подтверждено врачом',
@@ -61,10 +61,17 @@ class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
         'prescriptionFilter' => 'Фильтр по назначению',
     ];
 
+    /** @var string[] Common FORM SHOW CONTENT */
     protected const FORM_SHOW_CONTENT = [
         'plannedTimeDateLabel' => 'Дата приема по плану',
         'plannedTimeTimeLabel' => 'Время приема по плану',
     ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Назначение на прием',
+    ];
+
     /**
      * PrescriptionAppointmentTemplate constructor.
      * @param RouteCollection $routeCollection

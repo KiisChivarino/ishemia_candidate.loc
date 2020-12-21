@@ -24,6 +24,12 @@ class CreateNewPatientTemplate extends DoctorOfficeTemplateBuilder
     public const FORM_CONTENT = [
         'inputMainDisease' => 'Свое название основного заболевания',
     ];
+
+    /** @var string[] Common ENTITY_CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => PatientTemplate::ENTITY_CONTENT['entity'],
+    ];
+
     /**
      * MedicalHistoryTemplate constructor.
      *

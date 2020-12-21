@@ -24,7 +24,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'prescription' => 'Назначение',
         'medicine' => 'Препарат',
-        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
+        'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -66,6 +66,11 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /** @var string[] Common filter content */
     protected const FILTER_CONTENT = [
         'prescriptionFilter' => 'Фильтр по назначению',
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Назначение лекарства',
     ];
 
     /**

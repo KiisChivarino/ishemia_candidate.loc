@@ -42,6 +42,11 @@ class MeasureTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование единицы измерения',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Единица измерения',
+    ];
+
     /**
      * MeasureTemplate constructor.
      *

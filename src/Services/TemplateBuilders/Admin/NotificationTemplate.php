@@ -66,6 +66,11 @@ class NotificationTemplate extends AdminTemplateBuilder
         'patientFilter' => 'Пациент'
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Уведомление',
+    ];
+
     /**
      * NotificationTemplate constructor.
      *

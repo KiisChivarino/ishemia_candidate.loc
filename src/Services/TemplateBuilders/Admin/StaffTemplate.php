@@ -51,10 +51,12 @@ class StaffTemplate extends AdminTemplateBuilder
         'title' => 'Изменение данных о сотруднике',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
-        'staff' => 'Врач',
+        'entity' => 'Врач',
         'staffFio' => 'ФИО врача',
     ];
+
 
     /**
      * CountryTemplate constructor.

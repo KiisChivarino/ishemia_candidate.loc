@@ -76,7 +76,12 @@ class PrescriptionTemplate extends AdminTemplateBuilder
     /** @var string[] Common FILTER_CONTENT */
     protected const FILTER_CONTENT = [
         'medicalHistory' => 'Фильтр по истории болезни',
-        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
+        'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Назначение',
     ];
 
     /**

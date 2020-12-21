@@ -35,8 +35,9 @@ class AppointmentTypeTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование вида приема',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
-        'appointmentType' => 'Вид приема',
+        'entity' => 'Вид приема',
     ];
 
     /**

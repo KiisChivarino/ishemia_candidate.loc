@@ -54,7 +54,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'analysisResultsLink' => 'Результаты анализов',
         'isByPlan' => 'По плану обследований',
         'planTesting' => 'План обследований',
-        'prescriptionTesting' => PrescriptionTestingTemplate::ENTITY_CONTENT['prescriptionTesting'],
+        'prescriptionTesting' => PrescriptionTestingTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /** @var string[] Common EDIT_CONTENT */
@@ -67,6 +67,11 @@ class PatientTestingTemplate extends AdminTemplateBuilder
     protected const FILTER_CONTENT = [
         'patient' => 'Фильтр по пациенту',
         'medicalHistory' => 'Фильтр по истории болезни',
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Анализ пациента',
     ];
 
     /**

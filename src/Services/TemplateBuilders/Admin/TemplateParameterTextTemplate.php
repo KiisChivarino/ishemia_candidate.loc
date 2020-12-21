@@ -55,8 +55,14 @@ class TemplateParameterTextTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование текста параметра шаблона',
     ];
 
+    /** @var string[] Common FILTER CONTENT */
     protected const FILTER_CONTENT = [
         'templateParameterFilter'=>'Фильтр по параметру шаблона',
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Текст параметра шаблона',
     ];
 
     /**

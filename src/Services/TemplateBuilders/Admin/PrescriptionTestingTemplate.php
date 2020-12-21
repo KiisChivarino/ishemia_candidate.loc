@@ -26,7 +26,7 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'prescription' => 'Назначение',
         'patientTesting' => 'Обследование',
-        'staff' => StaffTemplate::ENTITY_CONTENT['staff'],
+        'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
         'confirmedByStaff' => 'Подтверждено врачом',
         'plannedDate' => 'Запланировано',
     ];
@@ -58,14 +58,14 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
         'h1' => 'Редактирование назначения на обследование',
         'title' => 'Редактирование назначения на обследование',
     ];
-    /** @var string[] FILTER_CONTENT */
+    /** @var string[] Common FILTER_CONTENT */
     protected const FILTER_CONTENT = [
         'prescriptionFilter' => 'Фильтр по назначению',
     ];
 
-    /** @var string[] COMMON ENTITY CONTENT */
+    /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
-        'prescriptionTesting' => 'Назначение на обследование',
+        'entity' => 'Назначение на обследование',
     ];
 
     /**
