@@ -65,7 +65,7 @@ class Notification
     private $medicalHistory;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="notification")
+     * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="notifications")
      * @ORM\JoinColumn(nullable=true)
      */
     private $medicalRecord;
