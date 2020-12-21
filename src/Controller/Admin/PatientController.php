@@ -128,7 +128,7 @@ class PatientController extends AdminAbstractController
                     $authUserCreatorService->persistNewPatientAuthUser($authUser);
                     $em->flush();
                     $patientCreator
-                        ->persistPatient(
+                        ->persistNewPatient(
                             $patient, $authUser, $medicalHistory, $patientAppointment, $patientAppointment->getStaff()
                         );
                     $em->flush();
