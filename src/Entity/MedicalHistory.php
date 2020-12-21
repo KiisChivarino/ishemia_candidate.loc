@@ -112,6 +112,11 @@ class MedicalHistory
     private $clinicalDiagnosis;
 
     /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="medicalHistory", orphanRemoval=true,cascade={"persist"})
+     */
+    private $notification;
+
+    /**
      * MedicalHistory constructor.
      */
     public function __construct()
@@ -123,6 +128,7 @@ class MedicalHistory
         $this->backgroundDiseases = new ArrayCollection();
         $this->complications = new ArrayCollection();
         $this->concomitantDiseases = new ArrayCollection();
+        $this->notification = new ArrayCollection();
     }
 
     /**
@@ -562,6 +568,36 @@ class MedicalHistory
     public function setClinicalDiagnosis(string $clinicalDiagnosis): self
     {
         $this->clinicalDiagnosis = $clinicalDiagnosis;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotification(): Collection
+    {
+        return $this->notification;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notification->contains($notification)) {
+            $this->notification[] = $notification;
+            $notification->setMedicalHistory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notification->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getMedicalHistory() === $this) {
+                $notification->setMedicalHistory(null);
+            }
+        }
+
         return $this;
     }
 }

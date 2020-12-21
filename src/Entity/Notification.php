@@ -59,6 +59,18 @@ class Notification
     private $emailNotification;
 
     /**
+     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="notification")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $medicalHistory;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="notification")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $medicalRecord;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -205,6 +217,30 @@ class Notification
     public function setAuthUserSender(?AuthUser $authUserSender): self
     {
         $this->authUserSender = $authUserSender;
+        return $this;
+    }
+
+    public function getMedicalHistory(): ?MedicalHistory
+    {
+        return $this->medicalHistory;
+    }
+
+    public function setMedicalHistory(?MedicalHistory $medicalHistory): self
+    {
+        $this->medicalHistory = $medicalHistory;
+
+        return $this;
+    }
+
+    public function getMedicalRecord(): ?MedicalRecord
+    {
+        return $this->medicalRecord;
+    }
+
+    public function setMedicalRecord(?MedicalRecord $medicalRecord): self
+    {
+        $this->medicalRecord = $medicalRecord;
+
         return $this;
     }
 }

@@ -66,6 +66,11 @@ class MedicalRecord
     private $prescriptions;
 
     /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="medicalRecord", orphanRemoval=true,cascade={"persist"})
+     */
+    private $notification;
+
+    /**
      * MedicalRecord constructor.
      */
     public function __construct()
@@ -74,6 +79,7 @@ class MedicalRecord
         $this->patientAppointments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->prescriptions = new ArrayCollection();
+        $this->notification = new ArrayCollection();
     }
 
     /**
@@ -306,5 +312,13 @@ class MedicalRecord
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotification(): Collection
+    {
+        return $this->notification;
     }
 }
