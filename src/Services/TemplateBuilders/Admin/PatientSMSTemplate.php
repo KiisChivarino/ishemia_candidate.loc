@@ -153,7 +153,7 @@ class PatientSMSTemplate extends AdminTemplateBuilder
             );
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
-        $this->setRedirectRoute('sms_list');
+        $this->setRedirectRoute('patient_sms_list');
         return $this;
     }
 }
