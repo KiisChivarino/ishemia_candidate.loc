@@ -15,7 +15,7 @@ class PlanTestingTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'analysisGroup' => 'Группа анализов',
         'timeRangeCount' => 'Срок выполнения',
-        'timeRange' => TimeRangeTemplate::ENTITY_CONTENT['timeRange'],
+        'timeRange' => TimeRangeTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -47,7 +47,12 @@ class PlanTestingTemplate extends AdminTemplateBuilder
     ];
     /** @var string[] Common form_show content */
     protected const FORM_SHOW_CONTENT = [
-        'startingPoint' => StartingPointTemplate::ENTITY_CONTENT['startingPoint'],
+        'startingPoint' => StartingPointTemplate::ENTITY_CONTENT['entity'],
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Запланированное обследование',
     ];
 
     /**

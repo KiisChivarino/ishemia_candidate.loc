@@ -42,6 +42,11 @@ class CountryTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование страны',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Страна',
+    ];
+
     /**
      * CountryTemplate constructor.
      *

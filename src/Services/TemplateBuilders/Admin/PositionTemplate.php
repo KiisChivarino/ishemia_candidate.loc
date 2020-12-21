@@ -32,6 +32,11 @@ class PositionTemplate extends AdminTemplateBuilder
         'title' => 'Изменить должность',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Должность',
+    ];
+
     /**
      * CountryTemplate constructor.
      *

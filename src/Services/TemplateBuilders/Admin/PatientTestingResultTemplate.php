@@ -62,6 +62,11 @@ class PatientTestingResultTemplate extends AdminTemplateBuilder
         'patientTestingFilter' => 'Фильтр по обследованию пациента',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Результат анализа пациента',
+    ];
+
     /**
      * PatientTestingResultTemplate constructor.
      *

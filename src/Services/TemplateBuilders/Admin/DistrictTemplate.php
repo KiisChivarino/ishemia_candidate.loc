@@ -41,6 +41,11 @@ class DistrictTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование района',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Район',
+    ];
+
     /**
      * DistrictTemplate constructor.
      *

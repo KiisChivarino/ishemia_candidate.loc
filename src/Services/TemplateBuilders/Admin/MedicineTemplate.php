@@ -35,6 +35,11 @@ class MedicineTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование лекарства',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Лекарство',
+    ];
+
     /**
      * MedicineTemplate constructor.
      *

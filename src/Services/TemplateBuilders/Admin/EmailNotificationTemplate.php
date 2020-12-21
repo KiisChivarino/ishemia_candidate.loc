@@ -42,6 +42,10 @@ class EmailNotificationTemplate extends AdminTemplateBuilder
         'emailNotifications' => 'E-mail уведомления',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Email уведомление',
+    ];
 
     /**
      * CountryTemplate constructor.

@@ -44,6 +44,10 @@ class SMSNotificationTemplate extends AdminTemplateBuilder
         'emailNotifications' => 'SMS уведомления',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'СМС Уведомление',
+    ];
 
     /**
      * CountryTemplate constructor.

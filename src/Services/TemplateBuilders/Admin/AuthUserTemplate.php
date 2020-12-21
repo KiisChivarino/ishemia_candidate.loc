@@ -69,6 +69,11 @@ class AuthUserTemplate extends AdminTemplateBuilder
         'analysisGroupFilter' => 'Фильтр группы анализов',
     ];
 
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'Пользователь',
+    ];
+
     /**
      * CountryTemplate constructor.
      *

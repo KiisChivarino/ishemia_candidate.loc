@@ -58,8 +58,14 @@ class PatientSMSTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование SMS',
     ];
 
+    /** @var string[] Common FILTER CONTENT */
     protected const FILTER_CONTENT = [
         'patientFilter' => 'Пациент'
+    ];
+
+    /** @var string[] Common ENTITY CONTENT */
+    public const ENTITY_CONTENT = [
+        'entity' => 'СМС пациента',
     ];
 
     /**
