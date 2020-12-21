@@ -1,16 +1,16 @@
 parameters:
 # Параметры почты
   email_parameters:
-    account_name: 'lpvs@kvokka.com'
-    account_password: 'ipkh159fpos6'
-    smtp_host: 'smtp.yandex.ru'
-    smtp_port: 465
+    account_name: '%env(string:ACCOUNT_NAME)%'
+    account_password: '%env(string:ACCOUNT_PASSWORD)%'
+    smtp_host: '%env(string:SMTP_HOST)%'
+    smtp_port: '%env(int:SMTP_PORT)%'
     smtp_encryption: 'ssl'
 # Параметры компании
   sms_parameters:
     sender: '3303'
-    user: '775000'
-    password: 'Yandex10241024'
+    user: '%env(string:SMS_BEELINE_USER)%'
+    password: '%env(string:SMS_BEELINE_PASSWORD)%'
 # Параметры компании
   project_info:
     site_name: 'Медицина'
