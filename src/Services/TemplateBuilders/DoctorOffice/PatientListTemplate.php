@@ -110,10 +110,9 @@ class PatientListTemplate extends DoctorOfficeTemplateBuilder
                             'required' => false,
                             'choice_label' => 'name',
                             'label' => false,
-                            'attr' => ['class' => 'test'],
                             'query_builder' => function (HospitalRepository $er) {
-                                return $er->createQueryBuilder('d')
-                                    ->where('d.enabled = true');
+                                return $er->createQueryBuilder('h')
+                                    ->where('h.enabled = true');
                             },
                         ]
                     ),

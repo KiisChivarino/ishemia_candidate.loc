@@ -27,7 +27,7 @@ class PatientInfoService
      *
      * @return int
      */
-    static public function getAge(Patient $patient)
+    static public function getAge(Patient $patient): int
     {
         return (new DateTime())->diff($patient->getDateBirth())->y;
     }

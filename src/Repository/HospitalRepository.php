@@ -4,13 +4,15 @@ namespace App\Repository;
 
 use App\Entity\City;
 use App\Entity\Hospital;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Hospital|null find($id, $lockMode = null, $lockVersion = null)
+ * Class HospitalRepository
+ * * @method Hospital|null find($id, $lockMode = null, $lockVersion = null)
  * @method Hospital|null findOneBy(array $criteria, array $orderBy = null)
  * @method Hospital[]    findAll()
  * @method Hospital[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class HospitalRepository extends AppRepository
 {

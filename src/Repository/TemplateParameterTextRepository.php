@@ -6,10 +6,12 @@ use App\Entity\TemplateParameterText;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class TemplateParameterTextRepository
  * @method TemplateParameterText|null find($id, $lockMode = null, $lockVersion = null)
  * @method TemplateParameterText|null findOneBy(array $criteria, array $orderBy = null)
  * @method TemplateParameterText[]    findAll()
  * @method TemplateParameterText[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class TemplateParameterTextRepository extends AppRepository
 {

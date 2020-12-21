@@ -5,7 +5,6 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Entity\Hospital;
 use App\Entity\Patient;
-use App\Entity\PatientTesting;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
@@ -29,7 +28,7 @@ class DelayDataTableService extends AdminDatatableService
      *
      * @return DataTable
      */
-    public function getTable(?Hospital $hospital = null)
+    public function getTable(?Hospital $hospital = null): DataTable
     {
         $patientInfoService = new PatientInfoService();
         $this->addSerialNumber();
@@ -58,15 +57,6 @@ class DelayDataTableService extends AdminDatatableService
                     }
                 ]
             )
-//            ->add(
-//                'gestationAge', TextColumn::class, [
-//                    'label' => 'Недель',
-//                    'className' => 'vertical',
-//                    'data' => function ($value) use ($patientInfoService) {
-//                        return $patientInfoService->getGestationWeeks($value->getDateStartOfTreatment());
-//                    }
-//                ]
-//            )
             ->add(
                 'diagnoses', TextColumn::class, [
                     'label' => 'Диагнозы',
@@ -80,20 +70,20 @@ class DelayDataTableService extends AdminDatatableService
                     'raw' => true
                 ]
             )
-            ->add(
-                'unprocessedTestings', TextColumn::class, [
-                    'label' => 'Показатели',
-                    'data' => function ($value) use ($patientInfoService) {
-                        $unprocessedTestings = '';
-                        /** @var PatientTesting $testing */
-                        foreach ($patientInfoService->getUnprocessedTestings($value) as $testing) {
-                            $unprocessedTestings .= $testing->getAnalysisGroup()->getName().'<br/>';
-                        }
-                        return $unprocessedTestings;
-                    },
-                    'raw' => true
-                ]
-            )
+//            ->add(
+//                'unprocessedTestings', TextColumn::class, [
+//                    'label' => 'Показатели',
+//                    'data' => function ($value) use ($patientInfoService) {
+//                        $unprocessedTestings = '';
+//                        /** @var PatientTesting $testing */
+//                        foreach ($patientInfoService->getUnprocessedTestings($value) as $testing) {
+//                            $unprocessedTestings .= $testing->getAnalysisGroup()->getName().'<br/>';
+//                        }
+//                        return $unprocessedTestings;
+//                    },
+//                    'raw' => true
+//                ]
+//            )
             ->createAdapter(
                 ORMAdapter::class, [
                     'entity' => Patient::class,

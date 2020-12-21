@@ -28,7 +28,7 @@ class TemplateItemsFactory
      *
      * @return array
      */
-    public function getListTemplateItems()
+    public function getListTemplateItems(): array
     {
         return [
             new ListTemplateItem($this->templateService),
@@ -46,7 +46,7 @@ class TemplateItemsFactory
      *
      * @return array
      */
-    public function getShowTemplateItems()
+    public function getShowTemplateItems(): array
     {
         return [
             new ShowTemplateItem($this->templateService),
@@ -62,7 +62,7 @@ class TemplateItemsFactory
      *
      * @return array
      */
-    public function getNewTemplateItems()
+    public function getNewTemplateItems(): array
     {
         return [
             new NewTemplateItem($this->templateService),
@@ -77,7 +77,7 @@ class TemplateItemsFactory
      *
      * @return array
      */
-    public function getEditTemplateItems()
+    public function getEditTemplateItems(): array
     {
         return [
             new EditTemplateItem($this->templateService),

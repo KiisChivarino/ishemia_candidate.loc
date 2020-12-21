@@ -46,6 +46,7 @@ class PlanAppointmentController extends AdminAbstractController
      * @param PlanAppointmentDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, PlanAppointmentDataTableService $dataTableService): Response
     {
@@ -73,6 +74,7 @@ class PlanAppointmentController extends AdminAbstractController
      * @param PlanAppointment $planAppointment
      *
      * @return Response
+     * @throws Exception
      */
     public function show(PlanAppointment $planAppointment): Response
     {
@@ -98,6 +100,7 @@ class PlanAppointmentController extends AdminAbstractController
      * @param PlanAppointment $planAppointment
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PlanAppointment $planAppointment): Response
     {

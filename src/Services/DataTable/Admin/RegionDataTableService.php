@@ -7,6 +7,7 @@ use App\Entity\Region;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -24,6 +25,7 @@ class RegionDataTableService extends AdminDatatableService
      * @param ListTemplateItem $listTemplateItem
      *
      * @return DataTable
+     * @throws Exception
      */
     public function getTable(
         Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem
@@ -37,7 +39,9 @@ class RegionDataTableService extends AdminDatatableService
                         /** @var Country $country */
                         $country = $region->getCountry();
                         return
-                            $country ? $this->getLink($country->getName(), $country->getId(), 'country_show') : '';
+                            $country
+                                ? $this->getLink($country->getName(), $country->getId(), 'country_show')
+                                : '';
                     },
                 ]
             )
@@ -45,7 +49,9 @@ class RegionDataTableService extends AdminDatatableService
                 'name', TextColumn::class, ['label' => $listTemplateItem->getContentValue('name')]
             )
             ->add(
-                'region_number', TextColumn::class, ['label' => $listTemplateItem->getContentValue('region_number')]
+                'region_number', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('region_number')
+                ]
             );
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);

@@ -4,7 +4,6 @@ namespace App\Services\InfoService;
 
 use App\Entity\AuthUser;
 use App\Entity\Role;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class AuthUserInfoService
@@ -41,31 +40,6 @@ class AuthUserInfoService
     }
 
     /**
-     * Устанавливает новый пароль пользователю, если он введен
-     *
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param AuthUser $authUser
-     * @param string $oldPassword
-     */
-    static public function updatePassword(
-        UserPasswordEncoderInterface $passwordEncoder,
-        AuthUser $authUser,
-        string $oldPassword
-    ): void
-    {
-        $newPassword = $authUser->getPassword();
-        $authUser->setPassword($oldPassword);
-        if ($newPassword) {
-
-            // See https://symfony.com/doc/current/security.html#c-encoding-passwords
-            $encodedPassword = $passwordEncoder->encodePassword($authUser, $newPassword);
-            if ($encodedPassword !== $oldPassword) {
-                $authUser->setPassword($newPassword);
-            }
-        }
-    }
-
-    /**
      * Возвращает роли пользователя строкой через запятую
      *
      * @param Role[] $roles
@@ -89,7 +63,7 @@ class AuthUserInfoService
      *
      * @return string
      */
-    static public function clearUserPhone(string $phone)
+    static public function clearUserPhone(string $phone): string
     {
         return preg_replace('/[^0-9]/', '', ltrim($phone, '+7'));
     }
@@ -101,7 +75,7 @@ class AuthUserInfoService
      *
      * @return string
      */
-    static public function getPhone(AuthUser $authUser)
+    static public function getPhone(AuthUser $authUser): string
     {
         $phone = $authUser->getPhone();
         return
@@ -113,7 +87,8 @@ class AuthUserInfoService
     /**
      * @return string
      */
-    static public function randomPassword() {
+    static public function randomPassword(): string
+    {
         $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789(_).,!$%^&*+-=";
         $pass = array(); //remember to declare $pass as an array
         $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache

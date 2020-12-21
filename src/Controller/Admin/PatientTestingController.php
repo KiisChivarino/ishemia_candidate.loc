@@ -64,6 +64,7 @@ class PatientTestingController extends AdminAbstractController
      * @param PatientTestingDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -93,7 +94,6 @@ class PatientTestingController extends AdminAbstractController
      * @param FileService $fileService
      * @param PatientTestingResultsCreatorService $patientTestingResultsCreator
      * @return Response
-     * @throws ReflectionException
      * @throws Exception
      */
     public function new(
@@ -148,6 +148,7 @@ class PatientTestingController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function show(PatientTesting $patientTesting, FilterService $filterService): Response
     {
@@ -213,6 +214,7 @@ class PatientTestingController extends AdminAbstractController
      * @param PatientTesting $patientTesting
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, PatientTesting $patientTesting): Response
     {

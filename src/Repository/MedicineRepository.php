@@ -3,13 +3,15 @@
 namespace App\Repository;
 
 use App\Entity\Medicine;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Medicine|null find($id, $lockMode = null, $lockVersion = null)
+ * Class MedicineRepository
+ * * @method Medicine|null find($id, $lockMode = null, $lockVersion = null)
  * @method Medicine|null findOneBy(array $criteria, array $orderBy = null)
  * @method Medicine[]    findAll()
  * @method Medicine[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class MedicineRepository extends AppRepository
 {

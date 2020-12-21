@@ -46,6 +46,7 @@ class MedicineController extends AdminAbstractController
      * @param MedicineDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, MedicineDataTableService $dataTableService): Response
     {
@@ -73,6 +74,7 @@ class MedicineController extends AdminAbstractController
      * @param Medicine $medicine
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Medicine $medicine): Response
     {
@@ -102,6 +104,7 @@ class MedicineController extends AdminAbstractController
      * @param Medicine $medicine
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Medicine $medicine): Response
     {

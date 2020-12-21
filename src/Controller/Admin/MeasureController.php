@@ -47,6 +47,7 @@ class MeasureController extends AdminAbstractController
      * @param MeasureDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, MeasureDataTableService $dataTableService): Response
     {
@@ -81,6 +82,7 @@ class MeasureController extends AdminAbstractController
      * @param Measure $measure
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Measure $measure): Response
     {
@@ -110,6 +112,7 @@ class MeasureController extends AdminAbstractController
      * @param Measure $measure
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Measure $measure): Response
     {

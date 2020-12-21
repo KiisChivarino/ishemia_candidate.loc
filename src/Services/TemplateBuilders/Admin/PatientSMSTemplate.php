@@ -13,6 +13,7 @@ use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -87,7 +88,7 @@ class PatientSMSTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return $this|AdminTemplateBuilder
-     * @throws \Exception
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {

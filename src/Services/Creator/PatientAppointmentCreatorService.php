@@ -75,7 +75,8 @@ class PatientAppointmentCreatorService
      * @param PlanAppointment|null $planAppointment
      * @return PatientAppointment
      */
-    public function createPatientAppointment(MedicalHistory $medicalHistory, PlanAppointment $planAppointment = null){
+    public function createPatientAppointment(MedicalHistory $medicalHistory, PlanAppointment $planAppointment = null): PatientAppointment
+    {
         return (new PatientAppointment())
             ->setMedicalHistory($medicalHistory)
             ->setEnabled(true)

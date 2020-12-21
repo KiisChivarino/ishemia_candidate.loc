@@ -5,7 +5,6 @@ namespace App\Form\Admin;
 use App\Controller\AppAbstractController;
 use App\Entity\Notification;
 use App\Entity\Staff;
-use App\Repository\NotificationTypeRepository;
 use App\Repository\StaffRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
@@ -33,17 +32,6 @@ class NotificationType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add(
-                'notificationType', EntityType::class, [
-                    'label' => $templateItem->getContentValue('notificationType'),
-                    'class' => \App\Entity\NotificationType::class,
-                    'choice_label' => 'name',
-                    'query_builder' => function (NotificationTypeRepository $er) {
-                        return $er->createQueryBuilder('nt')
-                            ->where('nt.enabled = true');
-                    },
-                ]
-            )
             ->add(
                 'text', null, [
                     'label' => $templateItem->getContentValue('text'),

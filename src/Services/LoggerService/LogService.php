@@ -211,7 +211,7 @@ class LogService
     /**
      * @return LogService
      */
-    public function getError()
+    public function getError(): LogService
     {
         return $this->error;
     }

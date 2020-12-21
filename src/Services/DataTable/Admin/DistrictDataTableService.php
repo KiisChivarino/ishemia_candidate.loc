@@ -7,6 +7,7 @@ use App\Entity\Region;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -26,6 +27,7 @@ class DistrictDataTableService extends AdminDatatableService
      * @param ListTemplateItem $listTemplateItem
      *
      * @return DataTable
+     * @throws Exception
      */
     public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem): DataTable
     {

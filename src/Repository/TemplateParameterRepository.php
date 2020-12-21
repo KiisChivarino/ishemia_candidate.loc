@@ -6,10 +6,12 @@ use App\Entity\TemplateParameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class TemplateParameterRepository
  * @method TemplateParameter|null find($id, $lockMode = null, $lockVersion = null)
  * @method TemplateParameter|null findOneBy(array $criteria, array $orderBy = null)
  * @method TemplateParameter[]    findAll()
  * @method TemplateParameter[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class TemplateParameterRepository extends AppRepository
 {
@@ -20,18 +22,5 @@ class TemplateParameterRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TemplateParameter::class);
-    }
-
-    /**
-     * @param $value
-     * @return int|mixed|string
-     */
-    public function findById($value)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.id = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getResult();
     }
 }

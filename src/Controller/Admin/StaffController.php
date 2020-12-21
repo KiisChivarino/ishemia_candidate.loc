@@ -10,6 +10,7 @@ use App\Form\Admin\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\Staff\StaffRoleType;
 use App\Form\Admin\StaffType;
 use App\Services\ControllerGetters\EntityActions;
+use App\Services\Creator\AuthUserCreatorService;
 use App\Services\DataTable\Admin\StaffDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
@@ -67,6 +68,7 @@ class StaffController extends AdminAbstractController
      * @param StaffDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, StaffDataTableService $dataTableService): Response
     {
@@ -148,6 +150,7 @@ class StaffController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Staff $staff, FilterService $filterService): Response
     {
@@ -188,7 +191,7 @@ class StaffController extends AdminAbstractController
                 new FormData($staff, StaffType::class),
             ],
             function () use ($authUser, $oldPassword, $staff) {
-                $this->editPassword($this->passwordEncoder, $authUser, $oldPassword);
+                AuthUserCreatorService::updatePassword($this->passwordEncoder, $authUser, $oldPassword);
                 $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
             }
         );
@@ -202,6 +205,7 @@ class StaffController extends AdminAbstractController
      * @param Staff $staff
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Staff $staff): Response
     {

@@ -8,6 +8,7 @@ use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\NotificationDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\NotificationTemplate;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +44,7 @@ class NotificationController extends AdminAbstractController
      * @param NotificationDataTableService $notificationDataTableService
      * @param FilterService $filterService
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -63,6 +65,7 @@ class NotificationController extends AdminAbstractController
      * @param Notification $notification
      * @param FilterService $filterService
      * @return Response
+     * @throws Exception
      */
     public function show(Notification $notification, FilterService $filterService): Response
     {

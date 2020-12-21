@@ -41,7 +41,7 @@ class AppExtension extends AbstractExtension
     /**
      * @return array|TwigFunction[]
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -207,7 +207,7 @@ class AppExtension extends AbstractExtension
      * @param PrescriptionTesting $prescriptionTesting
      * @return string
      */
-    public function getPrescriptionTestingTitle(PrescriptionTesting $prescriptionTesting)
+    public function getPrescriptionTestingTitle(PrescriptionTesting $prescriptionTesting): string
     {
         return PrescriptionTestingInfoService::getPrescriptionTestingTitle($prescriptionTesting);
     }
@@ -217,7 +217,7 @@ class AppExtension extends AbstractExtension
      * @param AnalysisRate $analysisRate
      * @return string
      */
-    public function getAnalysisRateTitle(AnalysisRate $analysisRate)
+    public function getAnalysisRateTitle(AnalysisRate $analysisRate): string
     {
         return AnalysisRateInfoService::getAnalysisRateInfoString($analysisRate);
     }
@@ -227,7 +227,8 @@ class AppExtension extends AbstractExtension
      * @param PatientTesting $patientTesting
      * @return bool
      */
-    public function isEmptyPatientTestingResults(PatientTesting $patientTesting){
+    public function isEmptyPatientTestingResults(PatientTesting $patientTesting): bool
+    {
         return PatientTestingInfoService::isEmptyPatientTestingResults($patientTesting);
     }
 }

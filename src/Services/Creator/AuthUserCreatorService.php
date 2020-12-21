@@ -38,9 +38,9 @@ class AuthUserCreatorService
      * @param AuthUser $authUser
      * @return AuthUser
      */
-    public function persistAuthUser(AuthUser $authUser): AuthUser
+    public function persistNewPatientAuthUser(AuthUser $authUser): AuthUser
     {
-        $this->prepareAuthUser($authUser);
+        $this->prepareNewPatientAuthUser($authUser);
         $this->entityManager->persist($authUser);
         return $authUser;
     }
@@ -57,7 +57,7 @@ class AuthUserCreatorService
      * @param AuthUser $authUser
      * @return AuthUser
      */
-    public function prepareAuthUser(AuthUser $authUser): AuthUser
+    public function prepareNewPatientAuthUser(AuthUser $authUser): AuthUser
     {
         return $authUser
             ->setEnabled(true)
@@ -68,5 +68,43 @@ class AuthUserCreatorService
             )
             ->setRoles(self::PATIENT_ROLE)
             ->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
+    }
+
+    /**
+     * Редактирует пользователя
+     * @param AuthUser $authUser
+     * @param string $oldPassword
+     * @return AuthUser
+     */
+    public function updateAuthUser(AuthUser $authUser, string $oldPassword): AuthUser
+    {
+        $this->updatePassword($this->passwordEncoder, $authUser, $oldPassword);
+        $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
+        $authUser->setRoles($authUser->getRoles()[0]);
+        $this->entityManager->persist($authUser);
+        return $authUser;
+    }
+
+    /**
+     * Устанавливает новый пароль пользователю, если он введен
+     *
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param AuthUser $authUser
+     * @param string $oldPassword
+     */
+    public static function updatePassword(
+        UserPasswordEncoderInterface $passwordEncoder,
+        AuthUser $authUser,
+        string $oldPassword
+    ): void
+    {
+        $newPassword = $authUser->getPassword();
+        $authUser->setPassword($oldPassword);
+        if ($newPassword !== null) {
+            $encodedPassword = $passwordEncoder->encodePassword($authUser, $newPassword);
+            if ($encodedPassword !== $oldPassword) {
+                $authUser->setPassword($encodedPassword);
+            }
+        }
     }
 }

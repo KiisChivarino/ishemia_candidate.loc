@@ -5,6 +5,7 @@ namespace App\Form\Admin;
 use App\Controller\AppAbstractController;
 use App\Entity\Role;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,6 +21,7 @@ class RoleType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

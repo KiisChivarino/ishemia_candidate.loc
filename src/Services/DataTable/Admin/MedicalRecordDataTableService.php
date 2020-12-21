@@ -9,6 +9,7 @@ use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
@@ -28,6 +29,7 @@ class MedicalRecordDataTableService extends AdminDatatableService
      * @param array $filters
      *
      * @return DataTable
+     * @throws Exception
      */
     public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
     {

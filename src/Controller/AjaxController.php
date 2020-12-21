@@ -127,7 +127,8 @@ class AjaxController extends AbstractController
      * @param AnalysisGroupRepository $analysisGroupRepository
      * @return JsonResponse
      */
-    public function findAnalysisGroupAjax(Request $request, AnalysisGroupRepository $analysisGroupRepository){
+    public function findAnalysisGroupAjax(Request $request, AnalysisGroupRepository $analysisGroupRepository): JsonResponse
+    {
         return $this->responseAjaxResult(
             $analysisGroupRepository->findAnalysisGroups(
                 $request->query->get(self::JSON_PARAMETER_KEY)

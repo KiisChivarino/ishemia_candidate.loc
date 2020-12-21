@@ -6,6 +6,7 @@ use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\LogDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\LogTemplate;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,6 +43,7 @@ class LogController extends AdminAbstractController
      * @param LogDataTableService $logDataTableService
      * @param FilterService $filterService
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, LogDataTableService $logDataTableService, FilterService $filterService): Response
     {

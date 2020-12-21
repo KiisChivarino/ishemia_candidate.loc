@@ -66,6 +66,7 @@ class MedicalHistoryController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(
         Request $request,
@@ -103,6 +104,7 @@ class MedicalHistoryController extends AdminAbstractController
      *
      * @param PrescriptionRepository $prescriptionRepository
      * @return Response
+     * @throws Exception
      */
     public function show(
         MedicalHistory $medicalHistory,
@@ -199,6 +201,7 @@ class MedicalHistoryController extends AdminAbstractController
      * @param MedicalHistory $medicalHistory
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, MedicalHistory $medicalHistory): Response
     {

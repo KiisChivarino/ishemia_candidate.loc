@@ -92,7 +92,8 @@ class MultiFormService
      * @param int|null $postfix
      * @return string
      */
-    public static function addFormPostfix(string $formName, ?int $postfix = null){
+    public static function addFormPostfix(string $formName, ?int $postfix = null): string
+    {
         $formName .= $postfix ? '_' .(string)$postfix : '';
         return $formName;
     }

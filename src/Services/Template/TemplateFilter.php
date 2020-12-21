@@ -103,7 +103,7 @@ class TemplateFilter
     }
 
     /**
-     * @param string $filterName
+     * @param string|null $filterName
      *
      * @return $this
      */

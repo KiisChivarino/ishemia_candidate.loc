@@ -18,7 +18,7 @@ class PatientAppointmentInfoService
      * @param PatientAppointment $patientAppointment
      * @return string
      */
-    static public function getPatientAppointmentInfoString(PatientAppointment $patientAppointment)
+    static public function getPatientAppointmentInfoString(PatientAppointment $patientAppointment): string
     {
         $patientInfo = 'Пациент: '
             . AuthUserInfoService::getFIO(

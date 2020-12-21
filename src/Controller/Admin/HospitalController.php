@@ -47,6 +47,7 @@ class HospitalController extends AdminAbstractController
      * @param HospitalDataTableService $dataTableService
      *
      * @return Response
+     * @throws Exception
      */
     public function list(Request $request, HospitalDataTableService $dataTableService): Response
     {
@@ -74,6 +75,7 @@ class HospitalController extends AdminAbstractController
      * @param Hospital $hospital
      *
      * @return Response
+     * @throws Exception
      */
     public function show(Hospital $hospital): Response
     {
@@ -103,6 +105,7 @@ class HospitalController extends AdminAbstractController
      * @param Hospital $hospital
      *
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request, Hospital $hospital): Response
     {

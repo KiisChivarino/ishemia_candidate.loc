@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\AuthUser;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
@@ -21,7 +20,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Twig\Environment;
 
 /**
@@ -115,7 +113,6 @@ abstract class AppAbstractController extends AbstractController
         if ($table->isCallback()) {
             return $table->getResponse();
         }
-        $entityName = $this->templateService->getItem('list')->getContentValue('entity');
         return $this->render(
             $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath() . 'list.html.twig',
             [
@@ -160,7 +157,6 @@ abstract class AppAbstractController extends AbstractController
     {
         $this->templateService->show($entity);
         $parameters['entity'] = $entity;
-        $entityName = $this->templateService->getItem('show')->getContentValue('entity');
         return $this->render($templatePath . 'show.html.twig', $parameters);
     }
 
@@ -193,10 +189,16 @@ abstract class AppAbstractController extends AbstractController
                 'Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...'
             );
             return $this->render(
-                $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                $this->templateService->getTemplateFullName(
+                    $formName,
+                    $this->getParameter('kernel.project_dir')),
                 [
                     'entity' => $entity,
                     'form' => $form->createView(),
+                    'filters' =>
+                        $this->templateService
+                            ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                            ->getFiltersViews(),
                 ]
             );
         }
@@ -274,32 +276,6 @@ abstract class AppAbstractController extends AbstractController
     }
 
     /**
-     * Edit password for AuthUser
-     *
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param AuthUser $authUser
-     * @param string $oldPassword
-     *
-     * @return AuthUser
-     */
-    protected function editPassword(
-        UserPasswordEncoderInterface $passwordEncoder,
-        AuthUser $authUser,
-        string $oldPassword
-    ): AuthUser
-    {
-        $newPassword = $authUser->getPassword();
-        $authUser->setPassword($oldPassword);
-        if ($newPassword) {
-            $encodedPassword = $passwordEncoder->encodePassword($authUser, $newPassword);
-            if ($encodedPassword !== $oldPassword) {
-                $authUser->setPassword($encodedPassword);
-            }
-        }
-        return $authUser;
-    }
-
-    /**
      * Response edit form using multi form formBuilder
      *
      * @param Request $request
@@ -329,7 +305,6 @@ abstract class AppAbstractController extends AbstractController
                 self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
             ]
         );
-        $entityName =$this->templateService->getItem('edit')->getContentValue('entity');
         return $this->responseFormTemplate(
             $request,
             $entity,
@@ -371,7 +346,6 @@ abstract class AppAbstractController extends AbstractController
                 self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
             ]
         );
-        $entityName = $this->templateService->getItem('new')->getContentValue('entity');
         return $this->responseFormTemplate(
             $request,
             $entity,
