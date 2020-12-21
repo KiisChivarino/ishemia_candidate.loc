@@ -54,9 +54,6 @@ class SMSNotificationService
     /** @var LogService */
     private $logger;
 
-    /** @var AuthUser */
-    private $user;
-
     /** @var BeelineSMSProvider */
     private $beelineSMSProvider;
 
@@ -202,7 +199,7 @@ class SMSNotificationService
                     ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
                     ->format($this->timeFormats['besms']))
                 ->setDateTimeEnd((new DateTime('now'))->format($this->timeFormats['besms']))
-                ->check()
+                ->getMessages()
         );
     }
 
