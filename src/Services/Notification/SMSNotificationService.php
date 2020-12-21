@@ -7,6 +7,7 @@ use App\Entity\AuthUser;
 use App\Entity\Patient;
 use App\Entity\SMSNotification;
 use App\Services\LoggerService\LogService;
+use App\Services\SMSProviders\BeelineSMSProvider;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -56,11 +57,21 @@ class SMSNotificationService
     /** @var AuthUser */
     private $user;
 
+    /** @var BeelineSMSProvider */
+    private $beelineSMSProvider;
+
+    /** @var string */
+    private $provider;
+
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
      * @param LogService $logService
      * @param TokenStorageInterface $tokenStorage
+     * @param BeelineSMSProvider $beelineSMSProvider
      * @param array $smsParameters
      * @param array $smsStatuses
      * @param array $smsUpdateTimes
@@ -72,6 +83,7 @@ class SMSNotificationService
         EntityManagerInterface $em,
         LogService $logService,
         TokenStorageInterface $tokenStorage,
+        BeelineSMSProvider $beelineSMSProvider,
         array $smsParameters,
         array $smsStatuses,
         array $smsUpdateTimes,
@@ -81,61 +93,31 @@ class SMSNotificationService
     ) {
         $this->em = $em;
         $this->logger = $logService;
-        $this->user = $tokenStorage->getToken()->getUser();
+        $this->tokenStorage = $tokenStorage;
+        $this->beelineSMSProvider = $beelineSMSProvider;
         $this->smsParameters = $smsParameters;
         $this->smsStatuses = $smsStatuses;
         $this->smsUpdateTimes = $smsUpdateTimes;
         $this->phoneParameters = $phoneParameters;
         $this->timeFormats = $timeFormats;
         $this->systemUserPhone = $systemUserPhone;
-        $this->sms = new BEESMS($this->smsParameters['user'], $this->smsParameters['password']);
-    }
-
-    /**
-     * Send SMS
-     * @param string $text
-     * @param string $target
-     * @return false|string
-     */
-    private function send(string $text, string $target): string
-    {
-        return $this->sms->post_message($text, $target, $this->smsParameters['sender']);
-    }
-
-    /**
-     * Check SMS form server
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @return string
-     */
-    private function check(string $dateFrom, string $dateTo): string
-    {
-        return $this->sms->status_sms_date($dateFrom, $dateTo);
-    }
-
-    /**
-     * Get SMS form inbox
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @return string
-     */
-    private function getMessages(string $dateFrom, string $dateTo): string
-    {
-        return $this->sms->status_inbox(false,0,$dateFrom,$dateTo);
     }
 
     /**
      * SMS Sender and result parser
-     * @return SMSNotification
+     * @return mixed
      */
-    public function sendSMS(): SMSNotification
+    public function sendSMS()
     {
-        $result = new SimpleXMLElement(
-            $this->send(
-                $this->text,
-                $this->phoneParameters['phone_prefix_ru'] . $this->patient->getAuthUser()->getPhone()
-            )
-        );
+        $result = null;
+        switch ($this->provider) {
+            case 'Beeline':
+                $result = $this->sendBeelineSMS();
+                break;
+        }
+        if (is_null($result)) {
+            return false;
+        }
         $sMSNotification = new SMSNotification();
         $sMSNotification->setSmsPatientRecipientPhone($this->patient->getAuthUser()->getPhone());
         $sMSNotification->setStatus($this->smsStatuses['wait']);
@@ -143,11 +125,27 @@ class SMSNotificationService
 
         $this->em->persist($sMSNotification);
         $this->logger
-            ->setUser($this->user)
+            ->setUser($this->tokenStorage->getToken()->getUser())
             ->setDescription('Сущность - CМC Уведомление (id:'.$sMSNotification->getId().') успешно создана.')
             ->logSuccessEvent();
 
         return $sMSNotification;
+    }
+
+    /**
+     * SMS Sender and result parser
+     * @return SimpleXMLElement
+     */
+    public function sendBeelineSMS(): SimpleXMLElement
+    {
+        return new SimpleXMLElement(
+            $this->beelineSMSProvider
+                ->setText($this->text)
+                ->setTarget(
+                    $this->phoneParameters['phone_prefix_ru'] . $this->patient->getAuthUser()->getPhone()
+                )
+                ->send()
+        );
     }
 
     /**
@@ -158,11 +156,13 @@ class SMSNotificationService
     public function reSendSMS(SMSNotification $sMSNotification): bool
     {
         $result = new SimpleXMLElement(
-            $this->send(
-                $sMSNotification->getNotification()->getText(),
-                $this->phoneParameters['phone_prefix_ru'] .
-                    $sMSNotification->getNotification()->getPatient()->getAuthUser()->getPhone()
-            )
+            $this->beelineSMSProvider
+                ->setText($sMSNotification->getNotification()->getText())
+                ->setTarget(
+                    $this->phoneParameters['phone_prefix_ru'] .
+                        $sMSNotification->getNotification()->getPatient()->getAuthUser()->getPhone()
+                )
+                ->send()
         );
         $sMSNotification->setExternalId((string)$result->result->sms['id']);
         $sMSNotification->setAttemptCount((int)$sMSNotification->getAttemptCount() + 1);
@@ -179,12 +179,14 @@ class SMSNotificationService
      */
     public function checkSMS(): SimpleXMLElement
     {
-        return new SimpleXMLElement($this->check(
-            (new DateTime('now'))
-                ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_update'] . 'H'))
-                ->format($this->timeFormats['besms']),
-            (new DateTime('now'))->format($this->timeFormats['besms'])
-        ));
+        return new SimpleXMLElement(
+            $this->beelineSMSProvider
+                ->setDateFrom((new DateTime('now'))
+                    ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_update'] . 'H'))
+                    ->format($this->timeFormats['besms']))
+                ->setDateTo((new DateTime('now'))->format($this->timeFormats['besms']))
+                ->check()
+        );
     }
 
     /**
@@ -194,12 +196,14 @@ class SMSNotificationService
      */
     public function getUnreadSMS(): SimpleXMLElement
     {
-        return new SimpleXMLElement($this->getMessages(
-            (new DateTime('now'))
-                ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
-                ->format($this->timeFormats['besms']),
-            (new DateTime('now'))->format($this->timeFormats['besms'])
-        ));
+        return new SimpleXMLElement(
+            $this->beelineSMSProvider
+                ->setDateFrom((new DateTime('now'))
+                    ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
+                    ->format($this->timeFormats['besms']))
+                ->setDateTo((new DateTime('now'))->format($this->timeFormats['besms']))
+                ->check()
+        );
     }
 
     /**
@@ -219,6 +223,16 @@ class SMSNotificationService
     public function setPatient(Patient $patient): SMSNotificationService
     {
         $this->patient = $patient;
+        return $this;
+    }
+
+    /**
+     * @param string $provider
+     * @return $this
+     */
+    public function setProvider(string $provider): SMSNotificationService
+    {
+        $this->provider = $provider;
         return $this;
     }
 }

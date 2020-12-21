@@ -23,6 +23,8 @@ use Twig\Error\SyntaxError;
  */
 class NotificationService
 {
+    const DUMMY_NOTIFICATION_TYPE = 'test';
+
     /** @var EntityManagerInterface */
     private $em;
 
@@ -81,6 +83,7 @@ class NotificationService
         return $this->sms
             ->setText($this->text)
             ->setPatient($this->patient)
+            ->setProvider('Beeline')
             ->sendSMS();
     }
 
@@ -126,7 +129,7 @@ class NotificationService
         $notification->setPatient($this->patient);
         $notification->setText($this->text);
         $notification->setAuthUserSender($this->user);
-        $notification->setNotificationType('test');
+        $notification->setNotificationType(self::DUMMY_NOTIFICATION_TYPE);
         $notification->setNotificationTime(new DateTime('now'));
 
         if ($this->patient->getSmsInforming()) {

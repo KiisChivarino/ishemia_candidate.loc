@@ -6,6 +6,7 @@ use App\Entity\AuthUser;
 use App\Entity\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -28,7 +29,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /** @var array */
     private $systemUserPhone;
 
-    public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder, array $systemUserPhone)
+    public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder, string $systemUserPhone)
     {
         parent::__construct($registry, AuthUser::class);
         $this->passwordEncoder = $passwordEncoder;
@@ -110,5 +111,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->add('where', $qb->expr()->in('r.tech_name', $user->getRoles() ?? []))
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return AuthUser|null
+     * @throws NonUniqueResultException
+     */
+    public function getSystemUser(): AuthUser
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.phone = :val')
+            ->setParameter('val', $this->systemUserPhone)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
     }
 }

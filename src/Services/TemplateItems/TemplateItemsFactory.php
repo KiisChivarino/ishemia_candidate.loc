@@ -91,7 +91,7 @@ class TemplateItemsFactory
     /**
      * @return DeleteTemplateItem[]
      */
-    public function getDeleteTemplateItems()
+    public function getDeleteTemplateItems(): array
     {
         return [
             new DeleteTemplateItem($this->templateService),

@@ -225,13 +225,4 @@ class LogService
         $this->description = $description;
         return $this;
     }
-
-    /**
-     * @return LogService
-     */
-    public function setCritical(): self
-    {
-        // TODO: telegram or email notifications?
-        return $this;
-    }
 }

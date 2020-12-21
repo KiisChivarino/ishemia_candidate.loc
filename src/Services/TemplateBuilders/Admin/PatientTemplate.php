@@ -79,6 +79,11 @@ class PatientTemplate extends AdminTemplateBuilder
         'title' => 'Редактирование пациента',
     ];
 
+    /** @var string[] Common EDIT_CONTENT */
+    protected const ENTITY_CONTENT  = [
+        'entity' => 'Пациент',
+    ];
+
     /**
      * PatientTemplate constructor.
      *
