@@ -15,6 +15,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -57,6 +58,9 @@ class NotificationService
     /** @var MedicalRecord */
     private $medicalRecord;
 
+    /** @var TranslatorInterface */
+    private $translator;
+
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
@@ -64,6 +68,7 @@ class NotificationService
      * @param EmailNotificationService $emailNotificationService
      * @param TokenStorageInterface $tokenStorage
      * @param LogService $logService
+     * @param TranslatorInterface $translator
      * @param string $systemUserPhone
      */
     public function __construct(
@@ -72,6 +77,7 @@ class NotificationService
         EmailNotificationService $emailNotificationService,
         TokenStorageInterface $tokenStorage,
         LogService $logService,
+        TranslatorInterface $translator,
         string $systemUserPhone
     ) {
         $this->em = $em;
@@ -79,6 +85,7 @@ class NotificationService
         $this->email = $emailNotificationService;
         $this->user = $tokenStorage->getToken()->getUser();
         $this->logger = $logService;
+        $this->translator = $translator;
         $this->systemUserPhone = $systemUserPhone;
     }
 
@@ -115,7 +122,7 @@ class NotificationService
             $this->em->persist($emailNotification);
             $this->logger
                 ->setUser($this->user)
-                ->setDescription('Сущность - Email Уведомление (id:'.$emailNotification->getId().') успешно создана.')
+                ->setDescription($this->translator->trans('log.new.entity', ['%entity%' => 'Email уведомление', '%id%' => $emailNotification->getId()]))
                 ->logSuccessEvent();
         } catch (ErrorException | LoaderError | RuntimeError | SyntaxError $e) {
             $this->logger
@@ -155,7 +162,7 @@ class NotificationService
         $this->em->persist($notification);
         $this->logger
             ->setUser($this->user)
-            ->setDescription('Сущность - Уведомление (id:'.$notification->getId().') успешно создана.')
+            ->setDescription($this->translator->trans('log.new.entity', ['%entity%' => 'Уведомление', '%id%' => $notification->getId()]))
             ->logSuccessEvent();
         $this->em->flush();
     }

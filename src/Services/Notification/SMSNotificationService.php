@@ -3,7 +3,6 @@
 namespace App\Services\Notification;
 
 use App\API\BEESMS;
-use App\Entity\AuthUser;
 use App\Entity\Patient;
 use App\Entity\SMSNotification;
 use App\Services\LoggerService\LogService;
@@ -14,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use SimpleXMLElement;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class SMSNotificationService
@@ -63,12 +63,16 @@ class SMSNotificationService
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
+    /** @var TranslatorInterface */
+    private $translator;
+
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
      * @param LogService $logService
      * @param TokenStorageInterface $tokenStorage
      * @param BeelineSMSProvider $beelineSMSProvider
+     * @param TranslatorInterface $translator
      * @param array $smsParameters
      * @param array $smsStatuses
      * @param array $smsUpdateTimes
@@ -81,6 +85,7 @@ class SMSNotificationService
         LogService $logService,
         TokenStorageInterface $tokenStorage,
         BeelineSMSProvider $beelineSMSProvider,
+        TranslatorInterface $translator,
         array $smsParameters,
         array $smsStatuses,
         array $smsUpdateTimes,
@@ -92,6 +97,7 @@ class SMSNotificationService
         $this->logger = $logService;
         $this->tokenStorage = $tokenStorage;
         $this->beelineSMSProvider = $beelineSMSProvider;
+        $this->translator = $translator;
         $this->smsParameters = $smsParameters;
         $this->smsStatuses = $smsStatuses;
         $this->smsUpdateTimes = $smsUpdateTimes;
@@ -123,7 +129,7 @@ class SMSNotificationService
         $this->em->persist($sMSNotification);
         $this->logger
             ->setUser($this->tokenStorage->getToken()->getUser())
-            ->setDescription('Сущность - CМC Уведомление (id:'.$sMSNotification->getId().') успешно создана.')
+            ->setDescription($this->translator->trans('log.new.entity', ['%entity%' => 'SMS Уведомление', '%id%' => $sMSNotification->getId()]))
             ->logSuccessEvent();
 
         return $sMSNotification;

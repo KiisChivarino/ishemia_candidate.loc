@@ -12,6 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class UpdateSMSNotificationsCommand
@@ -40,23 +41,29 @@ class UpdateSMSNotificationsCommand extends Command
     /** @var LogService */
     private $logger;
 
+    /** @var TranslatorInterface */
+    private $translator;
+
     /**
      * UpdateSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
      * @param SMSNotificationService $SMSNotificationService
      * @param LogService $logger
+     * @param TranslatorInterface $translator
      * @param array $smsStatuses
      */
     public function __construct(
         ContainerInterface $container,
         SMSNotificationService $SMSNotificationService,
         LogService $logger,
+        TranslatorInterface $translator,
         array $smsStatuses
     ) {
         parent::__construct();
         $this->container = $container;
         $this->sms = $SMSNotificationService;
         $this->logger = $logger;
+        $this->translator = $translator;
         $this->smsStatuses = $smsStatuses;
     }
 
@@ -111,8 +118,10 @@ class UpdateSMSNotificationsCommand extends Command
                                 $this->logger
                                     ->setUser($systemUser)
                                     ->setDescription(
-                                        'SMS Уведомление (id:'. $smsNotification->getId() .
-                                        ') не доставлено (ошибка на стороне провайдера).'
+                                        $this->translator->trans(
+                                            'message.fail.provider.error',
+                                            ['%id%' => $smsNotification->getId()]
+                                        )
                                     )
                                     ->logFailEvent();
                                 $em->persist($smsNotification);
@@ -123,8 +132,10 @@ class UpdateSMSNotificationsCommand extends Command
                             $this->logger
                                 ->setUser($systemUser)
                                 ->setDescription(
-                                    'SMS Уведомление (id:'. $smsNotification->getId() .
-                                    ') не доставлено (неверный номер).'
+                                    $this->translator->trans(
+                                        'message.fail.wrong.number',
+                                        ['%id%' => $smsNotification->getId()]
+                                    )
                                 )
                                 ->logFailEvent();
                             $em->persist($smsNotification);
@@ -135,7 +146,10 @@ class UpdateSMSNotificationsCommand extends Command
         }
         $this->logger
             ->setUser($systemUser)
-            ->setDescription('Команда - '. self::$defaultName . ' успешно выполнена.')
+            ->setDescription($this->translator->trans(
+                'command.success',
+                ['%command%' => self::$defaultName]
+            ))
             ->logSuccessEvent();
 
         $em->flush();

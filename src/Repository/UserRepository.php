@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\AuthUser;
 use App\Entity\Role;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;

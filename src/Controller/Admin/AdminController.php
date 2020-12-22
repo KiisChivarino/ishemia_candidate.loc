@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Michelf\Markdown;
+use Symfony\Component\Translation\TranslatableMessage;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AdminController
@@ -36,14 +38,17 @@ class AdminController extends AdminAbstractController
      * @param SMSNotificationService $sms
      * @param EmailNotificationService $emailNotificationService
      * @param NotificationService $notificationService
+     * @param TranslatorInterface $translator
      */
     public function __construct(
         KernelInterface $appKernel,
         SMSNotificationService $sms,
         EmailNotificationService $emailNotificationService,
-        NotificationService $notificationService
+        NotificationService $notificationService,
+        TranslatorInterface $translator
     )
     {
+        parent::__construct($translator);
         $this->sms = $sms;
         $this->appKernel = $appKernel;
         $this->email = $emailNotificationService;
@@ -72,7 +77,7 @@ class AdminController extends AdminAbstractController
      */
     public function testNotification(PatientRepository $patientRepository): Response
     {
-       $this->notification->setText('Тестик')->setPatient($patientRepository->findAll()[0])->notifyUser();
-       return new Response(true);
+        $this->notification->setText('Тестик')->setPatient($patientRepository->findAll()[0])->notifyUser();
+        return new Response(true);
     }
 }

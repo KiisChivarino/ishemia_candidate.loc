@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -23,8 +24,9 @@ class DiagnosisController extends AdminAbstractController
     //relative path to twig templates
     public const TEMPLATE_PATH = 'admin/diagnosis/';
 
-    public function __construct(Environment $twig, RouterInterface $router)
+    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
+        parent::__construct($translator);
         $this->templateService = new DiagnosisTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }

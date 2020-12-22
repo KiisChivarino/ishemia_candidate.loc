@@ -12,6 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class GetSMSNotificationsCommand
@@ -37,11 +38,15 @@ class GetSMSNotificationsCommand extends Command
     /** @var LogService */
     private $logger;
 
+    /** @var TranslatorInterface */
+    private $translator;
+
     /**
      * GetSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
      * @param SMSNotificationService $SMSNotificationService
      * @param LogService $logger
+     * @param TranslatorInterface $translator
      * @param array $smsParameters
      * @param array $phoneParameters
      */
@@ -49,6 +54,7 @@ class GetSMSNotificationsCommand extends Command
         ContainerInterface $container,
         SMSNotificationService $SMSNotificationService,
         LogService $logger,
+        TranslatorInterface $translator,
         array $smsParameters,
         array $phoneParameters
     ) {
@@ -56,6 +62,7 @@ class GetSMSNotificationsCommand extends Command
         $this->container = $container;
         $this->sms = $SMSNotificationService;
         $this->logger = $logger;
+        $this->translator = $translator;
         $this->smsParameters = $smsParameters;
         $this->phoneParameters = $phoneParameters;
     }
@@ -113,8 +120,10 @@ class GetSMSNotificationsCommand extends Command
                             $this->logger
                                 ->setUser($systemUser)
                                 ->setDescription(
-                                    'Новая запись - Сообщение пользователя (id:' . $sms->getId()
-                                    . ') успешна создана.'
+                                    $this->translator->trans(
+                                        'log.new.entity',
+                                        ['%entity%' => 'Сообщение пользователя', '%id%' => $sms->getId()]
+                                    )
                                 )
                                 ->logCreateEvent();
                         }
@@ -124,7 +133,10 @@ class GetSMSNotificationsCommand extends Command
         }
         $this->logger
             ->setUser($systemUser)
-            ->setDescription('Команда - '. self::$defaultName . ' успешно выполнена.')
+            ->setDescription($this->translator->trans(
+                'command.success',
+                ['%command%' => self::$defaultName]
+            ))
             ->logSuccessEvent();
 
         $em->flush();
