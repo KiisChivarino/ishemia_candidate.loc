@@ -17,6 +17,15 @@ if (is_array($env = @include dirname(__DIR__).'/.env.local.php') && (!isset($env
     (new Dotenv(false))->loadEnv(dirname(__DIR__).'/.env');
 }
 
+$envs = array_diff(scandir(dirname(__DIR__).'/env'), array('..', '.'));
+foreach ($envs as $env) {
+    if (strpos($env, 'env.local')) {
+        (new Dotenv(false))->overload(dirname(__DIR__).'/env/' . $env);
+    } else if (strpos($env, 'env')) {
+        (new Dotenv(false))->load(dirname(__DIR__).'/env/' . $env);
+    }
+}
+
 $_SERVER += $_ENV;
 $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = ($_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? null) ?: 'dev';
 $_SERVER['APP_DEBUG'] = $_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? 'prod' !== $_SERVER['APP_ENV'];
