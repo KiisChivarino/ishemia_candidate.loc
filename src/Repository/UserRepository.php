@@ -21,7 +21,7 @@ use function get_class;
  * @method AuthUser[]    findAll()
  * @method AuthUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends AppRepository implements PasswordUpgraderInterface
 {
     /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;

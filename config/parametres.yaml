@@ -1,36 +1,11 @@
 parameters:
-# Параметры почты
-  email_parameters:
-    account_name: 'lpvs@kvokka.com'
-    account_password: 'ipkh159fpos6'
-    smtp_host: 'smtp.yandex.ru'
-    smtp_port: 465
-    smtp_encryption: 'ssl'
 # Параметры компании
-  sms_parameters:
-    sender: '3303'
-    user: '775000'
-    password: 'Yandex10241024'
-# Параметры компании
-  project_info:
+  global.project_info:
     site_name: 'Медицина'
     address_line_1: 'ул. Ленина д.30'
     address_line_2: 'Курск, Россия'
-# Статусы СМС
-  sms_statuses:
-    delivered: 'delivered'
-    not_delivered: 'not_delivered'
-    wait: 'wait'
-    failed: 'failed'
-# Время обновления смс
-  sms_update_times:
-    period_to_update: 25
-    period_to_check: 2
-# Параметры номеров
-  phone_parameters:
-    phone_prefix_ru: '+7'
-# Параметры номеров
-  time_formats:
-    besms: 'd.m.Y H:i:s'
 # Пользователь Система
-  system_user_phone: '9999999999'
+  global.system_user_phone: '9999999999'
+# Параметры времени
+  global.default_time_formats:
+    default: 'd.m.Y H:i:s'

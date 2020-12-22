@@ -1,0 +1,22 @@
+parameters:
+  # Параметры компании
+  sms_notification_service.sms_parameters:
+    sender: '3303'
+    user: '%env(string:SMS_BEELINE_USER)%'
+    password: '%env(string:SMS_BEELINE_PASSWORD)%'
+  # Статусы СМС
+  sms_notification_service.sms_statuses:
+    delivered: 'delivered'
+    not_delivered: 'not_delivered'
+    wait: 'wait'
+    failed: 'failed'
+  # Время обновления смс
+  sms_notification_service.sms_update_times:
+    period_to_update: 25
+    period_to_check: 2
+  # Параметры номеров
+  sms_notification_service.phone_parameters:
+    phone_prefix_ru: '+7'
+  # Параметры времени
+  sms_notification_service.time_formats:
+    besms: 'd.m.Y H:i:s'
