@@ -1,0 +1,10 @@
+log:
+  new.entity: New record - %entity% (id:%id%) created.
+  update.entity: Record - %entity% (id:%id%) updated.
+  delete.entity: Record - %entity% (id:%id%) deleted.
+command:
+  success: Command %command% successfully executed.
+message:
+  fail:
+    provider.error: SMS Notification (id:%id%) not delivered (provider error).
+    wrong.number: SMS Notification (id:%id%) not delivered (wrong number).

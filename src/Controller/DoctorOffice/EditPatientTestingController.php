@@ -17,6 +17,7 @@ use ReflectionException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
@@ -33,12 +34,15 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
      * EditPatientTestingController constructor.
      * @param Environment $twig
      * @param RouterInterface $router
+     * @param TranslatorInterface $translator
      */
     public function __construct(
         Environment $twig,
-        RouterInterface $router
+        RouterInterface $router,
+        TranslatorInterface $translator
     )
     {
+        parent::__construct($translator);
         $this->templateService = new EditPatientTestingTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }

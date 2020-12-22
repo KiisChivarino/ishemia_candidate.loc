@@ -20,6 +20,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
@@ -56,6 +57,14 @@ abstract class AppAbstractController extends AbstractController
 
     /** @var string "edit" type of form */
     protected const RESPONSE_FORM_TYPE_EDIT = 'edit';
+
+    /** @var TranslatorInterface */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
 
     /**
      * Отображает действия с записью в таблице datatables
@@ -216,18 +225,17 @@ abstract class AppAbstractController extends AbstractController
                 }
                 $entityName = $this->templateService->getItem($type)->getContentValue('entity');
                 $entityManager->persist($entity);
-
                 switch ($type) {
                     case 'new':
                         (new LogService($entityManager))
                             ->setUser($this->getUser())
-                            ->setDescription('Новая запись - '. $entityName .' (id:' . $entity->getId() . ') успешна создана.')
+                            ->setDescription($this->translator->trans('log.new.entity', ['%entity%' => $entityName, '%id%' => $entity->getId()]))
                             ->logCreateEvent();
                         break;
                     case 'edit':
                         (new LogService($entityManager))
                             ->setUser($this->getUser())
-                            ->setDescription('Запись - '. $entityName .' (id:' . $entity->getId() . ') успешна обновлена.')
+                            ->setDescription($this->translator->trans('log.update.entity', ['%entity%' => $entityName, '%id%' => $entity->getId()]))
                             ->logUpdateEvent();
                         break;
                 }
@@ -456,7 +464,7 @@ abstract class AppAbstractController extends AbstractController
             try {
                 (new LogService($entityManager))
                     ->setUser($this->getUser())
-                    ->setDescription('Запись - '. $entityName .' (id:' . $entity->getId() . ') удалена.')
+                    ->setDescription($this->translator->trans('log.delete.entity', ['%entity%' => $entityName, '%id%' => $entity->getId()]))
                     ->logDeleteEvent();
                 $entityManager->remove($entity);
                 $entityManager->flush();
