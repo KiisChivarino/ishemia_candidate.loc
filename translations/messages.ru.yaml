@@ -1,0 +1,10 @@
+log:
+  new.entity: Новая запись - %entity% (id:%id%) создана.
+  update.entity: Запись - %entity% (id:%id%) обновлена.
+  delete.entity: Запись - %entity% (id:%id%) уадлена.
+command:
+  success: Команда %command% успешно выполнена.
+message:
+  fail:
+    provider.error: SMS Уведомление (id:%id%) не доставлено (ошибка на стороне провайдера).
+    wrong.number: SMS Уведомление (id:%id%) не доставлено (неверный номер).
