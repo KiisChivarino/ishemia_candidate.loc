@@ -20,15 +20,15 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $rootPath : '%kernel.project_dir%'
-            $projectInfo: '%project_info%'
+            $projectInfo: '%global.project_info%'
             $emailParameters: '%email_notification_service.email_parameters%'
             $smsParameters: '%sms_notification_service.sms_parameters%'
             $smsStatuses: '%sms_notification_service.sms_statuses%'
             $smsUpdateTimes: '%sms_notification_service.sms_update_times%'
             $phoneParameters: '%sms_notification_service.phone_parameters%'
             $timeFormats: '%sms_notification_service.time_formats%'
-            $systemUserPhone: '%system_user_phone%'
-            $defaultTimeFormats: '%default_time_formats%'
+            $systemUserPhone: '%global.system_user_phone%'
+            $defaultTimeFormats: '%global.default_time_formats%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
