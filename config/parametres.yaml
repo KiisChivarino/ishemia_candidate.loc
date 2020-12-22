@@ -8,3 +8,4 @@ parameters:
   system_user_phone: '9999999999'
 # Параметры времени
   default_time_formats:
+    default: 'd.m.Y H:i:s'
