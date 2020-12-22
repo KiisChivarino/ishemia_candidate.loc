@@ -4,6 +4,11 @@ use Symfony\Component\Dotenv\Dotenv;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
+function endsWith($haystack, $needle): bool
+{
+    return substr($haystack, -strlen($needle))===$needle;
+}
+
 if (!class_exists(Dotenv::class)) {
     throw new LogicException('Please run "composer require symfony/dotenv" to load the ".env" files configuring the application.');
 }
@@ -19,9 +24,9 @@ if (is_array($env = @include dirname(__DIR__).'/.env.local.php') && (!isset($env
 
 $envs = array_diff(scandir(dirname(__DIR__).'/env'), array('..', '.'));
 foreach ($envs as $env) {
-    if (strpos($env, 'env.local')) {
+    if (endsWith($env, 'env.local')) {
         (new Dotenv(false))->overload(dirname(__DIR__).'/env/' . $env);
-    } else if (strpos($env, 'env')) {
+    } else if (endsWith($env, 'env')) {
         (new Dotenv(false))->load(dirname(__DIR__).'/env/' . $env);
     }
 }

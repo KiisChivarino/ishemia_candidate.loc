@@ -1,0 +1,7 @@
+parameters:
+  email_parameters:
+    account_name: '%env(string:ACCOUNT_NAME)%'
+    account_password: '%env(string:ACCOUNT_PASSWORD)%'
+    smtp_host: '%env(string:SMTP_HOST)%'
+    smtp_port: '%env(int:SMTP_PORT)%'
+    smtp_encryption: 'ssl'

@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\AuthUser;
 use App\Entity\Role;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
@@ -21,7 +20,7 @@ use function get_class;
  * @method AuthUser[]    findAll()
  * @method AuthUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends AppRepository implements PasswordUpgraderInterface
 {
     /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;
