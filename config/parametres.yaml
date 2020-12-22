@@ -6,3 +6,5 @@ parameters:
     address_line_2: 'Курск, Россия'
 # Пользователь Система
   system_user_phone: '9999999999'
+# Параметры времени
+  default_time_formats:
