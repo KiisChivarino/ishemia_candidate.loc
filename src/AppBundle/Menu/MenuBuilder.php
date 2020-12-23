@@ -203,18 +203,6 @@ class MenuBuilder
             ]
         );
         $menu['medical_guides']->addChild(
-            'medicineList', [
-                'label' => 'Препараты',
-                'route' => 'medicine_list'
-            ]
-        );
-        $menu['medical_guides']->addChild(
-            'receptionMethodList', [
-                'label' => 'Способы приема',
-                'route' => 'reception_method_list'
-            ]
-        );
-        $menu['medical_guides']->addChild(
             'appointmentTypeList', [
                 'label' => 'Виды приема',
                 'route' => 'appointment_type_list'
