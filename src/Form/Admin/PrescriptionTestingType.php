@@ -56,14 +56,6 @@ class PrescriptionTestingType extends AbstractType
                 ]
             )
             ->add(
-                'confirmedByStaff',
-                CheckboxType::class,
-                [
-                    'label' => $templateItem->getContentValue('confirmedByStaff'),
-                    'required' => false,
-                ]
-            )
-            ->add(
                 'plannedDate', DateType::class,
                 [
                     'label' => $templateItem->getContentValue('plannedDate'),

@@ -3,7 +3,6 @@
 namespace App\Services\DataTable\Admin;
 
 use App\Controller\AppAbstractController;
-use App\Entity\Medicine;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Entity\Staff;
@@ -46,19 +45,6 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                             $prescription->getId(),
                             'prescription_show'
                         ) : '';
-                    }
-                ]
-            )
-            ->add(
-                'medicine', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('medicine'),
-                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) {
-                        /** @var Medicine $medicine */
-                        $medicine = $prescriptionMedicine->getMedicine();
-                        return
-                            $medicine ?
-                                $this->getLink($medicine->getName(), $medicine->getId(), 'medicine_show')
-                                : '';
                     }
                 ]
             )

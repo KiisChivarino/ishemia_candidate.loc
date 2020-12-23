@@ -32,11 +32,6 @@ class PrescriptionAppointmentType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add('confirmedByStaff', CheckboxType::class, [
-                    'label' => $templateItem->getContentValue('confirmedByStaff'),
-                    'required' => false,
-                ]
-            )
             ->add(
                 'staff', EntityType::class, [
                     'label' => $templateItem->getContentValue('staff'),
@@ -65,14 +60,6 @@ class PrescriptionAppointmentType extends AbstractType
             ->add(
                 'enabled', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('enabled'),
-                    'required' => false,
-                ]
-            )
-            ->add(
-                'confirmedByStaff',
-                CheckboxType::class,
-                [
-                    'label' => $templateItem->getContentValue('confirmedByStaff'),
                     'required' => false,
                 ]
             );
