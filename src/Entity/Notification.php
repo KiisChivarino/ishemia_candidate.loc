@@ -27,12 +27,6 @@ class Notification
     private $notificationType;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="notifications")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $patient;
-
-    /**
      * @ORM\ManyToOne(targetEntity=AuthUser::class, inversedBy="notifications")
      * @ORM\JoinColumn(nullable=true)
      */
@@ -59,16 +53,31 @@ class Notification
     private $emailNotification;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="notification")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\OneToOne(targetEntity=PatientNotification::class, mappedBy="notification", cascade={"persist", "remove"})
      */
-    private $medicalHistory;
+    private $patientNotification;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="notifications")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\ManyToOne(targetEntity=NotificationReceiverType::class, inversedBy="notification")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $medicalRecord;
+    private $notificationReceiverType;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=NotificationTemplate::class, inversedBy="notification")
+     */
+    private $notificationTemplate;
+
+    /**
+     * @ORM\OneToOne(targetEntity=WebNotification::class, mappedBy="notification", cascade={"persist", "remove"})
+     */
+    private $webNotification;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ChannelType::class, inversedBy="notification")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $channelType;
 
     /**
      * @return int|null
@@ -129,24 +138,6 @@ class Notification
     public function setText(?string $text): self
     {
         $this->text = $text;
-        return $this;
-    }
-
-    /**
-     * @return Patient|null
-     */
-    public function getPatient(): ?Patient
-    {
-        return $this->patient;
-    }
-
-    /**
-     * @param Patient|null $patient
-     * @return $this
-     */
-    public function setPatient(?Patient $patient): self
-    {
-        $this->patient = $patient;
         return $this;
     }
 
@@ -220,40 +211,72 @@ class Notification
         return $this;
     }
 
-    /**
-     * @return MedicalHistory|null
-     */
-    public function getMedicalHistory(): ?MedicalHistory
+    public function getPatientNotification(): ?PatientNotification
     {
-        return $this->medicalHistory;
+        return $this->patientNotification;
     }
 
-    /**
-     * @param MedicalHistory|null $medicalHistory
-     * @return $this
-     */
-    public function setMedicalHistory(?MedicalHistory $medicalHistory): self
+    public function setPatientNotification(PatientNotification $patientNotification): self
     {
-        $this->medicalHistory = $medicalHistory;
+        // set the owning side of the relation if necessary
+        if ($patientNotification->getNotification() !== $this) {
+            $patientNotification->setNotification($this);
+        }
+
+        $this->patientNotification = $patientNotification;
 
         return $this;
     }
 
-    /**
-     * @return MedicalRecord|null
-     */
-    public function getMedicalRecord(): ?MedicalRecord
+    public function getNotificationReceiverType(): ?NotificationReceiverType
     {
-        return $this->medicalRecord;
+        return $this->notificationReceiverType;
     }
 
-    /**
-     * @param MedicalRecord|null $medicalRecord
-     * @return $this
-     */
-    public function setMedicalRecord(?MedicalRecord $medicalRecord): self
+    public function setNotificationReceiverType(?NotificationReceiverType $notificationReceiverType): self
     {
-        $this->medicalRecord = $medicalRecord;
+        $this->notificationReceiverType = $notificationReceiverType;
+
+        return $this;
+    }
+
+    public function getNotificationTemplate(): ?NotificationTemplate
+    {
+        return $this->notificationTemplate;
+    }
+
+    public function setNotificationTemplate(?NotificationTemplate $notificationTemplate): self
+    {
+        $this->notificationTemplate = $notificationTemplate;
+
+        return $this;
+    }
+
+    public function getWebNotification(): ?WebNotification
+    {
+        return $this->webNotification;
+    }
+
+    public function setWebNotification(WebNotification $webNotification): self
+    {
+        // set the owning side of the relation if necessary
+        if ($webNotification->getNotification() !== $this) {
+            $webNotification->setNotification($this);
+        }
+
+        $this->webNotification = $webNotification;
+
+        return $this;
+    }
+
+    public function getChannelType(): ?ChannelType
+    {
+        return $this->channelType;
+    }
+
+    public function setChannelType(?ChannelType $channelType): self
+    {
+        $this->channelType = $channelType;
 
         return $this;
     }

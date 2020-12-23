@@ -48,6 +48,12 @@ class SMSNotification
     private $notification;
 
     /**
+     * @ORM\ManyToOne(targetEntity=ChannelType::class, inversedBy="smsNotification")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $channelType;
+
+    /**
      * SMSNotification constructor.
      */
     public function __construct()
@@ -154,6 +160,18 @@ class SMSNotification
     public function setSmsPatientRecipientPhone(string $smsPatientRecipientPhone): self
     {
         $this->smsPatientRecipientPhone = $smsPatientRecipientPhone;
+
+        return $this;
+    }
+
+    public function getChannelType(): ?ChannelType
+    {
+        return $this->channelType;
+    }
+
+    public function setChannelType(?ChannelType $channelType): self
+    {
+        $this->channelType = $channelType;
 
         return $this;
     }
