@@ -579,6 +579,10 @@ class MedicalHistory
         return $this->patientNotifications;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function addPatientNotification(PatientNotification $patientNotification): self
     {
         if (!$this->patientNotifications->contains($patientNotification)) {
@@ -589,6 +593,10 @@ class MedicalHistory
         return $this;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function removePatientNotification(PatientNotification $patientNotification): self
     {
         if ($this->patientNotifications->removeElement($patientNotification)) {

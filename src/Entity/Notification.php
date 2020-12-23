@@ -211,11 +211,18 @@ class Notification
         return $this;
     }
 
+    /**
+     * @return PatientNotification|null
+     */
     public function getPatientNotification(): ?PatientNotification
     {
         return $this->patientNotification;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function setPatientNotification(PatientNotification $patientNotification): self
     {
         // set the owning side of the relation if necessary
@@ -228,11 +235,18 @@ class Notification
         return $this;
     }
 
+    /**
+     * @return NotificationReceiverType|null
+     */
     public function getNotificationReceiverType(): ?NotificationReceiverType
     {
         return $this->notificationReceiverType;
     }
 
+    /**
+     * @param NotificationReceiverType|null $notificationReceiverType
+     * @return $this
+     */
     public function setNotificationReceiverType(?NotificationReceiverType $notificationReceiverType): self
     {
         $this->notificationReceiverType = $notificationReceiverType;
@@ -240,11 +254,18 @@ class Notification
         return $this;
     }
 
+    /**
+     * @return NotificationTemplate|null
+     */
     public function getNotificationTemplate(): ?NotificationTemplate
     {
         return $this->notificationTemplate;
     }
 
+    /**
+     * @param NotificationTemplate|null $notificationTemplate
+     * @return $this
+     */
     public function setNotificationTemplate(?NotificationTemplate $notificationTemplate): self
     {
         $this->notificationTemplate = $notificationTemplate;
@@ -252,11 +273,18 @@ class Notification
         return $this;
     }
 
+    /**
+     * @return WebNotification|null
+     */
     public function getWebNotification(): ?WebNotification
     {
         return $this->webNotification;
     }
 
+    /**
+     * @param WebNotification $webNotification
+     * @return $this
+     */
     public function setWebNotification(WebNotification $webNotification): self
     {
         // set the owning side of the relation if necessary
@@ -269,11 +297,18 @@ class Notification
         return $this;
     }
 
+    /**
+     * @return ChannelType|null
+     */
     public function getChannelType(): ?ChannelType
     {
         return $this->channelType;
     }
 
+    /**
+     * @param ChannelType|null $channelType
+     * @return $this
+     */
     public function setChannelType(?ChannelType $channelType): self
     {
         $this->channelType = $channelType;

@@ -6,14 +6,16 @@ use App\Repository\PatientNotificationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Patient Notification
  * @ORM\Entity(repositoryClass=PatientNotificationRepository::class)
+ * @ORM\Table(options={"comment":"Уведомление пациента"});
  */
 class PatientNotification
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Ключ уведомления пациента"})
      */
     private $id;
 

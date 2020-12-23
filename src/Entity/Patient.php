@@ -544,6 +544,10 @@ class Patient
         return $this->patientSMS;
     }
 
+    /**
+     * @param PatientSMS $patientSMS
+     * @return $this
+     */
     public function addPatientSMS(PatientSMS $patientSMS): self
     {
         if (!$this->patientSMS->contains($patientSMS)) {
@@ -554,6 +558,10 @@ class Patient
         return $this;
     }
 
+    /**
+     * @param PatientSMS $patientSMS
+     * @return $this
+     */
     public function removePatientSMS(PatientSMS $patientSMS): self
     {
         if ($this->patientSMS->removeElement($patientSMS)) {
@@ -566,6 +574,10 @@ class Patient
         return $this;
     }
 
+    /**
+     * @param PatientSMS $patientSM
+     * @return $this
+     */
     public function addPatientSM(PatientSMS $patientSM): self
     {
         if (!$this->patientSMS->contains($patientSM)) {
@@ -576,6 +588,10 @@ class Patient
         return $this;
     }
 
+    /**
+     * @param PatientSMS $patientSM
+     * @return $this
+     */
     public function removePatientSM(PatientSMS $patientSM): self
     {
         if ($this->patientSMS->removeElement($patientSM)) {
@@ -596,6 +612,10 @@ class Patient
         return $this->patientNotifications;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function addPatientNotification(PatientNotification $patientNotification): self
     {
         if (!$this->patientNotifications->contains($patientNotification)) {
@@ -606,6 +626,10 @@ class Patient
         return $this;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function removePatientNotification(PatientNotification $patientNotification): self
     {
         if ($this->patientNotifications->removeElement($patientNotification)) {

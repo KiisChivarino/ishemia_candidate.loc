@@ -8,19 +8,21 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Notification Receiver Type
  * @ORM\Entity(repositoryClass=NotificationReceiverTypeRepository::class)
+ * @ORM\Table(options={"comment":"Тип получателя уведомления"});
  */
 class NotificationReceiverType
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Ключ типа получателя уведомления"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="Название типа получателя уведомления"})
      */
     private $name;
 
@@ -34,22 +36,35 @@ class NotificationReceiverType
      */
     private $notificationTemplates;
 
+    /**
+     * NotificationReceiverType constructor.
+     */
     public function __construct()
     {
         $this->notification = new ArrayCollection();
         $this->notificationTemplates = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -65,6 +80,10 @@ class NotificationReceiverType
         return $this->notification;
     }
 
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
     public function addNotification(Notification $notification): self
     {
         if (!$this->notification->contains($notification)) {
@@ -75,6 +94,10 @@ class NotificationReceiverType
         return $this;
     }
 
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
     public function removeNotification(Notification $notification): self
     {
         if ($this->notification->removeElement($notification)) {
@@ -95,6 +118,10 @@ class NotificationReceiverType
         return $this->notificationTemplates;
     }
 
+    /**
+     * @param NotificationTemplate $notificationTemplate
+     * @return $this
+     */
     public function addNotificationTemplate(NotificationTemplate $notificationTemplate): self
     {
         if (!$this->notificationTemplates->contains($notificationTemplate)) {
@@ -105,6 +132,10 @@ class NotificationReceiverType
         return $this;
     }
 
+    /**
+     * @param NotificationTemplate $notificationTemplate
+     * @return $this
+     */
     public function removeNotificationTemplate(NotificationTemplate $notificationTemplate): self
     {
         if ($this->notificationTemplates->removeElement($notificationTemplate)) {

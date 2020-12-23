@@ -8,14 +8,16 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * NotificationTemplate
  * @ORM\Entity(repositoryClass=NotificationTemplateRepository::class)
+ * @ORM\Table(options={"comment":"Шаблон уведомления"});
  */
 class NotificationTemplate
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Ключ шаблона уведомления"})
      */
     private $id;
 
@@ -31,20 +33,26 @@ class NotificationTemplate
     private $notificationReceiverType;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="Название шаблона уведомления"})
      */
     private $name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", options={"comment"="Текст шаблона уведомления"})
      */
     private $text;
 
+    /**
+     * NotificationTemplate constructor.
+     */
     public function __construct()
     {
         $this->notification = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -58,6 +66,10 @@ class NotificationTemplate
         return $this->notification;
     }
 
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
     public function addNotification(Notification $notification): self
     {
         if (!$this->notification->contains($notification)) {
@@ -68,6 +80,10 @@ class NotificationTemplate
         return $this;
     }
 
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
     public function removeNotification(Notification $notification): self
     {
         if ($this->notification->removeElement($notification)) {
@@ -80,11 +96,18 @@ class NotificationTemplate
         return $this;
     }
 
+    /**
+     * @return NotificationReceiverType|null
+     */
     public function getNotificationReceiverType(): ?NotificationReceiverType
     {
         return $this->notificationReceiverType;
     }
 
+    /**
+     * @param NotificationReceiverType|null $notificationReceiverType
+     * @return $this
+     */
     public function setNotificationReceiverType(?NotificationReceiverType $notificationReceiverType): self
     {
         $this->notificationReceiverType = $notificationReceiverType;
@@ -92,11 +115,18 @@ class NotificationTemplate
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -104,11 +134,18 @@ class NotificationTemplate
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getText(): ?string
     {
         return $this->text;
     }
 
+    /**
+     * @param string $text
+     * @return $this
+     */
     public function setText(string $text): self
     {
         $this->text = $text;
