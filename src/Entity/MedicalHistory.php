@@ -117,6 +117,11 @@ class MedicalHistory
     private $notification;
 
     /**
+     * @ORM\OneToMany(targetEntity=PatientMedicine::class, mappedBy="medicalHistory", orphanRemoval=true)
+     */
+    private $patientMedicines;
+
+    /**
      * MedicalHistory constructor.
      */
     public function __construct()
@@ -129,6 +134,7 @@ class MedicalHistory
         $this->complications = new ArrayCollection();
         $this->concomitantDiseases = new ArrayCollection();
         $this->notification = new ArrayCollection();
+        $this->patientMedicines = new ArrayCollection();
     }
 
     /**
@@ -606,6 +612,42 @@ class MedicalHistory
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return Collection|PatientMedicine[]
+     */
+    public function getPatientMedicines(): Collection
+    {
+        return $this->patientMedicines;
+    }
+
+    /**
+     * @param PatientMedicine $patientMedicine
+     * @return $this
+     */
+    public function addPatientMedicine(PatientMedicine $patientMedicine): self
+    {
+        if (!$this->patientMedicines->contains($patientMedicine)) {
+            $this->patientMedicines[] = $patientMedicine;
+            $patientMedicine->setMedicalHistory($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param PatientMedicine $patientMedicine
+     * @return $this
+     */
+    public function removePatientMedicine(PatientMedicine $patientMedicine): self
+    {
+        if ($this->patientMedicines->removeElement($patientMedicine)) {
+            // set the owning side to null (unless already changed)
+            if ($patientMedicine->getMedicalHistory() === $this) {
+                $patientMedicine->setMedicalHistory(null);
+            }
+        }
         return $this;
     }
 }
