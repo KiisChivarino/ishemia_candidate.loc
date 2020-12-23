@@ -48,11 +48,6 @@ class PrescriptionAppointment
     private $enabled;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Флаг подтверждения врачом назначения на прием", "default"=false})
-     */
-    private $confirmedByStaff;
-
-    /**
      * @ORM\Column(type="datetime", options={"comment"="Назначенные дата и время проведения приема"})
      */
     private $plannedDateTime;
@@ -153,24 +148,6 @@ class PrescriptionAppointment
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getConfirmedByStaff(): ?bool
-    {
-        return $this->confirmedByStaff;
-    }
-
-    /**
-     * @param bool $confirmedByStaff
-     * @return $this
-     */
-    public function setConfirmedByStaff(bool $confirmedByStaff): self
-    {
-        $this->confirmedByStaff = $confirmedByStaff;
         return $this;
     }
 
