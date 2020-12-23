@@ -42,7 +42,7 @@ final class Version20201223125007 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
+        $this->addSql('CREATE SCHEMA IF NOT EXISTS public');
         $this->addSql('DROP SEQUENCE patient_medicine_id_seq CASCADE');
         $this->addSql('CREATE SEQUENCE received_sms_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE notification_type_id_seq INCREMENT BY 1 MINVALUE 1 START 1');

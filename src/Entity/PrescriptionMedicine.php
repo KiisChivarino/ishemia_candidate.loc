@@ -26,26 +26,9 @@ class PrescriptionMedicine
     private $prescription;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Medicine::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $medicine;
-
-    /**
-     * @ORM\Column(type="text", options={"comment"="Инструкция по применению"})
-     */
-    private $instruction;
-
-    /**
      * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
      */
     private $enabled;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=ReceptionMethod::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $receptionMethod;
 
     /**
      * @ORM\ManyToOne(targetEntity=Staff::class, inversedBy="prescriptionMedicines")
@@ -82,47 +65,6 @@ class PrescriptionMedicine
     public function setPrescription(?Prescription $prescription): self
     {
         $this->prescription = $prescription;
-
-        return $this;
-    }
-
-    /**
-     * @return Medicine|null
-     */
-    public function getMedicine(): ?Medicine
-    {
-        return $this->medicine;
-    }
-
-    /**
-     * @param Medicine|null $medicine
-     *
-     * @return $this
-     */
-    public function setMedicine(?Medicine $medicine): self
-    {
-        $this->medicine = $medicine;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getInstruction(): ?string
-    {
-        return $this->instruction;
-    }
-
-    /**
-     * @param string $instruction
-     *
-     * @return $this
-     */
-    public function setInstruction(string $instruction): self
-    {
-        $this->instruction = $instruction;
-
         return $this;
     }
 
@@ -142,27 +84,6 @@ class PrescriptionMedicine
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    /**
-     * @return ReceptionMethod|null
-     */
-    public function getReceptionMethod(): ?ReceptionMethod
-    {
-        return $this->receptionMethod;
-    }
-
-    /**
-     * @param ReceptionMethod|null $receptionMethod
-     *
-     * @return $this
-     */
-    public function setReceptionMethod(?ReceptionMethod $receptionMethod): self
-    {
-        $this->receptionMethod = $receptionMethod;
-
         return $this;
     }
 
@@ -182,7 +103,6 @@ class PrescriptionMedicine
     public function setStaff(?Staff $staff): self
     {
         $this->staff = $staff;
-
         return $this;
     }
 
@@ -202,7 +122,6 @@ class PrescriptionMedicine
     public function setInclusionTime(DateTimeInterface $inclusionTime): self
     {
         $this->inclusionTime = $inclusionTime;
-
         return $this;
     }
 }
