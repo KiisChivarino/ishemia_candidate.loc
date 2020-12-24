@@ -107,6 +107,33 @@ class NotificationService
     }
 
     /**
+     * Creates new WebNotification
+     * @param string $channel
+     * @return Notification
+     */
+    private function createNotification(string $channel): Notification
+    {
+        $notification = new Notification();
+        $notification->setPatientNotification($this->createPatientNotification());
+        $notification->setText(
+            vsprintf(
+                $this->em->getRepository(NotificationTemplateText::class)->findForChannel(
+                    $channel, $this->notificationTemplate
+                )->getText(),
+                $this->texts
+            )
+        );
+        $notification->setAuthUserSender($this->user);
+        $notification->setNotificationReceiverType($this->notificationReceiverType);
+        $notification->setNotificationTime(new DateTime('now'));
+        $notification->setNotificationTemplate($this->notificationTemplate);
+        $notification->setChannelType(
+            $this->em->getRepository(ChannelType::class)->findOneBy(['name' => $channel])
+        );
+        return $notification;
+    }
+
+    /**
      * Send SMS notification
      * @return bool
      */
@@ -171,17 +198,17 @@ class NotificationService
     }
 
     /**
-     * Creates new PatientNotification
-     * @return PatientNotification
+     * Notify user via Web channel
+     * @return bool
      */
-    private function createPatientNotification(): PatientNotification
+    private function notifyUserViaWeb(): bool
     {
-        $patientNotification = (new PatientNotification())
-            ->setMedicalRecord($this->medicalRecord ?? null)
-            ->setMedicalHistory($this->medicalHistory ?? null)
-            ->setPatient($this->patient);
-        $this->em->persist($patientNotification);
-        return $patientNotification;
+        $notification = $this->createNotification(self::WEB_CHANNEL)->setWebNotification(
+            $this->createWebNotification()
+        );
+        $this->em->persist($notification);
+        $this->logSuccessNotificationCreation($notification);
+        return true;
     }
 
     /**
@@ -201,17 +228,17 @@ class NotificationService
     }
 
     /**
-     * Notify user via Web channel
-     * @return bool
+     * Creates new PatientNotification
+     * @return PatientNotification
      */
-    private function notifyUserViaWeb(): bool
+    private function createPatientNotification(): PatientNotification
     {
-        $notification = $this->createNotification(self::WEB_CHANNEL)->setWebNotification(
-            $this->createWebNotification()
-        );
-        $this->em->persist($notification);
-        $this->logSuccessNotificationCreation($notification);
-        return true;
+        $patientNotification = (new PatientNotification())
+            ->setMedicalRecord($this->medicalRecord ?? null)
+            ->setMedicalHistory($this->medicalHistory ?? null)
+            ->setPatient($this->patient);
+        $this->em->persist($patientNotification);
+        return $patientNotification;
     }
 
     /**
@@ -234,33 +261,6 @@ class NotificationService
             )
             ->logSuccessEvent();
         return true;
-    }
-
-    /**
-     * Creates new WebNotification
-     * @param string $channel
-     * @return Notification
-     */
-    private function createNotification(string $channel): Notification
-    {
-        $notification = new Notification();
-        $notification->setPatientNotification($this->createPatientNotification());
-        $notification->setText(
-            vsprintf(
-                $this->em->getRepository(NotificationTemplateText::class)->findForChannel(
-                    $channel, $this->notificationTemplate
-                )->getText(),
-                $this->texts
-            )
-        );
-        $notification->setAuthUserSender($this->user);
-        $notification->setNotificationReceiverType($this->notificationReceiverType);
-        $notification->setNotificationTime(new DateTime('now'));
-        $notification->setNotificationTemplate($this->notificationTemplate);
-        $notification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findOneBy(['name' => $channel])
-        );
-        return $notification;
     }
 
     /**
