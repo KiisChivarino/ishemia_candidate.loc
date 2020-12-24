@@ -16,7 +16,7 @@ class NotificationReceiverType
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer", options={"comment"="Ключ типа получателя уведомления"})
      */
     private $id;
@@ -43,6 +43,17 @@ class NotificationReceiverType
     {
         $this->notification = new ArrayCollection();
         $this->notificationTemplates = new ArrayCollection();
+    }
+
+    /**
+     * @param string $id
+     * @return $this
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

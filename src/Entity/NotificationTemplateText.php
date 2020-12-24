@@ -14,7 +14,7 @@ class NotificationTemplateText
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer", options={"comment"="Ключ текста шаблона уведомления"})
      */
     private $id;
@@ -35,6 +35,13 @@ class NotificationTemplateText
      * @ORM\Column(type="text", options={"comment"="Текст уведомления"})
      */
     private $text;
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     public function getId(): ?int
     {

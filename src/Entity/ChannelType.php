@@ -16,7 +16,7 @@ class ChannelType
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer", options={"comment"="Ключ типа канала"})
      */
     private $id;
@@ -51,6 +51,9 @@ class ChannelType
      */
     private $notificationTemplateTexts;
 
+    /**
+     * ChannelType constructor.
+     */
     public function __construct()
     {
         $this->notification = new ArrayCollection();
@@ -60,16 +63,37 @@ class ChannelType
         $this->notificationTemplateTexts = new ArrayCollection();
     }
 
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -85,6 +109,10 @@ class ChannelType
         return $this->notification;
     }
 
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
     public function addNotification(Notification $notification): self
     {
         if (!$this->notification->contains($notification)) {
@@ -95,6 +123,10 @@ class ChannelType
         return $this;
     }
 
+    /**
+     * @param Notification $notification
+     * @return $this
+     */
     public function removeNotification(Notification $notification): self
     {
         if ($this->notification->removeElement($notification)) {
@@ -115,6 +147,10 @@ class ChannelType
         return $this->smsNotification;
     }
 
+    /**
+     * @param SMSNotification $smsNotification
+     * @return $this
+     */
     public function addSmsNotification(SMSNotification $smsNotification): self
     {
         if (!$this->smsNotification->contains($smsNotification)) {
@@ -125,6 +161,10 @@ class ChannelType
         return $this;
     }
 
+    /**
+     * @param SMSNotification $smsNotification
+     * @return $this
+     */
     public function removeSmsNotification(SMSNotification $smsNotification): self
     {
         if ($this->smsNotification->removeElement($smsNotification)) {
@@ -145,6 +185,10 @@ class ChannelType
         return $this->emailNotification;
     }
 
+    /**
+     * @param EmailNotification $emailNotification
+     * @return $this
+     */
     public function addEmailNotification(EmailNotification $emailNotification): self
     {
         if (!$this->emailNotification->contains($emailNotification)) {
@@ -155,6 +199,10 @@ class ChannelType
         return $this;
     }
 
+    /**
+     * @param EmailNotification $emailNotification
+     * @return $this
+     */
     public function removeEmailNotification(EmailNotification $emailNotification): self
     {
         if ($this->emailNotification->removeElement($emailNotification)) {
@@ -175,6 +223,10 @@ class ChannelType
         return $this->webNotification;
     }
 
+    /**
+     * @param WebNotification $webNotification
+     * @return $this
+     */
     public function addWebNotification(WebNotification $webNotification): self
     {
         if (!$this->webNotification->contains($webNotification)) {
@@ -185,6 +237,10 @@ class ChannelType
         return $this;
     }
 
+    /**
+     * @param WebNotification $webNotification
+     * @return $this
+     */
     public function removeWebNotification(WebNotification $webNotification): self
     {
         if ($this->webNotification->removeElement($webNotification)) {
@@ -205,6 +261,10 @@ class ChannelType
         return $this->notificationTemplateTexts;
     }
 
+    /**
+     * @param NotificationTemplateText $notificationTemplateText
+     * @return $this
+     */
     public function addNotificationTemplateText(NotificationTemplateText $notificationTemplateText): self
     {
         if (!$this->notificationTemplateTexts->contains($notificationTemplateText)) {
@@ -215,6 +275,10 @@ class ChannelType
         return $this;
     }
 
+    /**
+     * @param NotificationTemplateText $notificationTemplateText
+     * @return $this
+     */
     public function removeNotificationTemplateText(NotificationTemplateText $notificationTemplateText): self
     {
         if ($this->notificationTemplateTexts->removeElement($notificationTemplateText)) {

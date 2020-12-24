@@ -16,7 +16,7 @@ class NotificationTemplate
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer", options={"comment"="Ключ шаблона уведомления"})
      */
     private $id;
@@ -49,6 +49,17 @@ class NotificationTemplate
     {
         $this->notification = new ArrayCollection();
         $this->notificationTemplateTexts = new ArrayCollection();
+    }
+
+    /**
+     * @param string $id
+     * @return $this
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

@@ -160,6 +160,7 @@ class NotificationService
     private function notifyUserViaEmail(): EmailNotification
     {
         $notification = $this->createNotification(self::EMAIL_CHANNEL);
+        /** @var EmailNotification $emailNotification */
         $emailNotification = new EmailNotification();
         $emailNotification->setPatientRecipientEmail($this->patient->getAuthUser()->getEmail());
         $emailNotification->setChannelType(
@@ -221,8 +222,9 @@ class NotificationService
             ->setReceiverString((new AuthUserInfoService())->getFIO($this->patient->getAuthUser()))
             ->setChannelType(
                 $this->em->getRepository(ChannelType::class)->findOneBy(['name' => self::WEB_CHANNEL])
-            );
+            )
         ;
+
         $this->em->persist($webNotification);
         return $webNotification;
     }
