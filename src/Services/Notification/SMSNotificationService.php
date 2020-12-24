@@ -3,6 +3,7 @@
 namespace App\Services\Notification;
 
 use App\API\BEESMS;
+use App\Entity\ChannelType;
 use App\Entity\Patient;
 use App\Entity\SMSNotification;
 use App\Services\LoggerService\LogService;
@@ -21,6 +22,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SMSNotificationService
 {
+    /** Константы для типов каналов  */
+    const
+        SMS_CHANNEL = 'sms'
+    ;
+
     /** @var EntityManagerInterface */
     private $em;
 
@@ -125,6 +131,9 @@ class SMSNotificationService
         $sMSNotification->setSmsPatientRecipientPhone($this->patient->getAuthUser()->getPhone());
         $sMSNotification->setStatus($this->smsStatuses['wait']);
         $sMSNotification->setExternalId((string)$result->result->sms['id']);
+        $sMSNotification->setChannelType(
+            $this->em->getRepository(ChannelType::class)->findOneBy(['name' => self::SMS_CHANNEL])
+        );
 
         $this->em->persist($sMSNotification);
         $this->logger

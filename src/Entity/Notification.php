@@ -22,11 +22,6 @@ class Notification
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, options={"comment"="Тип уведомления"})
-     */
-    private $notificationType;
-
-    /**
      * @ORM\ManyToOne(targetEntity=AuthUser::class, inversedBy="notifications")
      * @ORM\JoinColumn(nullable=true)
      */
@@ -85,24 +80,6 @@ class Notification
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNotificationType(): ?string
-    {
-        return $this->notificationType;
-    }
-
-    /**
-     * @param string $notificationType
-     * @return $this
-     */
-    public function setNotificationType(string $notificationType): self
-    {
-        $this->notificationType = $notificationType;
-        return $this;
     }
 
     /**

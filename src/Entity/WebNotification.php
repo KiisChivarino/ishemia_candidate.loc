@@ -41,6 +41,11 @@ class WebNotification
      */
     private $channelType;
 
+    public function __construct()
+    {
+        $this->isRead = false;
+    }
+
     /**
      * @return int|null
      */

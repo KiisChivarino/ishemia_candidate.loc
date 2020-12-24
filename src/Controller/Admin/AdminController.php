@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Repository\PatientRepository;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Notification\EmailNotificationService;
 use App\Services\Notification\NotificationService;
 use App\Services\Notification\SMSNotificationService;
@@ -10,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Michelf\Markdown;
-use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -77,7 +77,15 @@ class AdminController extends AdminAbstractController
      */
     public function testNotification(PatientRepository $patientRepository): Response
     {
-        $this->notification->setText('Тестик')->setPatient($patientRepository->findAll()[0])->notifyUser();
+        $this->notification
+            ->setPatient($patientRepository->findAll()[1])
+            ->setNotificationTemplate('test')
+            ->setNotificationReceiverType('patient')
+            ->setMedicalHistory($patientRepository->findAll()[1]->getMedicalHistories()[0])
+            ->setMedicalRecord($patientRepository->findAll()[1]->getMedicalHistories()[0]->getMedicalRecords()[0])
+            ->setTexts([(new AuthUserInfoService())->getFIO($patientRepository->findAll()[1]->getAuthUser())])
+            ->notifyPatient()
+        ;
         return new Response(true);
     }
 }

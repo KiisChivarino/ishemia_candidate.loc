@@ -8,19 +8,21 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Channel Type
  * @ORM\Entity(repositoryClass=ChannelTypeRepository::class)
+ * @ORM\Table(options={"comment":"Тип канала"});
  */
 class ChannelType
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Ключ типа канала"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="Название типа канала"})
      */
     private $name;
 
@@ -44,12 +46,18 @@ class ChannelType
      */
     private $webNotification;
 
+    /**
+     * @ORM\OneToMany(targetEntity=NotificationTemplateText::class, mappedBy="channelType", orphanRemoval=true)
+     */
+    private $notificationTemplateTexts;
+
     public function __construct()
     {
         $this->notification = new ArrayCollection();
         $this->smsNotification = new ArrayCollection();
         $this->emailNotification = new ArrayCollection();
         $this->webNotification = new ArrayCollection();
+        $this->notificationTemplateTexts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -183,6 +191,36 @@ class ChannelType
             // set the owning side to null (unless already changed)
             if ($webNotification->getChannelType() === $this) {
                 $webNotification->setChannelType(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|NotificationTemplateText[]
+     */
+    public function getNotificationTemplateTexts(): Collection
+    {
+        return $this->notificationTemplateTexts;
+    }
+
+    public function addNotificationTemplateText(NotificationTemplateText $notificationTemplateText): self
+    {
+        if (!$this->notificationTemplateTexts->contains($notificationTemplateText)) {
+            $this->notificationTemplateTexts[] = $notificationTemplateText;
+            $notificationTemplateText->setChannelType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificationTemplateText(NotificationTemplateText $notificationTemplateText): self
+    {
+        if ($this->notificationTemplateTexts->removeElement($notificationTemplateText)) {
+            // set the owning side to null (unless already changed)
+            if ($notificationTemplateText->getChannelType() === $this) {
+                $notificationTemplateText->setChannelType(null);
             }
         }
 

@@ -38,9 +38,9 @@ class NotificationTemplate
     private $name;
 
     /**
-     * @ORM\Column(type="text", options={"comment"="Текст шаблона уведомления"})
+     * @ORM\OneToMany(targetEntity=NotificationTemplateText::class, mappedBy="notificationTemplate", orphanRemoval=true)
      */
-    private $text;
+    private $notificationTemplateTexts;
 
     /**
      * NotificationTemplate constructor.
@@ -48,6 +48,7 @@ class NotificationTemplate
     public function __construct()
     {
         $this->notification = new ArrayCollection();
+        $this->notificationTemplateTexts = new ArrayCollection();
     }
 
     /**
@@ -135,20 +136,31 @@ class NotificationTemplate
     }
 
     /**
-     * @return string|null
+     * @return Collection|NotificationTemplateText[]
      */
-    public function getText(): ?string
+    public function getNotificationTemplateTexts(): Collection
     {
-        return $this->text;
+        return $this->notificationTemplateTexts;
     }
 
-    /**
-     * @param string $text
-     * @return $this
-     */
-    public function setText(string $text): self
+    public function addNotificationTemplateText(NotificationTemplateText $notificationTemplateText): self
     {
-        $this->text = $text;
+        if (!$this->notificationTemplateTexts->contains($notificationTemplateText)) {
+            $this->notificationTemplateTexts[] = $notificationTemplateText;
+            $notificationTemplateText->setNotificationTemplate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificationTemplateText(NotificationTemplateText $notificationTemplateText): self
+    {
+        if ($this->notificationTemplateTexts->removeElement($notificationTemplateText)) {
+            // set the owning side to null (unless already changed)
+            if ($notificationTemplateText->getNotificationTemplate() === $this) {
+                $notificationTemplateText->setNotificationTemplate(null);
+            }
+        }
 
         return $this;
     }

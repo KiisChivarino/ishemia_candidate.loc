@@ -379,6 +379,12 @@ class MenuBuilder
                 'route' => 'email_notification_list'
             ]
         );
+        $menu['notification']->addChild(
+            'webNotifications', [
+                'label' => 'Web Уведомления',
+                'route' => 'web_notification_list'
+            ]
+        );
         foreach ($menu->getChildren() as $item) {
             foreach ($item->getChildren() as $childrenItem) {
                 if ($childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()) {

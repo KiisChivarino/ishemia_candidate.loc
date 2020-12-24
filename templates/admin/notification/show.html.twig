@@ -1,23 +1,32 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
     <li>
-        <span class="title">{{ template.items.show.content.notificationType }}</span>
-        <p>{{ entity.notificationType }}</p>
+        <span class="title">{{ template.items.show.content.authUserSender }}</span>
+        <p>{{ fio(entity.authUserSender) }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.patient }}</span>
-        <p>{{ entity.patient }}</p>
+        <span class="title">{{ template.items.show.content.receiver }}</span>
+        {% if entity.notificationReceiverType.name == 'patient' %}
+            <p>{{ fio(entity.patientNotification.patient.authUser) }}</p>
+        {% elseif entity.notificationReceiverType.name == 'staff' %}
+
+        {% endif %}
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.from }}</span>
-        <p>{{ fio(entity.from) }}</p>
+        <span class="title">{{ template.items.show.content.text }}</span>
+        <p>{{ entity.text }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.notificationTime }}</span>
         <p>{{ entity.notificationTime|date('Y-m-d H:i:s') }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.text }}</span>
-        <p>{{ entity.text }}</p>
+        <span class="title">{{ template.items.show.content.notificationReceiverType }}</span>
+        <p>{{ entity.notificationReceiverType.name }}</p>
     </li>
+    <li>
+        <span class="title">{{ template.items.show.content.channelType }}</span>
+        <p>{{ entity.channelType.name }}</p>
+    </li>
+
 {% endblock %}

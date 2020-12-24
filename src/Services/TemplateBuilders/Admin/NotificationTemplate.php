@@ -30,8 +30,13 @@ class NotificationTemplate extends AdminTemplateBuilder
         'notificationTime' => 'Дата и время отправки',
         'text' => 'Текст',
         'patient' => 'Пациент',
-        'from' => 'Отправитель',
-        'smsNotification' => 'SMS уведомление'
+        'authUserSender' => 'Отправитель',
+        'smsNotification' => 'SMS уведомление',
+        'notificationReceiverType' => 'Тип получателя',
+        'receiver' => 'Получатель',
+        'medicalHistory' => 'История болезни',
+        'medicalRecord' => 'Запись в истории болезни',
+        'channelType' => 'Канал передачи',
     ];
     /** @var string[] Common FORM_SHOW_CONTENT */
     protected const FORM_SHOW_CONTENT = [
