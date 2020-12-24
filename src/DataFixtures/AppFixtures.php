@@ -7,6 +7,7 @@ use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
 use App\Entity\AnalysisRate;
 use App\Entity\AppointmentType;
+use App\Entity\ChannelType;
 use App\Entity\DateInterval;
 use App\Entity\Diagnosis;
 use App\Entity\Gender;
@@ -355,5 +356,25 @@ class AppFixtures extends Fixture
             [],
             ['enabled' => true]);
         /** end Типы логов */
+
+        /** begin Типы каналов уведомлений */
+        echo "Заполнение \"Типов каналов уведомлений\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'channel_types.csv',
+            ChannelType::class,
+            '|',
+            []);
+        /** end Типы каналов уведомлений */
+
+        /** begin Типы получателей уведомлений */
+        echo "Заполнение \"Типов получателей уведомлений\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'notification_receiver_types.csv',
+            ChannelType::class,
+            '|',
+            []);
+        /** end Типы получателей уведомлений */
     }
 }
