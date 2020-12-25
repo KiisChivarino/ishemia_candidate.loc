@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SMSNotification
 {
-    /** @var int Перввая попытка */
+    /** @var int Первая попытка */
     const FIRST_ATTEMPT = 1;
 
     /**
@@ -30,7 +30,7 @@ class SMSNotification
     /**
      * @ORM\Column(type="string", length=255, options={"comment"="Телефон получателя sms сообщения"})
      */
-    private $smsPatientRecipientPhone;
+    private $recipientPhone;
 
     /**
      * @ORM\Column(type="string", length=255, options={"comment"="Статус доставки sms сообщения"})
@@ -148,18 +148,18 @@ class SMSNotification
     /**
      * @return string|null
      */
-    public function getSmsPatientRecipientPhone(): ?string
+    public function getRecipientPhone(): ?string
     {
-        return $this->smsPatientRecipientPhone;
+        return $this->recipientPhone;
     }
 
     /**
-     * @param string $smsPatientRecipientPhone
+     * @param string $recipientPhone
      * @return $this
      */
-    public function setSmsPatientRecipientPhone(string $smsPatientRecipientPhone): self
+    public function setRecipientPhone(string $recipientPhone): self
     {
-        $this->smsPatientRecipientPhone = $smsPatientRecipientPhone;
+        $this->recipientPhone = $recipientPhone;
 
         return $this;
     }

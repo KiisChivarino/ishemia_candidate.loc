@@ -112,18 +112,18 @@ class WebNotification
     }
 
     /**
-     * @return ChannelType|null
+     * @return ChannelType
      */
-    public function getChannelType(): ?ChannelType
+    public function getChannelType(): ChannelType
     {
         return $this->channelType;
     }
 
     /**
-     * @param ChannelType|null $channelType
+     * @param ChannelType $channelType
      * @return $this
      */
-    public function setChannelType(?ChannelType $channelType): self
+    public function setChannelType(ChannelType $channelType): self
     {
         $this->channelType = $channelType;
 

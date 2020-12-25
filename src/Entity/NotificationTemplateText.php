@@ -36,6 +36,10 @@ class NotificationTemplateText
      */
     private $text;
 
+    /**
+     * @param int $id
+     * @return $this
+     */
     public function setId(int $id): self
     {
         $this->id = $id;
@@ -43,16 +47,26 @@ class NotificationTemplateText
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return NotificationTemplate|null
+     */
     public function getNotificationTemplate(): ?NotificationTemplate
     {
         return $this->notificationTemplate;
     }
 
+    /**
+     * @param NotificationTemplate|null $notificationTemplate
+     * @return $this
+     */
     public function setNotificationTemplate(?NotificationTemplate $notificationTemplate): self
     {
         $this->notificationTemplate = $notificationTemplate;
@@ -60,11 +74,18 @@ class NotificationTemplateText
         return $this;
     }
 
+    /**
+     * @return ChannelType|null
+     */
     public function getChannelType(): ?ChannelType
     {
         return $this->channelType;
     }
 
+    /**
+     * @param ChannelType|null $channelType
+     * @return $this
+     */
     public function setChannelType(?ChannelType $channelType): self
     {
         $this->channelType = $channelType;
@@ -72,11 +93,18 @@ class NotificationTemplateText
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getText(): ?string
     {
         return $this->text;
     }
 
+    /**
+     * @param string $text
+     * @return $this
+     */
     public function setText(string $text): self
     {
         $this->text = $text;

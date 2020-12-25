@@ -8,8 +8,6 @@
         <span class="title">{{ template.items.show.content.receiver }}</span>
         {% if entity.notificationReceiverType.name == 'patient' %}
             <p>{{ fio(entity.patientNotification.patient.authUser) }}</p>
-        {% elseif entity.notificationReceiverType.name == 'staff' %}
-
         {% endif %}
     </li>
     <li>

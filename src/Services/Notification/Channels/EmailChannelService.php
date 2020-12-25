@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\Notification;
+namespace App\Services\Notification\Channels;
 
 use App\Entity\Patient;
 use App\Services\InfoService\AuthUserInfoService;
@@ -15,10 +15,11 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 /**
- * Class EmailNotificationService
+ * Отправка email уведомлений
+ * Class EmailChannelService
  * @package App\Services\Notification
  */
-class EmailNotificationService
+class EmailChannelService
 {
     /** list of email templates */
     const
@@ -179,7 +180,7 @@ class EmailNotificationService
      * @param array $list
      * @return $this
      */
-    public function addRecipientsArray(array $list=[]): EmailNotificationService
+    public function addRecipientsArray(array $list=[]): self
     {
         $this->recipientList = $list;
         return $this;
@@ -189,7 +190,7 @@ class EmailNotificationService
      * @param Patient $patient
      * @return $this
      */
-    public function setPatient(Patient $patient): EmailNotificationService
+    public function setPatient(Patient $patient): self
     {
         $this->patient = $patient;
         $this->recipient = $patient->getAuthUser()->getEmail();
@@ -200,7 +201,7 @@ class EmailNotificationService
      * @param string $header
      * @return $this
      */
-    public function setHeader(string $header): EmailNotificationService
+    public function setHeader(string $header): self
     {
         $this->header = $header;
         return $this;
@@ -210,7 +211,7 @@ class EmailNotificationService
      * @param string $content
      * @return $this
      */
-    public function setContent(string $content): EmailNotificationService
+    public function setContent(string $content): self
     {
         $this->content = $content;
         return $this;
@@ -220,7 +221,7 @@ class EmailNotificationService
      * @param string $buttonLink
      * @return $this
      */
-    public function setButtonLink(string $buttonLink): EmailNotificationService
+    public function setButtonLink(string $buttonLink): self
     {
         $this->buttonLink = $buttonLink;
         return $this;
@@ -230,7 +231,7 @@ class EmailNotificationService
      * @param string $buttonText
      * @return $this
      */
-    public function setButtonText(string $buttonText): EmailNotificationService
+    public function setButtonText(string $buttonText): self
     {
         $this->buttonText = $buttonText;
         return $this;

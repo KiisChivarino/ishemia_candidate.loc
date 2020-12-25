@@ -2,7 +2,6 @@
 
 namespace App\Services\DataTable\Admin;
 
-use App\Entity\EmailNotification;
 use App\Entity\Notification;
 use App\Entity\WebNotification;
 use App\Services\TemplateItems\ListTemplateItem;

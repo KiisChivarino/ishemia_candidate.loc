@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Services\Notification;
+namespace App\Services\Notification\Channels;
 
-use App\API\BEESMS;
+use App\Entity\AuthUser;
 use App\Entity\ChannelType;
-use App\Entity\Patient;
 use App\Entity\SMSNotification;
 use App\Services\LoggerService\LogService;
 use App\Services\SMSProviders\BeelineSMSProvider;
@@ -17,60 +16,66 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
+ * Сервис отправки СМС сообщений
  * Class SMSNotificationService
  * @package App\Services\Notification
  */
-class SMSNotificationService
+class SMSChannelService
 {
     /** Константы для типов каналов  */
     const
-        SMS_CHANNEL = 'sms'
+        SMS_CHANNEL = 'sms-beeline'
     ;
 
-    /** @var EntityManagerInterface */
+    /** Константы для sms провайдеров  */
+    const
+        SMS_PROVIDER_BEELINE = 'Beeline'
+    ;
+
+    /** @var EntityManagerInterface Энтити менеджер */
     private $em;
 
-    /** @var string */
+    /** @var string Текст СМС сообщения */
     private $text;
 
-    /** @var Patient */
-    private $patient;
+    /** @var AuthUser Пользователь получатель*/
+    private $authUser;
 
-    /** @var array */
+    /** @var array Параметры для работы с смс провайдером */
     private $smsParameters;
 
-    /** @var BEESMS */
-    private $sms;
-
-    /** @var array */
+    /** @var array Стандартизированные статусы СМС сообщений */
     private $smsStatuses;
 
-    /** @var array */
+    /** @var array Стандартизированные параметры телефонных номеров */
     private $phoneParameters;
 
-    /** @var array */
+    /** @var array Стандартизированные временные диапазоны обновления и получения SMS уведомлений */
     private $smsUpdateTimes;
 
-    /** @var array */
+    /** @var array Стандартизированные форматы времени */
     private $timeFormats;
 
-    /** @var string */
+    /** @var string Телефон системного пользователя */
     private $systemUserPhone;
 
-    /** @var LogService */
+    /** @var LogService Сервис логирования */
     private $logger;
 
-    /** @var BeelineSMSProvider */
+    /** @var BeelineSMSProvider Сервис для работы с BeelineSMS провайдером */
     private $beelineSMSProvider;
 
-    /** @var string */
+    /** @var string Название провайдера предоставления услуг */
     private $provider;
 
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
-
-    /** @var TranslatorInterface */
+    /** @var TranslatorInterface Интерфейс для работы с переводом */
     private $translator;
+
+    /** @var DateTime Дата и время отправки уведомления */
+    private $notificationTime;
+
+    /** @var AuthUser Пользователь отправитель */
+    private $userSender;
 
     /**
      * SMS notification constructor.
@@ -101,7 +106,6 @@ class SMSNotificationService
     ) {
         $this->em = $em;
         $this->logger = $logService;
-        $this->tokenStorage = $tokenStorage;
         $this->beelineSMSProvider = $beelineSMSProvider;
         $this->translator = $translator;
         $this->smsParameters = $smsParameters;
@@ -110,6 +114,9 @@ class SMSNotificationService
         $this->phoneParameters = $phoneParameters;
         $this->timeFormats = $timeFormats;
         $this->systemUserPhone = $systemUserPhone;
+        $this->notificationTime = new DateTime('now');
+        $this->userSender = $tokenStorage->getToken() ? $tokenStorage->getToken()->getUser()
+            : $this->em->getRepository(AuthUser::class)->findOneBy(['phone'=>$this->systemUserPhone]);
     }
 
     /**
@@ -120,7 +127,7 @@ class SMSNotificationService
     {
         $result = null;
         switch ($this->provider) {
-            case 'Beeline':
+            case self::SMS_PROVIDER_BEELINE:
                 $result = $this->sendBeelineSMS();
                 break;
         }
@@ -128,17 +135,23 @@ class SMSNotificationService
             return false;
         }
         $sMSNotification = new SMSNotification();
-        $sMSNotification->setSmsPatientRecipientPhone($this->patient->getAuthUser()->getPhone());
+        $sMSNotification->setRecipientPhone($this->authUser->getPhone());
         $sMSNotification->setStatus($this->smsStatuses['wait']);
         $sMSNotification->setExternalId((string)$result->result->sms['id']);
         $sMSNotification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findOneBy(['name' => self::SMS_CHANNEL])
+            $this->em->getRepository(ChannelType::class)->findByName(self::SMS_CHANNEL)
         );
 
         $this->em->persist($sMSNotification);
         $this->logger
-            ->setUser($this->tokenStorage->getToken()->getUser())
-            ->setDescription($this->translator->trans('log.new.entity', ['%entity%' => 'SMS Уведомление', '%id%' => $sMSNotification->getId()]))
+            ->setUser(
+                $userSender
+                ?? $this->em->getRepository(AuthUser::class)->findOneBy(['phone'=>$this->systemUserPhone])
+            )
+            ->setDescription(
+                $this->translator->trans(
+                    'log.new.entity', ['%entity%' => 'SMS Уведомление', '%id%' => $sMSNotification->getId()])
+            )
             ->logSuccessEvent();
 
         return $sMSNotification;
@@ -154,7 +167,7 @@ class SMSNotificationService
             $this->beelineSMSProvider
                 ->setText($this->text)
                 ->setTarget(
-                    $this->phoneParameters['phone_prefix_ru'] . $this->patient->getAuthUser()->getPhone()
+                    $this->phoneParameters['phone_prefix_ru'] . $this->authUser->getPhone()
                 )
                 ->send()
         );
@@ -172,15 +185,16 @@ class SMSNotificationService
                 ->setText($sMSNotification->getNotification()->getText())
                 ->setTarget(
                     $this->phoneParameters['phone_prefix_ru'] .
-                        $sMSNotification->getNotification()->getPatient()->getAuthUser()->getPhone()
+                        $sMSNotification->getNotification()->getPatientNotification()
+                            ->getPatient()->getAuthUser()->getPhone()
                 )
                 ->send()
         );
         $sMSNotification->setExternalId((string)$result->result->sms['id']);
         $sMSNotification->setAttemptCount((int)$sMSNotification->getAttemptCount() + 1);
-
         $this->em->persist($sMSNotification);
         $this->em->flush();
+
         return true;
     }
 
@@ -193,10 +207,10 @@ class SMSNotificationService
     {
         return new SimpleXMLElement(
             $this->beelineSMSProvider
-                ->setDateTimeStart((new DateTime('now'))
+                ->setDateTimeStart($this->notificationTime
                     ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_update'] . 'H'))
                     ->format($this->timeFormats['besms']))
-                ->setDateTimeEnd((new DateTime('now'))->format($this->timeFormats['besms']))
+                ->setDateTimeEnd($this->notificationTime->format($this->timeFormats['besms']))
                 ->check()
         );
     }
@@ -210,31 +224,31 @@ class SMSNotificationService
     {
         return new SimpleXMLElement(
             $this->beelineSMSProvider
-                ->setDateTimeStart((new DateTime('now'))
+                ->setDateTimeStart($this->notificationTime
                     ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
                     ->format($this->timeFormats['besms']))
-                ->setDateTimeEnd((new DateTime('now'))->format($this->timeFormats['besms']))
+                ->setDateTimeEnd($this->notificationTime->format($this->timeFormats['besms']))
                 ->getMessages()
         );
     }
 
     /**
      * @param string $text
-     * @return SMSNotificationService
+     * @return $this
      */
-    public function setText(string $text): SMSNotificationService
+    public function setText(string $text): self
     {
         $this->text = $text;
         return $this;
     }
 
     /**
-     * @param Patient $patient
+     * @param AuthUser $authUser
      * @return $this
      */
-    public function setPatient(Patient $patient): SMSNotificationService
+    public function setAuthUser(AuthUser $authUser): self
     {
-        $this->patient = $patient;
+        $this->authUser = $authUser;
         return $this;
     }
 
@@ -242,7 +256,7 @@ class SMSNotificationService
      * @param string $provider
      * @return $this
      */
-    public function setProvider(string $provider): SMSNotificationService
+    public function setProvider(string $provider): self
     {
         $this->provider = $provider;
         return $this;

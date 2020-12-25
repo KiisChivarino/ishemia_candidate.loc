@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\NotificationTemplate;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,5 +21,20 @@ class NotificationTemplateRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, NotificationTemplate::class);
+    }
+
+    /**
+     * Ищет шаблон по его имени
+     * @param string $name
+     * @return NotificationTemplate|null
+     * @throws NonUniqueResultException
+     */
+    public function findByName(string $name): ?NotificationTemplate {
+        return $this->createQueryBuilder('nt')
+            ->andWhere('nt.name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
     }
 }

@@ -6,7 +6,8 @@ namespace App\Command;
 use App\Entity\AuthUser;
 use App\Entity\SMSNotification;
 use App\Services\LoggerService\LogService;
-use App\Services\Notification\SMSNotificationService;
+use App\Services\Notification\Channels\SMSChannelService;
+use App\Services\Notification\Services\SMSNotificationService;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -47,14 +48,14 @@ class UpdateSMSNotificationsCommand extends Command
     /**
      * UpdateSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
-     * @param SMSNotificationService $SMSNotificationService
+     * @param SMSChannelService $SMSNotificationService
      * @param LogService $logger
      * @param TranslatorInterface $translator
      * @param array $smsStatuses
      */
     public function __construct(
         ContainerInterface $container,
-        SMSNotificationService $SMSNotificationService,
+        SMSChannelService $SMSNotificationService,
         LogService $logger,
         TranslatorInterface $translator,
         array $smsStatuses

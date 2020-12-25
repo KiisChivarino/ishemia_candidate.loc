@@ -6,7 +6,10 @@ use App\Repository\PatientRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Notification\EmailNotificationService;
 use App\Services\Notification\NotificationService;
+use App\Services\Notification\NotificationsServiceBuilder;
+use App\Services\Notification\NotifierService;
 use App\Services\Notification\SMSNotificationService;
+use App\Services\Notification\WebNotificationService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,36 +26,30 @@ class AdminController extends AdminAbstractController
     /** @var KernelInterface  */
     private $appKernel;
 
-    /** @var SMSNotificationService */
-    private $sms;
+    /** @var NotifierService */
+    private $notifier;
 
-    /** @var EmailNotificationService */
-    private $email;
-
-    /** @var NotificationService */
-    private $notification;
+    /** @var NotificationsServiceBuilder */
+    private $notificationServiceBuilder;
 
     /**
      * AdminController constructor.
      * @param KernelInterface $appKernel
-     * @param SMSNotificationService $sms
-     * @param EmailNotificationService $emailNotificationService
-     * @param NotificationService $notificationService
+     * @param NotifierService $notifier
      * @param TranslatorInterface $translator
+     * @param NotificationsServiceBuilder $notificationServiceBuilder
      */
     public function __construct(
         KernelInterface $appKernel,
-        SMSNotificationService $sms,
-        EmailNotificationService $emailNotificationService,
-        NotificationService $notificationService,
-        TranslatorInterface $translator
+        NotifierService $notifier,
+        TranslatorInterface $translator,
+        NotificationsServiceBuilder $notificationServiceBuilder
     )
     {
         parent::__construct($translator);
-        $this->sms = $sms;
         $this->appKernel = $appKernel;
-        $this->email = $emailNotificationService;
-        $this->notification = $notificationService;
+        $this->notifier = $notifier;
+        $this->notificationServiceBuilder = $notificationServiceBuilder;
     }
 
     /**
@@ -77,15 +74,19 @@ class AdminController extends AdminAbstractController
      */
     public function testNotification(PatientRepository $patientRepository): Response
     {
-        $this->notification
-            ->setPatient($patientRepository->findAll()[1])
-            ->setNotificationTemplate('test')
+        $notificationService = $this->notificationServiceBuilder
+            ->setPatient($patientRepository->findAll()[0])
             ->setNotificationReceiverType('patient')
-            ->setMedicalHistory($patientRepository->findAll()[1]->getMedicalHistories()[0])
-            ->setMedicalRecord($patientRepository->findAll()[1]->getMedicalHistories()[0]->getMedicalRecords()[0])
-            ->setTexts([(new AuthUserInfoService())->getFIO($patientRepository->findAll()[1]->getAuthUser())])
-            ->notifyPatient()
+            ->setMedicalHistory($patientRepository->findAll()[0]->getMedicalHistories()[0])
+            ->setMedicalRecord($patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
+            ->makeCustomMessageNotification('Кастомное уведомление вот такое вот')
         ;
+        $this->notifier->notifyPatient(
+            $notificationService[0],
+            $notificationService[1],
+            $notificationService[2]
+        );
+        $this->getDoctrine()->getManager()->flush();
         return new Response(true);
     }
 }

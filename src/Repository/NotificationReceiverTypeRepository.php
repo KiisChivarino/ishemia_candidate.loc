@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\NotificationReceiverType;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,5 +21,20 @@ class NotificationReceiverTypeRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, NotificationReceiverType::class);
+    }
+
+    /**
+     * Ищет тип получателя по его имени
+     * @param string $name
+     * @return NotificationReceiverType|null
+     * @throws NonUniqueResultException
+     */
+    public function findByName(string $name): ?NotificationReceiverType {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
     }
 }

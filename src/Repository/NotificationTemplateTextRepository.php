@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\NotificationTemplate;
 use App\Entity\NotificationTemplateText;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -23,8 +24,16 @@ class NotificationTemplateTextRepository extends AppRepository
         parent::__construct($registry, NotificationTemplateText::class);
     }
 
-    public function findForChannel(string $channel, NotificationTemplate $notificationTemplate): ?NotificationTemplateText
-    {
+    /**
+     * Ищет текст шаблона уведомления для определенного типа канала и шаблона уведомления
+     * @param string $channel
+     * @param NotificationTemplate $notificationTemplate
+     * @return NotificationTemplateText|null
+     * @throws NonUniqueResultException
+     */
+    public function findForChannel(
+        string $channel, NotificationTemplate $notificationTemplate
+    ): ?NotificationTemplateText {
         return $this->createQueryBuilder('n')
             ->leftJoin('n.channelType', 'cT')
             ->andWhere('cT.name = :channel')

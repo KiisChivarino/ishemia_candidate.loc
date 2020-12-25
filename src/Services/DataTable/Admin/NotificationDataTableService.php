@@ -84,7 +84,9 @@ class NotificationDataTableService extends AdminDatatableService
                             case 'patient':
                                 $patientNotification = $notification->getPatientNotification();
                                 return $patientNotification ? $this->getLink(
-                                    (new AuthUserInfoService())->getFIO($patientNotification->getPatient()->getAuthUser(), true),
+                                    (new AuthUserInfoService())->getFIO(
+                                        $patientNotification->getPatient()->getAuthUser(), true
+                                    ),
                                     $patientNotification->getPatient()->getId(),
                                     'patient_show'
                                 ) : '';
@@ -99,11 +101,11 @@ class NotificationDataTableService extends AdminDatatableService
             ->add(
                 'medicalHistory', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('medicalHistory'),
-                    'render' => function (string $data, Notification $notification): string {
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var MedicalHistory $medicalHistory */
                         $medicalHistory = $notification->getPatientNotification()->getMedicalHistory();
                         return $medicalHistory ? $this->getLink(
-                            'История болезни',
+                            $listTemplateItem->getContentValue('medicalHistory'),
                             $medicalHistory->getId(),
                             'medical_history_show'
                         ) : '-';
@@ -113,11 +115,11 @@ class NotificationDataTableService extends AdminDatatableService
             ->add(
                 'medicalRecord', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('medicalRecord'),
-                    'render' => function (string $data, Notification $notification): string {
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var MedicalRecord $medicalRecord */
                         $medicalRecord = $notification->getPatientNotification()->getMedicalRecord();
                         return $medicalRecord ? $this->getLink(
-                            'Запись в историю болезни',
+                            $listTemplateItem->getContentValue('medicalRecord'),
                             $medicalRecord->getId(),
                             'medical_record_show'
                         ) : '-';

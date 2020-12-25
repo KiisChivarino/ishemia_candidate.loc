@@ -67,9 +67,9 @@ class BeelineSMSProvider
 
     /**
      * @param string $text
-     * @return BeelineSMSProvider
+     * @return $this
      */
-    public function setText(string $text): BeelineSMSProvider
+    public function setText(string $text): self
     {
         $this->text = $text;
         return $this;
@@ -77,9 +77,9 @@ class BeelineSMSProvider
 
     /**
      * @param string $target
-     * @return BeelineSMSProvider
+     * @return $this
      */
-    public function setTarget(string $target): BeelineSMSProvider
+    public function setTarget(string $target): self
     {
         $this->target = $target;
         return $this;
@@ -87,9 +87,9 @@ class BeelineSMSProvider
 
     /**
      * @param string $dateTimeStart
-     * @return BeelineSMSProvider
+     * @return $this
      */
-    public function setDateTimeStart(string $dateTimeStart): BeelineSMSProvider
+    public function setDateTimeStart(string $dateTimeStart): self
     {
         $this->dateTimeStart = $dateTimeStart;
         return $this;
@@ -97,9 +97,9 @@ class BeelineSMSProvider
 
     /**
      * @param string $dateTimeEnd
-     * @return BeelineSMSProvider
+     * @return $this
      */
-    public function setDateTimeEnd(string $dateTimeEnd): BeelineSMSProvider
+    public function setDateTimeEnd(string $dateTimeEnd): self
     {
         $this->dateTimeEnd = $dateTimeEnd;
         return $this;

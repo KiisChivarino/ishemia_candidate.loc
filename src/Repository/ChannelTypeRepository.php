@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ChannelType;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,5 +21,20 @@ class ChannelTypeRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ChannelType::class);
+    }
+
+    /**
+     * Ищет тип канала по его имени
+     * @param string $name
+     * @return ChannelType|null
+     * @throws NonUniqueResultException
+     */
+    public function findByName(string $name): ?ChannelType {
+        return $this->createQueryBuilder('ct')
+            ->andWhere('ct.name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
     }
 }

@@ -575,36 +575,6 @@ class Patient
     }
 
     /**
-     * @param PatientSMS $patientSM
-     * @return $this
-     */
-    public function addPatientSM(PatientSMS $patientSM): self
-    {
-        if (!$this->patientSMS->contains($patientSM)) {
-            $this->patientSMS[] = $patientSM;
-            $patientSM->setPatient($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param PatientSMS $patientSM
-     * @return $this
-     */
-    public function removePatientSM(PatientSMS $patientSM): self
-    {
-        if ($this->patientSMS->removeElement($patientSM)) {
-            // set the owning side to null (unless already changed)
-            if ($patientSM->getPatient() === $this) {
-                $patientSM->setPatient(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|PatientNotification[]
      */
     public function getPatientNotifications(): Collection

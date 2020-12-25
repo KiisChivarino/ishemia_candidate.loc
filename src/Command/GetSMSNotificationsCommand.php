@@ -6,7 +6,8 @@ use App\Entity\AuthUser;
 use App\Entity\Patient;
 use App\Entity\PatientSMS;
 use App\Services\LoggerService\LogService;
-use App\Services\Notification\SMSNotificationService;
+use App\Services\Notification\Channels\SMSChannelService;
+use App\Services\Notification\Services\SMSNotificationService;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,7 +45,7 @@ class GetSMSNotificationsCommand extends Command
     /**
      * GetSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
-     * @param SMSNotificationService $SMSNotificationService
+     * @param SMSChannelService $SMSNotificationService $SMSNotificationService
      * @param LogService $logger
      * @param TranslatorInterface $translator
      * @param array $smsParameters
@@ -52,7 +53,7 @@ class GetSMSNotificationsCommand extends Command
      */
     public function __construct(
         ContainerInterface $container,
-        SMSNotificationService $SMSNotificationService,
+        SMSChannelService $SMSNotificationService,
         LogService $logger,
         TranslatorInterface $translator,
         array $smsParameters,
