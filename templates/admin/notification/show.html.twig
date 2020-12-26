@@ -16,7 +16,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.notificationTime }}</span>
-        <p>{{ entity.notificationTime|date('Y-m-d H:i:s') }}</p>
+        <p>{{ entity.notificationTime|date(globals().default_time_formats.default) }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.notificationReceiverType }}</span>

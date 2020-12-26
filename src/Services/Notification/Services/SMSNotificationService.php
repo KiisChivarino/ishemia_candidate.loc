@@ -19,6 +19,15 @@ class SMSNotificationService extends NotificationService
     /** @var SMSChannelService */
     private $channel;
 
+    /**
+     * SMSNotificationService constructor.
+     * @param EntityManagerInterface $em
+     * @param TokenStorageInterface $tokenStorage
+     * @param LogService $logService
+     * @param TranslatorInterface $translator
+     * @param string $systemUserPhone
+     * @param SMSChannelService $smsChannelService
+     */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,
@@ -33,7 +42,7 @@ class SMSNotificationService extends NotificationService
     }
 
     /**
-     * Send SMS notification
+     * Sends SMS notification
      * @return bool
      */
     public function notify(): bool

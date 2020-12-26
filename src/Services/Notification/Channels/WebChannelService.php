@@ -16,9 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class WebChannelService
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
 
     /**

@@ -121,11 +121,10 @@ class NotificationsServiceBuilder
     }
 
     /**
-     * @return array
+     * @return NotificationsServiceBuilder
      */
-    private function makeNotificationServices(): array
+    private function makeNotificationServices(): NotificationsServiceBuilder
     {
-        return [
             $this->webNotificationService
                 ->setPatient($this->patientReceiver)
                 ->setNotificationTemplate($this->notificationTemplate)
@@ -133,8 +132,7 @@ class NotificationsServiceBuilder
                 ->setMedicalHistory($this->medicalHistory)
                 ->setMedicalRecord($this->medicalRecord)
                 ->setVariables($this->variablesForWeb)
-                ->setNotificationConfirm($this->notificationConfirm)
-            ,
+                ->setNotificationConfirm($this->notificationConfirm);
             $this->smsNotificationService
                 ->setPatient($this->patientReceiver)
                 ->setNotificationTemplate($this->notificationTemplate)
@@ -142,8 +140,7 @@ class NotificationsServiceBuilder
                 ->setMedicalHistory($this->medicalHistory)
                 ->setMedicalRecord($this->medicalRecord)
                 ->setVariables($this->variablesForSMS)
-                ->setNotificationConfirm($this->notificationConfirm)
-            ,
+                ->setNotificationConfirm($this->notificationConfirm);
             $this->emailNotificationService
                 ->setPatient($this->patientReceiver)
                 ->setNotificationTemplate($this->notificationTemplate)
@@ -151,15 +148,15 @@ class NotificationsServiceBuilder
                 ->setMedicalHistory($this->medicalHistory)
                 ->setMedicalRecord($this->medicalRecord)
                 ->setVariables($this->variablesForEmail)
-                ->setNotificationConfirm($this->notificationConfirm)
-        ];
+                ->setNotificationConfirm($this->notificationConfirm);
+            return $this;
     }
 
     /**
      * @param string $message
-     * @return array
+     * @return NotificationsServiceBuilder
      */
-    public function makeCustomMessageNotification(string $message): array
+    public function makeCustomMessageNotification(string $message): NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->setNotificationTemplate(self::TEMPLATE_CUSTOM_MESSAGE);
@@ -170,9 +167,9 @@ class NotificationsServiceBuilder
     /**
      * @param string $doctor
      * @param string $appointmentDateTime
-     * @return array
+     * @return NotificationsServiceBuilder
      */
-    public function makeDoctorAppointmentNotification(string $doctor, string $appointmentDateTime): array
+    public function makeDoctorAppointmentNotification(string $doctor, string $appointmentDateTime): NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->setNotificationTemplate(self::TEMPLATE_DOCTOR_APPOINTMENT);
@@ -181,9 +178,9 @@ class NotificationsServiceBuilder
     }
 
     /**
-     * @return array
+     * @return NotificationsServiceBuilder
      */
-    public function makeConfirmMedicationNotification(): array
+    public function makeConfirmMedicationNotification(): NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->createNotificationConfirm();
@@ -195,12 +192,13 @@ class NotificationsServiceBuilder
     /**
      * @param string $testingAppointmentName
      * @param string $appointmentDateTime
-     * @return array
+     * @return NotificationsServiceBuilder
      */
     public function makeTestingAppointmentNotification(
         string $testingAppointmentName,
         string $appointmentDateTime
-    ): array {
+    ): NotificationsServiceBuilder
+    {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->setNotificationTemplate(self::TEMPLATE_TESTING_APPOINTMENT);
         $this->setVariables([$testingAppointmentName, $appointmentDateTime]);
@@ -208,9 +206,9 @@ class NotificationsServiceBuilder
     }
 
     /**
-     * @return array
+     * @return NotificationsServiceBuilder
      */
-    public function makeConfirmAppointmentNotification(): array
+    public function makeConfirmAppointmentNotification(): NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->createNotificationConfirm();
@@ -221,9 +219,9 @@ class NotificationsServiceBuilder
 
     /**
      * @param string $linkToSubmitAnalysisResults
-     * @return array
+     * @return NotificationsServiceBuilder
      */
-    public function makeSubmitAnalysisResultsNotification(string $linkToSubmitAnalysisResults): array
+    public function makeSubmitAnalysisResultsNotification(string $linkToSubmitAnalysisResults): NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->setNotificationTemplate(self::TEMPLATE_SUBMIT_ANALYSIS_RESULTS);
@@ -344,5 +342,29 @@ class NotificationsServiceBuilder
     {
         $this->notificationTemplate = $notificationTemplate;
         return $this;
+    }
+
+    /**
+     * @return WebNotificationService
+     */
+    public function getWebNotificationService(): WebNotificationService
+    {
+        return $this->webNotificationService;
+    }
+
+    /**
+     * @return EmailNotificationService
+     */
+    public function getEmailNotificationService(): EmailNotificationService
+    {
+        return $this->emailNotificationService;
+    }
+
+    /**
+     * @return SMSNotificationService
+     */
+    public function getSMSNotificationService(): SMSNotificationService
+    {
+        return $this->smsNotificationService;
     }
 }

@@ -40,6 +40,7 @@ class NotificationTemplateTextRepository extends AppRepository
             ->setParameter('channel', $channel)
             ->andWhere('n.notificationTemplate = :notificationTemplate')
             ->setParameter('notificationTemplate', $notificationTemplate)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
             ;

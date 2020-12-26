@@ -76,9 +76,9 @@ class AdminController extends AdminAbstractController
             ->makeConfirmMedicationNotification()
         ;
         $this->notifier->notifyPatient(
-            $notificationService[0],
-            $notificationService[1],
-            $notificationService[2]
+            $notificationService->getWebNotificationService(),
+            $notificationService->getSMSNotificationService(),
+            $notificationService->getEmailNotificationService()
         );
         $this->getDoctrine()->getManager()->flush();
         return new Response(true);

@@ -1,0 +1,3 @@
+parameters:
+  patient: 'patient'
+  staff: 'staff'

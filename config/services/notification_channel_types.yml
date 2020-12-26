@@ -1,0 +1,4 @@
+parameters:
+  email_channel: 'email'
+  sms_channel: 'sms-beeline'
+  web_channel: 'web'

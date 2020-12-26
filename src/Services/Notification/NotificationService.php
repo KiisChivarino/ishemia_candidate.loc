@@ -111,7 +111,7 @@ abstract class NotificationService implements NotificationInterface
     {
         $notification = new Notification();
         $notification->setPatientNotification($this->createPatientNotification());
-        $notification->setText($this->vsPrintF($channel));
+        $notification->setText($this->getNotificationText($channel));
         $notification->setAuthUserSender($this->userSender);
         $notification->setNotificationReceiverType($this->notificationReceiverType);
         $notification->setNotificationTime(new DateTime('now'));
@@ -123,10 +123,11 @@ abstract class NotificationService implements NotificationInterface
     }
 
     /**
+     * Generates text for specific channel
      * @param $channel
      * @return string
      */
-    private function vsPrintF($channel): string
+    private function getNotificationText(string $channel): string
     {
         return vsprintf(
             $this->em->getRepository(NotificationTemplateText::class)->findForChannel(

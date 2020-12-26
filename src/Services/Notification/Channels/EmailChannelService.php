@@ -25,30 +25,30 @@ class EmailChannelService
         DEFAULT_EMAIL_TEMPLATE = '/email/default.html.twig'
     ;
 
-    /** Константы для email */
+    /** Constants for email */
     const
         GREETINGS = 'Уважаемый, %s'
     ;
 
-    /** @var string  */
+    /** @var string */
     private $subject;
 
-    /** @var string  */
+    /** @var string */
     private $recipient = null;
 
-    /** @var string  */
+    /** @var string */
     private $sender;
 
-    /** @var string  */
+    /** @var string */
     private $mailBody;
 
-    /** @var string  */
+    /** @var string */
     private $serverHost;
 
-    /** @var Environment  */
+    /** @var Environment */
     private $twig;
 
-    /** @var array  */
+    /** @var array Массив получателей для множественной */
     private $recipientList = [];
 
     /** @var Patient $patient  */
