@@ -3,13 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Repository\PatientRepository;
-use App\Services\InfoService\AuthUserInfoService;
-use App\Services\Notification\EmailNotificationService;
-use App\Services\Notification\NotificationService;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
-use App\Services\Notification\SMSNotificationService;
-use App\Services\Notification\WebNotificationService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;

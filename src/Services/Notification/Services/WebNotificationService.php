@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Services\Notification\Services;
-
 
 use App\Entity\ChannelType;
 use App\Services\LoggerService\LogService;

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services\Notification\Channels;
 
 use App\Entity\Patient;
