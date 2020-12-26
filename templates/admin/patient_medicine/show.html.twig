@@ -1,0 +1,33 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.medicineName }}</span>
+        <p>
+            {{ entity.medicineName }}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.instruction }}</span>
+        {{ entity.instruction }}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.medicalHistory }}</span>
+        <p>
+            {% if entity.medicalHistory %}
+                <a href="{{ path('medical_history_show', {'id': entity.medicalHistory.id}) }}">
+                    {{ medicalHistoryTitle }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.dateBegin }}</span>
+        <p>
+            {% if entity.dateBegin %}
+                {{ entity.dateBegin ? entity.dateBegin|date('Y-m-d') : '' }}
+            {% else %}
+                Дата начала приема лекарства не найдена!
+            {% endif %}
+        </p>
+    </li>
+{% endblock %}

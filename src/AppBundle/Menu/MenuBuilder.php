@@ -132,6 +132,8 @@ class MenuBuilder
                 'route' => 'position_list'
             ]
         );
+
+        //История болезни
         $menu->addChild(
             'medicalHistory', [
                 'label' => 'Управление историями болезни',
@@ -168,6 +170,12 @@ class MenuBuilder
             ]
         );
         $menu['medicalHistory']->addChild(
+            'patientMedicineList', [
+                'label' => 'Прием лекарств',
+                'route' => 'patient_medicine_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
             'prescriptionList', [
                 'label' => 'Назначения',
                 'route' => 'prescription_list'
@@ -191,6 +199,9 @@ class MenuBuilder
                 'route' => 'prescription_appointment_list'
             ]
         );
+
+
+        //Медицинские справочники
         $menu->addChild(
             'medical_guides', [
                 'label' => 'Медицинские справочники',
