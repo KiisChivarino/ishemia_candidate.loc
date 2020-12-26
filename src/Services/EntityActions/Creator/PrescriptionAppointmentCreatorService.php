@@ -48,7 +48,6 @@ class PrescriptionAppointmentCreatorService
             ->setStaff($staff)
             ->setEnabled(true)
             ->setInclusionTime(new DateTime())
-            ->setConfirmedByStaff(false)
             ->setPrescription($prescription)
             ->setPatientAppointment($patientAppointment)
             ->setPlannedDateTime($this->getAppointmentPlannedDate($planAppointment, $patientAppointment));

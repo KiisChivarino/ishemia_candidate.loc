@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use App\Entity\AuthUser;
 use App\Services\InfoService\AuthUserInfoService;
@@ -78,7 +78,7 @@ class AuthUserCreatorService
      */
     public function updateAuthUser(AuthUser $authUser, string $oldPassword): AuthUser
     {
-        $this->updatePassword($this->passwordEncoder, $authUser, $oldPassword);
+        self::updatePassword($this->passwordEncoder, $authUser, $oldPassword);
         $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
         $authUser->setRoles($authUser->getRoles()[0]);
         $this->entityManager->persist($authUser);

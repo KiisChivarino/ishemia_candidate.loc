@@ -50,7 +50,6 @@ class PrescriptionTestingCreatorService
             ->setStaff($staff)
             ->setEnabled(true)
             ->setInclusionTime(new DateTime())
-            ->setConfirmedByStaff(false)
             ->setPrescription($prescription)
             ->setPatientTesting($patientTesting)
             ->setPlannedDate($this->getTestingPlannedDate($planTesting, $patientTesting));
