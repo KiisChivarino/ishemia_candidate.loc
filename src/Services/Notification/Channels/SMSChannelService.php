@@ -207,10 +207,10 @@ class SMSChannelService
     {
         return new SimpleXMLElement(
             $this->beelineSMSProvider
+                ->setDateTimeEnd($this->notificationTime->format($this->timeFormats['besms']))
                 ->setDateTimeStart($this->notificationTime
                     ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_update'] . 'H'))
                     ->format($this->timeFormats['besms']))
-                ->setDateTimeEnd($this->notificationTime->format($this->timeFormats['besms']))
                 ->check()
         );
     }
@@ -224,10 +224,10 @@ class SMSChannelService
     {
         return new SimpleXMLElement(
             $this->beelineSMSProvider
+                ->setDateTimeEnd($this->notificationTime->format($this->timeFormats['besms']))
                 ->setDateTimeStart($this->notificationTime
                     ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
                     ->format($this->timeFormats['besms']))
-                ->setDateTimeEnd($this->notificationTime->format($this->timeFormats['besms']))
                 ->getMessages()
         );
     }

@@ -7,6 +7,7 @@ use App\Entity\ChannelType;
 use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
 use App\Entity\Notification;
+use App\Entity\NotificationConfirm;
 use App\Entity\NotificationReceiverType;
 use App\Entity\NotificationTemplate;
 use App\Entity\NotificationTemplateText;
@@ -75,6 +76,9 @@ abstract class NotificationService implements NotificationInterface
     /** @var NotificationReceiverType Тип получателя уведомления */
     private $notificationReceiverType;
 
+    /** @var NotificationConfirm */
+    private $notificationConfirm;
+
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
@@ -141,7 +145,9 @@ abstract class NotificationService implements NotificationInterface
         $patientNotification = (new PatientNotification())
             ->setMedicalRecord($this->medicalRecord ?? null)
             ->setMedicalHistory($this->medicalHistory ?? null)
-            ->setPatient($this->patientReceiver);
+            ->setPatient($this->patientReceiver)
+            ->setNotificationConfirm($this->notificationConfirm)
+        ;
         $this->em->persist($patientNotification);
         return $patientNotification;
     }
@@ -236,6 +242,16 @@ abstract class NotificationService implements NotificationInterface
         $this->notificationTemplate = $this->em
             ->getRepository(NotificationTemplate::class)
             ->findByName($notificationTemplate);
+        return $this;
+    }
+
+    /**
+     * @param NotificationConfirm $notificationConfirm
+     * @return NotificationService
+     */
+    public function setNotificationConfirm(NotificationConfirm $notificationConfirm): self
+    {
+        $this->notificationConfirm = $notificationConfirm;
         return $this;
     }
 

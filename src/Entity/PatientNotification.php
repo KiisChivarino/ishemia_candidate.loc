@@ -42,6 +42,11 @@ class PatientNotification
     private $medicalHistory;
 
     /**
+     * @ORM\ManyToOne(targetEntity=NotificationConfirm::class, inversedBy="patientNotification")
+     */
+    private $notificationConfirm;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -121,6 +126,18 @@ class PatientNotification
     public function setMedicalHistory(?MedicalHistory $medicalHistory): self
     {
         $this->medicalHistory = $medicalHistory;
+
+        return $this;
+    }
+
+    public function getNotificationConfirm(): ?NotificationConfirm
+    {
+        return $this->notificationConfirm;
+    }
+
+    public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
+    {
+        $this->notificationConfirm = $notificationConfirm;
 
         return $this;
     }

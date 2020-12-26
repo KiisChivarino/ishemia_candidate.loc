@@ -71,10 +71,9 @@ class AdminController extends AdminAbstractController
     {
         $notificationService = $this->notificationServiceBuilder
             ->setPatient($patientRepository->findAll()[0])
-            ->setNotificationReceiverType('patient')
             ->setMedicalHistory($patientRepository->findAll()[0]->getMedicalHistories()[0])
             ->setMedicalRecord($patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
-            ->makeCustomMessageNotification('Кастомное уведомление вот такое вот')
+            ->makeConfirmMedicationNotification()
         ;
         $this->notifier->notifyPatient(
             $notificationService[0],

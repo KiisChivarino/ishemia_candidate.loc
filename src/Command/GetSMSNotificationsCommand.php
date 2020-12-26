@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\AuthUser;
+use App\Entity\NotificationConfirm;
 use App\Entity\Patient;
 use App\Entity\PatientSMS;
 use App\Services\LoggerService\LogService;
@@ -80,7 +81,7 @@ class GetSMSNotificationsCommand extends Command
     }
 
     /**
-     * Gets sms for the past hour, and puts into DB
+     * Gets sms for the past *hours*, and puts into DB
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
@@ -92,6 +93,11 @@ class GetSMSNotificationsCommand extends Command
         $patients = $em->getRepository(Patient::class)->findAll();
         $smsCollection = $em->getRepository(PatientSMS::class)->findAll();
         $systemUser = $em->getRepository(AuthUser::class)->getSystemUser();
+        $notificationsConfirm = $em->getRepository(NotificationConfirm::class)->findBy(
+            [
+                'isConfirmed' => false
+            ]
+        );
 
         $result = $this->sms->getUnreadSMS();
         foreach ($result->MESSAGES->MESSAGE as $message) {
@@ -115,8 +121,18 @@ class GetSMSNotificationsCommand extends Command
                             $sms->setCreatedAt(
                                 date_create_from_format('d.m.y H:i:s', (string) $message->SMS_CLOSE_TIME)
                             );
-
                             $em->persist($sms);
+                            foreach ($notificationsConfirm as $confirm) {
+                                if (
+                                    (string) $message->SMS_TEXT == $confirm->getSmsCode()
+                                    && $this->phoneParameters['phone_prefix_ru'] .
+                                    $confirm->getPatientNotification()[0]->getPatient()->getAuthUser()->getPhone()
+                                    == (string) $message->SMS_SENDER
+                                ) {
+                                    $confirm->setIsConfirmed(true);
+                                    $em->persist($confirm);
+                                }
+                            }
 
                             $this->logger
                                 ->setUser($systemUser)
