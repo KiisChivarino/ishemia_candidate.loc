@@ -100,6 +100,16 @@ class AppFixtures extends Fixture
         $this->dataSowing->addRoles();
         /** end Роли*/
 
+        /** begin Типы каналов*/
+        echo "Внесение типов каналов\n";
+        $this->dataSowing->addChannelTypes();
+        /** end Типы каналов*/
+
+        /** begin Типы получателей уведомлений */
+        echo "Внесение типов получателей уведомлений\n";
+        $this->dataSowing->addReceiverTypes();
+        /** end Типы получателей уведомлений*/
+
         /** begin OKSM */
         echo "Заполнение справочника ОКСМ\n";
         $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'OKSM.csv', OKSM::class);
@@ -359,26 +369,6 @@ class AppFixtures extends Fixture
             [],
             ['enabled' => true]);
         /** end Типы логов */
-
-        /** begin Типы каналов уведомлений */
-        echo "Заполнение \"Типов каналов уведомлений\"\n";
-        $this->dataSowing->setEntitiesFromCsv(
-            $manager,
-            self::PATH_TO_CSV . 'channel_types.csv',
-            ChannelType::class,
-            ',',
-            []);
-        /** end Типы каналов уведомлений */
-
-        /** begin Типы получателей уведомлений */
-        echo "Заполнение \"Типов получателей уведомлений\"\n";
-        $this->dataSowing->setEntitiesFromCsv(
-            $manager,
-            self::PATH_TO_CSV . 'notification_receiver_types.csv',
-            NotificationReceiverType::class,
-            ',',
-            []);
-        /** end Типы получателей уведомлений */
 
         /** begin Шаблоны уведомлений */
         echo "Заполнение справочника \"Шаблоны уведомлений\"\n";

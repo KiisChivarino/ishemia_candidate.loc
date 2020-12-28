@@ -2,6 +2,7 @@
 
 namespace App\Services\Notification\Services;
 
+use App\Entity\ChannelType;
 use App\Services\LoggerService\LogService;
 use App\Services\Notification\Channels\SMSChannelService;
 use App\Services\Notification\NotificationService;
@@ -16,28 +17,25 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SMSNotificationService extends NotificationService
 {
+    /** Константы для sms провайдеров  */
+    const
+        SMS_PROVIDER_BEELINE = 'Beeline'
+    ;
+
     /** @var SMSChannelService */
     private $channel;
 
-    /**
-     * SMSNotificationService constructor.
-     * @param EntityManagerInterface $em
-     * @param TokenStorageInterface $tokenStorage
-     * @param LogService $logService
-     * @param TranslatorInterface $translator
-     * @param string $systemUserPhone
-     * @param SMSChannelService $smsChannelService
-     */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,
         LogService $logService,
         TranslatorInterface $translator,
-        string $systemUserPhone,
-        SMSChannelService $smsChannelService
+        SMSChannelService $smsChannelService,
+        array $channelTypes,
+        array $notificationReceiverTypes
     )
     {
-        parent::__construct($em, $tokenStorage, $logService, $translator, $systemUserPhone);
+        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
         $this->channel = $smsChannelService;
     }
 
@@ -47,7 +45,7 @@ class SMSNotificationService extends NotificationService
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification(self::SMS_CHANNEL);
+        $notification = $this->createNotification($this->channelTypes['sms-beeline']);
         $notification
             ->setSmsNotification(
                 $this->channel
@@ -56,6 +54,9 @@ class SMSNotificationService extends NotificationService
                     ->setProvider(self::SMS_PROVIDER_BEELINE)
                     ->sendSMS()
             );
+        $notification->setChannelType(
+            $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['sms-beeline'])
+        );
         $this->em->persist($notification);
         $this->logSuccessNotificationCreation($notification);
         return true;

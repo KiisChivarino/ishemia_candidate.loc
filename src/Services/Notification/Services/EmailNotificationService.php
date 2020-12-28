@@ -32,19 +32,20 @@ class EmailNotificationService extends NotificationService
      * @param TokenStorageInterface $tokenStorage
      * @param LogService $logService
      * @param TranslatorInterface $translator
-     * @param string $systemUserPhone
      * @param EmailChannelService $emailChannelService
+     * @param array $channelTypes
+     * @param array $notificationReceiverTypes
      */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,
         LogService $logService,
         TranslatorInterface $translator,
-        string $systemUserPhone,
-        EmailChannelService $emailChannelService
-    )
-    {
-        parent::__construct($em, $tokenStorage, $logService, $translator, $systemUserPhone);
+        EmailChannelService $emailChannelService,
+        array $channelTypes,
+        array $notificationReceiverTypes
+    ) {
+        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
         $this->channel = $emailChannelService;
     }
 
@@ -54,11 +55,14 @@ class EmailNotificationService extends NotificationService
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification(self::EMAIL_CHANNEL);
+        $notification = $this->createNotification($this->channelTypes['email']);
+        $notification->setChannelType(
+            $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['email'])
+        );
         $emailNotification = new EmailNotification();
         $emailNotification->setPatientRecipientEmail($this->patientReceiver->getAuthUser()->getEmail());
         $emailNotification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName(self::EMAIL_CHANNEL)
+            $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['email'])
         );
 
         try {

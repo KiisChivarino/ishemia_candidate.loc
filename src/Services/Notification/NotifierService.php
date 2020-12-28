@@ -13,6 +13,18 @@ use App\Services\Notification\Services\WebNotificationService;
  */
 class NotifierService
 {
+    /** @var array */
+    private $notificationReceiverTypes;
+
+    /**
+     * NotifierService constructor.
+     * @param array $notificationReceiverTypes
+     */
+    public function __construct(array $notificationReceiverTypes)
+    {
+        $this->notificationReceiverTypes = $notificationReceiverTypes;
+    }
+
     /**
      * Notification sender for patient
      * @param WebNotificationService $webNotificationService
@@ -26,14 +38,14 @@ class NotifierService
         EmailNotificationService $emailNotificationService
     ): void
     {
-        $webNotificationService->setNotificationReceiverType(NotificationService::RECEIVER_TYPE_PATIENT)->notify();
+        $webNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
 
         if ($smsNotificationService->getPatient()->getSmsInforming()) {
-            $smsNotificationService->setNotificationReceiverType(NotificationService::RECEIVER_TYPE_PATIENT)->notify();
+            $smsNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
         }
 
         if ($emailNotificationService->getPatient()->getEmailInforming()) {
-            $emailNotificationService->setNotificationReceiverType(NotificationService::RECEIVER_TYPE_PATIENT)->notify();
+            $emailNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
         }
     }
 }

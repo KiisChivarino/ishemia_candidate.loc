@@ -21,25 +21,16 @@ class WebNotificationService extends NotificationService implements Notification
     /** @var WebChannelService */
     private $channel;
 
-    /**
-     * WebNotificationService constructor.
-     * @param EntityManagerInterface $em
-     * @param TokenStorageInterface $tokenStorage
-     * @param LogService $logService
-     * @param TranslatorInterface $translator
-     * @param string $systemUserPhone
-     * @param WebChannelService $webChannelService
-     */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,
         LogService $logService,
         TranslatorInterface $translator,
-        string $systemUserPhone,
-        WebChannelService $webChannelService
-    )
+        WebChannelService $webChannelService,
+        array $channelTypes,
+        array $notificationReceiverTypes)
     {
-        parent::__construct($em, $tokenStorage, $logService, $translator, $systemUserPhone);
+        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
         $this->channel = $webChannelService;
     }
 
@@ -49,11 +40,14 @@ class WebNotificationService extends NotificationService implements Notification
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification(self::WEB_CHANNEL)->setWebNotification(
+        $notification = $this->createNotification($this->channelTypes['web'])->setWebNotification(
             $this->channel->createWebNotification(
                 $this->getPatient(),
-                $this->em->getRepository(ChannelType::class)->findByName(self::WEB_CHANNEL)
+                $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['web'])
             )
+        );
+        $notification->setChannelType(
+            $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['web'])
         );
         $this->em->persist($notification);
         $this->logSuccessNotificationCreation($notification);

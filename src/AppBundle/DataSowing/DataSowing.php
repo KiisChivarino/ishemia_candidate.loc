@@ -3,6 +3,8 @@
 namespace App\AppBundle\DataSowing;
 
 use App\Entity\AuthUser;
+use App\Entity\ChannelType;
+use App\Entity\NotificationReceiverType;
 use App\Entity\Role;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -22,13 +24,28 @@ class DataSowing
     /** @var EntityManagerInterface $entityManager */
     private $entityManager;
 
+    /** @var array */
+    private $channelTypes;
+
+    /** @var array */
+    private $notificationReceiverTypes;
+
+
     /**
      * DataSowing constructor.
      * @param EntityManagerInterface $entityManager
+     * @param array $channelTypes
+     * @param array $notificationReceiverTypes
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        array $channelTypes,
+        array $notificationReceiverTypes
+    )
     {
         $this->entityManager = $entityManager;
+        $this->channelTypes = $channelTypes;
+        $this->notificationReceiverTypes = $notificationReceiverTypes;
     }
 
     /**
@@ -113,6 +130,42 @@ class DataSowing
                     $roleData,
                     (new Role())
                 );
+        }
+    }
+
+    /**
+     * Добавляет типы каналов из yaml файла
+     */
+    public function addChannelTypes()
+    {
+        $i = 1;
+        foreach ($this->channelTypes as $channelType) {
+            $this->entityManager->getRepository(AuthUser::class)->setEntityData(
+                [
+                    'id' => $i,
+                    'name' => $channelType
+                ],
+                (new ChannelType())
+            );
+            $i++;
+        }
+    }
+
+    /**
+     * Добавляет типы получателей из yaml файла
+     */
+    public function addReceiverTypes()
+    {
+        $i = 1;
+        foreach ($this->notificationReceiverTypes as $notificationReceiverType) {
+            $this->entityManager->getRepository(AuthUser::class)->setEntityData(
+                [
+                    'id' => $i,
+                    'name' => $notificationReceiverType
+                ],
+                (new NotificationReceiverType())
+            );
+            $i++;
         }
     }
 

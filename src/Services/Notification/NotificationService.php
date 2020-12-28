@@ -3,7 +3,6 @@
 namespace App\Services\Notification;
 
 use App\Entity\AuthUser;
-use App\Entity\ChannelType;
 use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
 use App\Entity\Notification;
@@ -26,23 +25,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 abstract class NotificationService implements NotificationInterface
 {
-    /** Константы для типов каналов  */
-    const
-        EMAIL_CHANNEL = 'email',
-        SMS_CHANNEL = 'sms-beeline',
-        WEB_CHANNEL = 'web'
-    ;
-
-    /** Константы для типов получателей  */
-    const
-        RECEIVER_TYPE_PATIENT = 'patient'
-    ;
-
-    /** Константы для sms провайдеров  */
-    const
-        SMS_PROVIDER_BEELINE = 'Beeline'
-    ;
-
     /** @var EntityManagerInterface Энтити менеджер */
     protected $em;
 
@@ -57,9 +39,6 @@ abstract class NotificationService implements NotificationInterface
 
     /** @var LogService Сервис логирования */
     protected $logger;
-
-    /** @var string Телефон системного пользователя */
-    private $systemUserPhone;
 
     /** @var MedicalHistory История болезни пациента */
     private $medicalHistory;
@@ -79,27 +58,36 @@ abstract class NotificationService implements NotificationInterface
     /** @var NotificationConfirm */
     private $notificationConfirm;
 
+    /** @var array */
+    protected $channelTypes;
+
+    /** @var array */
+    private $notificationReceiverTypes;
+
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
      * @param TokenStorageInterface $tokenStorage
      * @param LogService $logService
      * @param TranslatorInterface $translator
-     * @param string $systemUserPhone
+     * @param array $channelTypes
+     * @param array $notificationReceiverTypes
      */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,
         LogService $logService,
         TranslatorInterface $translator,
-        string $systemUserPhone
+        array $channelTypes,
+        array $notificationReceiverTypes
     ) {
         $this->em = $em;
         $this->logger = $logService;
         $this->translator = $translator;
-        $this->systemUserPhone = $systemUserPhone;
+        $this->channelTypes = $channelTypes;
+        $this->notificationReceiverTypes = $notificationReceiverTypes;
         $this->userSender = $tokenStorage->getToken() ? $tokenStorage->getToken()->getUser()
-            : $this->em->getRepository(AuthUser::class)->findOneBy(['phone'=>$this->systemUserPhone]);
+            : $this->em->getRepository(AuthUser::class)->getSystemUser();
     }
 
     /**
@@ -116,9 +104,6 @@ abstract class NotificationService implements NotificationInterface
         $notification->setNotificationReceiverType($this->notificationReceiverType);
         $notification->setNotificationTime(new DateTime('now'));
         $notification->setNotificationTemplate($this->notificationTemplate);
-        $notification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($channel)
-        );
         return $notification;
     }
 
