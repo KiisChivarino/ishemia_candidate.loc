@@ -197,7 +197,7 @@ abstract class AppAbstractController extends AbstractController
         } catch (Exception $e) {
             $this->addFlash(
                 'error',
-                'Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...'
+                $this->translator->trans('app_controller.error.invalid_handle_request')
             );
             return $this->render(
                 $this->templateService->getTemplateFullName(
@@ -227,21 +227,39 @@ abstract class AppAbstractController extends AbstractController
                 $entityManager->persist($entity);
                 switch ($type) {
                     case 'new':
+                        /** @noinspection PhpParamsInspection */
                         (new LogService($entityManager))
                             ->setUser($this->getUser())
-                            ->setDescription($this->translator->trans('log.new.entity', ['%entity%' => $entityName, '%id%' => $entity->getId()]))
+                            ->setDescription(
+                                $this->translator->trans(
+                                    'log.new.entity',
+                                    [
+                                        '%entity%' => $entityName,
+                                        '%id%' => $entity->getId(),
+                                    ]
+                                )
+                            )
                             ->logCreateEvent();
                         break;
                     case 'edit':
+                        /** @noinspection PhpParamsInspection */
                         (new LogService($entityManager))
                             ->setUser($this->getUser())
-                            ->setDescription($this->translator->trans('log.update.entity', ['%entity%' => $entityName, '%id%' => $entity->getId()]))
+                            ->setDescription(
+                                $this->translator->trans(
+                                    'log.update.entity',
+                                    [
+                                        '%entity%' => $entityName,
+                                        '%id%' => $entity->getId(),
+                                    ]
+                                )
+                            )
                             ->logUpdateEvent();
                         break;
                 }
                 $entityManager->flush();
             } catch (DBALException $e) {
-                $this->addFlash('error', 'Не удалось сохранить запись!');
+                $this->addFlash('error', $this->translator->trans('app_controller.error.post_dbal_exception'));
                 return $this->render(
                     $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
                     [
@@ -250,7 +268,7 @@ abstract class AppAbstractController extends AbstractController
                     ]
                 );
             } catch (Exception $e) {
-                $this->addFlash('error', 'Ошибка cохранения записи!');
+                $this->addFlash('error', $this->translator->trans('app_controller.error.exception'));
                 return $this->render(
                     $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
                     [
@@ -259,7 +277,7 @@ abstract class AppAbstractController extends AbstractController
                     ]
                 );
             }
-            $this->addFlash('success', 'Запись успешно сохранена!');
+            $this->addFlash('success', $this->translator->trans('app_controller.success.success_post'));
             return $this->redirectToRoute(
                 $this->templateService->getRoute(
                     $this->templateService->getRedirectRouteName()),
@@ -320,7 +338,8 @@ abstract class AppAbstractController extends AbstractController
             $entity,
             $formGeneratorService->generateForm($this->createFormBuilder(), $formDataArray),
             $templateEditName,
-            $entityActions
+            $entityActions,
+            self::RESPONSE_FORM_TYPE_EDIT
         );
     }
 
@@ -361,7 +380,8 @@ abstract class AppAbstractController extends AbstractController
             $entity,
             $formGeneratorService->generateForm($this->createFormBuilder(), $formDataArray),
             $formName,
-            $entityActions
+            $entityActions,
+            self::RESPONSE_FORM_TYPE_NEW
         );
     }
 
@@ -462,9 +482,18 @@ abstract class AppAbstractController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             try {
+                /** @noinspection PhpParamsInspection */
                 (new LogService($entityManager))
                     ->setUser($this->getUser())
-                    ->setDescription($this->translator->trans('log.delete.entity', ['%entity%' => $entityName, '%id%' => $entity->getId()]))
+                    ->setDescription(
+                        $this->translator->trans(
+                            'log.delete.entity',
+                            [
+                                '%entity%' => $entityName,
+                                '%id%' => $entity->getId(),
+                            ]
+                        )
+                    )
                     ->logDeleteEvent();
                 $entityManager->remove($entity);
                 $entityManager->flush();
@@ -472,16 +501,19 @@ abstract class AppAbstractController extends AbstractController
                 if ($e->getPrevious()->getCode() == self::FOREIGN_KEY_ERROR) {
                     $this->addFlash(
                         'error',
-                        'Запись не удалена! Удалите все дочерние элементы!'
+                        $this->translator->trans('app_controller.error.foreign_key')
                     );
                     return $this->redirectToRoute($this->templateService->getRoute('list'));
                 } else {
-                    $this->addFlash('error', 'Ошибка! Запись не удалена. Обратитесь к администратору...');
+                    $this->addFlash(
+                        'error',
+                        $this->translator->trans('app_controller.error.delete_dbal_exception')
+                    );
                     return $this->redirectToRoute($this->templateService->getRoute('list'));
                 }
             }
         }
-        $this->addFlash('success', 'Запись успешно удалена');
+        $this->addFlash('success', $this->translator->trans('app_controller.success.success_delete'));
         return $this->redirectToRoute($this->templateService->getRoute('list'));
     }
 }
