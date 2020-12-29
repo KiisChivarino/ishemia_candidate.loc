@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
@@ -11,7 +11,7 @@ use Exception;
 
 /**
  * Class MedicalRecordCreatorService
- * @package App\Services\Creator
+ * @package App\Services\EntityActions\Creator
  */
 class MedicalRecordCreatorService
 {

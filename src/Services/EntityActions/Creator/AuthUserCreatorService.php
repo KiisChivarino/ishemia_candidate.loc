@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class AuthUserCreatorService
- * @package App\Services\Creator
+ * @package App\Services\EntityActions\Creator
  */
 class AuthUserCreatorService
 {

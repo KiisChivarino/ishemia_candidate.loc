@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;

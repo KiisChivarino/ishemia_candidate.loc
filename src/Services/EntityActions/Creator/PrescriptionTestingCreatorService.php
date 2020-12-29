@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use App\Entity\PatientTesting;
 use App\Entity\PlanTesting;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 /**
  * Class PrescriptionTestingCreatorService
- * @package App\Services\Creator
+ * @package App\Services\EntityActions\Creator
  */
 class PrescriptionTestingCreatorService
 {

@@ -12,7 +12,7 @@ use App\Repository\MedicalHistoryRepository;
 use App\Repository\MedicalRecordRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\Creator\PatientAppointmentCreatorService;
+use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\DataTable\Admin\PatientAppointmentDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;

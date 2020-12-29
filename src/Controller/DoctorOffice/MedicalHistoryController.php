@@ -25,7 +25,7 @@ use App\Repository\TemplateParameterRepository;
 use App\Repository\TemplateRepository;
 use App\Repository\TemplateTypeRepository;
 use App\Services\ControllerGetters\EntityActions;
-use App\Services\Creator\AuthUserCreatorService;
+use App\Services\EntityActions\Creator\AuthUserCreatorService;
 use App\Services\FileService\FileService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\EntityActions\Creator;
+namespace App\Services\EntityActions\Editor;
 
 
 class PrescriptionMedicineEditorService

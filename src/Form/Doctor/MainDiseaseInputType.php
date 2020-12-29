@@ -4,7 +4,7 @@ namespace App\Form\Doctor;
 
 use App\Controller\AppAbstractController;
 use App\Entity\MedicalHistory;
-use App\Services\Creator\DiagnosisCreatorService;
+use App\Services\EntityActions\Creator\DiagnosisCreatorService;
 use App\Services\TemplateItems\FormTemplateItem;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;

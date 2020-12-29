@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use App\Entity\Diagnosis;
 use App\Repository\DiagnosisRepository;
@@ -9,7 +9,7 @@ use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * Class CreatorService
- * @package App\Services\Creator
+ * @package App\Services\EntityActions\Creator
  */
 class DiagnosisCreatorService
 {

@@ -8,7 +8,7 @@ use App\Form\Admin\AuthUser\AuthUserRoleType;
 use App\Form\Admin\AuthUser\AuthUserOptionalType;
 use App\Form\Admin\AuthUser\AuthUserPasswordType;
 use App\Repository\UserRepository;
-use App\Services\Creator\AuthUserCreatorService;
+use App\Services\EntityActions\Creator\AuthUserCreatorService;
 use App\Services\DataTable\Admin\AuthUserDataTableService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
@@ -44,6 +44,7 @@ class AuthUserController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param TranslatorInterface $translator
      */
     public function __construct(
         Environment $twig,
@@ -52,6 +53,7 @@ class AuthUserController extends AdminAbstractController
         TranslatorInterface $translator
     )
     {
+        parent::__construct($translator);
         $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new AuthUserTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);

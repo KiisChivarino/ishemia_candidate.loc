@@ -10,7 +10,7 @@ use App\Form\Admin\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\Staff\StaffRoleType;
 use App\Form\Admin\StaffType;
 use App\Services\ControllerGetters\EntityActions;
-use App\Services\Creator\AuthUserCreatorService;
+use App\Services\EntityActions\Creator\AuthUserCreatorService;
 use App\Services\DataTable\Admin\StaffDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
@@ -158,7 +158,10 @@ class StaffController extends AdminAbstractController
     {
         return $this->responseShow(
             self::TEMPLATE_PATH, $staff, [
-                'prescriptionFilterName' => $filterService->generateFilterName('prescription_list', Staff::class),
+                'prescriptionFilterName' => $filterService->generateFilterName(
+                    'prescription_list',
+                    Staff::class
+                ),
             ]
         );
     }

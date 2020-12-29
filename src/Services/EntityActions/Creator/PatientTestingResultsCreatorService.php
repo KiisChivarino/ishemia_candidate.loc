@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use App\Entity\Analysis;
 use App\Entity\PatientTesting;
@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class PatientTestingResultsCreatorService
- * @package App\Services\Creator
+ * @package App\Services\EntityActions\Creator
  */
 class PatientTestingResultsCreatorService
 {

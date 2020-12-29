@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use DateInterval;
 use DateTime;
@@ -9,7 +9,7 @@ use Exception;
 
 /**
  * Class CreatorHelper
- * @package App\Services\Creator
+ * @package App\Services\EntityActions\Creator
  */
 class CreatorHelper
 {

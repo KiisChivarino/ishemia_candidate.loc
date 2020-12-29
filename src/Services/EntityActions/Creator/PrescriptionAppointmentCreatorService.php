@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use App\Entity\PatientAppointment;
 use App\Entity\PlanAppointment;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 /**
  * Class PrescriptionAppointmentCreatorService
- * @package App\Services\Creator
+ * @package App\Services\EntityActions\Creator
  */
 class PrescriptionAppointmentCreatorService
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Creator;
+namespace App\Services\EntityActions\Creator;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
@@ -9,7 +9,7 @@ use DateTime;
 
 /**
  * Class PrescriptionCreatorService
- * @package App\Services\Creator
+ * @package App\Services\EntityActions\Creator
  */
 class PrescriptionCreatorService
 {

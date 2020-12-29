@@ -25,7 +25,12 @@ class EntityActions
      * @param ObjectManager|null $entityManager
      * @param FormInterface|null $form
      */
-    public function __construct(object $entity, Request $request = null, ?ObjectManager $entityManager = null, ?FormInterface $form = null)
+    public function __construct(
+        object $entity,
+        Request $request = null,
+        ?ObjectManager $entityManager = null,
+        ?FormInterface $form = null
+    )
     {
         $this->entity = $entity;
         $this->entityManager = $entityManager;
