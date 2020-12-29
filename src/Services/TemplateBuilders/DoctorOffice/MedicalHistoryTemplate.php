@@ -62,10 +62,10 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
     protected const EDIT_CONTENT = [
         'personal_h2' => 'Редактирование персональных данных',
         'personal_title' => 'Редактирование персональных данных',
-        'anamnestic_h2' => 'Редактирование анамнестических данных',
-        'anamnestic_title' => 'Редактирование анамнестических данных',
-        'objective_h2' => 'Редактирование объективных данных',
-        'objective_title' => 'Редактирование объективных данных',
+        'anamnestic_h2' => 'Редактирование клинического диагноза',
+        'anamnestic_title' => 'Редактирование клинического диагноза',
+        'objective_h2' => 'Редактирование первичного осмотра пациента',
+        'objective_title' => 'Редактирование первичного осмотра пациента',
         'discharge_epicrisis' => 'Выписные эпикризы',
     ];
 
