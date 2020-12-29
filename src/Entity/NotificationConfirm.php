@@ -8,29 +8,31 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Подтверждение уведомления
  * @ORM\Entity(repositoryClass=NotificationConfirmRepository::class)
+ * @ORM\Table(options={"comment":"Подтверждение уведомления"});
  */
 class NotificationConfirm
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"comment"="Ключ подтверждения уведомления"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"comment"="Статус подтверждения уведомления пациентом"})
      */
     private $isConfirmed;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="Генерируемый код для подтверждения уведомления по ссылке"})
      */
     private $emailCode;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"comment"="Генерируемый код для подтверждения уведомления по sms"})
      */
     private $smsCode;
 
