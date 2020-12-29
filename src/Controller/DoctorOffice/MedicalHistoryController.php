@@ -8,6 +8,8 @@ use App\Entity\PatientAppointment;
 use App\Entity\PatientDischargeEpicrisis;
 use App\Entity\TemplateType;
 use App\Entity\TextByTemplate;
+use App\Form\Admin\MedicalHistory\AnamnesOfLifeType;
+use App\Form\Admin\MedicalHistory\DiseaseHistoryType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\Admin\Patient\PatientOptionalType;
@@ -267,12 +269,18 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     {
         $this->setRedirectMedicalHistoryRoute($firstAppointment->getMedicalHistory()->getPatient()->getId());
         $objectiveStatus = $firstAppointment->getObjectiveStatus();
-        return $this->responseEdit(
+        return $this->responseEditMultiForm(
             $request,
             $firstAppointment,
-            PatientAppointmentType::class,
             [
-                PatientAppointmentType::OBJECTIVE_STATUS_TEXT_OPTION_NAME => $objectiveStatus
+                new FormData(
+                    $firstAppointment,
+                    PatientAppointmentType::class,
+                    [PatientAppointmentType::OBJECTIVE_STATUS_TEXT_OPTION_NAME => $objectiveStatus]
+                ),
+                new FormData($firstAppointment->getMedicalHistory(), AnamnesOfLifeType::class,
+                ['anamnesOfLifeText' => $firstAppointment->getMedicalHistory()->getLifeHistory()->getText()]),
+                new FormData($firstAppointment->getMedicalHistory(), DiseaseHistoryType::class),
             ],
             function (EntityActions $actions) use ($firstAppointment) {
                 $objectiveStatusText = $actions->getForm()->has(self::FORM_OBJECTIVE_STATUS_NAME) ?
@@ -362,8 +370,9 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
      * @param TemplateParameterRepository $templateParameterRepository
      * @param TextTemplateService $textTemplateService
      * @param MedicalHistoryRepository $medicalHistoryRepository
+     * @param PatientAppointmentRepository $patientAppointmentRepository
      * @return RedirectResponse|Response
-     * @throws Exception
+     * @throws NonUniqueResultException
      * @Route(
      *     "/{id}/edit_anamnestic_data_anamnesis_of_life_using_constructor",
      *     name="doctor_edit_anamnestic_data_anamnesis_of_life_using_constructor",
@@ -377,9 +386,18 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         TemplateTypeRepository $templateTypeRepository,
         TemplateParameterRepository $templateParameterRepository,
         TextTemplateService $textTemplateService,
-        MedicalHistoryRepository $medicalHistoryRepository
+        MedicalHistoryRepository $medicalHistoryRepository,
+        PatientAppointmentRepository $patientAppointmentRepository
     )
     {
+        $this->templateService->setRedirectRoute(
+            'doctor_edit_objective_data',
+            [
+                'id' => $patientAppointmentRepository->getFirstAppointment(
+                    $medicalHistoryRepository->getCurrentMedicalHistory($patient)
+                )->getId()
+            ]
+        );
         $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
         $templateType = $templateTypeRepository->findOneBy(
             [
@@ -398,7 +416,6 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
             $textByTemplate->setTemplateType($templateType);
             $medicalHistory->setLifeHistory($textByTemplate);
         }
-        $this->setRedirectAnamnesticDataRoute($patient->getId());
         return $this->responseEdit(
             $request,
             $patient,

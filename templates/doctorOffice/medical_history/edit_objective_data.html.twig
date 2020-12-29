@@ -17,7 +17,7 @@
     <div class="adm-users-edit">
         {{ form_start(form) }}
         <ul>
-            {% for child in form %}
+            {% for child in form.patientAppointment %}
                 {% if 'hidden' not in child.vars.block_prefixes and not child.rendered %}
                     <li>
                         <span class="label">{{ form_label(child) }}</span>
@@ -38,6 +38,35 @@
                                 Выбрать из шаблона Объективный статус
                             </a>
                         {% endif %}
+                        {{ form_widget(child) }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% for child in form.anamnesOfLife %}
+                {% if 'hidden' not in child.vars.block_prefixes and not child.rendered %}
+                    <li>
+                        <span class="label">{{ form_label(child) }}</span>
+                            <a href="{{ path(
+                                'doctor_edit_anamnestic_data_anamnesis_of_life_using_constructor',
+                                { 'id': entity.medicalHistory.patient.id}
+                            ) }}"
+                               class="form-control">Собрать Анамнез жизни</a>
+                            <a href="{{ path(
+                                'doctor_edit_anamnestic_data_anamnesis_of_life_by_template',
+                                { 'id': entity.medicalHistory.patient.id}
+                            ) }}"
+                               class="form-control"
+                            >
+                                Выбрать из шаблона Анамнез жизни
+                            </a>
+                        {{ form_widget(child) }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% for child in form.diseaseHistory %}
+                {% if 'hidden' not in child.vars.block_prefixes and not child.rendered %}
+                    <li>
+                        <span class="label">{{ form_label(child) }}</span>
                         {{ form_widget(child) }}
                     </li>
                 {% endif %}

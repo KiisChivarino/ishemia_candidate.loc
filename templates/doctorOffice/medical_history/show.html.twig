@@ -57,7 +57,7 @@
                         <p>{{ template.items.show.content.passport }}</p>
                         <p>{{ entity.passport }}</p>
                         {% if (entity.passportIssuingAuthority) %}
-                            <p>{{ entity.passportIssuingAuthority }} {{ entity.passportIssueDate }} {{ entity.passportIssuingAuthorityCode }}</p>
+                            <p>{{ entity.passportIssuingAuthority }} {{ entity.passportIssueDate|date('H:i:s') }} {{ entity.passportIssuingAuthorityCode }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -164,18 +164,6 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="statement__info">
-                        <div class="statement__info-block">
-                            <p>{{ template.items.show.content.diseaseHistory }}</p>
-                        </div>
-                        <p>
-                            {% if medicalHistory.diseaseHistory %}
-                                {{ medicalHistory.diseaseHistory|raw }}
-                            {% else %}
-                                {{ template.items.show.content.diseaseHistoryNotFound }}
-                            {% endif %}
-                        </p>
-                    </div>
                 </div>
                 <div class="statement__content">
                     <div class="statement__info">
@@ -184,13 +172,7 @@
                         </div>
                     </div>
                 </div>
-                <p>
-                    {% if medicalHistory.lifeHistory %}
-                        {{ medicalHistory.lifeHistory | raw }}
-                    {% else %}
-                        {{ template.items.show.content.lifeHistoryNotFound }}
-                    {% endif %}
-                </p>
+
             </div>
         </div>
     {% endif %}
@@ -264,7 +246,18 @@
                             </p>
                         </div>
                     </div>
+
                     <div class="statement__info">
+                        <div class="statement__info-block">
+                            <p>{{ template.items.show.content.medicalHistory }}</p>
+                            <p>
+                                {% if medicalHistory.lifeHistory %}
+                                    {{ medicalHistory.lifeHistory | raw }}
+                                {% else %}
+                                    {{ template.items.show.content.lifeHistoryNotFound }}
+                                {% endif %}
+                            </p>
+                        </div>
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.therapy }}</p>
                             <p>

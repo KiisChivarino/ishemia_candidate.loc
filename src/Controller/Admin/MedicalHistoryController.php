@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
 use App\Entity\PatientDischargeEpicrisis;
+use App\Form\Admin\MedicalHistory\AnamnesOfLifeType;
+use App\Form\Admin\MedicalHistory\DiseaseHistoryType;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
@@ -183,6 +185,8 @@ class MedicalHistoryController extends AdminAbstractController
             [
                 new FormData($medicalHistory, MainDiseaseType::class),
                 new FormData($medicalHistory, MedicalHistoryType::class),
+                new FormData($medicalHistory, AnamnesOfLifeType::class),
+                new FormData($medicalHistory, DiseaseHistoryType::class),
                 new FormData($medicalHistory, EditMedicalHistoryType::class),
                 new FormData($patientDischargeEpicrisis, DischargeEpicrisisType::class),
             ],
