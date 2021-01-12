@@ -81,7 +81,7 @@ class GetSMSNotificationsCommand extends Command
     }
 
     /**
-     * Gets sms for the past *hours*, and puts into DB
+     * Gets sms for the past *time interval*, and puts into DB
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
@@ -91,16 +91,15 @@ class GetSMSNotificationsCommand extends Command
     {
         $em = $this->container->get('doctrine')->getManager();
         $patients = $em->getRepository(Patient::class)->findAll();
-        $smsCollection = $em->getRepository(PatientSMS::class)->findAll();
+        $patientSmsCollection = $em->getRepository(PatientSMS::class)->findAll();
         $systemUser = $em->getRepository(AuthUser::class)->getSystemUser();
-        $notificationsConfirm = $em->getRepository(NotificationConfirm::class)->findBy(
+        $unconfirmedNotifications = $em->getRepository(NotificationConfirm::class)->findBy(
             [
                 'isConfirmed' => false
             ]
         );
 
-        $result = $this->sms->getUnreadSMS();
-        foreach ($result->MESSAGES->MESSAGE as $message) {
+        foreach ($this->sms->getUnreadSMS() as $message) {
             if ((string) $message->SMS_TARGET == $this->smsParameters['sender']) {
                 foreach ($patients as $patient) {
                     if (
@@ -108,7 +107,7 @@ class GetSMSNotificationsCommand extends Command
                         $patient->getAuthUser()->getPhone()
                     ) {
                         $check = false;
-                        foreach ($smsCollection as $sms) {
+                        foreach ($patientSmsCollection as $sms) {
                             if ($sms->getExternalId() == (string) $message['SMS_ID']) {
                                 $check = true;
                             }
@@ -122,7 +121,7 @@ class GetSMSNotificationsCommand extends Command
                                 date_create_from_format('d.m.y H:i:s', (string) $message->SMS_CLOSE_TIME)
                             );
                             $em->persist($sms);
-                            foreach ($notificationsConfirm as $confirm) {
+                            foreach ($unconfirmedNotifications as $confirm) {
                                 if (
                                     (string) $message->SMS_TEXT == $confirm->getSmsCode()
                                     && $this->phoneParameters['phone_prefix_ru'] .

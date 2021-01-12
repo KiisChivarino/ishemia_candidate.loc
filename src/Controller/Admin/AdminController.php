@@ -75,6 +75,7 @@ class AdminController extends AdminAbstractController
             ->setMedicalRecord($patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
             ->makeConfirmMedicationNotification()
         ;
+
         $this->notifier->notifyPatient(
             $notificationService->getWebNotificationService(),
             $notificationService->getSMSNotificationService(),

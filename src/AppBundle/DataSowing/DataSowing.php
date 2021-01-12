@@ -19,17 +19,14 @@ use RuntimeException;
  */
 class DataSowing
 {
-    //    const PATH_TO_CSV = 'data/AppFixtures/';
-
     /** @var EntityManagerInterface $entityManager */
     private $entityManager;
 
-    /** @var array */
+    /** @var array Константы типов каналов уведомлений */
     private $channelTypes;
 
-    /** @var array */
+    /** @var array Константы типов получателей уведомлений*/
     private $notificationReceiverTypes;
-
 
     /**
      * DataSowing constructor.
@@ -128,45 +125,53 @@ class DataSowing
             unset($roleData['route']);
             $this->entityManager->getRepository(AuthUser::class)->setEntityData(
                     $roleData,
-                    (new Role())
+                    new Role()
                 );
         }
     }
 
     /**
      * Добавляет типы каналов из yaml файла
+     * Adds channel types from yaml file
      */
-    public function addChannelTypes()
+    public function addChannelTypes() :void
     {
         $i = 1;
         foreach ($this->channelTypes as $channelType) {
-            $this->entityManager->getRepository(AuthUser::class)->setEntityData(
-                [
-                    'id' => $i,
-                    'name' => $channelType
-                ],
-                (new ChannelType())
-            );
+            $this->addEntityFormYaml($i, $channelType, new ChannelType());
             $i++;
         }
     }
 
     /**
      * Добавляет типы получателей из yaml файла
+     * Adds notifications receiver types from yaml file
      */
-    public function addReceiverTypes()
+    public function addReceiverTypes() :void
     {
         $i = 1;
         foreach ($this->notificationReceiverTypes as $notificationReceiverType) {
-            $this->entityManager->getRepository(AuthUser::class)->setEntityData(
-                [
-                    'id' => $i,
-                    'name' => $notificationReceiverType
-                ],
-                (new NotificationReceiverType())
-            );
+            $this->addEntityFormYaml($i, $notificationReceiverType, new NotificationReceiverType());
             $i++;
         }
+    }
+
+    /**
+     * Добавляет новую сущность
+     * Adds new entity
+     * @param int $i
+     * @param string $entityName
+     * @param object $entity
+     */
+    public function addEntityFormYaml(int $i, string $entityName, object $entity) :void
+    {
+        $this->entityManager->getRepository(AuthUser::class)->setEntityData(
+            [
+                'id' => $i,
+                'name' => $entityName
+            ],
+            $entity
+        );
     }
 
     /**

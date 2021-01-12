@@ -222,14 +222,16 @@ class SMSChannelService
      */
     public function getUnreadSMS(): SimpleXMLElement
     {
-        return new SimpleXMLElement(
+        return (
+            new SimpleXMLElement(
             $this->beelineSMSProvider
                 ->setDateTimeEnd($this->notificationTime->format($this->timeFormats['besms']))
                 ->setDateTimeStart($this->notificationTime
                     ->sub(new DateInterval('PT' . $this->smsUpdateTimes['period_to_check'] . 'H'))
                     ->format($this->timeFormats['besms']))
                 ->getMessages()
-        );
+            )
+        )->MESSAGES->MESSAGE;
     }
 
     /**
