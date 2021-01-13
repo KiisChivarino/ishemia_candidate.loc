@@ -102,7 +102,7 @@ class UpdateSMSNotificationsCommand extends Command
         $systemUser = $em->getRepository(AuthUser::class)->getSystemUser();
 
         /** @var SimpleXMLElement $message */
-        foreach ($this->smsChannelService->checkSMS() as $message) {
+        foreach ($this->smsChannelService->checkSMS() ?? [] as $message) {
             foreach ($smsNotifications as $smsNotification) {
                 if (
                     (string) $message['SMS_ID'] == (string) $smsNotification->getExternalId()

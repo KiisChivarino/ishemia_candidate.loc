@@ -40,7 +40,7 @@ class GetSMSNotificationsCommand extends Command
 
     /**
      * @var array
-     * yaml LINK ../../config/services/notifications/sms_notification_service.yml
+     * yaml:config/services/notifications/sms_notification_service.yml
      */
     private $PHONE_PARAMETERS;
 
@@ -107,7 +107,7 @@ class GetSMSNotificationsCommand extends Command
         );
 
         /** @var SimpleXMLElement $message */
-        foreach ((array) $this->smsChannelService->getUnreadSMS() as $message) {
+        foreach ($this->smsChannelService->getUnreadSMS() ?? [] as $message) {
             if ((string) $message->SMS_TARGET == $this->SMS_CHANNEL_SERVICE_PARAMETERS['sender']) {
                 foreach ($patients as $patient) {
                     if (
