@@ -1787,17 +1787,16 @@
 | row\_name | type | обязательность | описание |
  | ------ | ------ | ------ | ------ |
 | id | integer (primary) | yes | Ключ уведомления |
-| notificationReceiverType | ManyToOne (NotificationReceiverType) | yes | Привязка к сущности NotificationReceiverType |
-| patientNotification | OneToOne (PatientNotification) | no | Привязка к сущности PatientNotification |
-| staffNotification | OneToOne (StaffNotification) | no | Привязка к сущности StaffNotification |
 | authUserSender | ManyToOne (AuthUser) | yes | Привязка к сущности AuthUser |
-| channelType | ManyToOne (ChannelType) | yes | Привязка к сущности ChannelType |
 | notificationTime | datetime | yes | Дата и время создания |
 | text | text | yes | Текст уведомления |
-| notificationTemplate | ManyToOne (NotificationTemplate) | yes | Привязка к сущности NotificationTemplate |
 | smsNotification | OneToOne (SMSNotification) | yes | Привязка к сущности SMSNotification |
 | emailNotification | OneToOne (EmailNotification) | yes | Привязка к сущности EmailNotification |
+| patientNotification | OneToOne (PatientNotification) | no | Привязка к сущности PatientNotification |
+| notificationReceiverType | ManyToOne (NotificationReceiverType) | yes | Привязка к сущности NotificationReceiverType |
+| notificationTemplate | ManyToOne (NotificationTemplate) | yes | Привязка к сущности NotificationTemplate |
 | webNotification | OneToOne (WebNotification) | yes | Привязка к сущности WebNotification |
+| channelType | ManyToOne (ChannelType) | yes | Привязка к сущности ChannelType |
  -- -
 >Уведомление пациента
  -- -
@@ -1844,6 +1843,17 @@
 | notification | OneToMany (Notification) | yes | Привязка к сущности Notification |
 | notificationReceiverType | ManyToOne (NotificationReceiverType) | yes | Привязка к сущности NotificationReceiverType |
 | name | string (255) | yes | Название шаблона уведомления |
+| notificationTemplateTexts | OneToMany (NotificationTemplateTexts) | yes | Привязка к сущности NotificationTemplateTexts |
+ -- -
+>Текст шаблона уведомления
+ -- -
+**notificationTemplateText**
+
+| row\_name | type | обязательность | описание |
+ | ------ | ------ | ------ | ------ |
+| id | integer (primary) | yes | Ключ шаблона уведомления |
+| notificationTemplate | ManyToOne (NotificationTemplate) | yes | Привязка к сущности NotificationTemplate |
+| channelType | ManyToOne (ChannelType) | yes | Привязка к сущности ChannelType |
 | text | text | yes | Текст шаблона уведомления |
  -- -
 >Тип канала
