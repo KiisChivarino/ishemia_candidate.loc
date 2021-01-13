@@ -13,26 +13,27 @@ class AbstractCreatorService extends AbstractEntityActionsService
 {
     /**
      * Actions with entity before submitting and validating form
-     * @param $entity
+     * @param string $entityClass
      * @param array $options
      * @throws Exception
      */
-    public function before($entity, array $options = []): void
+    public function before(string $entityClass, array $options = []): void
     {
-        parent::before($entity, $options);
-        $this->create(get_class($entity));
+        parent::before($entityClass, $options);
+        $this->create(get_class($entityClass));
     }
 
     /**
      * Create new entity
-     * @param string $class
+     * @param string $entityClass
      * @throws Exception
      */
-    protected function create(string $class){
-        if(class_exists($class)){
-            $this->setEntity(new $class, $class);
-        }else{
-            throw new Exception('Class '. $class.' not found!');
+    protected function create(string $entityClass): void
+    {
+        if (class_exists($entityClass)) {
+            $this->setEntity(new $entityClass, $entityClass);
+        } else {
+            throw new Exception('Class ' . $entityClass . ' not found!');
         }
         if (method_exists($this->entity, 'setEnabled')) {
             $this->entity->setEnabled(true);

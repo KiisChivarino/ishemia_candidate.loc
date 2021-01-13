@@ -70,6 +70,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'patientAppointments' => 'Приемы пациентов',
         'addNotification' => 'Уведомление',
         'notifications' => 'Уведомления',
+        'addPrescriptionMedicine' => 'Назначение лекарства',
     ];
 
     /** @var string[] Common EDIT_CONTENT */

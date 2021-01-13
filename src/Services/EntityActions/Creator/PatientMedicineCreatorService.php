@@ -2,7 +2,7 @@
 
 namespace App\Services\EntityActions\Creator;
 
-class PatientMedicineCreatorService
+class PatientMedicineCreatorService extends AbstractCreatorService
 {
 
 }

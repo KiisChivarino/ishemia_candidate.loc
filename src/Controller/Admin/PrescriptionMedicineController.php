@@ -15,16 +15,17 @@ use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
 use DateTime;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class PrescriptionMedicineController
+ *
  * @Route("/admin/prescription_medicine")
  * @IsGranted("ROLE_ADMIN")
  *
@@ -78,10 +79,9 @@ class PrescriptionMedicineController extends AdminAbstractController
 
     /**
      * New medicine prescription
+     *
      * @Route("/new", name="prescription_medicine_new", methods={"GET","POST"})
-     *
      * @param Request $request
-     *
      * @param PrescriptionRepository $prescriptionRepository
      * @return Response
      * @throws Exception

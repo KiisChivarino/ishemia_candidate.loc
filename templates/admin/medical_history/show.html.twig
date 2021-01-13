@@ -135,6 +135,7 @@
                         {{ template.items.show.content.addPatientTesting }}
                     </a>
                 </li>
+                {# новое назначение можно добавить только если назначены все остальные для пациента #}
                 {% if allPrescriptionsCompleted %}
                     <li class="sublist__item">
                         <a href="{{ path(
@@ -145,15 +146,22 @@
                     </li>
                 {% endif %}
                 <li class="sublist__item">
+                    <a href="{{ path(
+                        'prescription_medicine_new',
+                        { (medicalHistoryParameterKey) : entity.id }) }}">
+                        {{ template.items.show.content.addPrescriptionMedicine }}
+                    </a>
+                </li>
+                <li class="sublist__item">
                     <a href="{{ path('patient_appointment_new',{ (medicalHistoryParameterKey) : entity.id }) }}">
                         {{ template.items.show.content.addPatientAppointment }}
                     </a>
                 </li>
-{#                <li class="sublist__item">#}
-{#                    <a href="{{ path('notification_new',{ (medicalHistoryParameterKey) : entity.id }) }}">#}
-{#                        {{ template.items.show.content.addNotification }}#}
-{#                    </a>#}
-{#                </li>#}
+                {# <li class="sublist__item"> #}
+                {# <a href="{{ path('notification_new',{ (medicalHistoryParameterKey) : entity.id }) }}"> #}
+                {# {{ template.items.show.content.addNotification }} #}
+                {# </a> #}
+                {# </li> #}
             </ul>
         </button>
         <button class="btn btn--list btn--show">Список

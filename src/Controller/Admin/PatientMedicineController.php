@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\PatientMedicine;
 use App\Form\PatientMedicineType;
 use App\Services\DataTable\Admin\PatientMedicineDataTableService;
+use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
+use App\Services\EntityActions\Editor\PatientMedicineEditorService;
 use App\Services\TemplateBuilders\Admin\PatientMedicineTemplate;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +36,8 @@ class PatientMedicineController extends AdminAbstractController
     {
         parent::__construct($translator);
         $this->templateService = new PatientMedicineTemplate($router->getRouteCollection(), get_class($this));
+        $this->creatorService = new PatientMedicineCreatorService();
+        $this->editorService = new PatientMedicineEditorService();
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -59,7 +63,7 @@ class PatientMedicineController extends AdminAbstractController
      */
     public function new(Request $request): Response
     {
-        return $this->responseNew($request, (new PatientMedicine()), PatientMedicineType::class);
+        return $this->responseNewWithActions($request, PatientMedicine::class, PatientMedicineType::class);
     }
 
     /**

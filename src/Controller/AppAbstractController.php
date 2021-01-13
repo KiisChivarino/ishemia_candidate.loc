@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Services\EntityActions\EntityActionsInterface;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\Template\TemplateService;
@@ -32,6 +33,10 @@ abstract class AppAbstractController extends AbstractController
 {
     /** @var TemplateService $adminTemplateService */
     protected $templateService;
+    /** @var EntityActionsInterface */
+    protected $creatorService;
+    /** @var EntityActionsInterface */
+    protected $editorService;
 
     /** @var string "new" type of form */
     protected const RESPONSE_FORM_TYPE_NEW = 'new';
@@ -286,6 +291,73 @@ abstract class AppAbstractController extends AbstractController
     }
 
     /**
+     * Handle request of form
+     * @param $request
+     * @param $form
+     * @param $formName
+     * @param $entity
+     * @return void|Response
+     * @throws Exception
+     */
+    protected function handleRequest($request, $form, $formName, $entity)
+    {
+        try {
+            $form->handleRequest($request);
+        } catch (Exception $e) {
+            $this->addFlash(
+                'error',
+                'Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...'
+            );
+            return $this->render(
+                $this->templateService->getTemplateFullName(
+                    $formName,
+                    $this->getParameter('kernel.project_dir')),
+                [
+                    'entity' => $entity,
+                    'form' => $form->createView(),
+                    'filters' =>
+                        $this->templateService
+                            ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                            ->getFiltersViews(),
+                ]
+            );
+        }
+    }
+
+    /**
+     * Flush
+     * @param $form
+     * @param $formName
+     * @param $entity
+     * @return Response|void
+     */
+    protected function flush($form, $formName, $entity)
+    {
+        try {
+            $this->getDoctrine()->getManager()->flush();
+        } catch (DBALException $e) {
+            $this->addFlash('error', 'Не удалось сохранить запись!');
+            return $this->render(
+                $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                [
+                    'entity' => $entity,
+                    'form' => $form->createView(),
+                ]
+            );
+        } catch (Exception $e) {
+            $this->addFlash('error', 'Ошибка cохранения записи!');
+            return $this->render(
+                $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                [
+                    'entity' => $entity,
+                    'form' => $form->createView(),
+                ]
+            );
+        }
+        $this->addFlash('success', 'Запись успешно сохранена!');
+    }
+
+    /**
      * Response edit form using multi form formBuilder
      *
      * @param Request $request
@@ -447,6 +519,111 @@ abstract class AppAbstractController extends AbstractController
     }
 
     /**
+     * Response new form using Creator service
+     * @param Request $request
+     * @param string $entityClass
+     * @param string $typeClass
+     * @param FilterLabels|null $filterLabels
+     * @param array $customFormOptions
+     * @param string $formName
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function responseNewWithActions(
+        Request $request,
+        string $entityClass,
+        string $typeClass,
+        ?FilterLabels $filterLabels = null,
+        array $customFormOptions = [],
+        string $formName = self::RESPONSE_FORM_TYPE_NEW
+    )
+    {
+        $this->creatorService->before($entityClass, $customFormOptions);
+        $entity = $this->creatorService->getEntity();
+        $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
+        $options = array_merge(
+            $customFormOptions,
+            $filterLabels ? $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray()) : []
+        );
+        $form = $this->createForm($typeClass, $entity, $options);
+        $this->handleRequest($request, $form, $formName, $entity);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->creatorService->after(
+                new EntityActions($entity, $request, $this->getDoctrine()->getManager(), $form),
+                $options
+            );
+            $this->flush($form, $formName, $entity);
+            $this->setLogCreate($entity);
+            return $this->redirectSubmitted($entity->getId());
+        }
+        return $this->renderForm($formName, $entity, $form);
+    }
+
+    /**
+     * Response edit form using Editor Service
+     * @param Request $request
+     * @param object $entity
+     * @param string $typeClass
+     * @param array $customFormOptions
+     * @param string $formName
+     * @param object|null $formEntity
+     * @return Response
+     * @throws Exception
+     */
+    public function responseEditWithActions(
+        Request $request,
+        object $entity,
+        string $typeClass,
+        array $customFormOptions = [],
+        string $formName = self::RESPONSE_FORM_TYPE_EDIT,
+        object $formEntity = null
+    )
+    {
+        $options = array_merge(
+            $customFormOptions,
+            [
+                self::FORM_TEMPLATE_ITEM_OPTION_TITLE =>
+                    $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+            ]
+        );
+        $this->editorService->before(get_class($entity), $options);
+        $form = $this->createForm(
+            $typeClass,
+            $formEntity ? $formEntity : $entity,
+            $options
+        );
+        $this->handleRequest($request, $form, $formName, $entity);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->editorService->after(
+                new EntityActions($entity, $request, $this->getDoctrine()->getManager(), $form),
+                $options
+            );
+            $this->flush($form, $formName, $entity);
+            $this->setLogUpdate($entity);
+            return $this->redirectSubmitted($entity->getId());
+        }
+        return $this->renderForm($formName, $entity, $form);
+    }
+
+    /**
+     * Redirect this way if form isValid and isSubmitted
+     * @param int $entityId
+     * @return RedirectResponse
+     */
+    protected function redirectSubmitted(int $entityId): RedirectResponse
+    {
+        return $this->redirectToRoute(
+            $this->templateService->getRoute(
+                $this->templateService->getRedirectRouteName()),
+            $this->templateService->getRedirectRouteParameters() ?
+                $this->templateService->getRedirectRouteParameters() :
+                [
+                    'id' => $entityId
+                ]
+        );
+    }
+
+    /**
      * Delete entity and redirect
      *
      * @param Request $request
@@ -483,5 +660,77 @@ abstract class AppAbstractController extends AbstractController
         }
         $this->addFlash('success', 'Запись успешно удалена');
         return $this->redirectToRoute($this->templateService->getRoute('list'));
+    }
+
+    /**
+     * Set log of create object
+     * @param $entity
+     * @throws Exception
+     */
+    protected function setLogCreate($entity)
+    {
+        (new LogService($this->getDoctrine()->getManager()))
+            ->setUser($this->getUser())
+            ->setDescription(
+                $this->translator->trans(
+                    'log.new.entity',
+                    [
+                        '%entity%' =>
+                            $this->templateService
+                                ->getItem(self::RESPONSE_FORM_TYPE_NEW)
+                                ->getContentValue('entity'),
+                        '%id%' => $entity->getId()
+                    ]
+                )
+            )
+            ->logCreateEvent();
+    }
+
+    /**
+     * Set log of update object
+     * @param $entity
+     * @throws Exception
+     */
+    protected function setLogUpdate($entity)
+    {
+        (new LogService($this->getDoctrine()->getManager()))
+            ->setUser($this->getUser())
+            ->setDescription(
+                $this->translator->trans(
+                    'log.update.entity',
+                    [
+                        '%entity%' => $this->templateService
+                            ->getItem(self::RESPONSE_FORM_TYPE_EDIT)
+                            ->getContentValue('entity'),
+                        '%id%' => $entity->getId()
+                    ]
+                )
+            )
+            ->logUpdateEvent();
+    }
+
+    /**
+     * Render form before submit
+     * @param string $formName
+     * @param $entity
+     * @param $form
+     * @return Response
+     * @throws Exception
+     */
+    protected function renderForm(string $formName, $entity, $form): Response
+    {
+        return $this->render(
+            $this->templateService->getTemplateFullName(
+                $formName,
+                $this->getParameter('kernel.project_dir')),
+            [
+                'entity' => $entity,
+                'form' => $form->createView(),
+                'filters' =>
+                    $this->templateService
+                        ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                        ->getFiltersViews(),
+            ]
+        );
     }
 }

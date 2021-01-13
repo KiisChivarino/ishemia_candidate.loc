@@ -8,7 +8,7 @@ use App\Services\EntityActions\AbstractEntityActionsService;
  * Class AbstractEditService
  * @package App\Services\EntityActions\Editor
  */
-abstract class AbstractEditService extends AbstractEntityActionsService
+abstract class AbstractEditorService extends AbstractEntityActionsService
 {
 
 }

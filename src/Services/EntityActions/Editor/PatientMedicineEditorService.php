@@ -4,7 +4,7 @@
 namespace App\Services\EntityActions\Editor;
 
 
-class PatientMedicineEditorService
+class PatientMedicineEditorService extends AbstractEditorService
 {
 
 }

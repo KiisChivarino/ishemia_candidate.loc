@@ -7,7 +7,7 @@ use Doctrine\Persistence\ObjectManager;
 use Exception;
 
 /**
- * Class AbstractEntityActionsSErvice
+ * Class AbstractEntityActionsService
  * @package App\Services\EntityActions
  */
 abstract class AbstractEntityActionsService implements EntityActionsInterface
@@ -53,7 +53,7 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
      * Actions with entity before persist
      * @param EntityActions $entityActions
      */
-    protected function prepare(EntityActions $entityActions)
+    protected function prepare(EntityActions $entityActions): void
     {
 
     }
@@ -72,11 +72,11 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     }
 
     /**
-     * Set options into array of options
+     * Sets options into array of options
      * @param array|null $options
      * @throws Exception
      */
-    protected function setOptions(?array $options = [])
+    protected function setOptions(?array $options = []): void
     {
         foreach ($options as $optionKey => $optionValue) {
             if ($this->checkOption($optionKey, $optionValue)) {
@@ -93,7 +93,7 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
      * @param string $type
      * @param string $optionName
      */
-    protected function addOptionCheck(string $type, string $optionName)
+    protected function addOptionCheck(string $type, string $optionName): void
     {
         $this->optionsCheckArray[$optionName] = $type;
     }
@@ -114,12 +114,19 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     }
 
     /**
-     * @param $entity
+     * @param string $entityClass
      * @param array $options
      * @throws Exception
      */
-    public function before($entity, array $options = []): void
+    public function before(string $entityClass, array $options = []): void
     {
         $this->setOptions($options);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntity(){
+        return $this->entity;
     }
 }
