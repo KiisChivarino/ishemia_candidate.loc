@@ -55,14 +55,14 @@ class EmailNotificationService extends NotificationService
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification($this->channelTypes['email']);
+        $notification = $this->createNotification($this->CHANNEL_TYPES['email']);
         $notification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['email'])
+            $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['email'])
         );
         $emailNotification = new EmailNotification();
         $emailNotification->setPatientRecipientEmail($this->patientReceiver->getAuthUser()->getEmail());
         $emailNotification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['email'])
+            $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['email'])
         );
 
         try {

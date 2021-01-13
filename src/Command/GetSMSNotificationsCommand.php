@@ -10,6 +10,7 @@ use App\Services\LoggerService\LogService;
 use App\Services\Notification\Channels\SMSChannelService;
 use App\Services\Notification\Services\SMSNotificationService;
 use Exception;
+use SimpleXMLElement;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,14 +29,20 @@ class GetSMSNotificationsCommand extends Command
     /** @var ContainerInterface */
     private $container;
 
-    /** @var SMSNotificationService */
-    private $sms;
+    /** @var SMSChannelService */
+    private $smsChannelService;
 
-    /** @var array */
-    private $smsParameters;
+    /**
+     * @var array
+     * yaml:config/services/notifications/sms_notification_service.yml
+     */
+    private $SMS_CHANNEL_SERVICE_PARAMETERS;
 
-    /** @var array */
-    private $phoneParameters;
+    /**
+     * @var array
+     * yaml LINK ../../config/services/notifications/sms_notification_service.yml
+     */
+    private $PHONE_PARAMETERS;
 
     /** @var LogService */
     private $logger;
@@ -46,7 +53,7 @@ class GetSMSNotificationsCommand extends Command
     /**
      * GetSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
-     * @param SMSChannelService $SMSNotificationService $SMSNotificationService
+     * @param SMSChannelService $SMSChannelService
      * @param LogService $logger
      * @param TranslatorInterface $translator
      * @param array $smsParameters
@@ -54,7 +61,7 @@ class GetSMSNotificationsCommand extends Command
      */
     public function __construct(
         ContainerInterface $container,
-        SMSChannelService $SMSNotificationService,
+        SMSChannelService $SMSChannelService,
         LogService $logger,
         TranslatorInterface $translator,
         array $smsParameters,
@@ -62,11 +69,11 @@ class GetSMSNotificationsCommand extends Command
     ) {
         parent::__construct();
         $this->container = $container;
-        $this->sms = $SMSNotificationService;
+        $this->smsChannelService = $SMSChannelService;
         $this->logger = $logger;
         $this->translator = $translator;
-        $this->smsParameters = $smsParameters;
-        $this->phoneParameters = $phoneParameters;
+        $this->SMS_CHANNEL_SERVICE_PARAMETERS = $smsParameters;
+        $this->PHONE_PARAMETERS = $phoneParameters;
     }
 
     /**
@@ -99,32 +106,33 @@ class GetSMSNotificationsCommand extends Command
             ]
         );
 
-        foreach ($this->sms->getUnreadSMS() as $message) {
-            if ((string) $message->SMS_TARGET == $this->smsParameters['sender']) {
+        /** @var SimpleXMLElement $message */
+        foreach ((array) $this->smsChannelService->getUnreadSMS() as $message) {
+            if ((string) $message->SMS_TARGET == $this->SMS_CHANNEL_SERVICE_PARAMETERS['sender']) {
                 foreach ($patients as $patient) {
                     if (
-                        (string) $message->SMS_SENDER == (string) $this->phoneParameters['phone_prefix_ru'] .
+                        (string) $message->SMS_SENDER == (string) $this->PHONE_PARAMETERS['phone_prefix_ru'] .
                         $patient->getAuthUser()->getPhone()
                     ) {
                         $check = false;
-                        foreach ($patientSmsCollection as $sms) {
-                            if ($sms->getExternalId() == (string) $message['SMS_ID']) {
+                        foreach ($patientSmsCollection as $smsChannelService) {
+                            if ($smsChannelService->getExternalId() == (string) $message['SMS_ID']) {
                                 $check = true;
                             }
                         }
                         if (!$check) {
-                            $sms = new PatientSMS();
-                            $sms->setPatient($patient);
-                            $sms->setText((string) $message->SMS_TEXT);
-                            $sms->setExternalId((string) $message['SMS_ID']);
-                            $sms->setCreatedAt(
+                            $smsChannelService = new PatientSMS();
+                            $smsChannelService->setPatient($patient);
+                            $smsChannelService->setText((string) $message->SMS_TEXT);
+                            $smsChannelService->setExternalId((string) $message['SMS_ID']);
+                            $smsChannelService->setCreatedAt(
                                 date_create_from_format('d.m.y H:i:s', (string) $message->SMS_CLOSE_TIME)
                             );
-                            $em->persist($sms);
+                            $em->persist($smsChannelService);
                             foreach ($unconfirmedNotifications as $confirm) {
                                 if (
                                     (string) $message->SMS_TEXT == $confirm->getSmsCode()
-                                    && $this->phoneParameters['phone_prefix_ru'] .
+                                    && $this->PHONE_PARAMETERS['phone_prefix_ru'] .
                                     $confirm->getPatientNotification()[0]->getPatient()->getAuthUser()->getPhone()
                                     == (string) $message->SMS_SENDER
                                 ) {
@@ -138,7 +146,7 @@ class GetSMSNotificationsCommand extends Command
                                 ->setDescription(
                                     $this->translator->trans(
                                         'log.new.entity',
-                                        ['%entity%' => 'Сообщение пользователя', '%id%' => $sms->getId()]
+                                        ['%entity%' => 'Сообщение пользователя', '%id%' => $smsChannelService->getId()]
                                     )
                                 )
                                 ->logCreateEvent();

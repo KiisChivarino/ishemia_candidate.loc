@@ -26,14 +26,17 @@ class UserRepository extends AppRepository implements PasswordUpgraderInterface
     /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;
 
-    /** @var array */
-    private $systemUserPhone;
+    /**
+     * @var string Телефон системного пользователя
+     * yaml:config/globals.yaml
+     */
+    private $SYSTEM_USER_PHONE;
 
     public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder, string $systemUserPhone)
     {
         parent::__construct($registry, AuthUser::class);
         $this->passwordEncoder = $passwordEncoder;
-        $this->systemUserPhone = $systemUserPhone;
+        $this->SYSTEM_USER_PHONE = $systemUserPhone;
     }
 
     /**
@@ -121,7 +124,7 @@ class UserRepository extends AppRepository implements PasswordUpgraderInterface
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.phone = :val')
-            ->setParameter('val', $this->systemUserPhone)
+            ->setParameter('val', $this->SYSTEM_USER_PHONE)
             ->getQuery()
             ->getOneOrNullResult()
             ;

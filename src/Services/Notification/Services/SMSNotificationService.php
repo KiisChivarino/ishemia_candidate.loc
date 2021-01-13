@@ -45,7 +45,7 @@ class SMSNotificationService extends NotificationService
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification($this->channelTypes['sms-beeline']);
+        $notification = $this->createNotification($this->CHANNEL_TYPES['sms-beeline']);
         $notification
             ->setSmsNotification(
                 $this->channel
@@ -55,7 +55,7 @@ class SMSNotificationService extends NotificationService
                     ->sendSMS()
             );
         $notification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['sms-beeline'])
+            $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['sms-beeline'])
         );
         $this->em->persist($notification);
         $this->logSuccessNotificationCreation($notification);

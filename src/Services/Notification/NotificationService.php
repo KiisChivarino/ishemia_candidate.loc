@@ -58,11 +58,17 @@ abstract class NotificationService implements NotificationInterface
     /** @var NotificationConfirm */
     private $notificationConfirm;
 
-    /** @var array */
-    protected $channelTypes;
+    /**
+     * @var array
+     * yaml:config/services/notifications/notification_channel_types.yaml
+     */
+    protected $CHANNEL_TYPES;
 
-    /** @var array */
-    private $notificationReceiverTypes;
+    /**
+     * @var array
+     * yaml:config/services/notifications/notification_receiver_types.yaml
+     */
+    private $NOTIFICATION_RECEIVER_TYPES;
 
     /**
      * SMS notification constructor.
@@ -84,8 +90,8 @@ abstract class NotificationService implements NotificationInterface
         $this->em = $em;
         $this->logger = $logService;
         $this->translator = $translator;
-        $this->channelTypes = $channelTypes;
-        $this->notificationReceiverTypes = $notificationReceiverTypes;
+        $this->CHANNEL_TYPES = $channelTypes;
+        $this->NOTIFICATION_RECEIVER_TYPES = $notificationReceiverTypes;
         $this->userSender = $tokenStorage->getToken() ? $tokenStorage->getToken()->getUser()
             : $this->em->getRepository(AuthUser::class)->getSystemUser();
     }

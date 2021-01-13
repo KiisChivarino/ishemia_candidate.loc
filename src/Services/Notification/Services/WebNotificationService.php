@@ -40,14 +40,14 @@ class WebNotificationService extends NotificationService implements Notification
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification($this->channelTypes['web'])->setWebNotification(
+        $notification = $this->createNotification($this->CHANNEL_TYPES['web'])->setWebNotification(
             $this->channel->createWebNotification(
                 $this->getPatient(),
-                $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['web'])
+                $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['web'])
             )
         );
         $notification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($this->channelTypes['web'])
+            $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['web'])
         );
         $this->em->persist($notification);
         $this->logSuccessNotificationCreation($notification);

@@ -11,10 +11,10 @@ imports:
     - { resource: globals.yaml }
     - { resource: services/roles.yaml }
     - { resource: services/template/content.yaml }
-    - { resource: services/notification/email_notification_service.yml }
-    - { resource: services/notification/sms_notification_service.yml }
-    - { resource: services/notification/notification_channel_types.yaml }
-    - { resource: services/notification/notification_receiver_types.yaml }
+    - { resource: services/notifications/email_notification_service.yml }
+    - { resource: services/notifications/sms_notification_service.yml }
+    - { resource: services/notifications/notification_channel_types.yaml }
+    - { resource: services/notifications/notification_receiver_types.yaml }
 services:
     # default configuration for services in *this* file
     _defaults:

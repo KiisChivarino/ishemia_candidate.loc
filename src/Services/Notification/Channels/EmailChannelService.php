@@ -66,11 +66,17 @@ class EmailChannelService
     /** @var string  */
     private $buttonText;
 
-    /** @var array  */
-    private $projectInfo;
+    /**
+     * @var array
+     * yaml:config/globals.yml
+     */
+    private $PROJECT_INFO;
 
-    /** @var array  */
-    private $emailParameters;
+    /**
+     * @var array
+     * yaml:config/services/notifications/email_notification_service.yml
+     */
+    private $EMAIL_PARAMETERS;
 
     /**
      * EmailNotificationService constructor.
@@ -84,8 +90,8 @@ class EmailChannelService
         array $emailParameters
     )
     {
-        $this->projectInfo = $projectInfo;
-        $this->emailParameters = $emailParameters;
+        $this->PROJECT_INFO = $projectInfo;
+        $this->EMAIL_PARAMETERS = $emailParameters;
         $this->twig = $twig;
         $this->serverHost = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
             . "://"
@@ -100,14 +106,14 @@ class EmailChannelService
     private function sendEmail() :void
     {
         $transport = new Swift_SmtpTransport(
-            $this->emailParameters['smtp_host'],
-            $this->emailParameters['smtp_port'],
-            $this->emailParameters['smtp_encryption']
+            $this->EMAIL_PARAMETERS['smtp_host'],
+            $this->EMAIL_PARAMETERS['smtp_port'],
+            $this->EMAIL_PARAMETERS['smtp_encryption']
         );
 
         $transport
-            ->setUsername($this->emailParameters['account_name'])
-            ->setPassword($this->emailParameters['account_password']);
+            ->setUsername($this->EMAIL_PARAMETERS['account_name'])
+            ->setPassword($this->EMAIL_PARAMETERS['account_password']);
 
         if (is_null($this->recipient)) {
             throw new ErrorException('Recipient email is null. Please provide correct email',
@@ -151,18 +157,18 @@ class EmailChannelService
     public function sendDefaultEmail() :void
     {
         $params = [
-            'siteName' => $this->projectInfo['site_name'],
+            'siteName' => $this->PROJECT_INFO['site_name'],
             'greetings' => sprintf(self::GREETINGS, AuthUserInfoService::getFIO($this->patient->getAuthUser())),
             'header' => $this->header,
             'content' => $this->content,
             'buttonLink' => $this->buttonLink,
             'buttonText' => $this->buttonText,
-            'addressLine1' => $this->projectInfo['address_line_1'],
-            'addressLine2' => $this->projectInfo['address_line_2']
+            'addressLine1' => $this->PROJECT_INFO['address_line_1'],
+            'addressLine2' => $this->PROJECT_INFO['address_line_2']
         ];
 
         $this->subject = 'Дефолтная тема письма';
-        $this->sender = $this->emailParameters['account_name'];
+        $this->sender = $this->EMAIL_PARAMETERS['account_name'];
 
         $this->mailBody = $this->twig->render(
             self::DEFAULT_EMAIL_TEMPLATE,

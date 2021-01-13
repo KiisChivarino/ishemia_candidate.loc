@@ -9,6 +9,7 @@ use App\Services\LoggerService\LogService;
 use App\Services\Notification\Channels\SMSChannelService;
 use App\Services\Notification\Services\SMSNotificationService;
 use Exception;
+use SimpleXMLElement;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,10 +35,13 @@ class UpdateSMSNotificationsCommand extends Command
     private $container;
 
     /** @var SMSNotificationService */
-    private $sms;
+    private $smsChannelService;
 
-    /** @var array */
-    private $smsStatuses;
+    /**
+     * @var array
+     * yaml:config/services/notifications/sms_notification_service.yml
+     */
+    private $SMS_STATUSES;
 
     /** @var LogService */
     private $logger;
@@ -48,24 +52,24 @@ class UpdateSMSNotificationsCommand extends Command
     /**
      * UpdateSMSNotificationsCommand constructor.
      * @param ContainerInterface $container
-     * @param SMSChannelService $SMSNotificationService
+     * @param SMSChannelService $SMSChannelService
      * @param LogService $logger
      * @param TranslatorInterface $translator
      * @param array $smsStatuses
      */
     public function __construct(
         ContainerInterface $container,
-        SMSChannelService $SMSNotificationService,
+        SMSChannelService $SMSChannelService,
         LogService $logger,
         TranslatorInterface $translator,
         array $smsStatuses
     ) {
         parent::__construct();
         $this->container = $container;
-        $this->sms = $SMSNotificationService;
+        $this->smsChannelService = $SMSChannelService;
         $this->logger = $logger;
         $this->translator = $translator;
-        $this->smsStatuses = $smsStatuses;
+        $this->SMS_STATUSES = $smsStatuses;
     }
 
     /**
@@ -93,29 +97,29 @@ class UpdateSMSNotificationsCommand extends Command
 
         /** @var SMSNotification[] $smsNotifications */
         $smsNotifications = $em->getRepository(SMSNotification::class)->findBy([
-            'status' => $this->smsStatuses['wait']
+            'status' => $this->SMS_STATUSES['wait']
         ]);
         $systemUser = $em->getRepository(AuthUser::class)->getSystemUser();
 
-        $result = $this->sms->checkSMS();
-        foreach ($result->MESSAGES->MESSAGE as $message) {
+        /** @var SimpleXMLElement $message */
+        foreach ($this->smsChannelService->checkSMS() as $message) {
             foreach ($smsNotifications as $smsNotification) {
                 if (
                     (string) $message['SMS_ID'] == (string) $smsNotification->getExternalId()
-                    && $smsNotification->getStatus() != $this->smsStatuses['not_delivered']
+                    && $smsNotification->getStatus() != $this->SMS_STATUSES['not_delivered']
                 ) {
                     switch ((string)$message->SMSSTC_CODE) {
-                        case $this->smsStatuses['delivered']:
-                            $smsNotification->setStatus($this->smsStatuses['delivered']);
+                        case $this->SMS_STATUSES['delivered']:
+                            $smsNotification->setStatus($this->SMS_STATUSES['delivered']);
                             $em->persist($smsNotification);
                             break;
-                        case $this->smsStatuses['wait']:
+                        case $this->SMS_STATUSES['wait']:
                             break;
-                        case $this->smsStatuses['not_delivered']:
+                        case $this->SMS_STATUSES['not_delivered']:
                             if ($smsNotification->getAttemptCount() <= self::MAX_ATTEMPTS || self::UNLIMITED_ATTEMPTS) {
-                                $this->sms->resendSMS($smsNotification);
+                                $this->smsChannelService->resendSMS($smsNotification);
                             } else {
-                                $smsNotification->setStatus($this->smsStatuses['not_delivered']);
+                                $smsNotification->setStatus($this->SMS_STATUSES['not_delivered']);
                                 $this->logger
                                     ->setUser($systemUser)
                                     ->setDescription(
@@ -128,8 +132,8 @@ class UpdateSMSNotificationsCommand extends Command
                                 $em->persist($smsNotification);
                             }
                             break;
-                        case $this->smsStatuses['failed']:
-                            $smsNotification->setStatus($this->smsStatuses['failed']);
+                        case $this->SMS_STATUSES['failed']:
+                            $smsNotification->setStatus($this->SMS_STATUSES['failed']);
                             $this->logger
                                 ->setUser($systemUser)
                                 ->setDescription(
