@@ -21,6 +21,16 @@ class WebNotificationService extends NotificationService implements Notification
     /** @var WebChannelService */
     private $channel;
 
+    /**
+     * WebNotificationService constructor.
+     * @param EntityManagerInterface $em
+     * @param TokenStorageInterface $tokenStorage
+     * @param LogService $logService
+     * @param TranslatorInterface $translator
+     * @param WebChannelService $webChannelService
+     * @param array $channelTypes
+     * @param array $notificationReceiverTypes
+     */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,

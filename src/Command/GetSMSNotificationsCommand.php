@@ -8,7 +8,6 @@ use App\Entity\Patient;
 use App\Entity\PatientSMS;
 use App\Services\LoggerService\LogService;
 use App\Services\Notification\Channels\SMSChannelService;
-use App\Services\Notification\Services\SMSNotificationService;
 use Exception;
 use SimpleXMLElement;
 use Symfony\Component\Console\Command\Command;
@@ -66,7 +65,8 @@ class GetSMSNotificationsCommand extends Command
         TranslatorInterface $translator,
         array $smsParameters,
         array $phoneParameters
-    ) {
+    )
+    {
         parent::__construct();
         $this->container = $container;
         $this->smsChannelService = $SMSChannelService;
@@ -83,8 +83,7 @@ class GetSMSNotificationsCommand extends Command
     {
         $this
             ->setDescription('Get SMS notification`s')
-            ->setHelp('This command gets SMS notification`s')
-        ;
+            ->setHelp('This command gets SMS notification`s');
     }
 
     /**
@@ -108,33 +107,33 @@ class GetSMSNotificationsCommand extends Command
 
         /** @var SimpleXMLElement $message */
         foreach ($this->smsChannelService->getUnreadSMS() ?? [] as $message) {
-            if ((string) $message->SMS_TARGET == $this->SMS_CHANNEL_SERVICE_PARAMETERS['sender']) {
+            if ((string)$message->SMS_TARGET == $this->SMS_CHANNEL_SERVICE_PARAMETERS['sender']) {
                 foreach ($patients as $patient) {
                     if (
-                        (string) $message->SMS_SENDER == (string) $this->PHONE_PARAMETERS['phone_prefix_ru'] .
+                        (string)$message->SMS_SENDER == (string)$this->PHONE_PARAMETERS['phone_prefix_ru'] .
                         $patient->getAuthUser()->getPhone()
                     ) {
                         $check = false;
                         foreach ($patientSmsCollection as $smsChannelService) {
-                            if ($smsChannelService->getExternalId() == (string) $message['SMS_ID']) {
+                            if ($smsChannelService->getExternalId() == (string)$message['SMS_ID']) {
                                 $check = true;
                             }
                         }
                         if (!$check) {
                             $smsChannelService = new PatientSMS();
                             $smsChannelService->setPatient($patient);
-                            $smsChannelService->setText((string) $message->SMS_TEXT);
-                            $smsChannelService->setExternalId((string) $message['SMS_ID']);
+                            $smsChannelService->setText((string)$message->SMS_TEXT);
+                            $smsChannelService->setExternalId((string)$message['SMS_ID']);
                             $smsChannelService->setCreatedAt(
-                                date_create_from_format('d.m.y H:i:s', (string) $message->SMS_CLOSE_TIME)
+                                date_create_from_format('d.m.y H:i:s', (string)$message->SMS_CLOSE_TIME)
                             );
                             $em->persist($smsChannelService);
                             foreach ($unconfirmedNotifications as $confirm) {
                                 if (
-                                    (string) $message->SMS_TEXT == $confirm->getSmsCode()
+                                    (string)$message->SMS_TEXT == $confirm->getSmsCode()
                                     && $this->PHONE_PARAMETERS['phone_prefix_ru'] .
                                     $confirm->getPatientNotification()[0]->getPatient()->getAuthUser()->getPhone()
-                                    == (string) $message->SMS_SENDER
+                                    == (string)$message->SMS_SENDER
                                 ) {
                                     $confirm->setIsConfirmed(true);
                                     $em->persist($confirm);

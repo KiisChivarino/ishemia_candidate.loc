@@ -44,7 +44,8 @@ class EmailNotificationService extends NotificationService
         EmailChannelService $emailChannelService,
         array $channelTypes,
         array $notificationReceiverTypes
-    ) {
+    )
+    {
         parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
         $this->channel = $emailChannelService;
     }

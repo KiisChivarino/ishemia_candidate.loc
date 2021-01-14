@@ -12,39 +12,10 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method NotificationConfirm[]    findAll()
  * @method NotificationConfirm[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class NotificationConfirmRepository extends ServiceEntityRepository
+class NotificationConfirmRepository extends AppRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, NotificationConfirm::class);
     }
-
-    // /**
-    //  * @return NotificationConfirm[] Returns an array of NotificationConfirm objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('n.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?NotificationConfirm
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

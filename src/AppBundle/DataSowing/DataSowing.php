@@ -8,8 +8,8 @@ use App\Entity\NotificationReceiverType;
 use App\Entity\Role;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Yaml\Yaml;
 use RuntimeException;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class DataSowing
@@ -25,7 +25,7 @@ class DataSowing
     /** @var array Константы типов каналов уведомлений */
     private $channelTypes;
 
-    /** @var array Константы типов получателей уведомлений*/
+    /** @var array Константы типов получателей уведомлений */
     private $notificationReceiverTypes;
 
     /**
@@ -70,9 +70,10 @@ class DataSowing
         array $replaceFieldNameArr = [],
         array $persistArr = [],
         array $foreignkeyArr = []
-    ) {
+    )
+    {
         if (!(is_readable($file))) {
-            throw new RuntimeException(sprintf('Не удалось прочитать файл '.$file.'!'));
+            throw new RuntimeException(sprintf('Не удалось прочитать файл ' . $file . '!'));
         }
         if (($handle = fopen($file, "r")) !== false) {
             $headers = array_flip(fgetcsv($handle, null, $delimiter)); //заголовки csv файла
@@ -105,10 +106,10 @@ class DataSowing
 
                 //выполнение сеттеров по подготовленным свойствам
                 $this->entityManager->getRepository($entityClass)->setEntityData(
-                        $entityData,
-                        (new $entityClass()),
-                        $persistArr
-                    );
+                    $entityData,
+                    (new $entityClass()),
+                    $persistArr
+                );
             }
             fclose($handle);
             $manager->flush();
@@ -117,6 +118,7 @@ class DataSowing
 
     /**
      * Добавляет роли из yaml файла
+     * Adds roles from yaml file
      */
     public function addRoles()
     {
@@ -124,9 +126,9 @@ class DataSowing
         foreach ($const['parameters'] as $roleData) {
             unset($roleData['route']);
             $this->entityManager->getRepository(AuthUser::class)->setEntityData(
-                    $roleData,
-                    new Role()
-                );
+                $roleData,
+                new Role()
+            );
         }
     }
 
@@ -134,24 +136,11 @@ class DataSowing
      * Добавляет типы каналов из yaml файла
      * Adds channel types from yaml file
      */
-    public function addChannelTypes() :void
+    public function addChannelTypes(): void
     {
         $i = 1;
         foreach ($this->channelTypes as $channelType) {
             $this->addEntityFormYaml($i, $channelType, new ChannelType());
-            $i++;
-        }
-    }
-
-    /**
-     * Добавляет типы получателей из yaml файла
-     * Adds notifications receiver types from yaml file
-     */
-    public function addReceiverTypes() :void
-    {
-        $i = 1;
-        foreach ($this->notificationReceiverTypes as $notificationReceiverType) {
-            $this->addEntityFormYaml($i, $notificationReceiverType, new NotificationReceiverType());
             $i++;
         }
     }
@@ -163,7 +152,7 @@ class DataSowing
      * @param string $entityName
      * @param object $entity
      */
-    public function addEntityFormYaml(int $i, string $entityName, object $entity) :void
+    public function addEntityFormYaml(int $i, string $entityName, object $entity): void
     {
         $this->entityManager->getRepository(AuthUser::class)->setEntityData(
             [
@@ -172,6 +161,19 @@ class DataSowing
             ],
             $entity
         );
+    }
+
+    /**
+     * Добавляет типы получателей из yaml файла
+     * Adds notifications receiver types from yaml file
+     */
+    public function addReceiverTypes(): void
+    {
+        $i = 1;
+        foreach ($this->notificationReceiverTypes as $notificationReceiverType) {
+            $this->addEntityFormYaml($i, $notificationReceiverType, new NotificationReceiverType());
+            $i++;
+        }
     }
 
     /**
@@ -193,7 +195,7 @@ class DataSowing
             //подготовка массива данных
             foreach ($params as $key => $value) {
                 if (is_string($value)) {
-                    $method = 'get'.ucfirst($value);
+                    $method = 'get' . ucfirst($value);
                     if (method_exists($catalogItem, $method)) {
                         //выполнение геттера
                         $data[$key] = $catalogItem->{$method}();
@@ -209,9 +211,9 @@ class DataSowing
             }
             //внесение подготовленных данных в бд
             $this->entityManager->getRepository($entityClass)->setEntityData(
-                    $data,
-                    (new $entityClass())
-                );
+                $data,
+                (new $entityClass())
+            );
         }
     }
 }

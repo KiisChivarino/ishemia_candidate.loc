@@ -28,9 +28,6 @@ abstract class NotificationService implements NotificationInterface
     /** @var EntityManagerInterface Энтити менеджер */
     protected $em;
 
-    /** @var array Строки для добавления конкретной информации в стандартизированные шаблоны */
-    private $variables;
-
     /** @var Patient Сущность пациента */
     protected $patientReceiver;
 
@@ -40,14 +37,23 @@ abstract class NotificationService implements NotificationInterface
     /** @var LogService Сервис логирования */
     protected $logger;
 
+    /** @var TranslatorInterface Интерфейс для работы с переводом */
+    protected $translator;
+
+    /**
+     * @var array
+     * yaml:config/services/notifications/notification_channel_types.yaml
+     */
+    protected $CHANNEL_TYPES;
+
+    /** @var array Строки для добавления конкретной информации в стандартизированные шаблоны */
+    private $variables;
+
     /** @var MedicalHistory История болезни пациента */
     private $medicalHistory;
 
     /** @var MedicalRecord Запись в истории болезни пациента */
     private $medicalRecord;
-
-    /** @var TranslatorInterface Интерфейс для работы с переводом */
-    protected $translator;
 
     /** @var NotificationTemplate Шаблон уведомления */
     private $notificationTemplate;
@@ -57,12 +63,6 @@ abstract class NotificationService implements NotificationInterface
 
     /** @var NotificationConfirm */
     private $notificationConfirm;
-
-    /**
-     * @var array
-     * yaml:config/services/notifications/notification_channel_types.yaml
-     */
-    protected $CHANNEL_TYPES;
 
     /**
      * @var array
@@ -86,7 +86,8 @@ abstract class NotificationService implements NotificationInterface
         TranslatorInterface $translator,
         array $channelTypes,
         array $notificationReceiverTypes
-    ) {
+    )
+    {
         $this->em = $em;
         $this->logger = $logService;
         $this->translator = $translator;
@@ -95,78 +96,6 @@ abstract class NotificationService implements NotificationInterface
         $this->userSender = $tokenStorage->getToken() ? $tokenStorage->getToken()->getUser()
             : $this->em->getRepository(AuthUser::class)->getSystemUser();
     }
-
-    /**
-     * Creates new Notification
-     * @param string $channel
-     * @return Notification
-     */
-    protected function createNotification(string $channel): Notification
-    {
-        $notification = new Notification();
-        $notification->setPatientNotification($this->createPatientNotification());
-        $notification->setText($this->getNotificationText($channel));
-        $notification->setAuthUserSender($this->userSender);
-        $notification->setNotificationReceiverType($this->notificationReceiverType);
-        $notification->setNotificationTime(new DateTime('now'));
-        $notification->setNotificationTemplate($this->notificationTemplate);
-        return $notification;
-    }
-
-    /**
-     * Generates text for specific channel
-     * @param $channel
-     * @return string
-     */
-    private function getNotificationText(string $channel): string
-    {
-        return vsprintf(
-            $this->em->getRepository(NotificationTemplateText::class)->findForChannel(
-                $channel, $this->notificationTemplate
-            )->getText(),
-            $this->variables
-        );
-    }
-
-    /**
-     * Creates new PatientNotification
-     * @return PatientNotification
-     */
-    private function createPatientNotification(): PatientNotification
-    {
-        $patientNotification = (new PatientNotification())
-            ->setMedicalRecord($this->medicalRecord ?? null)
-            ->setMedicalHistory($this->medicalHistory ?? null)
-            ->setPatient($this->patientReceiver)
-            ->setNotificationConfirm($this->notificationConfirm)
-        ;
-        $this->em->persist($patientNotification);
-        return $patientNotification;
-    }
-
-    /**
-     * Creates log for successful notification creation
-     * @param Notification $notification
-     * @return bool
-     */
-    protected function logSuccessNotificationCreation(Notification $notification): bool
-    {
-        $this->logger
-            ->setUser($this->userSender)
-            ->setDescription(
-                $this->translator->trans(
-                    'log.new.entity',
-                    [
-                        '%entity%' => 'Уведомление',
-                        '%id%' => $notification->getId()
-                    ]
-                )
-            )
-            ->logSuccessEvent();
-        return true;
-    }
-
-//  ---------------------------------------- Сеттеры ----------------------------------------------------------
 
     /**
      * @param Patient $patient
@@ -202,6 +131,8 @@ abstract class NotificationService implements NotificationInterface
         $this->medicalHistory = $medicalHistory;
         return $this;
     }
+
+//  ---------------------------------------- Сеттеры ----------------------------------------------------------
 
     /**
      * @param MedicalRecord $medicalRecord
@@ -250,5 +181,74 @@ abstract class NotificationService implements NotificationInterface
     public function notify()
     {
         // TODO: Implement notify() method.
+    }
+
+    /**
+     * Creates new Notification
+     * @param string $channel
+     * @return Notification
+     */
+    protected function createNotification(string $channel): Notification
+    {
+        $notification = new Notification();
+        $notification->setPatientNotification($this->createPatientNotification());
+        $notification->setText($this->getNotificationText($channel));
+        $notification->setAuthUserSender($this->userSender);
+        $notification->setNotificationReceiverType($this->notificationReceiverType);
+        $notification->setNotificationTime(new DateTime('now'));
+        $notification->setNotificationTemplate($this->notificationTemplate);
+        return $notification;
+    }
+
+    /**
+     * Creates new PatientNotification
+     * @return PatientNotification
+     */
+    private function createPatientNotification(): PatientNotification
+    {
+        $patientNotification = (new PatientNotification())
+            ->setMedicalRecord($this->medicalRecord ?? null)
+            ->setMedicalHistory($this->medicalHistory ?? null)
+            ->setPatient($this->patientReceiver)
+            ->setNotificationConfirm($this->notificationConfirm);
+        $this->em->persist($patientNotification);
+        return $patientNotification;
+    }
+
+    /**
+     * Generates text for specific channel
+     * @param $channel
+     * @return string
+     */
+    private function getNotificationText(string $channel): string
+    {
+        return vsprintf(
+            $this->em->getRepository(NotificationTemplateText::class)->findForChannel(
+                $channel, $this->notificationTemplate
+            )->getText(),
+            $this->variables
+        );
+    }
+
+    /**
+     * Creates log for successful notification creation
+     * @param Notification $notification
+     * @return bool
+     */
+    protected function logSuccessNotificationCreation(Notification $notification): bool
+    {
+        $this->logger
+            ->setUser($this->userSender)
+            ->setDescription(
+                $this->translator->trans(
+                    'log.new.entity',
+                    [
+                        '%entity%' => 'Уведомление',
+                        '%id%' => $notification->getId()
+                    ]
+                )
+            )
+            ->logSuccessEvent();
+        return true;
     }
 }

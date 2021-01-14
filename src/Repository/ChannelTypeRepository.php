@@ -29,12 +29,12 @@ class ChannelTypeRepository extends AppRepository
      * @return ChannelType|null
      * @throws NonUniqueResultException
      */
-    public function findByName(string $name): ?ChannelType {
+    public function findByName(string $name): ?ChannelType
+    {
         return $this->createQueryBuilder('ct')
             ->andWhere('ct.name = :name')
             ->setParameter('name', $name)
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getOneOrNullResult();
     }
 }

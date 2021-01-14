@@ -22,13 +22,11 @@ class EmailChannelService
 {
     /** list of email templates */
     const
-        DEFAULT_EMAIL_TEMPLATE = '/email/default.html.twig'
-    ;
+        DEFAULT_EMAIL_TEMPLATE = '/email/default.html.twig';
 
     /** Constants for email */
     const
-        GREETINGS = 'Уважаемый, %s'
-    ;
+        GREETINGS = 'Уважаемый, %s';
 
     /** @var string */
     private $subject;
@@ -51,19 +49,19 @@ class EmailChannelService
     /** @var array Массив получателей для множественной */
     private $recipientList = [];
 
-    /** @var Patient $patient  */
+    /** @var Patient $patient */
     private $patient;
 
-    /** @var string  */
+    /** @var string */
     private $header;
 
-    /** @var string  */
+    /** @var string */
     private $content;
 
-    /** @var string  */
+    /** @var string */
     private $buttonLink;
 
-    /** @var string  */
+    /** @var string */
     private $buttonText;
 
     /**
@@ -95,15 +93,48 @@ class EmailChannelService
         $this->twig = $twig;
         $this->serverHost = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
             . "://"
-            . $_SERVER['HTTP_HOST']
-        ;
+            . $_SERVER['HTTP_HOST'];
+    }
+
+    /**
+     * Sends Default Email
+     * @throws ErrorException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function sendDefaultEmail(): void
+    {
+        $params = [
+            'siteName' => $this->PROJECT_INFO['site_name'],
+            'greetings' => sprintf(self::GREETINGS, AuthUserInfoService::getFIO($this->patient->getAuthUser())),
+            'header' => $this->header,
+            'content' => $this->content,
+            'buttonLink' => $this->buttonLink,
+            'buttonText' => $this->buttonText,
+            'addressLine1' => $this->PROJECT_INFO['address_line_1'],
+            'addressLine2' => $this->PROJECT_INFO['address_line_2']
+        ];
+
+        $this->subject = 'Дефолтная тема письма';
+        $this->sender = $this->EMAIL_PARAMETERS['account_name'];
+
+        $this->mailBody = $this->twig->render(
+            self::DEFAULT_EMAIL_TEMPLATE,
+            $params
+        );
+        try {
+            $this->sendEmail();
+        } catch (ErrorException $e) {
+            throw new ErrorException('Email message sending error');
+        }
     }
 
     /**
      * Sends Email
      * @throws ErrorException
      */
-    private function sendEmail() :void
+    private function sendEmail(): void
     {
         $transport = new Swift_SmtpTransport(
             $this->EMAIL_PARAMETERS['smtp_host'],
@@ -148,44 +179,10 @@ class EmailChannelService
     }
 
     /**
-     * Sends Default Email
-     * @throws ErrorException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function sendDefaultEmail() :void
-    {
-        $params = [
-            'siteName' => $this->PROJECT_INFO['site_name'],
-            'greetings' => sprintf(self::GREETINGS, AuthUserInfoService::getFIO($this->patient->getAuthUser())),
-            'header' => $this->header,
-            'content' => $this->content,
-            'buttonLink' => $this->buttonLink,
-            'buttonText' => $this->buttonText,
-            'addressLine1' => $this->PROJECT_INFO['address_line_1'],
-            'addressLine2' => $this->PROJECT_INFO['address_line_2']
-        ];
-
-        $this->subject = 'Дефолтная тема письма';
-        $this->sender = $this->EMAIL_PARAMETERS['account_name'];
-
-        $this->mailBody = $this->twig->render(
-            self::DEFAULT_EMAIL_TEMPLATE,
-            $params
-        );
-        try {
-            $this->sendEmail();
-        } catch (ErrorException $e) {
-            throw new ErrorException('Email message sending error');
-        }
-    }
-
-    /**
      * @param array $list
      * @return $this
      */
-    public function addRecipientsArray(array $list=[]): self
+    public function addRecipientsArray(array $list = []): self
     {
         $this->recipientList = $list;
         return $this;

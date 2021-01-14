@@ -47,7 +47,8 @@ class WebNotificationController extends AdminAbstractController
     public function list(
         Request $request,
         WebNotificationDataTableService $webNotificationDataTableService
-    ): Response {
+    ): Response
+    {
         return $this->responseList($request, $webNotificationDataTableService);
     }
 }

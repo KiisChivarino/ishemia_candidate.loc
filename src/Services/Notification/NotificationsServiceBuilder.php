@@ -25,8 +25,7 @@ class NotificationsServiceBuilder
 {
     /** Константы для типов получателей  */
     const
-        RECEIVER_TYPE_PATIENT = 'patient'
-    ;
+        RECEIVER_TYPE_PATIENT = 'patient';
 
     /** Константы для шаблонов уведомлений */
     const
@@ -35,8 +34,8 @@ class NotificationsServiceBuilder
         TEMPLATE_CONFIRM_MEDICATION = 'confirmMedication',
         TEMPLATE_TESTING_APPOINTMENT = 'testingAppointment',
         TEMPLATE_CONFIRM_APPOINTMENT = 'confirmAppointment',
-        TEMPLATE_SUBMIT_ANALYSIS_RESULTS = 'submitAnalysisResults'
-    ;
+        TEMPLATE_SUBMIT_ANALYSIS_RESULTS = 'submitAnalysisResults';
+
     /** @var SMSNotificationService */
     private $smsNotificationService;
 
@@ -108,7 +107,8 @@ class NotificationsServiceBuilder
         LogService $logger,
         TranslatorInterface $translator,
         string $systemUserPhone
-    ) {
+    )
+    {
         $this->em = $entityManager;
         $this->webNotificationService = $webNotificationService;
         $this->emailNotificationService = $emailNotificationService;
@@ -117,39 +117,7 @@ class NotificationsServiceBuilder
         $this->logger = $logger;
         $this->translator = $translator;
         $this->userSender = $tokenStorage->getToken() ? $tokenStorage->getToken()->getUser()
-            : $this->em->getRepository(AuthUser::class)->findOneBy(['phone'=>$this->systemUserPhone]);
-    }
-
-    /**
-     * @return NotificationsServiceBuilder
-     */
-    private function makeNotificationServices(): NotificationsServiceBuilder
-    {
-            $this->webNotificationService
-                ->setPatient($this->patientReceiver)
-                ->setNotificationTemplate($this->notificationTemplate)
-                ->setNotificationReceiverType($this->notificationReceiverType)
-                ->setMedicalHistory($this->medicalHistory)
-                ->setMedicalRecord($this->medicalRecord)
-                ->setVariables($this->variablesForWeb)
-                ->setNotificationConfirm($this->notificationConfirm);
-            $this->smsNotificationService
-                ->setPatient($this->patientReceiver)
-                ->setNotificationTemplate($this->notificationTemplate)
-                ->setNotificationReceiverType($this->notificationReceiverType)
-                ->setMedicalHistory($this->medicalHistory)
-                ->setMedicalRecord($this->medicalRecord)
-                ->setVariables($this->variablesForSMS)
-                ->setNotificationConfirm($this->notificationConfirm);
-            $this->emailNotificationService
-                ->setPatient($this->patientReceiver)
-                ->setNotificationTemplate($this->notificationTemplate)
-                ->setNotificationReceiverType($this->notificationReceiverType)
-                ->setMedicalHistory($this->medicalHistory)
-                ->setMedicalRecord($this->medicalRecord)
-                ->setVariables($this->variablesForEmail)
-                ->setNotificationConfirm($this->notificationConfirm);
-            return $this;
+            : $this->em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->systemUserPhone]);
     }
 
     /**
@@ -165,92 +133,13 @@ class NotificationsServiceBuilder
     }
 
     /**
-     * @param string $doctor
-     * @param string $appointmentDateTime
+     * @param string $notificationTemplate
      * @return NotificationsServiceBuilder
      */
-    public function makeDoctorAppointmentNotification(string $doctor, string $appointmentDateTime): NotificationsServiceBuilder
+    private function setNotificationTemplate(string $notificationTemplate): self
     {
-        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
-        $this->setNotificationTemplate(self::TEMPLATE_DOCTOR_APPOINTMENT);
-        $this->setVariables([$doctor, $appointmentDateTime]);
-        return $this->makeNotificationServices();
-    }
-
-    /**
-     * @return NotificationsServiceBuilder
-     */
-    public function makeConfirmMedicationNotification(): NotificationsServiceBuilder
-    {
-        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
-        $this->createNotificationConfirm();
-        $this->setNotificationTemplate(self::TEMPLATE_CONFIRM_MEDICATION);
-        $this->setVariables([$this->notificationConfirm->getSmsCode()],['http://shemia.test/confirmNotification/'.$this->notificationConfirm->getEmailCode()]);
-        return $this->makeNotificationServices();
-    }
-
-    /**
-     * @param string $testingAppointmentName
-     * @param string $appointmentDateTime
-     * @return NotificationsServiceBuilder
-     */
-    public function makeTestingAppointmentNotification(
-        string $testingAppointmentName,
-        string $appointmentDateTime
-    ): NotificationsServiceBuilder
-    {
-        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
-        $this->setNotificationTemplate(self::TEMPLATE_TESTING_APPOINTMENT);
-        $this->setVariables([$testingAppointmentName, $appointmentDateTime]);
-        return $this->makeNotificationServices();
-    }
-
-    /**
-     * @return NotificationsServiceBuilder
-     */
-    public function makeConfirmAppointmentNotification(): NotificationsServiceBuilder
-    {
-        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
-        $this->createNotificationConfirm();
-        $this->setNotificationTemplate(self::TEMPLATE_CONFIRM_APPOINTMENT);
-        $this->setVariables([$this->notificationConfirm->getSmsCode()],['http://shemia.test/confirmNotification/'.$this->notificationConfirm->getEmailCode()]);
-        return $this->makeNotificationServices();
-    }
-
-    /**
-     * @param string $linkToSubmitAnalysisResults
-     * @return NotificationsServiceBuilder
-     */
-    public function makeSubmitAnalysisResultsNotification(string $linkToSubmitAnalysisResults): NotificationsServiceBuilder
-    {
-        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
-        $this->setNotificationTemplate(self::TEMPLATE_SUBMIT_ANALYSIS_RESULTS);
-        $this->setVariables([$linkToSubmitAnalysisResults]);
-        return $this->makeNotificationServices();
-    }
-
-    /**
-     * Creates new NotificationConfirm
-     * @return NotificationConfirm
-     */
-    private function createNotificationConfirm(): NotificationConfirm
-    {
-        $notificationConfirm = $this->notificationConfirm = (new NotificationConfirm())
-            ->setEmailCode(md5($this->patientReceiver->getAuthUser()->getPhone() . rand (0, 99999)))
-            ->setSmsCode(str_pad(rand(0, pow(10, 4)-1), 4, '0', STR_PAD_LEFT))
-        ;
-        $this->em->persist($notificationConfirm);
-
-        $this->logger
-            ->setUser($this->userSender)
-            ->setDescription(
-                $this->translator->trans(
-                    'log.new.entity',
-                    ['%entity%' => 'Подтверждение уведомления', '%id%' => $notificationConfirm->getId()]
-                )
-            )
-            ->logCreateEvent();
-        return $notificationConfirm;
+        $this->notificationTemplate = $notificationTemplate;
+        return $this;
     }
 
     /**
@@ -270,18 +159,6 @@ class NotificationsServiceBuilder
         $this->setVariablesForEmail($variablesForEmail ?? $variablesForSMS);
         $this->setVariablesForWeb($variablesForWeb ?? $variablesForEmail ?? $variablesForSMS);
         return true;
-    }
-
-    //  ---------------------------------------- Сеттеры ----------------------------------------------------------
-
-    /**
-     * @param Patient $patient
-     * @return NotificationsServiceBuilder
-     */
-    public function setPatient(Patient $patient): self
-    {
-        $this->patientReceiver = $patient;
-        return $this;
     }
 
     /**
@@ -315,6 +192,138 @@ class NotificationsServiceBuilder
     }
 
     /**
+     * @return NotificationsServiceBuilder
+     */
+    private function makeNotificationServices(): NotificationsServiceBuilder
+    {
+        $this->webNotificationService
+            ->setPatient($this->patientReceiver)
+            ->setNotificationTemplate($this->notificationTemplate)
+            ->setNotificationReceiverType($this->notificationReceiverType)
+            ->setMedicalHistory($this->medicalHistory)
+            ->setMedicalRecord($this->medicalRecord)
+            ->setVariables($this->variablesForWeb)
+            ->setNotificationConfirm($this->notificationConfirm);
+        $this->smsNotificationService
+            ->setPatient($this->patientReceiver)
+            ->setNotificationTemplate($this->notificationTemplate)
+            ->setNotificationReceiverType($this->notificationReceiverType)
+            ->setMedicalHistory($this->medicalHistory)
+            ->setMedicalRecord($this->medicalRecord)
+            ->setVariables($this->variablesForSMS)
+            ->setNotificationConfirm($this->notificationConfirm);
+        $this->emailNotificationService
+            ->setPatient($this->patientReceiver)
+            ->setNotificationTemplate($this->notificationTemplate)
+            ->setNotificationReceiverType($this->notificationReceiverType)
+            ->setMedicalHistory($this->medicalHistory)
+            ->setMedicalRecord($this->medicalRecord)
+            ->setVariables($this->variablesForEmail)
+            ->setNotificationConfirm($this->notificationConfirm);
+        return $this;
+    }
+
+    /**
+     * @param string $doctor
+     * @param string $appointmentDateTime
+     * @return NotificationsServiceBuilder
+     */
+    public function makeDoctorAppointmentNotification(string $doctor, string $appointmentDateTime): NotificationsServiceBuilder
+    {
+        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
+        $this->setNotificationTemplate(self::TEMPLATE_DOCTOR_APPOINTMENT);
+        $this->setVariables([$doctor, $appointmentDateTime]);
+        return $this->makeNotificationServices();
+    }
+
+    /**
+     * @return NotificationsServiceBuilder
+     */
+    public function makeConfirmMedicationNotification(): NotificationsServiceBuilder
+    {
+        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
+        $this->createNotificationConfirm();
+        $this->setNotificationTemplate(self::TEMPLATE_CONFIRM_MEDICATION);
+        $this->setVariables([$this->notificationConfirm->getSmsCode()], ['http://shemia.test/confirmNotification/' . $this->notificationConfirm->getEmailCode()]);
+        return $this->makeNotificationServices();
+    }
+
+    //  ---------------------------------------- Сеттеры ----------------------------------------------------------
+
+    /**
+     * Creates new NotificationConfirm
+     * @return NotificationConfirm
+     */
+    private function createNotificationConfirm(): NotificationConfirm
+    {
+        $notificationConfirm = $this->notificationConfirm = (new NotificationConfirm())
+            ->setEmailCode(md5($this->patientReceiver->getAuthUser()->getPhone() . rand(0, 99999)))
+            ->setSmsCode(str_pad(rand(0, pow(10, 4) - 1), 4, '0', STR_PAD_LEFT));
+        $this->em->persist($notificationConfirm);
+
+        $this->logger
+            ->setUser($this->userSender)
+            ->setDescription(
+                $this->translator->trans(
+                    'log.new.entity',
+                    ['%entity%' => 'Подтверждение уведомления', '%id%' => $notificationConfirm->getId()]
+                )
+            )
+            ->logCreateEvent();
+        return $notificationConfirm;
+    }
+
+    /**
+     * @param string $testingAppointmentName
+     * @param string $appointmentDateTime
+     * @return NotificationsServiceBuilder
+     */
+    public function makeTestingAppointmentNotification(
+        string $testingAppointmentName,
+        string $appointmentDateTime
+    ): NotificationsServiceBuilder
+    {
+        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
+        $this->setNotificationTemplate(self::TEMPLATE_TESTING_APPOINTMENT);
+        $this->setVariables([$testingAppointmentName, $appointmentDateTime]);
+        return $this->makeNotificationServices();
+    }
+
+    /**
+     * @return NotificationsServiceBuilder
+     */
+    public function makeConfirmAppointmentNotification(): NotificationsServiceBuilder
+    {
+        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
+        $this->createNotificationConfirm();
+        $this->setNotificationTemplate(self::TEMPLATE_CONFIRM_APPOINTMENT);
+        $this->setVariables([$this->notificationConfirm->getSmsCode()], ['http://shemia.test/confirmNotification/' . $this->notificationConfirm->getEmailCode()]);
+        return $this->makeNotificationServices();
+    }
+
+    /**
+     * @param string $linkToSubmitAnalysisResults
+     * @return NotificationsServiceBuilder
+     */
+    public function makeSubmitAnalysisResultsNotification(string $linkToSubmitAnalysisResults): NotificationsServiceBuilder
+    {
+        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
+        $this->setNotificationTemplate(self::TEMPLATE_SUBMIT_ANALYSIS_RESULTS);
+        $this->setVariables([$linkToSubmitAnalysisResults]);
+        return $this->makeNotificationServices();
+    }
+
+    /**
+     * @param Patient $patient
+     * @return NotificationsServiceBuilder
+     */
+    public function setPatient(Patient $patient): self
+    {
+        $this->patientReceiver = $patient;
+        return $this;
+    }
+
+    /**
      * @param MedicalHistory $medicalHistory
      * @return NotificationsServiceBuilder
      */
@@ -331,16 +340,6 @@ class NotificationsServiceBuilder
     public function setMedicalRecord(MedicalRecord $medicalRecord): self
     {
         $this->medicalRecord = $medicalRecord;
-        return $this;
-    }
-
-    /**
-     * @param string $notificationTemplate
-     * @return NotificationsServiceBuilder
-     */
-    private function setNotificationTemplate(string $notificationTemplate): self
-    {
-        $this->notificationTemplate = $notificationTemplate;
         return $this;
     }
 

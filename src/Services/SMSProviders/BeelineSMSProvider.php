@@ -33,7 +33,8 @@ class BeelineSMSProvider
      * SMS notification constructor.
      * @param array $smsParameters
      */
-    public function __construct(array $smsParameters) {
+    public function __construct(array $smsParameters)
+    {
         $this->smsParameters = $smsParameters;
         $this->sms = new BEESMS($this->smsParameters['user'], $this->smsParameters['password']);
     }
@@ -62,7 +63,7 @@ class BeelineSMSProvider
      */
     public function getMessages(): string
     {
-        return $this->sms->status_inbox(false,0, $this->dateTimeStart, $this->dateTimeEnd);
+        return $this->sms->status_inbox(false, 0, $this->dateTimeStart, $this->dateTimeEnd);
     }
 
     /**

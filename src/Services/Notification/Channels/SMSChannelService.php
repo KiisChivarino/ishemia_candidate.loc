@@ -34,7 +34,7 @@ class SMSChannelService
     /** @var string Текст СМС сообщения */
     private $text;
 
-    /** @var AuthUser Пользователь получатель*/
+    /** @var AuthUser Пользователь получатель */
     private $authUser;
 
     /**
@@ -117,7 +117,8 @@ class SMSChannelService
         array $phoneParameters,
         array $timeFormats,
         string $systemUserPhone
-    ) {
+    )
+    {
         $this->em = $em;
         $this->logger = $logService;
         $this->beelineSMSProvider = $beelineSMSProvider;
@@ -130,7 +131,7 @@ class SMSChannelService
         $this->SYSTEM_USER_PHONE = $systemUserPhone;
         $this->notificationTime = new DateTime('now');
         $this->userSender = $tokenStorage->getToken() ? $tokenStorage->getToken()->getUser()
-            : $this->em->getRepository(AuthUser::class)->findOneBy(['phone'=>$this->SYSTEM_USER_PHONE]);
+            : $this->em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->SYSTEM_USER_PHONE]);
     }
 
     /**
@@ -160,7 +161,7 @@ class SMSChannelService
         $this->logger
             ->setUser(
                 $userSender
-                ?? $this->em->getRepository(AuthUser::class)->findOneBy(['phone'=>$this->SYSTEM_USER_PHONE])
+                ?? $this->em->getRepository(AuthUser::class)->findOneBy(['phone' => $this->SYSTEM_USER_PHONE])
             )
             ->setDescription(
                 $this->translator->trans(
@@ -199,8 +200,8 @@ class SMSChannelService
                 ->setText($sMSNotification->getNotification()->getText())
                 ->setTarget(
                     $this->PHONE_PARAMETERS['phone_prefix_ru'] .
-                        $sMSNotification->getNotification()->getPatientNotification()
-                            ->getPatient()->getAuthUser()->getPhone()
+                    $sMSNotification->getNotification()->getPatientNotification()
+                        ->getPatient()->getAuthUser()->getPhone()
                 )
                 ->send()
         );
@@ -220,14 +221,14 @@ class SMSChannelService
     public function checkSMS(): SimpleXMLElement
     {
         return (
-            new SimpleXMLElement(
+        new SimpleXMLElement(
             $this->beelineSMSProvider
                 ->setDateTimeEnd($this->notificationTime->format($this->TIME_FORMATS['besms']))
                 ->setDateTimeStart($this->notificationTime
                     ->sub(new DateInterval('PT' . $this->SMS_UPDATE_TIMES['period_to_update'] . 'H'))
                     ->format($this->TIME_FORMATS['besms']))
                 ->check()
-            )
+        )
         )->MESSAGES->MESSAGE;
     }
 
@@ -239,14 +240,14 @@ class SMSChannelService
     public function getUnreadSMS()
     {
         return (
-            new SimpleXMLElement(
+        new SimpleXMLElement(
             $this->beelineSMSProvider
                 ->setDateTimeEnd($this->notificationTime->format($this->TIME_FORMATS['besms']))
                 ->setDateTimeStart($this->notificationTime
                     ->sub(new DateInterval('PT' . $this->SMS_UPDATE_TIMES['period_to_check'] . 'H'))
                     ->format($this->TIME_FORMATS['besms']))
                 ->getMessages()
-            )
+        )
         )->MESSAGES->MESSAGE;
     }
 

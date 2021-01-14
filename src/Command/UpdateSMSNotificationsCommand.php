@@ -23,14 +23,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UpdateSMSNotificationsCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'app:update-sms';
-
     /** @var int Max attempts for resend sms */
     const MAX_ATTEMPTS = 1;
-
     /** @var int Option to resend sms unlimited times */
     const UNLIMITED_ATTEMPTS = false;
-
+    protected static $defaultName = 'app:update-sms';
     /** @var ContainerInterface */
     private $container;
 
@@ -63,7 +60,8 @@ class UpdateSMSNotificationsCommand extends Command
         LogService $logger,
         TranslatorInterface $translator,
         array $smsStatuses
-    ) {
+    )
+    {
         parent::__construct();
         $this->container = $container;
         $this->smsChannelService = $SMSChannelService;
@@ -79,8 +77,7 @@ class UpdateSMSNotificationsCommand extends Command
     {
         $this
             ->setDescription('Check and update SMS notification`s statuses')
-            ->setHelp('This command checks and update SMS notification`s statuses')
-        ;
+            ->setHelp('This command checks and update SMS notification`s statuses');
     }
 
     /**
@@ -105,7 +102,7 @@ class UpdateSMSNotificationsCommand extends Command
         foreach ($this->smsChannelService->checkSMS() ?? [] as $message) {
             foreach ($smsNotifications as $smsNotification) {
                 if (
-                    (string) $message['SMS_ID'] == (string) $smsNotification->getExternalId()
+                    (string)$message['SMS_ID'] == (string)$smsNotification->getExternalId()
                     && $smsNotification->getStatus() != $this->SMS_STATUSES['not_delivered']
                 ) {
                     switch ((string)$message->SMSSTC_CODE) {

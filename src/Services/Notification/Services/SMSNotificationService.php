@@ -19,12 +19,21 @@ class SMSNotificationService extends NotificationService
 {
     /** Константы для sms провайдеров  */
     const
-        SMS_PROVIDER_BEELINE = 'Beeline'
-    ;
+        SMS_PROVIDER_BEELINE = 'Beeline';
 
     /** @var SMSChannelService */
     private $channel;
 
+    /**
+     * SMSNotificationService constructor.
+     * @param EntityManagerInterface $em
+     * @param TokenStorageInterface $tokenStorage
+     * @param LogService $logService
+     * @param TranslatorInterface $translator
+     * @param SMSChannelService $smsChannelService
+     * @param array $channelTypes
+     * @param array $notificationReceiverTypes
+     */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,

@@ -38,8 +38,7 @@ class WebChannelService
     {
         $webNotification = (new WebNotification())
             ->setReceiverString((new AuthUserInfoService())->getFIO($patientReceiver->getAuthUser()))
-            ->setChannelType($channel)
-        ;
+            ->setChannelType($channel);
 
         $this->em->persist($webNotification);
         return $webNotification;
