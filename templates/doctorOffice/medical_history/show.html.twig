@@ -57,7 +57,7 @@
                         <p>{{ template.items.show.content.passport }}</p>
                         <p>{{ entity.passport }}</p>
                         {% if (entity.passportIssuingAuthority) %}
-                            <p>{{ entity.passportIssuingAuthority }} {{ entity.passportIssueDate }} {{ entity.passportIssuingAuthorityCode }}</p>
+                            <p>{{ entity.passportIssuingAuthority }} {{ entity.passportIssueDate|date('Y-m-d H:i:s') }} {{ entity.passportIssuingAuthorityCode }}</p>
                         {% endif %}
                     </div>
                 </div>
