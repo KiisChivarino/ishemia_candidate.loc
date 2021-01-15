@@ -1,0 +1,4 @@
+parameters:
+  notification_receiver_types:
+    patient: patient
+    staff: staff

@@ -1,0 +1,5 @@
+parameters:
+  channel_types:
+    sms-beeline: sms-beeline
+    email: email
+    web: web

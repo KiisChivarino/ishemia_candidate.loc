@@ -4,7 +4,10 @@ namespace App\Services\DataTable\Admin;
 
 use App\Controller\AppAbstractController;
 use App\Entity\AuthUser;
+use App\Entity\MedicalHistory;
+use App\Entity\MedicalRecord;
 use App\Entity\Notification;
+use App\Entity\NotificationReceiverType;
 use App\Entity\Patient;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -37,11 +40,6 @@ class NotificationDataTableService extends AdminDatatableService
         $this->addSerialNumber();
         $this->dataTable
             ->add(
-                'notificationType', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('notificationType')
-                ]
-            )
-            ->add(
                 'authUserSender', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staff'),
                     'render' => function (string $data, Notification $notification): string {
@@ -51,20 +49,6 @@ class NotificationDataTableService extends AdminDatatableService
                             (new AuthUserInfoService())->getFIO($authUser, true),
                             $authUser->getId(),
                             'auth_user_show'
-                        ) : '';
-                    },
-                ]
-            )
-            ->add(
-                'patient', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('patient'),
-                    'render' => function (string $data, Notification $notification): string {
-                        /** @var Patient $patient */
-                        $patient = $notification->getPatient();
-                        return $patient ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($patient->getAuthUser(), true),
-                            $patient->getId(),
-                            'patient_show'
                         ) : '';
                     },
                 ]
@@ -81,6 +65,67 @@ class NotificationDataTableService extends AdminDatatableService
                     'format' => 'd.m.Y H:i'
                 ]
             )
+            ->add(
+                'notificationReceiverType', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('notificationReceiverType'),
+                    'render' => function (string $data, Notification $notification): string {
+                        /** @var NotificationReceiverType $notificationReceiverType */
+                        $notificationReceiverType = $notification->getNotificationReceiverType();
+                        return $notificationReceiverType ? $notificationReceiverType->getName() : '';
+                    },
+                ]
+            )
+            ->add(
+                'receiver', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('receiver'),
+                    'render' => function (string $data, Notification $notification): string {
+                        /** @var NotificationReceiverType $notificationReceiverType */
+                        switch ($notification->getNotificationReceiverType()->getName()){
+                            case 'patient':
+                                $patientNotification = $notification->getPatientNotification();
+                                return $patientNotification ? $this->getLink(
+                                    (new AuthUserInfoService())->getFIO(
+                                        $patientNotification->getPatient()->getAuthUser(), true
+                                    ),
+                                    $patientNotification->getPatient()->getId(),
+                                    'patient_show'
+                                ) : '';
+                            case 'staff':
+                            default:
+                                return '';
+                        }
+
+                    },
+                ]
+            )
+            ->add(
+                'medicalHistory', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('medicalHistory'),
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
+                        /** @var MedicalHistory $medicalHistory */
+                        $medicalHistory = $notification->getPatientNotification()->getMedicalHistory();
+                        return $medicalHistory ? $this->getLink(
+                            $listTemplateItem->getContentValue('medicalHistory'),
+                            $medicalHistory->getId(),
+                            'medical_history_show'
+                        ) : '-';
+                    },
+                ]
+            )
+            ->add(
+                'medicalRecord', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('medicalRecord'),
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
+                        /** @var MedicalRecord $medicalRecord */
+                        $medicalRecord = $notification->getPatientNotification()->getMedicalRecord();
+                        return $medicalRecord ? $this->getLink(
+                            $listTemplateItem->getContentValue('medicalRecord'),
+                            $medicalRecord->getId(),
+                            'medical_record_show'
+                        ) : '-';
+                    },
+                ]
+            )
         ;
 
         /** @var Patient $patient */
@@ -93,10 +138,13 @@ class NotificationDataTableService extends AdminDatatableService
                     'query' => function (QueryBuilder $builder) use ($patient) {
                         $builder
                             ->select('n')
-                            ->from(Notification::class, 'n');
+                            ->from(Notification::class, 'n')
+                            ->leftJoin('n.patientNotification', 'pN')
+                            ->addSelect('pN')
+                        ;
                         if ($patient) {
                             $builder
-                                ->andWhere('n.patient = :patient')
+                                ->andWhere('pN.patient = :patient')
                                 ->setParameter('patient', $patient);
                         }
                     },

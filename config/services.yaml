@@ -8,11 +8,13 @@ parameters:
     app_locales: ar|cs|da|de|en|eo|es|eu|fi|fr|it|ja|nl|pl|pt_BR|ru|sk|sv|tr|zh_CN
 
 imports:
-    - { resource: parametres.yaml }
+    - { resource: globals.yaml }
     - { resource: services/roles.yaml }
     - { resource: services/template/content.yaml }
-    - { resource: services/email_notification_service.yml }
-    - { resource: services/sms_notification_service.yml }
+    - { resource: services/notifications/email_notification_service.yml }
+    - { resource: services/notifications/sms_notification_service.yml }
+    - { resource: services/notifications/notification_channel_types.yaml }
+    - { resource: services/notifications/notification_receiver_types.yaml }
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -20,15 +22,17 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $rootPath : '%kernel.project_dir%'
-            $projectInfo: '%global.project_info%'
+            $projectInfo: '%project_info%'
             $emailParameters: '%email_notification_service.email_parameters%'
             $smsParameters: '%sms_notification_service.sms_parameters%'
             $smsStatuses: '%sms_notification_service.sms_statuses%'
             $smsUpdateTimes: '%sms_notification_service.sms_update_times%'
             $phoneParameters: '%sms_notification_service.phone_parameters%'
             $timeFormats: '%sms_notification_service.time_formats%'
-            $systemUserPhone: '%global.system_user_phone%'
-            $defaultTimeFormats: '%global.default_time_formats%'
+            $systemUserPhone: '%system_user_phone%'
+            $defaultTimeFormats: '%default_time_formats%'
+            $channelTypes: '%channel_types%'
+            $notificationReceiverTypes: '%notification_receiver_types%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -80,6 +84,3 @@ services:
     App\Form\Admin\AuthUser\AuthUserRoleType:
         arguments: ['@doctrine.orm.entity_manager']
         tags: [form.type]
-
-    App\Services\Notification\SMSNotificationService:
-        autowire: true
