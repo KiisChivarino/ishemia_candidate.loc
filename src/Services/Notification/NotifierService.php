@@ -13,7 +13,10 @@ use App\Services\Notification\Services\WebNotificationService;
  */
 class NotifierService
 {
-    /** @var array */
+    /**
+     * @var array
+     * yaml:config/services/notifications/notification_receiver_types.yaml
+     */
     private $notificationReceiverTypes;
 
     /**

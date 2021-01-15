@@ -224,8 +224,6 @@ class NotificationsServiceBuilder
         return $this->makeNotificationServices($notificationData, self::TEMPLATE_CONFIRM_MEDICATION);
     }
 
-    //  ---------------------------------------- Сеттеры ----------------------------------------------------------
-
     /**
      * Creates new NotificationConfirm
      * @param Patient $patient
