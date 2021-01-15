@@ -1,11 +1,11 @@
 parameters:
 # Параметры компании
-  global.project_info:
+  project_info:
     site_name: 'Медицина'
     address_line_1: 'ул. Ленина д.30'
     address_line_2: 'Курск, Россия'
 # Пользователь Система
-  global.system_user_phone: '9999999999'
+  system_user_phone: '9999999999'
 # Параметры времени
-  global.default_time_formats:
+  default_time_formats:
     default: 'd.m.Y H:i:s'

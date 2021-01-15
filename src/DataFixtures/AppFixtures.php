@@ -7,6 +7,7 @@ use App\Entity\Analysis;
 use App\Entity\AnalysisGroup;
 use App\Entity\AnalysisRate;
 use App\Entity\AppointmentType;
+use App\Entity\ChannelType;
 use App\Entity\DateInterval;
 use App\Entity\Diagnosis;
 use App\Entity\Gender;
@@ -14,6 +15,9 @@ use App\Entity\Logger\LogAction;
 use App\Entity\LPU;
 use App\Entity\City;
 use App\Entity\Measure;
+use App\Entity\NotificationReceiverType;
+use App\Entity\NotificationTemplate;
+use App\Entity\NotificationTemplateText;
 use App\Entity\OKSM;
 use App\Entity\Oktmo;
 use App\Entity\PlanAppointment;
@@ -95,6 +99,16 @@ class AppFixtures extends Fixture
         echo "Внесение ролей\n";
         $this->dataSowing->addRoles();
         /** end Роли*/
+
+        /** begin Типы каналов*/
+        echo "Внесение типов каналов\n";
+        $this->dataSowing->addChannelTypes();
+        /** end Типы каналов*/
+
+        /** begin Типы получателей уведомлений */
+        echo "Внесение типов получателей уведомлений\n";
+        $this->dataSowing->addReceiverTypes();
+        /** end Типы получателей уведомлений*/
 
         /** begin OKSM */
         echo "Заполнение справочника ОКСМ\n";
@@ -355,5 +369,36 @@ class AppFixtures extends Fixture
             [],
             ['enabled' => true]);
         /** end Типы логов */
+
+        /** begin Шаблоны уведомлений */
+        echo "Заполнение справочника \"Шаблоны уведомлений\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'notification_templates.csv',
+            NotificationTemplate::class,
+            ',',
+            [],
+            [],
+            [
+                'notificationReceiverType' => NotificationReceiverType::class
+            ]
+        );
+        /** end Шаблоны уведомлений */
+
+        /** begin Тексты шаблонов уведомлений */
+        echo "Заполнение справочника \"Тексты шаблонов уведомлений\"\n";
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'notification_template_texts.csv',
+            NotificationTemplateText::class,
+            ',',
+            [],
+            [],
+            [
+                'notificationTemplate' => NotificationTemplate::class,
+                'channelType' => ChannelType::class,
+            ]
+        );
+        /** end Тексты шаблонов уведомлений */
     }
 }

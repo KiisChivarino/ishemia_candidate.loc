@@ -33,6 +33,9 @@ class TextByTemplateType extends AbstractType
                         'label' => $parameter->getName(),
                         'class' => TemplateParameterText::class,
                         'mapped' => false,
+                        'attr' => [
+                            'class' => 'deletable-parameter'
+                        ],
                         'choice_label' => 'text',
                         'query_builder' => function (TemplateParameterTextRepository $er) use ($parameter) {
                             return $er->createQueryBuilder('t')

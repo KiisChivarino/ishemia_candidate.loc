@@ -13,6 +13,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EmailNotificationRepository extends AppRepository
 {
+    /**
+     * EmailNotificationRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, EmailNotification::class);

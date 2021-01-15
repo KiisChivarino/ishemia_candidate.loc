@@ -112,9 +112,9 @@ class MedicalHistory
     private $clinicalDiagnosis;
 
     /**
-     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="medicalHistory", orphanRemoval=true,cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalHistory")
      */
-    private $notification;
+    private $patientNotifications;
 
     /**
      * MedicalHistory constructor.
@@ -128,7 +128,7 @@ class MedicalHistory
         $this->backgroundDiseases = new ArrayCollection();
         $this->complications = new ArrayCollection();
         $this->concomitantDiseases = new ArrayCollection();
-        $this->notification = new ArrayCollection();
+        $this->patientNotifications = new ArrayCollection();
     }
 
     /**
@@ -572,37 +572,37 @@ class MedicalHistory
     }
 
     /**
-     * @return Collection|Notification[]
+     * @return Collection|PatientNotification[]
      */
-    public function getNotification(): Collection
+    public function getPatientNotifications(): Collection
     {
-        return $this->notification;
+        return $this->patientNotifications;
     }
 
     /**
-     * @param Notification $notification
+     * @param PatientNotification $patientNotification
      * @return $this
      */
-    public function addNotification(Notification $notification): self
+    public function addPatientNotification(PatientNotification $patientNotification): self
     {
-        if (!$this->notification->contains($notification)) {
-            $this->notification[] = $notification;
-            $notification->setMedicalHistory($this);
+        if (!$this->patientNotifications->contains($patientNotification)) {
+            $this->patientNotifications[] = $patientNotification;
+            $patientNotification->setMedicalHistory($this);
         }
 
         return $this;
     }
 
     /**
-     * @param Notification $notification
+     * @param PatientNotification $patientNotification
      * @return $this
      */
-    public function removeNotification(Notification $notification): self
+    public function removePatientNotification(PatientNotification $patientNotification): self
     {
-        if ($this->notification->removeElement($notification)) {
+        if ($this->patientNotifications->removeElement($patientNotification)) {
             // set the owning side to null (unless already changed)
-            if ($notification->getMedicalHistory() === $this) {
-                $notification->setMedicalHistory(null);
+            if ($patientNotification->getMedicalHistory() === $this) {
+                $patientNotification->setMedicalHistory(null);
             }
         }
 

@@ -30,6 +30,12 @@ class EmailNotification
     private $notification;
 
     /**
+     * @ORM\ManyToOne(targetEntity=ChannelType::class, inversedBy="emailNotification")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $channelType;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -71,6 +77,25 @@ class EmailNotification
     public function setPatientRecipientEmail(string $patientRecipientEmail): self
     {
         $this->patientRecipientEmail = $patientRecipientEmail;
+
+        return $this;
+    }
+
+    /**
+     * @return ChannelType|null
+     */
+    public function getChannelType(): ?ChannelType
+    {
+        return $this->channelType;
+    }
+
+    /**
+     * @param ChannelType|null $channelType
+     * @return $this
+     */
+    public function setChannelType(?ChannelType $channelType): self
+    {
+        $this->channelType = $channelType;
 
         return $this;
     }
