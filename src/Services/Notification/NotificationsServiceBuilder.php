@@ -161,7 +161,10 @@ class NotificationsServiceBuilder
      * @param string $notificationTemplate
      * @return NotificationsServiceBuilder
      */
-    private function makeNotificationServices(NotificationData $notificationData, string $notificationTemplate): NotificationsServiceBuilder
+    private function makeNotificationServices(
+        NotificationData $notificationData,
+        string $notificationTemplate
+    ): NotificationsServiceBuilder
     {
         $this->webNotificationService
             ->setNotificationData($notificationData)
@@ -190,7 +193,10 @@ class NotificationsServiceBuilder
      * @param string $message
      * @return NotificationsServiceBuilder
      */
-    public function makeCustomMessageNotification(NotificationData $notificationData, string $message): NotificationsServiceBuilder
+    public function makeCustomMessageNotification(
+        NotificationData $notificationData,
+        string $message
+    ): NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->setVariables([(new AuthUserInfoService())->getFIO($this->userSender), $message]);
@@ -204,7 +210,11 @@ class NotificationsServiceBuilder
      * @param string $appointmentDateTime
      * @return NotificationsServiceBuilder
      */
-    public function makeDoctorAppointmentNotification(NotificationData $notificationData, string $doctor, string $appointmentDateTime): NotificationsServiceBuilder
+    public function makeDoctorAppointmentNotification(
+        NotificationData $notificationData,
+        string $doctor,
+        string $appointmentDateTime
+    ): NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->setVariables([$doctor, $appointmentDateTime]);
@@ -220,7 +230,10 @@ class NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->createNotificationConfirm($notificationData->getPatientReceiver());
-        $this->setVariables([$this->notificationConfirm->getSmsCode()], ['http://shemia.test/confirmNotification/' . $this->notificationConfirm->getEmailCode()]);
+        $this->setVariables(
+            [$this->notificationConfirm->getSmsCode()],
+            ['http://shemia.test/confirmNotification/' . $this->notificationConfirm->getEmailCode()]
+        );
         return $this->makeNotificationServices($notificationData, self::TEMPLATE_CONFIRM_MEDICATION);
     }
 
@@ -275,7 +288,10 @@ class NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->createNotificationConfirm($notificationData->getPatientReceiver());
-        $this->setVariables([$this->notificationConfirm->getSmsCode()], ['http://shemia.test/confirmNotification/' . $this->notificationConfirm->getEmailCode()]);
+        $this->setVariables(
+            [$this->notificationConfirm->getSmsCode()],
+            ['http://shemia.test/confirmNotification/' . $this->notificationConfirm->getEmailCode()]
+        );
         return $this->makeNotificationServices($notificationData, self::TEMPLATE_CONFIRM_APPOINTMENT);
     }
 
@@ -285,11 +301,16 @@ class NotificationsServiceBuilder
      * @param string $linkToSubmitAnalysisResults
      * @return NotificationsServiceBuilder
      */
-    public function makeSubmitAnalysisResultsNotification(NotificationData $notificationData, string $linkToSubmitAnalysisResults): NotificationsServiceBuilder
+    public function makeSubmitAnalysisResultsNotification(
+        NotificationData $notificationData,
+        string $linkToSubmitAnalysisResults
+    ): NotificationsServiceBuilder
     {
         $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
         $this->setVariables([$linkToSubmitAnalysisResults]);
-        return $this->makeNotificationServices($notificationData, self::TEMPLATE_SUBMIT_ANALYSIS_RESULTS);
+        return $this->makeNotificationServices(
+            $notificationData, self::TEMPLATE_SUBMIT_ANALYSIS_RESULTS
+        );
     }
 
     /**
