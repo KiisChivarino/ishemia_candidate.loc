@@ -7,7 +7,6 @@ use App\Repository\CityRepository;
 use App\Repository\ComplaintRepository;
 use App\Repository\DiagnosisRepository;
 use App\Repository\HospitalRepository;
-use App\Repository\MedicineRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -97,24 +96,6 @@ class AjaxController extends AbstractController
             $hospitalRepository->findHospitals(
                 $request->query->get(self::JSON_PARAMETER_KEY), 
                 $city
-            )
-        );
-    }
-
-    /**
-     * Find medicine by ajax
-     * @Route("/find_medicine_ajax", name="find_medicine_ajax", methods={"GET"})
-     *
-     * @param Request $request
-     *
-     * @param MedicineRepository $medicineRepository
-     * @return false|string
-     */
-    public function findMedicineAjax(Request $request, MedicineRepository $medicineRepository)
-    {
-        return $this->responseAjaxResult(
-            $medicineRepository->findMedicines(
-                $request->query->get(self::JSON_PARAMETER_KEY)
             )
         );
     }
