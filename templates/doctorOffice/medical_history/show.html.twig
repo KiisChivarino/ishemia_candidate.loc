@@ -57,7 +57,7 @@
                         <p>{{ template.items.show.content.passport }}</p>
                         <p>{{ entity.passport }}</p>
                         {% if (entity.passportIssuingAuthority) %}
-                            <p>{{ entity.passportIssuingAuthority }} {{ entity.passportIssueDate|date('Y-m-d H:i:s') }} {{ entity.passportIssuingAuthorityCode }}</p>
+                            <p>{{ entity.passportIssuingAuthority }} {{ entity.passportIssueDate|date('H:i:s') }} {{ entity.passportIssuingAuthorityCode }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -164,33 +164,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="statement__info">
-                        <div class="statement__info-block">
-                            <p>{{ template.items.show.content.diseaseHistory }}</p>
-                        </div>
-                        <p>
-                            {% if medicalHistory.diseaseHistory %}
-                                {{ medicalHistory.diseaseHistory|raw }}
-                            {% else %}
-                                {{ template.items.show.content.diseaseHistoryNotFound }}
-                            {% endif %}
-                        </p>
-                    </div>
                 </div>
-                <div class="statement__content">
-                    <div class="statement__info">
-                        <div class="statement__info-block">
-                            <p>{{ template.items.show.content.lifeHistory }}</p>
-                        </div>
-                    </div>
-                </div>
-                <p>
-                    {% if medicalHistory.lifeHistory %}
-                        {{ medicalHistory.lifeHistory | raw }}
-                    {% else %}
-                        {{ template.items.show.content.lifeHistoryNotFound }}
-                    {% endif %}
-                </p>
             </div>
         </div>
     {% endif %}
@@ -256,7 +230,7 @@
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.objectiveStatus }}</p>
                             <p>
-                                {% if firstAppointment.objectiveStatus %}
+                                {% if firstAppointment.objectiveStatus is defined %}
                                     {{ firstAppointment.objectiveStatus.text | raw }}
                                 {% else %}
                                     {{ template.items.show.content.objectiveStatusNotFound }}
@@ -264,7 +238,28 @@
                             </p>
                         </div>
                     </div>
+
                     <div class="statement__info">
+                        <div class="statement__info-block">
+                            <p>{{ template.items.show.content.lifeHistory }}</p>
+                            <p>
+                                {% if medicalHistory.lifeHistory %}
+                                    {{ medicalHistory.lifeHistory | raw }}
+                                {% else %}
+                                    {{ template.items.show.content.lifeHistoryNotFound }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="statement__info-block">
+                            <p>{{ template.items.show.content.diseaseHistory }}</p>
+                            <p>
+                                {% if medicalHistory.diseaseHistory %}
+                                    {{ medicalHistory.diseaseHistory | raw }}
+                                {% else %}
+                                    {{ template.items.show.content.diseaseHistoryNotFound }}
+                                {% endif %}
+                            </p>
+                        </div>
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.therapy }}</p>
                             <p>
@@ -366,7 +361,7 @@
                     </div>
                     <div class="statement__info">
                         <div class="statement__info-block">
-                            {% if not enabledTestingResults(testing) is empty and not isEmptyPatientTestingResults(testing)%}
+                            {% if not enabledTestingResults(testing) is empty and not isEmptyPatientTestingResults(testing) %}
                                 <div class="table-wrapper table-history">
                                     <table>
                                         <thead>
@@ -376,13 +371,13 @@
                                             <th>Результат</th>
                                         </tr>
                                         </thead>
-                                            {% for result in enabledTestingResults(testing) %}
-                                                <tr>
-                                                    <td>{{ result.analysis.name }}</td>
-                                                    <td>{{ result.analysisRate ? analysisRate(result.analysisRate) : '' }}</td>
-                                                    <td>{{ result.result }}</td>
-                                                </tr>
-                                            {% endfor %}
+                                        {% for result in enabledTestingResults(testing) %}
+                                            <tr>
+                                                <td>{{ result.analysis.name }}</td>
+                                                <td>{{ result.analysisRate ? analysisRate(result.analysisRate) : '' }}</td>
+                                                <td>{{ result.result }}</td>
+                                            </tr>
+                                        {% endfor %}
                                     </table>
                                 </div>
                             {% endif %}
