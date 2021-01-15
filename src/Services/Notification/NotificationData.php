@@ -25,6 +25,14 @@ class NotificationData
     }
 
     /**
+     * @return Patient
+     */
+    public function getPatientReceiver(): Patient
+    {
+        return $this->patientReceiver;
+    }
+
+    /**
      * @param Patient $patient
      * @return NotificationData
      */
@@ -32,6 +40,14 @@ class NotificationData
     {
         $this->patientReceiver = $patient;
         return $this;
+    }
+
+    /**
+     * @return MedicalHistory
+     */
+    public function getMedicalHistory(): MedicalHistory
+    {
+        return $this->medicalHistory;
     }
 
     /**
@@ -45,6 +61,14 @@ class NotificationData
     }
 
     /**
+     * @return MedicalRecord|null
+     */
+    public function getMedicalRecord(): ?MedicalRecord
+    {
+        return $this->medicalRecord;
+    }
+
+    /**
      * @param MedicalRecord|null $medicalRecord
      * @return NotificationData
      */
@@ -52,29 +76,5 @@ class NotificationData
     {
         $this->medicalRecord = $medicalRecord;
         return $this;
-    }
-
-    /**
-     * @return Patient
-     */
-    public function getPatientReceiver(): Patient
-    {
-        return $this->patientReceiver;
-    }
-
-    /**
-     * @return MedicalHistory
-     */
-    public function getMedicalHistory(): MedicalHistory
-    {
-        return $this->medicalHistory;
-    }
-
-    /**
-     * @return MedicalRecord|null
-     */
-    public function getMedicalRecord(): ?MedicalRecord
-    {
-        return $this->medicalRecord;
     }
 }

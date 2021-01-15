@@ -107,6 +107,22 @@ class NotificationsServiceBuilder
     }
 
     /**
+     * Creates notification with CustomMessage Template
+     * @param NotificationData $notificationData
+     * @param string $message
+     * @return NotificationsServiceBuilder
+     */
+    public function makeCustomMessageNotification(
+        NotificationData $notificationData,
+        string $message
+    ): NotificationsServiceBuilder
+    {
+        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
+        $this->setVariables([(new AuthUserInfoService())->getFIO($this->userSender), $message]);
+        return $this->makeNotificationServices($notificationData, self::TEMPLATE_CUSTOM_MESSAGE);
+    }
+
+    /**
      * Variables setter
      * @param array $variablesForSMS
      * @param array|null $variablesForEmail
@@ -185,22 +201,6 @@ class NotificationsServiceBuilder
             ->setVariables($this->variablesForEmail)
             ->setNotificationConfirm($this->notificationConfirm);
         return $this;
-    }
-
-    /**
-     * Creates notification with CustomMessage Template
-     * @param NotificationData $notificationData
-     * @param string $message
-     * @return NotificationsServiceBuilder
-     */
-    public function makeCustomMessageNotification(
-        NotificationData $notificationData,
-        string $message
-    ): NotificationsServiceBuilder
-    {
-        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
-        $this->setVariables([(new AuthUserInfoService())->getFIO($this->userSender), $message]);
-        return $this->makeNotificationServices($notificationData, self::TEMPLATE_CUSTOM_MESSAGE);
     }
 
     /**

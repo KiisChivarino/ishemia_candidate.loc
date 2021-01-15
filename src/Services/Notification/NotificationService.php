@@ -43,6 +43,9 @@ abstract class NotificationService implements NotificationInterface
     /** @var string */
     protected $channelType;
 
+    /** @var NotificationData */
+    protected $notificationData;
+
     /** @var array Строки для добавления конкретной информации в стандартизированные шаблоны */
     private $variables;
 
@@ -54,9 +57,6 @@ abstract class NotificationService implements NotificationInterface
 
     /** @var NotificationConfirm */
     private $notificationConfirm;
-
-    /** @var NotificationData */
-    protected $notificationData;
 
     /**
      * SMS notification constructor.
@@ -127,6 +127,14 @@ abstract class NotificationService implements NotificationInterface
     }
 
     /**
+     * @return NotificationData
+     */
+    public function getNotificationData(): NotificationData
+    {
+        return $this->notificationData;
+    }
+
+    /**
      * @param NotificationData $notificationData
      * @return NotificationService
      */
@@ -134,14 +142,6 @@ abstract class NotificationService implements NotificationInterface
     {
         $this->notificationData = $notificationData;
         return $this;
-    }
-
-    /**
-     * @return NotificationData
-     */
-    public function getNotificationData(): NotificationData
-    {
-        return $this->notificationData;
     }
 
     public function notify()
