@@ -64,11 +64,8 @@ abstract class NotificationService implements NotificationInterface
     /** @var NotificationConfirm */
     private $notificationConfirm;
 
-    /**
-     * @var array
-     * yaml:config/services/notifications/notification_receiver_types.yaml
-     */
-    private $NOTIFICATION_RECEIVER_TYPES;
+    /** @var string */
+    protected $channelType;
 
     /**
      * SMS notification constructor.
@@ -77,22 +74,19 @@ abstract class NotificationService implements NotificationInterface
      * @param LogService $logService
      * @param TranslatorInterface $translator
      * @param array $channelTypes
-     * @param array $notificationReceiverTypes
      */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,
         LogService $logService,
         TranslatorInterface $translator,
-        array $channelTypes,
-        array $notificationReceiverTypes
+        array $channelTypes
     )
     {
         $this->em = $em;
         $this->logger = $logService;
         $this->translator = $translator;
         $this->CHANNEL_TYPES = $channelTypes;
-        $this->NOTIFICATION_RECEIVER_TYPES = $notificationReceiverTypes;
         $this->userSender = $tokenStorage->getToken() ? $tokenStorage->getToken()->getUser()
             : $this->em->getRepository(AuthUser::class)->getSystemUser();
     }
@@ -185,14 +179,13 @@ abstract class NotificationService implements NotificationInterface
 
     /**
      * Creates new Notification
-     * @param string $channel
      * @return Notification
      */
-    protected function createNotification(string $channel): Notification
+    protected function createNotification(): Notification
     {
         $notification = new Notification();
         $notification->setPatientNotification($this->createPatientNotification());
-        $notification->setText($this->getNotificationText($channel));
+        $notification->setText($this->getNotificationText());
         $notification->setAuthUserSender($this->userSender);
         $notification->setNotificationReceiverType($this->notificationReceiverType);
         $notification->setNotificationTime(new DateTime('now'));
@@ -217,14 +210,13 @@ abstract class NotificationService implements NotificationInterface
 
     /**
      * Generates text for specific channel
-     * @param $channel
      * @return string
      */
-    private function getNotificationText(string $channel): string
+    private function getNotificationText(): string
     {
         return vsprintf(
             $this->em->getRepository(NotificationTemplateText::class)->findForChannel(
-                $channel, $this->notificationTemplate
+                $this->channelType, $this->notificationTemplate
             )->getText(),
             $this->variables
         );

@@ -76,13 +76,13 @@ class UpdateSMSNotificationsCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Check and update SMS notification`s statuses')
-            ->setHelp('This command checks and update SMS notification`s statuses');
+            ->setDescription('Checks and updates SMS notification`s statuses')
+            ->setHelp('This command checks and updates SMS notification`s statuses');
     }
 
     /**
-     * Check sms for the past day, and depending on status change data in out database
-     * and resend if message is not delivered
+     * Checks sms for the past day, and depending on status, changes data in our database
+     * and resends if message is not delivered
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int

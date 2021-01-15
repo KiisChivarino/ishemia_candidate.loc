@@ -79,9 +79,6 @@ class SMSChannelService
     /** @var BeelineSMSProvider Сервис для работы с BeelineSMS провайдером */
     private $beelineSMSProvider;
 
-    /** @var string Название провайдера предоставления услуг */
-    private $provider;
-
     /** @var TranslatorInterface Интерфейс для работы с переводом */
     private $translator;
 
@@ -138,17 +135,11 @@ class SMSChannelService
      * SMS Sender and result parser
      * @return mixed
      */
-    public function sendSMS()
+    public function sendSMS(): SMSNotification
     {
-        $result = null;
-        switch ($this->provider) {
-            case self::SMS_PROVIDER_BEELINE:
-                $result = $this->sendBeelineSMS();
-                break;
-        }
-        if (is_null($result)) {
-            return false;
-        }
+        $result = $this->sendBeelineSMS();
+        // TODO: Расширить, если появится второй провайдер
+
         $sMSNotification = new SMSNotification();
         $sMSNotification->setRecipientPhone($this->authUser->getPhone());
         $sMSNotification->setStatus($this->SMS_STATUSES['wait']);
@@ -190,24 +181,25 @@ class SMSChannelService
 
     /**
      * SMS RE-Sender and result parser
-     * @param SMSNotification $sMSNotification
+     * @param SMSNotification $SMSNotification
      * @return bool
      */
-    public function reSendSMS(SMSNotification $sMSNotification): bool
+    public function reSendSMS(SMSNotification $SMSNotification): bool
     {
         $result = new SimpleXMLElement(
             $this->beelineSMSProvider
-                ->setText($sMSNotification->getNotification()->getText())
+                ->setText($SMSNotification->getNotification()->getText())
                 ->setTarget(
                     $this->PHONE_PARAMETERS['phone_prefix_ru'] .
-                    $sMSNotification->getNotification()->getPatientNotification()
+                    $SMSNotification->getNotification()->getPatientNotification()
                         ->getPatient()->getAuthUser()->getPhone()
                 )
                 ->send()
         );
-        $sMSNotification->setExternalId((string)$result->result->sms['id']);
-        $sMSNotification->setAttemptCount((int)$sMSNotification->getAttemptCount() + 1);
-        $this->em->persist($sMSNotification);
+        $currentAttemptCount = (int)$SMSNotification->getAttemptCount();
+        $SMSNotification->setExternalId((string)$result->result->sms['id']);
+        $SMSNotification->setAttemptCount(++$currentAttemptCount);
+        $this->em->persist($SMSNotification);
         $this->em->flush();
 
         return true;
@@ -268,16 +260,6 @@ class SMSChannelService
     public function setAuthUser(AuthUser $authUser): self
     {
         $this->authUser = $authUser;
-        return $this;
-    }
-
-    /**
-     * @param string $provider
-     * @return $this
-     */
-    public function setProvider(string $provider): self
-    {
-        $this->provider = $provider;
         return $this;
     }
 }

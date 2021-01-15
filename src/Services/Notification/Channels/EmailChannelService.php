@@ -8,6 +8,7 @@ use ErrorException;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -21,12 +22,12 @@ use Twig\Error\SyntaxError;
 class EmailChannelService
 {
     /** list of email templates */
-    const
-        DEFAULT_EMAIL_TEMPLATE = '/email/default.html.twig';
+    const DEFAULT_EMAIL_TEMPLATE = '/email/default.html.twig';
+
+    const DEFAULT_EMAIL_SUBJECT = 'Доктор ИБС';
 
     /** Constants for email */
-    const
-        GREETINGS = 'Уважаемый, %s';
+    const GREETINGS = 'Уважаемый, %s';
 
     /** @var string */
     private $subject;
@@ -46,7 +47,7 @@ class EmailChannelService
     /** @var Environment */
     private $twig;
 
-    /** @var array Массив получателей для множественной */
+    /** @var array Массив получателей для множественной отправки email */
     private $recipientList = [];
 
     /** @var Patient $patient */
@@ -58,10 +59,10 @@ class EmailChannelService
     /** @var string */
     private $content;
 
-    /** @var string */
+    /** @var string Ссылка, по которой будет совершен переход при нажатии на кнопку */
     private $buttonLink;
 
-    /** @var string */
+    /** @var string Текст кнопки для отображения в письме */
     private $buttonText;
 
     /**
@@ -76,14 +77,19 @@ class EmailChannelService
      */
     private $EMAIL_PARAMETERS;
 
+    /** @var TranslatorInterface */
+    private $translator;
+
     /**
      * EmailNotificationService constructor.
      * @param Environment $twig
+     * @param TranslatorInterface $translator
      * @param array $projectInfo
      * @param array $emailParameters
      */
     public function __construct(
         Environment $twig,
+        TranslatorInterface $translator,
         array $projectInfo,
         array $emailParameters
     )
@@ -91,6 +97,7 @@ class EmailChannelService
         $this->PROJECT_INFO = $projectInfo;
         $this->EMAIL_PARAMETERS = $emailParameters;
         $this->twig = $twig;
+        $this->translator = $translator;
         $this->serverHost = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
             . "://"
             . $_SERVER['HTTP_HOST'];
@@ -116,7 +123,7 @@ class EmailChannelService
             'addressLine2' => $this->PROJECT_INFO['address_line_2']
         ];
 
-        $this->subject = 'Дефолтная тема письма';
+        $this->subject = self::DEFAULT_EMAIL_SUBJECT;
         $this->sender = $this->EMAIL_PARAMETERS['account_name'];
 
         $this->mailBody = $this->twig->render(
@@ -126,7 +133,7 @@ class EmailChannelService
         try {
             $this->sendEmail();
         } catch (ErrorException $e) {
-            throw new ErrorException('Email message sending error');
+            throw new ErrorException($this->translator->trans('email.error.sending'));
         }
     }
 
@@ -147,7 +154,8 @@ class EmailChannelService
             ->setPassword($this->EMAIL_PARAMETERS['account_password']);
 
         if (is_null($this->recipient)) {
-            throw new ErrorException('Recipient email is null. Please provide correct email',
+            throw new ErrorException(
+                $this->translator->trans('email.error.email.is.null'),
                 500,
                 1,
                 'emailNotification.php'
@@ -155,7 +163,8 @@ class EmailChannelService
         }
 
         if (!filter_var($this->recipient, FILTER_VALIDATE_EMAIL)) {
-            throw new ErrorException('Invalid recipient email. Please provide correct email',
+            throw new ErrorException(
+                $this->translator->trans('email.error.email.is.invalid'),
                 500,
                 1,
                 'emailNotification.php'

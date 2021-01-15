@@ -42,6 +42,7 @@ class WebNotificationService extends NotificationService implements Notification
     {
         parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
         $this->channel = $webChannelService;
+        $this->channelType = $this->CHANNEL_TYPES['web'];
     }
 
     /**
@@ -50,14 +51,14 @@ class WebNotificationService extends NotificationService implements Notification
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification($this->CHANNEL_TYPES['web'])->setWebNotification(
+        $notification = $this->createNotification()->setWebNotification(
             $this->channel->createWebNotification(
                 $this->getPatient(),
-                $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['web'])
+                $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
             )
         );
         $notification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['web'])
+            $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
         );
         $this->em->persist($notification);
         $this->logSuccessNotificationCreation($notification);

@@ -10,6 +10,8 @@ use App\Services\Notification\Channels\EmailChannelService;
 use App\Services\Notification\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Error\LoaderError;
@@ -26,6 +28,9 @@ class EmailNotificationService extends NotificationService
     /** @var EmailChannelService */
     private $channel;
 
+    /** @var SessionInterface */
+    private $session;
+
     /**
      * EmailNotificationService constructor.
      * @param EntityManagerInterface $em
@@ -33,6 +38,7 @@ class EmailNotificationService extends NotificationService
      * @param LogService $logService
      * @param TranslatorInterface $translator
      * @param EmailChannelService $emailChannelService
+     * @param SessionInterface $session
      * @param array $channelTypes
      * @param array $notificationReceiverTypes
      */
@@ -42,12 +48,15 @@ class EmailNotificationService extends NotificationService
         LogService $logService,
         TranslatorInterface $translator,
         EmailChannelService $emailChannelService,
+        SessionInterface $session,
         array $channelTypes,
         array $notificationReceiverTypes
     )
     {
         parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
         $this->channel = $emailChannelService;
+        $this->session = $session;
+        $this->channelType = $this->CHANNEL_TYPES['email'];
     }
 
     /**
@@ -56,14 +65,14 @@ class EmailNotificationService extends NotificationService
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification($this->CHANNEL_TYPES['email']);
+        $notification = $this->createNotification();
         $notification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['email'])
+            $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
         );
         $emailNotification = new EmailNotification();
         $emailNotification->setPatientRecipientEmail($this->patientReceiver->getAuthUser()->getEmail());
         $emailNotification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['email'])
+            $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
         );
 
         try {
@@ -83,9 +92,11 @@ class EmailNotificationService extends NotificationService
                 )
                 ->logSuccessEvent();
         } catch (ErrorException | LoaderError | RuntimeError | SyntaxError $e) {
+            $this->session
+                ->getFlashBag()->add('error', 'Email сообщение не отправлено. Ошибка при отправке.');
             $this->logger
                 ->setUser($this->userSender)
-                ->setDescription($e)
+                ->setDescription($e->getMessage() . '      ' . $e->getTraceAsString())
                 ->logErrorEvent();
         }
 

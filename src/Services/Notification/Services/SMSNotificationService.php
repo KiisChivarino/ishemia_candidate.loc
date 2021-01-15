@@ -17,10 +17,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SMSNotificationService extends NotificationService
 {
-    /** Константы для sms провайдеров  */
-    const
-        SMS_PROVIDER_BEELINE = 'Beeline';
-
     /** @var SMSChannelService */
     private $channel;
 
@@ -46,6 +42,7 @@ class SMSNotificationService extends NotificationService
     {
         parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
         $this->channel = $smsChannelService;
+        $this->channelType = $this->CHANNEL_TYPES['sms-beeline'];
     }
 
     /**
@@ -54,17 +51,16 @@ class SMSNotificationService extends NotificationService
      */
     public function notify(): bool
     {
-        $notification = $this->createNotification($this->CHANNEL_TYPES['sms-beeline']);
+        $notification = $this->createNotification();
         $notification
             ->setSmsNotification(
                 $this->channel
                     ->setText($notification->getText())
                     ->setAuthUser($this->patientReceiver->getAuthUser())
-                    ->setProvider(self::SMS_PROVIDER_BEELINE)
                     ->sendSMS()
             );
         $notification->setChannelType(
-            $this->em->getRepository(ChannelType::class)->findByName($this->CHANNEL_TYPES['sms-beeline'])
+            $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
         );
         $this->em->persist($notification);
         $this->logSuccessNotificationCreation($notification);
