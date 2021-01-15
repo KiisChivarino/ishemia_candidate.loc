@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Repository\PatientRepository;
+use App\Services\Notification\NotificationData;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,10 +71,13 @@ class AdminController extends AdminAbstractController
     public function testNotification(PatientRepository $patientRepository): Response
     {
         $notificationService = $this->notificationServiceBuilder
-            ->setPatient($patientRepository->findAll()[0])
-            ->setMedicalHistory($patientRepository->findAll()[0]->getMedicalHistories()[0])
-            ->setMedicalRecord($patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
-            ->makeConfirmMedicationNotification()
+            ->makeConfirmMedicationNotification(
+                (
+                    new NotificationData($patientRepository->findAll()[0],
+                        $patientRepository->findAll()[0]->getMedicalHistories()[0],
+                        $patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
+                    )
+            )
         ;
 
         $this->notifier->notifyPatient(

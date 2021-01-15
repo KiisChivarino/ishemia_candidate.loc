@@ -29,7 +29,6 @@ class WebNotificationService extends NotificationService implements Notification
      * @param TranslatorInterface $translator
      * @param WebChannelService $webChannelService
      * @param array $channelTypes
-     * @param array $notificationReceiverTypes
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -37,10 +36,10 @@ class WebNotificationService extends NotificationService implements Notification
         LogService $logService,
         TranslatorInterface $translator,
         WebChannelService $webChannelService,
-        array $channelTypes,
-        array $notificationReceiverTypes)
+        array $channelTypes
+    )
     {
-        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
+        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes);
         $this->channel = $webChannelService;
         $this->channelType = $this->CHANNEL_TYPES['web'];
     }
@@ -53,7 +52,7 @@ class WebNotificationService extends NotificationService implements Notification
     {
         $notification = $this->createNotification()->setWebNotification(
             $this->channel->createWebNotification(
-                $this->getPatient(),
+                $this->notificationData->getPatientReceiver(),
                 $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
             )
         );

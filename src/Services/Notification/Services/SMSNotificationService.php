@@ -28,7 +28,6 @@ class SMSNotificationService extends NotificationService
      * @param TranslatorInterface $translator
      * @param SMSChannelService $smsChannelService
      * @param array $channelTypes
-     * @param array $notificationReceiverTypes
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -36,11 +35,10 @@ class SMSNotificationService extends NotificationService
         LogService $logService,
         TranslatorInterface $translator,
         SMSChannelService $smsChannelService,
-        array $channelTypes,
-        array $notificationReceiverTypes
+        array $channelTypes
     )
     {
-        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
+        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes);
         $this->channel = $smsChannelService;
         $this->channelType = $this->CHANNEL_TYPES['sms-beeline'];
     }
@@ -56,7 +54,7 @@ class SMSNotificationService extends NotificationService
             ->setSmsNotification(
                 $this->channel
                     ->setText($notification->getText())
-                    ->setAuthUser($this->patientReceiver->getAuthUser())
+                    ->setAuthUser($this->notificationData->getPatientReceiver()->getAuthUser())
                     ->sendSMS()
             );
         $notification->setChannelType(

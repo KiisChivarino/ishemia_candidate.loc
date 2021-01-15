@@ -3,14 +3,11 @@
 namespace App\Services\Notification;
 
 use App\Entity\AuthUser;
-use App\Entity\MedicalHistory;
-use App\Entity\MedicalRecord;
 use App\Entity\Notification;
 use App\Entity\NotificationConfirm;
 use App\Entity\NotificationReceiverType;
 use App\Entity\NotificationTemplate;
 use App\Entity\NotificationTemplateText;
-use App\Entity\Patient;
 use App\Entity\PatientNotification;
 use App\Services\LoggerService\LogService;
 use DateTime;
@@ -28,9 +25,6 @@ abstract class NotificationService implements NotificationInterface
     /** @var EntityManagerInterface Энтити менеджер */
     protected $em;
 
-    /** @var Patient Сущность пациента */
-    protected $patientReceiver;
-
     /** @var AuthUser Сущность пользователя (отправитель уведомления) */
     protected $userSender;
 
@@ -46,14 +40,11 @@ abstract class NotificationService implements NotificationInterface
      */
     protected $CHANNEL_TYPES;
 
+    /** @var string */
+    protected $channelType;
+
     /** @var array Строки для добавления конкретной информации в стандартизированные шаблоны */
     private $variables;
-
-    /** @var MedicalHistory История болезни пациента */
-    private $medicalHistory;
-
-    /** @var MedicalRecord Запись в истории болезни пациента */
-    private $medicalRecord;
 
     /** @var NotificationTemplate Шаблон уведомления */
     private $notificationTemplate;
@@ -64,8 +55,8 @@ abstract class NotificationService implements NotificationInterface
     /** @var NotificationConfirm */
     private $notificationConfirm;
 
-    /** @var string */
-    protected $channelType;
+    /** @var NotificationData */
+    protected $notificationData;
 
     /**
      * SMS notification constructor.
@@ -92,49 +83,12 @@ abstract class NotificationService implements NotificationInterface
     }
 
     /**
-     * @param Patient $patient
-     * @return NotificationService
-     */
-    public function setPatient(Patient $patient): self
-    {
-        $this->patientReceiver = $patient;
-        return $this;
-    }
-
-    public function getPatient(): Patient
-    {
-        return $this->patientReceiver;
-    }
-
-    /**
      * @param array $variables
      * @return NotificationService
      */
     public function setVariables(array $variables): self
     {
         $this->variables = $variables;
-        return $this;
-    }
-
-    /**
-     * @param MedicalHistory $medicalHistory
-     * @return NotificationService
-     */
-    public function setMedicalHistory(MedicalHistory $medicalHistory): self
-    {
-        $this->medicalHistory = $medicalHistory;
-        return $this;
-    }
-
-//  ---------------------------------------- Сеттеры ----------------------------------------------------------
-
-    /**
-     * @param MedicalRecord $medicalRecord
-     * @return NotificationService
-     */
-    public function setMedicalRecord(MedicalRecord $medicalRecord): self
-    {
-        $this->medicalRecord = $medicalRecord;
         return $this;
     }
 
@@ -172,6 +126,24 @@ abstract class NotificationService implements NotificationInterface
         return $this;
     }
 
+    /**
+     * @param NotificationData $notificationData
+     * @return NotificationService
+     */
+    public function setNotificationData(NotificationData $notificationData): self
+    {
+        $this->notificationData = $notificationData;
+        return $this;
+    }
+
+    /**
+     * @return NotificationData
+     */
+    public function getNotificationData(): NotificationData
+    {
+        return $this->notificationData;
+    }
+
     public function notify()
     {
         // TODO: Implement notify() method.
@@ -200,9 +172,9 @@ abstract class NotificationService implements NotificationInterface
     private function createPatientNotification(): PatientNotification
     {
         $patientNotification = (new PatientNotification())
-            ->setMedicalRecord($this->medicalRecord ?? null)
-            ->setMedicalHistory($this->medicalHistory ?? null)
-            ->setPatient($this->patientReceiver)
+            ->setMedicalRecord($this->notificationData->getMedicalRecord())
+            ->setMedicalHistory($this->notificationData->getMedicalHistory() ?? null)
+            ->setPatient($this->notificationData->getPatientReceiver())
             ->setNotificationConfirm($this->notificationConfirm);
         $this->em->persist($patientNotification);
         return $patientNotification;

@@ -40,11 +40,11 @@ class NotifierService
     {
         $webNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
 
-        if ($smsNotificationService->getPatient()->getSmsInforming()) {
+        if ($smsNotificationService->getNotificationData()->getPatientReceiver()->getSmsInforming()) {
             $smsNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
         }
 
-        if ($emailNotificationService->getPatient()->getEmailInforming()) {
+        if ($emailNotificationService->getNotificationData()->getPatientReceiver()->getEmailInforming()) {
             $emailNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
         }
     }

@@ -10,7 +10,6 @@ use App\Services\Notification\Channels\EmailChannelService;
 use App\Services\Notification\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -40,7 +39,6 @@ class EmailNotificationService extends NotificationService
      * @param EmailChannelService $emailChannelService
      * @param SessionInterface $session
      * @param array $channelTypes
-     * @param array $notificationReceiverTypes
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -49,11 +47,10 @@ class EmailNotificationService extends NotificationService
         TranslatorInterface $translator,
         EmailChannelService $emailChannelService,
         SessionInterface $session,
-        array $channelTypes,
-        array $notificationReceiverTypes
+        array $channelTypes
     )
     {
-        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes, $notificationReceiverTypes);
+        parent::__construct($em, $tokenStorage, $logService, $translator, $channelTypes);
         $this->channel = $emailChannelService;
         $this->session = $session;
         $this->channelType = $this->CHANNEL_TYPES['email'];
@@ -70,14 +67,14 @@ class EmailNotificationService extends NotificationService
             $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
         );
         $emailNotification = new EmailNotification();
-        $emailNotification->setPatientRecipientEmail($this->patientReceiver->getAuthUser()->getEmail());
+        $emailNotification->setPatientRecipientEmail($this->notificationData->getPatientReceiver()->getAuthUser()->getEmail());
         $emailNotification->setChannelType(
             $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
         );
 
         try {
             $this->channel
-                ->setPatient($this->patientReceiver)
+                ->setPatient($this->notificationData->getPatientReceiver())
                 ->setHeader('Добрый день!')
                 ->setContent($notification->getText())
                 ->sendDefaultEmail();
