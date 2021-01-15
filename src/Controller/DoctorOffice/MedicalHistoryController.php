@@ -92,6 +92,8 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     //form data names
     /** @var string Name of form with objective status data */
     private const FORM_OBJECTIVE_STATUS_NAME = 'objectiveStatus';
+    /** @var string Name of form with patient appointment data */
+    private const FORM_PATIENT_APPOINTMENT_NAME = 'patientAppointment';
     /** @var string Name of form with template data */
     private const FORM_TEMPLATE_NAME = 'template';
 
@@ -278,13 +280,24 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
                     PatientAppointmentType::class,
                     [PatientAppointmentType::OBJECTIVE_STATUS_TEXT_OPTION_NAME => $objectiveStatus]
                 ),
-                new FormData($firstAppointment->getMedicalHistory(), AnamnesOfLifeType::class,
-                ['anamnesOfLifeText' => $firstAppointment->getMedicalHistory()->getLifeHistory()->getText()]),
+                new FormData(
+                    $firstAppointment->getMedicalHistory(),
+                    AnamnesOfLifeType::class,
+                    [
+                        'anamnesOfLifeText' =>
+                            $firstAppointment->getMedicalHistory()->getLifeHistory() ?
+                                $firstAppointment->getMedicalHistory()->getLifeHistory()->getText()
+                                : ''
+                    ]
+                ),
                 new FormData($firstAppointment->getMedicalHistory(), DiseaseHistoryType::class),
             ],
             function (EntityActions $actions) use ($firstAppointment) {
-                $objectiveStatusText = $actions->getForm()->has(self::FORM_OBJECTIVE_STATUS_NAME) ?
-                    $actions->getForm()->get(self::FORM_OBJECTIVE_STATUS_NAME)->getData() : null;
+
+                $objectiveStatusText = $actions->getForm()
+                    ->get(self::FORM_PATIENT_APPOINTMENT_NAME)
+                    ->get(self::FORM_OBJECTIVE_STATUS_NAME)
+                    ->getData();
                 $firstAppointment->getObjectiveStatus()->setText($objectiveStatusText);
             },
             self::EDIT_OBJECTIVE_DATA_TEMPLATE_NAME

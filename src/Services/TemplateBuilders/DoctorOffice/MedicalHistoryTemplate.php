@@ -50,6 +50,7 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'addPatientTestingResults' => 'Внести результаты обследования',
         'firstTestings' => 'Обследования',
         'addDischargeEpicrises' => 'Добавить выписные эпикризы',
+        'diseaseHistory' => 'Анамнез болезни',
     ];
 
     /** @var string[] Common form and show content for medical history templates */
