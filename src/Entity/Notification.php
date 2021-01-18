@@ -22,6 +22,11 @@ class Notification
     private $id;
 
     /**
+     * @ORM\Column(type="integer", nullable=false, options={"comment"="Текст уведомления"})
+     */
+    private $groupId;
+
+    /**
      * @ORM\ManyToOne(targetEntity=AuthUser::class, inversedBy="notifications")
      * @ORM\JoinColumn(nullable=true)
      */
@@ -80,6 +85,22 @@ class Notification
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getGroupId(): ?int
+    {
+        return $this->groupId;
+    }
+
+    /**
+     * @param int $groupId
+     */
+    public function setGroupId(int $groupId): void
+    {
+        $this->groupId = $groupId;
     }
 
     /**

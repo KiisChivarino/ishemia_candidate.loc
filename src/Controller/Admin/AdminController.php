@@ -73,7 +73,9 @@ class AdminController extends AdminAbstractController
         $notificationService = $this->notificationServiceBuilder
             ->makeConfirmMedicationNotification(
                 (
-                    new NotificationData($patientRepository->findAll()[0],
+                    new NotificationData(
+                        $this->getDoctrine()->getManager(),
+                        $patientRepository->findAll()[0],
                         $patientRepository->findAll()[0]->getMedicalHistories()[0],
                         $patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
                     )

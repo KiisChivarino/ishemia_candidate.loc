@@ -156,6 +156,7 @@ abstract class NotificationService implements NotificationInterface
     protected function createNotification(): Notification
     {
         $notification = new Notification();
+        $notification->setGroupId($this->notificationData->getGroupId());
         $notification->setPatientNotification($this->createPatientNotification());
         $notification->setText($this->getNotificationText());
         $notification->setAuthUserSender($this->userSender);
