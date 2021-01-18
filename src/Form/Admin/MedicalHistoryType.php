@@ -11,7 +11,6 @@ use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -117,22 +116,6 @@ class MedicalHistoryType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('concomitantDiseasesPlaceholder'),
                     'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
-                ]
-            )
-            ->add(
-                'diseaseHistory', null, [
-                    'label' => $templateItem->getContentValue('diseaseHistory'),
-                    'attr' => ['class' => 'tinymce'],
-                    'required'=>false,
-                ]
-            )
-            ->add(
-                self::FORM_LIFE_HISTORY_NAME, TextareaType::class, [
-                    'label' => $templateItem->getContentValue('lifeHistory'),
-                    'attr' => ['class' => 'tinymce'],
-                    'data' => $options['anamnesOfLifeText'],
-                    'required'=>false,
-                    'mapped' => false
                 ]
             )
             ->add(

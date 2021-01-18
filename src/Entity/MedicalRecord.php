@@ -61,9 +61,9 @@ class MedicalRecord
     private $prescriptions;
 
     /**
-     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="medicalRecord", orphanRemoval=true,cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalRecord", orphanRemoval=true,cascade={"persist"})
      */
-    private $notifications;
+    private $patientNotifications;
 
     /**
      * MedicalRecord constructor.
@@ -73,7 +73,7 @@ class MedicalRecord
         $this->patientTestings = new ArrayCollection();
         $this->patientAppointments = new ArrayCollection();
         $this->prescriptions = new ArrayCollection();
-        $this->notifications = new ArrayCollection();
+        $this->patientNotifications = new ArrayCollection();
     }
 
     /**
@@ -278,37 +278,37 @@ class MedicalRecord
     }
 
     /**
-     * @return Collection|Notification[]
+     * @return Collection|PatientNotification[]
      */
-    public function getNotifications(): Collection
+    public function getPatientNotifications(): Collection
     {
-        return $this->notifications;
+        return $this->patientNotifications;
     }
 
     /**
-     * @param Notification $notification
+     * @param PatientNotification $patientNotification
      * @return $this
      */
-    public function addNotification(Notification $notification): self
+    public function addPatientNotification(PatientNotification $patientNotification): self
     {
-        if (!$this->notifications->contains($notification)) {
-            $this->notifications[] = $notification;
-            $notification->setMedicalRecord($this);
+        if (!$this->patientNotifications->contains($patientNotification)) {
+            $this->patientNotifications[] = $patientNotification;
+            $patientNotification->setMedicalRecord($this);
         }
 
         return $this;
     }
 
     /**
-     * @param Notification $notification
+     * @param PatientNotification $patientNotification
      * @return $this
      */
-    public function removeNotification(Notification $notification): self
+    public function removePatientNotification(PatientNotification $patientNotification): self
     {
-        if ($this->notifications->removeElement($notification)) {
+        if ($this->patientNotifications->removeElement($patientNotification)) {
             // set the owning side to null (unless already changed)
-            if ($notification->getMedicalRecord() === $this) {
-                $notification->setMedicalRecord(null);
+            if ($patientNotification->getMedicalRecord() === $this) {
+                $patientNotification->setMedicalRecord(null);
             }
         }
 

@@ -30,11 +30,11 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'bySms' => 'Информируется по смс',
         'byEmail' => 'Информируется по email',
         'personalData' => 'Личные данные',
-        'anamnesticData' => 'Анамнестические данные',
-        'objectiveData' => 'Объективные данные',
-        'addAnamnesticData' => 'Внести анамнестические данные',
+        'anamnesticData' => 'Клинический диагноз',
+        'objectiveData' => 'Первичный осмотр пациента',
+        'addAnamnesticData' => 'Внести клинический диагноз',
         'addPersonalData' => 'Внести личные данные',
-        'addObjectiveData' => 'Внести объективные данные',
+        'addObjectiveData' => 'Внести первичный осмотр пациента',
         'recommendationNotFound' => 'Рекомендации врача отсутствуют',
         'mainDiseaseNotFound' => 'Основное заболевание не найдено!',
         'backgroundDiseasesNotFound' => 'Фоновые заболевания отсутствуют',
@@ -46,10 +46,11 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'complaintsCommentNotFound' => 'Комментарий врача по жалобам отсутствует',
         'objectiveStatusNotFound' => 'Объективный статус отсутствует',
         'therapyNotFound' => 'Терапия отсутствует',
-        'laboratoryData' => 'Лабораторные данные',
+        'laboratoryData' => 'Медицинская документация',
         'addPatientTestingResults' => 'Внести результаты обследования',
         'firstTestings' => 'Обследования',
         'addDischargeEpicrises' => 'Добавить выписные эпикризы',
+        'diseaseHistory' => 'Анамнез болезни',
     ];
 
     /** @var string[] Common form and show content for medical history templates */
@@ -62,10 +63,10 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
     protected const EDIT_CONTENT = [
         'personal_h2' => 'Редактирование персональных данных',
         'personal_title' => 'Редактирование персональных данных',
-        'anamnestic_h2' => 'Редактирование анамнестических данных',
-        'anamnestic_title' => 'Редактирование анамнестических данных',
-        'objective_h2' => 'Редактирование объективных данных',
-        'objective_title' => 'Редактирование объективных данных',
+        'anamnestic_h2' => 'Редактирование клинического диагноза',
+        'anamnestic_title' => 'Редактирование клинического диагноза',
+        'objective_h2' => 'Редактирование первичного осмотра пациента',
+        'objective_title' => 'Редактирование первичного осмотра пациента',
         'discharge_epicrisis' => 'Выписные эпикризы',
     ];
 

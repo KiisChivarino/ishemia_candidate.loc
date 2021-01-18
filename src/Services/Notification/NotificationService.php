@@ -1,210 +1,218 @@
 <?php
 
-
 namespace App\Services\Notification;
 
 use App\Entity\AuthUser;
-use App\Entity\EmailNotification;
-use App\Entity\MedicalHistory;
-use App\Entity\MedicalRecord;
 use App\Entity\Notification;
-use App\Entity\Patient;
-use App\Entity\SMSNotification;
+use App\Entity\NotificationConfirm;
+use App\Entity\NotificationReceiverType;
+use App\Entity\NotificationTemplate;
+use App\Entity\NotificationTemplateText;
+use App\Entity\PatientNotification;
 use App\Services\LoggerService\LogService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use ErrorException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 /**
+ * Сервис отправки уведомлений
  * Class SMSNotificationService
  * @package App\Services\Notification
  */
-class NotificationService
+abstract class NotificationService implements NotificationInterface
 {
-    const DUMMY_NOTIFICATION_TYPE = 'test';
+    /** @var EntityManagerInterface Энтити менеджер */
+    protected $em;
 
-    /** @var EntityManagerInterface */
-    private $em;
+    /** @var AuthUser Сущность пользователя (отправитель уведомления) */
+    protected $userSender;
 
-    /** @var string */
-    private $text;
+    /** @var LogService Сервис логирования */
+    protected $logger;
 
-    /** @var SMSNotificationService */
-    private $sms;
+    /** @var TranslatorInterface Интерфейс для работы с переводом */
+    protected $translator;
 
-    /** @var Patient */
-    private $patient;
-
-    /** @var EmailNotificationService */
-    private $email;
-
-    /** @var AuthUser */
-    private $user;
-
-    /** @var LogService */
-    private $logger;
+    /**
+     * @var array
+     * yaml:config/services/notifications/notification_channel_types.yaml
+     */
+    protected $CHANNEL_TYPES;
 
     /** @var string */
-    private $systemUserPhone;
+    protected $channelType;
 
-    /** @var MedicalHistory */
-    private $medicalHistory;
+    /** @var NotificationData */
+    protected $notificationData;
 
-    /** @var MedicalRecord */
-    private $medicalRecord;
+    /** @var array Строки для добавления конкретной информации в стандартизированные шаблоны */
+    private $variables;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    /** @var NotificationTemplate Шаблон уведомления */
+    private $notificationTemplate;
+
+    /** @var NotificationReceiverType Тип получателя уведомления */
+    private $notificationReceiverType;
+
+    /** @var NotificationConfirm */
+    private $notificationConfirm;
 
     /**
      * SMS notification constructor.
      * @param EntityManagerInterface $em
-     * @param SMSNotificationService $sMSNotificationService
-     * @param EmailNotificationService $emailNotificationService
      * @param TokenStorageInterface $tokenStorage
      * @param LogService $logService
      * @param TranslatorInterface $translator
-     * @param string $systemUserPhone
+     * @param array $channelTypes
      */
     public function __construct(
         EntityManagerInterface $em,
-        SMSNotificationService $sMSNotificationService,
-        EmailNotificationService $emailNotificationService,
         TokenStorageInterface $tokenStorage,
         LogService $logService,
         TranslatorInterface $translator,
-        string $systemUserPhone
-    ) {
+        array $channelTypes
+    )
+    {
         $this->em = $em;
-        $this->sms = $sMSNotificationService;
-        $this->email = $emailNotificationService;
-        $this->user = $tokenStorage->getToken()->getUser();
         $this->logger = $logService;
         $this->translator = $translator;
-        $this->systemUserPhone = $systemUserPhone;
+        $this->CHANNEL_TYPES = $channelTypes;
+        $this->userSender = $tokenStorage->getToken() ? $tokenStorage->getToken()->getUser()
+            : $this->em->getRepository(AuthUser::class)->getSystemUser();
     }
 
     /**
-     * Send SMS notification
-     * @return SMSNotification
+     * @param array $variables
+     * @return NotificationService
      */
-    private function notifyUserViaSMS(): SMSNotification
+    public function setVariables(array $variables): self
     {
-        return $this->sms
-            ->setText($this->text)
-            ->setPatient($this->patient)
-            ->setProvider('Beeline')
-            ->sendSMS();
+        $this->variables = $variables;
+        return $this;
     }
 
     /**
-     * Send Email notification
-     * @return EmailNotification
+     * @param string $notificationReceiverType
+     * @return NotificationService
      */
-    private function notifyUserViaEmail(): EmailNotification
+    public function setNotificationReceiverType(string $notificationReceiverType): self
     {
-        $emailNotification = new EmailNotification();
-        $emailNotification->setPatientRecipientEmail($this->patient->getAuthUser()->getEmail());
-
-        try {
-            $this->email
-                ->setPatient($this->patient)
-                ->setHeader('Ура, а вот и вы!')
-                ->setContent($this->text)
-                ->setButtonText('Перейти на сайт')
-                ->setButtonLink('http://shemia.test')
-                ->sendDefaultEmail();
-            $this->em->persist($emailNotification);
-            $this->logger
-                ->setUser($this->user)
-                ->setDescription($this->translator->trans('log.new.entity', ['%entity%' => 'Email уведомление', '%id%' => $emailNotification->getId()]))
-                ->logSuccessEvent();
-        } catch (ErrorException | LoaderError | RuntimeError | SyntaxError $e) {
-            $this->logger
-                ->setUser($this->user)
-                ->setDescription($e)
-                ->logErrorEvent();
-        }
-
-        return $emailNotification;
+        $this->notificationReceiverType = $this->em
+            ->getRepository(NotificationReceiverType::class)
+            ->findByName($notificationReceiverType);
+        return $this;
     }
 
     /**
-     * Notification sender
-     * @return void
+     * @param string $notificationTemplate
+     * @return NotificationService
      */
-    public function notifyUser(): void
+    public function setNotificationTemplate(string $notificationTemplate): self
+    {
+        $this->notificationTemplate = $this->em
+            ->getRepository(NotificationTemplate::class)
+            ->findByName($notificationTemplate);
+        return $this;
+    }
+
+    /**
+     * @param NotificationConfirm $notificationConfirm
+     * @return NotificationService
+     */
+    public function setNotificationConfirm(NotificationConfirm $notificationConfirm): self
+    {
+        $this->notificationConfirm = $notificationConfirm;
+        return $this;
+    }
+
+    /**
+     * @return NotificationData
+     */
+    public function getNotificationData(): NotificationData
+    {
+        return $this->notificationData;
+    }
+
+    /**
+     * @param NotificationData $notificationData
+     * @return NotificationService
+     */
+    public function setNotificationData(NotificationData $notificationData): self
+    {
+        $this->notificationData = $notificationData;
+        return $this;
+    }
+
+    public function notify()
+    {
+        // TODO: Implement notify() method.
+    }
+
+    /**
+     * Creates new Notification
+     * @return Notification
+     */
+    protected function createNotification(): Notification
     {
         $notification = new Notification();
-        $notification->setPatient($this->patient);
-        $notification->setText($this->text);
-        $notification->setAuthUserSender($this->user);
-        $notification->setNotificationType(self::DUMMY_NOTIFICATION_TYPE);
+        $notification->setPatientNotification($this->createPatientNotification());
+        $notification->setText($this->getNotificationText());
+        $notification->setAuthUserSender($this->userSender);
+        $notification->setNotificationReceiverType($this->notificationReceiverType);
         $notification->setNotificationTime(new DateTime('now'));
-        $notification->setMedicalHistory($this->medicalHistory);
-        $notification->setMedicalRecord($this->medicalRecord);
+        $notification->setNotificationTemplate($this->notificationTemplate);
+        return $notification;
+    }
 
-        if ($this->patient->getSmsInforming()) {
-            $notification->setSmsNotification(
-                $this->notifyUserViaSMS()
-            );
-        }
-        if ($this->patient->getEmailInforming()) {
-            $notification->setEmailNotification(
-                $this->notifyUserViaEmail()
-            );
-        }
-        $this->em->persist($notification);
+    /**
+     * Creates new PatientNotification
+     * @return PatientNotification
+     */
+    private function createPatientNotification(): PatientNotification
+    {
+        $patientNotification = (new PatientNotification())
+            ->setMedicalRecord($this->notificationData->getMedicalRecord())
+            ->setMedicalHistory($this->notificationData->getMedicalHistory() ?? null)
+            ->setPatient($this->notificationData->getPatientReceiver())
+            ->setNotificationConfirm($this->notificationConfirm);
+        $this->em->persist($patientNotification);
+        return $patientNotification;
+    }
+
+    /**
+     * Generates text for specific channel
+     * @return string
+     */
+    private function getNotificationText(): string
+    {
+        return vsprintf(
+            $this->em->getRepository(NotificationTemplateText::class)->findForChannel(
+                $this->channelType, $this->notificationTemplate
+            )->getText(),
+            $this->variables
+        );
+    }
+
+    /**
+     * Creates log for successful notification creation
+     * @param Notification $notification
+     * @return bool
+     */
+    protected function logSuccessNotificationCreation(Notification $notification): bool
+    {
         $this->logger
-            ->setUser($this->user)
-            ->setDescription($this->translator->trans('log.new.entity', ['%entity%' => 'Уведомление', '%id%' => $notification->getId()]))
+            ->setUser($this->userSender)
+            ->setDescription(
+                $this->translator->trans(
+                    'log.new.entity',
+                    [
+                        '%entity%' => 'Уведомление',
+                        '%id%' => $notification->getId()
+                    ]
+                )
+            )
             ->logSuccessEvent();
-        $this->em->flush();
+        return true;
     }
-
-    /**
-     * @param Patient $patient
-     * @return NotificationService
-     */
-    public function setPatient(Patient $patient): NotificationService
-    {
-        $this->patient = $patient;
-        return $this;
-    }
-
-    /**
-     * @param string $text
-     * @return NotificationService
-     */
-    public function setText (string $text): NotificationService
-    {
-        $this->text = $text;
-        return $this;
-    }
-
-    /**
-     * @param MedicalHistory $medicalHistory
-     * @return NotificationService
-     */
-    public function setMedicalHistory (MedicalHistory $medicalHistory): NotificationService
-    {
-        $this->medicalHistory = $medicalHistory;
-        return $this;
-    }
-
-    /**
-     * @param MedicalRecord $medicalRecord
-     * @return NotificationService
-     */
-    public function setMedicalRecord (MedicalRecord $medicalRecord): NotificationService
-    {
-        $this->medicalRecord = $medicalRecord;
-        return $this;
-    }
-
 }

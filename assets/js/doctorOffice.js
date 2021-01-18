@@ -82,4 +82,18 @@ $(document).ready(function () {
             .val($(this).val())
             .trigger('keyup');
     })
+
+    // Creates delete button and hides empty selects for template items
+    $('.deletable-parameter').each(function () {
+        if ($(this).children('option').length <= 1) {
+            $(this).hide()
+        }
+        $(this).prev().children().after('<button class="remove-parameter" style="margin-left: 5px">X</button>')
+    })
+
+    // Removes template item
+    $('.remove-parameter').on('click', function () {
+        $(this).parent().parent().remove()
+    })
+
 });

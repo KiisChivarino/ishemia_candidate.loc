@@ -33,7 +33,8 @@ class BeelineSMSProvider
      * SMS notification constructor.
      * @param array $smsParameters
      */
-    public function __construct(array $smsParameters) {
+    public function __construct(array $smsParameters)
+    {
         $this->smsParameters = $smsParameters;
         $this->sms = new BEESMS($this->smsParameters['user'], $this->smsParameters['password']);
     }
@@ -62,14 +63,14 @@ class BeelineSMSProvider
      */
     public function getMessages(): string
     {
-        return $this->sms->status_inbox(false,0, $this->dateTimeStart, $this->dateTimeEnd);
+        return $this->sms->status_inbox(false, 0, $this->dateTimeStart, $this->dateTimeEnd);
     }
 
     /**
      * @param string $text
-     * @return BeelineSMSProvider
+     * @return $this
      */
-    public function setText(string $text): BeelineSMSProvider
+    public function setText(string $text): self
     {
         $this->text = $text;
         return $this;
@@ -77,9 +78,9 @@ class BeelineSMSProvider
 
     /**
      * @param string $target
-     * @return BeelineSMSProvider
+     * @return $this
      */
-    public function setTarget(string $target): BeelineSMSProvider
+    public function setTarget(string $target): self
     {
         $this->target = $target;
         return $this;
@@ -87,9 +88,9 @@ class BeelineSMSProvider
 
     /**
      * @param string $dateTimeStart
-     * @return BeelineSMSProvider
+     * @return $this
      */
-    public function setDateTimeStart(string $dateTimeStart): BeelineSMSProvider
+    public function setDateTimeStart(string $dateTimeStart): self
     {
         $this->dateTimeStart = $dateTimeStart;
         return $this;
@@ -97,9 +98,9 @@ class BeelineSMSProvider
 
     /**
      * @param string $dateTimeEnd
-     * @return BeelineSMSProvider
+     * @return $this
      */
-    public function setDateTimeEnd(string $dateTimeEnd): BeelineSMSProvider
+    public function setDateTimeEnd(string $dateTimeEnd): self
     {
         $this->dateTimeEnd = $dateTimeEnd;
         return $this;

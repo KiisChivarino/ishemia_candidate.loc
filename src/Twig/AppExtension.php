@@ -26,16 +26,27 @@ use Twig\TwigFunction;
  */
 class AppExtension extends AbstractExtension
 {
+    /** @var EntityManagerInterface */
     protected $entityManager;
+
+    /** @var */
+    private $defaultTimeFormats;
+
+    /** @var array */
+    private $projectInfo;
 
     /**
      * AppExtension constructor.
      *
      * @param EntityManagerInterface $entityManager
+     * @param $projectInfo
+     * @param $defaultTimeFormats
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, $projectInfo, $defaultTimeFormats)
     {
         $this->entityManager = $entityManager;
+        $this->defaultTimeFormats = $defaultTimeFormats;
+        $this->projectInfo = $projectInfo;
     }
 
     /**
@@ -109,7 +120,13 @@ class AppExtension extends AbstractExtension
                     $this,
                     'isEmptyPatientTestingResults'
                 ]
-            )
+            ),
+             new TwigFunction(
+                 'globals', [
+                     $this,
+                     'globals'
+                 ]
+             )
         ];
     }
 
@@ -230,5 +247,18 @@ class AppExtension extends AbstractExtension
     public function isEmptyPatientTestingResults(PatientTesting $patientTesting): bool
     {
         return PatientTestingInfoService::isEmptyPatientTestingResults($patientTesting);
+    }
+
+    /**
+     * Returns Global parameters
+     *
+     * @return array
+     */
+    public function globals(): array
+    {
+        return [
+            'default_time_formats' => $this->defaultTimeFormats,
+            'project_info' => $this->projectInfo
+        ];
     }
 }

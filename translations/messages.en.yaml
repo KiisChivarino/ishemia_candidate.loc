@@ -8,3 +8,9 @@ message:
   fail:
     provider.error: SMS Notification (id:%id%) not delivered (provider error).
     wrong.number: SMS Notification (id:%id%) not delivered (wrong number).
+email:
+  error:
+    email:
+      is.null: Recipient email is null. Please provide correct email.
+      is.invalid: Invalid recipient email. Please provide correct email.
+    sending: Email message sending error.
