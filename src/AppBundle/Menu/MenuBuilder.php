@@ -450,6 +450,12 @@ class MenuBuilder
                 'route' => 'patients_list'
             ]
         );
+        $menu->addChild(
+            'hospitalsList', [
+                'label' => 'Больницы',
+                'route' => 'doctor_office_hospital_list'
+            ]
+        );
         return $menu;
     }
 }
