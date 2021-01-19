@@ -456,6 +456,25 @@ class MenuBuilder
                 'route' => 'patients_with_no_results_list'
             ]
         );
+        $menu->addChild(
+            'patientsWithNoProcessedList', [
+                'label' => 'Пациенты с необработанными анализами',
+                'route' => 'patients_with_no_processed_list'
+            ]
+        );
+        $menu->addChild(
+            'patientsWithProcessedResultsList', [
+                'label' => 'Пациенты с переданными и обработанными анализами',
+                'route' => 'patients_with_processed_results_list'
+            ]
+        );
+        $menu->addChild(
+            'patientsWithOpenedPrescriptionsList', [
+                'label' => 'Пациенты с незакрытыми назначениями',
+                'route' => 'patients_with_opened_prescriptions_list'
+            ]
+        );
+
         return $menu;
     }
 }

@@ -35,7 +35,51 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Get first testings
+     * Gets Patients`ids array if PatientTesting has no results
+     * @return int|mixed|string
+     */
+    public function getProcessedResultsTestings()
+    {
+        return $this->createQueryBuilder('paT')
+            ->leftJoin('paT.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('paT.prescriptionTesting', 'prT')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('paT.hasResult = true')
+            ->andWhere('paT.isProcessedByStaff = true')
+            ->select('p.id')
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Gets Patients`ids array if PatientTesting is not processed
+     * @return int|mixed|string
+     */
+    public function getNoProcessedTestings()
+    {
+        return $this->createQueryBuilder('paT')
+            ->leftJoin('paT.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('paT.prescriptionTesting', 'prT')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('paT.hasResult = true')
+            ->andWhere('paT.isProcessedByStaff = false')
+            ->select('p.id')
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Gets Patients`ids array if PatientTesting has no results
      * @return int|mixed|string
      */
     public function getNoResultsTestings()
@@ -50,6 +94,8 @@ class PatientTestingRepository extends AppRepository
             ->andWhere('u.enabled = true')
             ->andWhere('paT.hasResult = false')
             ->andWhere('prT.plannedDate <= :dateTimeNow')
+            ->select('p.id')
+            ->distinct()
             ->setParameter('dateTimeNow', new \DateTime('now'))
             ->getQuery()
             ->getResult();
