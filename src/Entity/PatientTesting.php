@@ -28,6 +28,11 @@ class PatientTesting
     private $analysisGroup;
 
     /**
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Результаты анализов текстом"})
+     */
+    private $analysisResults;
+
+    /**
      * @ORM\Column(type="date", nullable=true, options={"comment"="Дата проведенного тестирования"})
      */
     private $analysisDate;
@@ -89,6 +94,11 @@ class PatientTesting
     private $isByPlan;
 
     /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг: Указаны ли результаты анализов", "default"=false})
+     */
+    private $hasResult = false;
+
+    /**
      * PatientTesting constructor.
      */
     public function __construct()
@@ -122,6 +132,38 @@ class PatientTesting
     {
         $this->analysisGroup = $analysisGroup;
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAnalysisResults()
+    {
+        return $this->analysisResults;
+    }
+
+    /**
+     * @param mixed $analysisResults
+     */
+    public function setAnalysisResults($analysisResults): void
+    {
+        $this->analysisResults = $analysisResults;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasResult(): bool
+    {
+        return $this->hasResult;
+    }
+
+    /**
+     * @param bool $hasResult
+     */
+    public function setHasResult(bool $hasResult): void
+    {
+        $this->hasResult = $hasResult;
     }
 
     /**

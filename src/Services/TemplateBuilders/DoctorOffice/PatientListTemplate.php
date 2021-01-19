@@ -37,6 +37,8 @@ class PatientListTemplate extends DoctorOfficeTemplateBuilder
         'title' => 'Список записей',
         'fio' => 'ФИО',
         'age' => 'Возраст',
+        'hospital' => 'Больница',
+        'dateOfBirth' => 'Дата рождения'
     ];
 
     /** @var string[] Common NEW_CONTENT */

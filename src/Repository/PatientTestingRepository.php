@@ -36,6 +36,27 @@ class PatientTestingRepository extends AppRepository
 
     /**
      * Get first testings
+     * @return int|mixed|string
+     */
+    public function getNoResultsTestings()
+    {
+        return $this->createQueryBuilder('paT')
+            ->leftJoin('paT.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('paT.prescriptionTesting', 'prT')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('paT.hasResult = false')
+            ->andWhere('prT.plannedDate <= :dateTimeNow')
+            ->setParameter('dateTimeNow', new \DateTime('now'))
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get first testings
      * @param MedicalHistory $medicalHistory
      * @return int|mixed|string
      * @throws Exception
