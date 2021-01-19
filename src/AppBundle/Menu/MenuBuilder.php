@@ -450,6 +450,12 @@ class MenuBuilder
                 'route' => 'patients_list'
             ]
         );
+        $menu->addChild(
+            'patientsWithNoResultsList', [
+                'label' => 'Пациенты без результатов анализов',
+                'route' => 'patients_with_no_results_list'
+            ]
+        );
         return $menu;
     }
 }

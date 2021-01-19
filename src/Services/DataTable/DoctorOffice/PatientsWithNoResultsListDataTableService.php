@@ -4,6 +4,7 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
+use App\Entity\PatientTesting;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
@@ -25,7 +26,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientsListDataTableService extends AdminDatatableService
+class PatientsWithNoResultsListDataTableService extends AdminDatatableService
 {
     private $authUserInfoService;
 
@@ -109,19 +110,28 @@ class PatientsListDataTableService extends AdminDatatableService
                     'orderField' => 'h.name',
                 ]
             );
+
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']];
+
+        $patients = [];
+        foreach (
+            $this->entityManager->getRepository(PatientTesting::class)->getNoResultsTestings()
+            as $patientTesting
+        ) {
+            $patients[] = $patientTesting->getMedicalHistory()->getpatient();
+        }
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
                     'entity' => Patient::class,
-                    'query' => function (QueryBuilder $builder) use ($hospital) {
+                    'query' => function (QueryBuilder $builder) use ($hospital, $patients) {
                         $builder
                             ->select('p')
                             ->from(Patient::class, 'p')
-                            ->leftJoin('p.AuthUser', 'u')
-                            ->leftJoin('p.hospital', 'h')
-                            ->andWhere('u.enabled = :val')
-                            ->setParameter('val', true);
+                            ->andWhere('p IN (:patients)')
+                            ->setParameter('patients', array_unique($patients))
+                        ;
+
                         if ($hospital) {
                             $builder
                                 ->andWhere('p.hospital = :valHospital')
