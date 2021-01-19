@@ -40,7 +40,7 @@ class PatientTesting
     /**
      * @ORM\Column(type="boolean", options={"comment"="Статус принятия в работу врачом", "default"=false})
      */
-    private $processed;
+    private $isProcessedByStaff;
 
     /**
      * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
@@ -190,17 +190,16 @@ class PatientTesting
      */
     public function getProcessed(): ?bool
     {
-        return $this->processed;
+        return $this->isProcessedByStaff;
     }
 
     /**
-     * @param bool $processed
-     *
+     * @param bool $isProcessedByStaff
      * @return $this
      */
-    public function setProcessed(bool $processed): self
+    public function setProcessed(bool $isProcessedByStaff): self
     {
-        $this->processed = $processed;
+        $this->isProcessedByStaff = $isProcessedByStaff;
         return $this;
     }
 

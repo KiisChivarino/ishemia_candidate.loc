@@ -109,27 +109,35 @@ class PatientsWithNoResultsListDataTableService extends AdminDatatableService
                     'orderable' => true,
                     'orderField' => 'h.name',
                 ]
-            );
+            )
+            ->add(
+                'city', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('city'),
+                    'field' => 'h.name',
+                    'render' => function (string $data, Patient $patient) {
+                        return $patient ? $patient->getCity()->getName() : '';
+                    },
+                    'orderable' => true,
+                    'orderField' => 'h.name',
+                ]
+            )
+        ;
 
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']];
-
-        $patients = [];
-        foreach (
-            $this->entityManager->getRepository(PatientTesting::class)->getNoResultsTestings()
-            as $patientTesting
-        ) {
-            $patients[] = $patientTesting->getMedicalHistory()->getpatient();
-        }
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
                     'entity' => Patient::class,
-                    'query' => function (QueryBuilder $builder) use ($hospital, $patients) {
+                    'query' => function (QueryBuilder $builder) use ($hospital) {
                         $builder
                             ->select('p')
                             ->from(Patient::class, 'p')
-                            ->andWhere('p IN (:patients)')
-                            ->setParameter('patients', array_unique($patients))
+                            ->andWhere('p.id IN (:patients)')
+                            ->setParameter(
+                                'patients',
+                                $this->entityManager
+                                    ->getRepository(PatientTesting::class)->getNoResultsTestings()
+                            )
                         ;
 
                         if ($hospital) {
