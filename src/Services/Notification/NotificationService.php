@@ -117,10 +117,10 @@ abstract class NotificationService implements NotificationInterface
     }
 
     /**
-     * @param NotificationConfirm $notificationConfirm
+     * @param NotificationConfirm|null $notificationConfirm
      * @return NotificationService
      */
-    public function setNotificationConfirm(NotificationConfirm $notificationConfirm): self
+    public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
     {
         $this->notificationConfirm = $notificationConfirm;
         return $this;

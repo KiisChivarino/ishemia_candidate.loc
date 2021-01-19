@@ -40,4 +40,20 @@ class NotificationRepository extends AppRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     *
+     * @return Notification|null
+     */
+    public function test()
+    {
+        return $this->createQueryBuilder('n')
+//            ->select('DISTINCT n.id')
+//                            ->andWhere('n.id = MIN (n.id)')
+//                            ->addSelect('n.groupId')
+//            ->addGroupBy('n.groupId')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

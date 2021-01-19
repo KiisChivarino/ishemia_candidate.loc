@@ -187,19 +187,19 @@ class NotificationsServiceBuilder
             ->setNotificationTemplate($notificationTemplate)
             ->setNotificationReceiverType($this->notificationReceiverType)
             ->setVariables($this->variablesForWeb)
-            ->setNotificationConfirm($this->notificationConfirm);
+            ->setNotificationConfirm($this->notificationConfirm ?? null);
         $this->smsNotificationService
             ->setNotificationData($notificationData)
             ->setNotificationTemplate($notificationTemplate)
             ->setNotificationReceiverType($this->notificationReceiverType)
             ->setVariables($this->variablesForSMS)
-            ->setNotificationConfirm($this->notificationConfirm);
+            ->setNotificationConfirm($this->notificationConfirm ?? null);
         $this->emailNotificationService
             ->setNotificationData($notificationData)
             ->setNotificationTemplate($notificationTemplate)
             ->setNotificationReceiverType($this->notificationReceiverType)
             ->setVariables($this->variablesForEmail)
-            ->setNotificationConfirm($this->notificationConfirm);
+            ->setNotificationConfirm($this->notificationConfirm ?? null);
         return $this;
     }
 

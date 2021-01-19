@@ -6,10 +6,10 @@ use App\Repository\PatientRepository;
 use App\Services\Notification\NotificationData;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
+use Michelf\Markdown;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Michelf\Markdown;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -19,7 +19,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class AdminController extends AdminAbstractController
 {
-    /** @var KernelInterface  */
+    /** @var KernelInterface */
     private $appKernel;
 
     /** @var NotifierService */
@@ -73,14 +73,13 @@ class AdminController extends AdminAbstractController
         $notificationService = $this->notificationServiceBuilder
             ->makeConfirmMedicationNotification(
                 (
-                    new NotificationData(
-                        $this->getDoctrine()->getManager(),
-                        $patientRepository->findAll()[0],
-                        $patientRepository->findAll()[0]->getMedicalHistories()[0],
-                        $patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
-                    )
-            )
-        ;
+                new NotificationData(
+                    $this->getDoctrine()->getManager(),
+                    $patientRepository->findAll()[0],
+                    $patientRepository->findAll()[0]->getMedicalHistories()[0],
+                    $patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
+                )
+            );
 
         $this->notifier->notifyPatient(
             $notificationService->getWebNotificationService(),
