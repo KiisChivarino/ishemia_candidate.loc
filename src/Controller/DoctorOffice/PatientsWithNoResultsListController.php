@@ -25,11 +25,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class PatientsWithNoResultsListController extends DoctorOfficeAbstractController
 {
-    const TEMPLATE_PATH = 'doctorOffice/patients_list/';
+    const TEMPLATE_PATH = 'doctorOffice/patients_list/patientsWithNoResultsList/';
 
     /**
-     * PatientsListController constructor.
-     *
+     * PatientsWithNoResultsListController constructor.
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
@@ -42,7 +41,7 @@ class PatientsWithNoResultsListController extends DoctorOfficeAbstractController
     }
 
     /**
-     * List of patients
+     * List of patients without analysis results
      * @Route("/patients_with_no_results", name="patients_with_no_results_list", methods={"GET","POST"})
      *
      * @param Request $request

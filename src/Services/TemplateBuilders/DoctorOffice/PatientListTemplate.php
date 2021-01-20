@@ -34,12 +34,13 @@ class PatientListTemplate extends DoctorOfficeTemplateBuilder
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
         'h1' => 'Список записей',
-        'title' => 'Список записей',
+        'title' => 'Список пациентов',
         'fio' => 'ФИО',
         'age' => 'Возраст',
         'hospital' => 'Больница',
         'dateOfBirth' => 'Дата рождения',
-        'city' => 'Город'
+        'city' => 'Город',
+        'status' => 'Статус'
     ];
 
     /** @var string[] Common NEW_CONTENT */
