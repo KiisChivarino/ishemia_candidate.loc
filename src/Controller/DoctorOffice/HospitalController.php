@@ -4,6 +4,7 @@ namespace App\Controller\DoctorOffice;
 
 use App\Entity\Hospital;
 use App\Services\DataTable\DoctorOffice\HospitalDataTableService;
+use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\DoctorOffice\HospitalTemplate;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -47,13 +48,13 @@ class HospitalController extends DoctorOfficeAbstractController
      *
      * @param Request $request
      * @param HospitalDataTableService $dataTableService
+     * @param FilterService $filterService
      * @return Response
-     * @throws Exception
      */
-    public function list(Request $request, HospitalDataTableService $dataTableService): Response
+    public function list(Request $request, HospitalDataTableService $dataTableService, FilterService $filterService): Response
     {
         return $this->responseList(
-            $request, $dataTableService
+            $request, $dataTableService, null, ['filterService' => $filterService]
         );
     }
 

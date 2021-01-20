@@ -1,5 +1,13 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            <li><a class="back-page" href="{{ path('doctor_office_hospital_list') }}">Назад</a></li>
+        </ul>
+    </div>
+    <ul class="content-wrapper__top">
+        <li><h1>{{template.items.show.content.title}}</h1></li>
+    </ul>
     <li>
         <span class="title">{{ template.items.show.content.address }}</span>
         <p>{{ entity.address }}</p>
@@ -28,7 +36,7 @@
         <span class="title">{{ template.items.show.content.city }}</span>
         <p>
             {% if entity.city %}
-                <a href="{{ path('city_show', {'id': entity.city.id}) }}">{{ entity.city.name }}</a>
+                <p>{{ entity.city.name }}</p>
             {% endif %}
         </p>
     </li>
@@ -36,9 +44,9 @@
         <span class="title">{{ template.items.show.content.region }}</span>
         <p>
             {% if entity.region %}
-                <a href="{{ path('region_show', {'id': entity.region.id}) }}">
+                <p>
                     {{ entity.region.name }}
-                </a>
+                </p>
             {% endif %}
         </p>
     </li>

@@ -4,11 +4,7 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Entity\City;
 use App\Entity\Hospital;
-use App\Entity\Patient;
-use App\Entity\Prescription;
-use App\Entity\Region;
 use App\Services\DataTable\Admin\AdminDatatableService;
-use App\Services\FilterService\FilterService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
@@ -19,56 +15,62 @@ use Omines\DataTablesBundle\DataTable;
 
 /**
  * Class HospitalDataTableService
- * таблица больниц
+ * Таблица больниц для кабинета врача
  *
- * @package App\Services\DataTable\Admin
+ * @package App\Services\DataTable\DoctorOffice
  */
 class HospitalDataTableService extends AdminDatatableService
 {
     /**
-     * @param string $routeName
-     * @param string $entityClassName
-     * @return string
-     */
-    public function generateFilterName(string $routeName, string $entityClassName): string
-    {
-        return
-            'filter_'
-            .str_replace('_', '', $routeName).'_'
-            .mb_strtolower(substr($entityClassName, strripos($entityClassName, '\\') + 1));
-    }
-
-    /**
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
+     * @param array|null $filters
+     * @param array|null $options
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        ?array $filters,
+        ?array $options
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
                 'name', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('name'),
-                    'render' => function (string $data, Hospital $hospital) {
-                    return '<a href="'.$this->router->generate('patients_list', [$this->generateFilterName('patients_list', Hospital::class) => $hospital->getId()]).'">'.$hospital->getName().'</a>';
+                    'render' => function (string $data, Hospital $hospital) use ($options) {
+                        return '<a href="' . $this->router->generate(
+                                'patients_list',
+                                [
+                                    $options['filterService']
+                                        ->generateFilterName(
+                                            'patients_list',
+                                            Hospital::class
+                                        ) => $hospital->getId()
+                                ]
+                            ) . '">' . $hospital->getName() . '</a>';
                     },
+                    'field' => 'h.name',
+                    'orderable' => true,
+                    'orderField' => 'h.name'
                 ]
             )
             ->add(
-                'region', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('region'),
+                'city', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('city'),
                     'render' => function (string $data, Hospital $hospital) {
-                        /** @var Region $region */
-                        $region = $hospital->getRegion();
-                        return $region ? $this->getLink($region->getName(), $region->getId(), 'region_show') : '';
+                        /** @var City $city */
+                        $city = $hospital->getCity();
+                        return $city ? $city->getName() : '';
                     },
-                    'searchable' => false
+                    'field' => 'c.name',
+                    'orderable' => true,
+                    'orderField' => 'c.name'
                 ]
-            )
-            ;
-        $this->addEnabled($listTemplateItem);
+            );
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
         return $this->dataTable
             ->createAdapter(
@@ -77,7 +79,9 @@ class HospitalDataTableService extends AdminDatatableService
                     'query' => function (QueryBuilder $builder) {
                         $builder
                             ->select('h')
-                            ->from(Hospital::class, 'h');
+                            ->from(Hospital::class, 'h')
+                            ->andWhere('h.enabled = true')
+                            ->leftJoin('h.city', 'c');
                     },
                 ]
             );
