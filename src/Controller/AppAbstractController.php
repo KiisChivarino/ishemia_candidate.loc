@@ -50,6 +50,7 @@ abstract class AppAbstractController extends AbstractController
         'TEMPLATE_TYPE' => 'templateType',
         'TEMPLATE_PARAMETER' => 'templateParameter',
         'LOG_ACTION' => 'logAction',
+        'NOTIFICATION' => 'notification'
     ];
 
     /** @var string Label of form option for adding formTemplateItem in form */
@@ -101,14 +102,14 @@ abstract class AppAbstractController extends AbstractController
      * @param Request $request
      * @param AdminDatatableService $dataTableService
      * @param FilterLabels|null $filterLabels
-     *
+     * @param array|null $options
      * @return Response
-     * @throws Exception
      */
     public function responseList(
         Request $request,
         AdminDatatableService $dataTableService,
-        ?FilterLabels $filterLabels = null
+        ?FilterLabels $filterLabels = null,
+        ?array $options = []
     ): Response
     {
         $template = $this->templateService->list($filterLabels ? $filterLabels->getFilterService() : null);
@@ -118,7 +119,8 @@ abstract class AppAbstractController extends AbstractController
         $table = $dataTableService->getTable(
             $this->renderTableActions(),
             $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME),
-            $filters ?? null
+            $filters ?? null,
+            $options
         );
         $table->handleRequest($request);
         if ($table->isCallback()) {
