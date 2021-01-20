@@ -3,6 +3,7 @@
 namespace App\Services\DataTable\DoctorOffice;
 
 use App\Controller\AppAbstractController;
+use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
@@ -26,6 +27,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PatientsListDataTableService extends AdminDatatableService
 {
+    /** @var AuthUserInfoService $authUserInfoService */
     private $authUserInfoService;
 
     /**
@@ -33,10 +35,15 @@ class PatientsListDataTableService extends AdminDatatableService
      *
      * @param DataTableFactory $dataTableFactory
      * @param UrlGeneratorInterface $router
-     * @param EntityManagerInterface $em
      * @param AuthUserInfoService $authUserInfoService
+     * @param EntityManagerInterface $em
      */
-    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $em, AuthUserInfoService $authUserInfoService)
+    public function __construct(
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        AuthUserInfoService $authUserInfoService,
+        EntityManagerInterface $em
+    )
     {
         parent::__construct($dataTableFactory, $router, $em);
         $this->authUserInfoService = $authUserInfoService;
@@ -52,7 +59,10 @@ class PatientsListDataTableService extends AdminDatatableService
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters): DataTable
     {
         $patientInfoService = new PatientInfoService();
         $this->addSerialNumber();
@@ -63,13 +73,16 @@ class PatientsListDataTableService extends AdminDatatableService
                     'field' => 'u.lastName',
                     'render' => function (string $data, Patient $patient) {
                         return
-                            $patient
-                                ? $this->getLink(
-                                $this->authUserInfoService->getFIO($patient->getAuthUser()),
-                                $patient->getId(),
-                                'doctor_medical_history'
-                            )
-                                : '';
+                            '<a href="' . $this->router->generate('doctor_medical_history', [
+                                    'id' => $patient->getId(),
+                                    'medical_history' =>
+                                        $this
+                                            ->entityManager
+                                            ->getRepository(MedicalHistory::class)
+                                            ->getCurrentMedicalHistory($patient)
+                                            ->getId()
+                                ]
+                            ) . '">' . $this->authUserInfoService->getFIO($patient->getAuthUser()) . '</a>';
                     },
                     'orderable' => true,
                     'orderField' => 'u.lastName',

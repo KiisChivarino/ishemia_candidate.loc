@@ -20,7 +20,7 @@ class AbstractCreatorService extends AbstractEntityActionsService
     public function before(string $entityClass, array $options = []): void
     {
         parent::before($entityClass, $options);
-        $this->create(get_class($entityClass));
+        $this->create($entityClass);
     }
 
     /**

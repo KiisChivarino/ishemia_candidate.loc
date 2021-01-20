@@ -345,18 +345,18 @@ abstract class AppAbstractController extends AbstractController
     /**
      * Flush
      * @param $form
-     * @param $formName
+     * @param $formTemplateName
      * @param $entity
      * @return Response|void
      */
-    protected function flush($form, $formName, $entity)
+    protected function flush($form, $formTemplateName, $entity)
     {
         try {
             $this->getDoctrine()->getManager()->flush();
         } catch (DBALException $e) {
             $this->addFlash('error', 'Не удалось сохранить запись!');
             return $this->render(
-                $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                $this->templateService->getCommonTemplatePath() . $formTemplateName . '.html.twig',
                 [
                     'entity' => $entity,
                     'form' => $form->createView(),
@@ -365,7 +365,7 @@ abstract class AppAbstractController extends AbstractController
         } catch (Exception $e) {
             $this->addFlash('error', 'Ошибка cохранения записи!');
             return $this->render(
-                $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                $this->templateService->getCommonTemplatePath() . $formTemplateName . '.html.twig',
                 [
                     'entity' => $entity,
                     'form' => $form->createView(),
@@ -542,10 +542,11 @@ abstract class AppAbstractController extends AbstractController
      * Response new form using Creator service
      * @param Request $request
      * @param string $entityClass
+     * @param array $entityActionsOptions
      * @param string $typeClass
-     * @param FilterLabels|null $filterLabels
      * @param array $customFormOptions
-     * @param string $formName
+     * @param FilterLabels|null $filterLabels
+     * @param string $formTemplateName
      * @return RedirectResponse|Response
      * @throws Exception
      */
@@ -553,30 +554,37 @@ abstract class AppAbstractController extends AbstractController
         Request $request,
         string $entityClass,
         string $typeClass,
-        ?FilterLabels $filterLabels = null,
+        array $entityActionsOptions = [],
         array $customFormOptions = [],
-        string $formName = self::RESPONSE_FORM_TYPE_NEW
+        ?FilterLabels $filterLabels = null,
+        string $formTemplateName = self::RESPONSE_FORM_TYPE_NEW
     )
     {
-        $this->creatorService->before($entityClass, $customFormOptions);
+        $this->creatorService->before($entityClass, $entityActionsOptions);
         $entity = $this->creatorService->getEntity();
         $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
-        $options = array_merge(
-            $customFormOptions,
-            $filterLabels ? $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray()) : []
+        $form = $this->createForm(
+            $typeClass,
+            $entity,
+            array_merge(
+                $customFormOptions,
+                $filterLabels ? $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray()) : [],
+                [
+                    self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+                ]
+            )
         );
-        $form = $this->createForm($typeClass, $entity, $options);
-        $this->handleRequest($request, $form, $formName, $entity);
+        $this->handleRequest($request, $form, $formTemplateName, $entity);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->creatorService->after(
                 new EntityActions($entity, $request, $this->getDoctrine()->getManager(), $form),
-                $options
+                $entityActionsOptions
             );
-            $this->flush($form, $formName, $entity);
+            $this->flush($form, $formTemplateName, $entity);
             $this->setLogCreate($entity);
             return $this->redirectSubmitted($entity->getId());
         }
-        return $this->renderForm($formName, $entity, $form);
+        return $this->renderForm($formTemplateName, $entity, $form);
     }
 
     /**
@@ -725,6 +733,7 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function setLogUpdate($entity)
     {
+
         (new LogService($this->getDoctrine()->getManager()))
             ->setUser($this->getUser())
             ->setDescription(

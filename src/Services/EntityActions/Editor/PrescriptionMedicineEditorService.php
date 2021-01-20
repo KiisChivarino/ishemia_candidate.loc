@@ -1,10 +1,12 @@
 <?php
 
-
 namespace App\Services\EntityActions\Editor;
 
-
-class PrescriptionMedicineEditorService
+/**
+ * Class PrescriptionMedicineEditorService
+ * @package App\Services\EntityActions\Editor
+ */
+class PrescriptionMedicineEditorService extends AbstractEditorService
 {
 
 }

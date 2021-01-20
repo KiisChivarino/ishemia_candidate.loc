@@ -2,9 +2,10 @@
 
 namespace App\Services\EntityActions\Creator;
 
-class PrescriptionMedicineCreatorService
+/**
+ * Class PrescriptionMedicineCreatorService
+ * @package App\Services\EntityActions\Creator
+ */
+class PrescriptionMedicineCreatorService extends AbstractCreatorService
 {
-    public function createPrescriptionMedicine(){
-
-    }
 }

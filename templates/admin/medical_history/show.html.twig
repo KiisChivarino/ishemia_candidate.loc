@@ -136,15 +136,15 @@
                     </a>
                 </li>
                 {# новое назначение можно добавить только если назначены все остальные для пациента #}
-                {% if allPrescriptionsCompleted %}
-                    <li class="sublist__item">
-                        <a href="{{ path(
-                            'prescription_new',
-                            { (medicalHistoryParameterKey) : entity.id }) }}">
-                            {{ template.items.show.content.addPrescription }}
-                        </a>
-                    </li>
-                {% endif %}
+                {# {% if allPrescriptionsCompleted %} #}
+                <li class="sublist__item">
+                    <a href="{{ path(
+                        'prescription_new',
+                        { (medicalHistoryParameterKey) : entity.id }) }}">
+                        {{ template.items.show.content.addPrescription }}
+                    </a>
+                </li>
+                {# {% endif %} #}
                 <li class="sublist__item">
                     <a href="{{ path(
                         'prescription_medicine_new',

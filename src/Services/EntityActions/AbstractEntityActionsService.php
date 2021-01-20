@@ -66,6 +66,7 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
      */
     public function after(EntityActions $entityActions, array $options = []): void
     {
+        $this->configureOptions();
         $this->setOptions($options);
         $this->prepare($entityActions);
         $this->persist($entityActions->getEntityManager());
@@ -120,6 +121,7 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
      */
     public function before(string $entityClass, array $options = []): void
     {
+        $this->configureOptions();
         $this->setOptions($options);
     }
 
@@ -129,4 +131,6 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     public function getEntity(){
         return $this->entity;
     }
+
+    protected function configureOptions(){}
 }

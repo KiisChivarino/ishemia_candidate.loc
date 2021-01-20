@@ -2,6 +2,12 @@
 
 namespace App\AppBundle\Menu;
 
+use App\Entity\MedicalHistory;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\TransactionRequiredException;
+use Symfony\Component\HttpFoundation\Request;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
@@ -438,6 +444,9 @@ class MenuBuilder
      * Меню кабинета врача в sidebar
      *
      * @return ItemInterface
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
      */
     public function createDoctorOfficeSidebarMenu(): ItemInterface
     {
@@ -449,6 +458,23 @@ class MenuBuilder
                 'route' => 'patients_list'
             ]
         );
+        /** @var Request $request */
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $medicalHistoryId = $request->get('medical_history');
+        if ($medicalHistoryId !== null) {
+            /** @var EntityManager $entityManager */
+            $entityManager = $this->container->get('doctrine')->getManager();
+            $medicalHistory = $entityManager->find(MedicalHistory::class, $medicalHistoryId);
+            if($medicalHistory && is_a($medicalHistory, MedicalHistory::class)){
+                $menu->addChild(
+                    'prescriptionList', [
+                        'label' => 'Назначения',
+                        'route' => 'prescription_list',
+                        'routeParameters' => ['medical_history' => $medicalHistoryId]
+                    ]
+                );
+            }
+        }
         return $menu;
     }
 }

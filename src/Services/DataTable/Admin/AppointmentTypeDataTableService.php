@@ -27,6 +27,7 @@ class AppointmentTypeDataTableService extends AdminDatatableService
      */
     public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem): DataTable
     {
+
         $this->addSerialNumber();
         $this->dataTable
             ->add(

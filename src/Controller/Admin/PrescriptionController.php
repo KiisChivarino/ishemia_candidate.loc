@@ -9,10 +9,11 @@ use App\Form\Admin\Prescription\PrescriptionEditType;
 use App\Form\Admin\PrescriptionType;
 use App\Repository\MedicalHistoryRepository;
 use App\Repository\MedicalRecordRepository;
-use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
+use App\Services\EntityActions\Creator\PrescriptionCreatorService;
+use App\Services\EntityActions\Editor\PrescriptionEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\MedicalHistoryInfoService;
@@ -56,6 +57,8 @@ class PrescriptionController extends AdminAbstractController
     {
         parent::__construct($translator);
         $this->templateService = new PrescriptionTemplate($router->getRouteCollection(), get_class($this));
+        $this->creatorService = new PrescriptionCreatorService();
+        $this->editorService = new PrescriptionEditorService();
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -94,37 +97,30 @@ class PrescriptionController extends AdminAbstractController
      * @param Request $request
      *
      * @param MedicalHistoryRepository $medicalHistoryRepository
-     * @param PrescriptionRepository $prescriptionRepository
      * @return Response
      * @throws Exception
      */
     public function new(
         Request $request,
-        MedicalHistoryRepository $medicalHistoryRepository,
-        PrescriptionRepository $prescriptionRepository
+        MedicalHistoryRepository $medicalHistoryRepository
     ): Response
     {
-        $prescription = new Prescription();
+        $medicalHistory = null;
         if ($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)) {
             /** @var MedicalHistory $medicalHistory */
             $medicalHistory = $medicalHistoryRepository
                 ->find($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY));
-            if ($prescriptionRepository->findNotCompletedPrescription($medicalHistory)) {
-                $this->addFlash(
-                    'warning',
-                    'Назначение не может быть добавлено: для данной истории болезни есть незавершенное назначение!'
-                );
-                return $this->redirectToRoute($this->templateService->getRoute('new'));
-            }
-            $prescription->setMedicalHistory($medicalHistory);
+        }else{
+            $this->addFlash('error', 'История болезни не найдена!');
+            return $this->redirect('prescription_list');
         }
-        return $this->responseNew(
-            $request, $prescription, PrescriptionType::class, null, [],
-            function (EntityActions $actions) {
-                $actions->getEntity()->setIsCompleted(false);
-                $actions->getEntity()->setIsPatientConfirmed(false);
-                $actions->getEntity()->setCreatedTime(new DateTime());
-            }
+        return $this->responseNewWithActions(
+            $request,
+            Prescription::class,
+            PrescriptionType::class,
+            [
+                'medicalHistory' => $medicalHistory,
+            ]
         );
     }
 
