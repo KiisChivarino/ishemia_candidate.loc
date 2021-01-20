@@ -24,7 +24,7 @@ use Twig\Environment;
  */
 class PatientsWithNoProcessedListController extends DoctorOfficeAbstractController
 {
-    const TEMPLATE_PATH = 'doctorOffice/patients_list/';
+    const TEMPLATE_PATH = 'doctorOffice/patients_list/patientsWithNoProcessedList/';
 
     /**
      * PatientsListController constructor.
@@ -41,7 +41,7 @@ class PatientsWithNoProcessedListController extends DoctorOfficeAbstractControll
     }
 
     /**
-     * List of patients
+     * List of patients with not processed testings
      * @Route("/patients_with_no_processed", name="patients_with_no_processed_list", methods={"GET","POST"})
      *
      * @param Request $request

@@ -4,6 +4,8 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
+use App\Entity\PatientTesting;
+use App\Entity\Prescription;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
@@ -53,7 +55,11 @@ class PatientsListDataTableService extends AdminDatatableService
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable
     {
         $patientInfoService = new PatientInfoService();
         $this->addSerialNumber();
@@ -120,7 +126,46 @@ class PatientsListDataTableService extends AdminDatatableService
                     'orderField' => 'h.name',
                 ]
             )
-        ;
+            ->add(
+                'status', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('status'),
+                    'render' => function (string $data, Patient $patient) {
+                        $patientTestingsWithNoResults = $this->entityManager
+                            ->getRepository(PatientTesting::class)
+                            ->getNoResultsTestingsForPatientsList($patient);
+                        $patientTestingsNoProcessedTestings = $this->entityManager
+                            ->getRepository(PatientTesting::class)
+                            ->getNoProcessedTestingsForPatientsList($patient);
+                        $patientOpenedPrescriptions = $this->entityManager
+                            ->getRepository(Prescription::class)
+                            ->getOpenedPrescriptionsForPatientList($patient);
+
+                        $result = "";
+                        if (!empty($patientTestingsWithNoResults)) {
+                            $result .= $this->getLink('Нет анализов',
+                                $patient->getId(),
+                                'doctor_medical_history'
+                            );
+                        }
+                        if (!empty($patientTestingsNoProcessedTestings)) {
+                            !empty($patientTestingsWithNoResults) ? $result .= "<hr>" : $result .= "";
+                            $result .= $this->getLink('Обработать анализы',
+                                $patient->getId(),
+                                'doctor_medical_history'
+                            );
+                        }
+                        if (!empty($patientOpenedPrescriptions)) {
+                            !empty($patientTestingsNoProcessedTestings) ? $result .= "<hr>" : $result .= "";
+                            $result .= $this->getLink('Закрыть назначения',
+                                $patient->getId(),
+                                'doctor_medical_history'
+                            );
+                        }
+
+                        return $result;
+                    },
+                ]
+            );
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']];
         return $this->dataTable
             ->createAdapter(

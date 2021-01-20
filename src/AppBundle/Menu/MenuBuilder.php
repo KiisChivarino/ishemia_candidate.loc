@@ -446,32 +446,32 @@ class MenuBuilder
         $menu->setChildrenAttribute('class', 'sidebar__list');
         $menu->addChild(
             'patientsList', [
-                'label' => 'Пациенты',
+                'label' => 'Все',
                 'route' => 'patients_list'
             ]
         );
         $menu->addChild(
             'patientsWithNoResultsList', [
-                'label' => 'Пациенты без результатов анализов',
+                'label' => 'Нет анализов',
                 'route' => 'patients_with_no_results_list'
             ]
         );
         $menu->addChild(
             'patientsWithNoProcessedList', [
-                'label' => 'Пациенты с необработанными анализами',
+                'label' => 'Обработать анализы',
                 'route' => 'patients_with_no_processed_list'
             ]
         );
         $menu->addChild(
-            'patientsWithProcessedResultsList', [
-                'label' => 'Пациенты с переданными и обработанными анализами',
-                'route' => 'patients_with_processed_results_list'
+            'patientsWithOpenedPrescriptionsList', [
+                'label' => 'Закрыть назначения',
+                'route' => 'patients_with_opened_prescriptions_list'
             ]
         );
         $menu->addChild(
-            'patientsWithOpenedPrescriptionsList', [
-                'label' => 'Пациенты с незакрытыми назначениями',
-                'route' => 'patients_with_opened_prescriptions_list'
+            'patientsWithProcessedResultsList', [
+                'label' => 'Обработанные',
+                'route' => 'patients_with_processed_results_list'
             ]
         );
 

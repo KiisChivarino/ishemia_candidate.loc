@@ -35,6 +35,54 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
+     * Gets Patient Testings if PatientTesting is not processed
+     * @param $patient
+     * @return int|mixed|string
+     */
+    public function getNoProcessedTestingsForPatientsList($patient)
+    {
+        return $this->createQueryBuilder('paT')
+            ->leftJoin('paT.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('paT.prescriptionTesting', 'prT')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('paT.hasResult = true')
+            ->andWhere('paT.isProcessedByStaff = false')
+            ->andWhere('p = :patient')
+            ->setParameter('patient', $patient)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Gets Patient Testings if PatientTesting has no results
+     * @param $patient
+     * @return int|mixed|string
+     */
+    public function getNoResultsTestingsForPatientsList($patient)
+    {
+        return $this->createQueryBuilder('paT')
+            ->leftJoin('paT.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('paT.prescriptionTesting', 'prT')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('p = :patient')
+            ->andWhere('paT.hasResult = false')
+            ->andWhere('prT.plannedDate <= :dateTimeNow')
+            ->setParameter('dateTimeNow', new \DateTime('now'))
+            ->setParameter('patient', $patient)
+            ->select('paT')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Gets Patients`ids array if PatientTesting has no results
      * @return int|mixed|string
      */
