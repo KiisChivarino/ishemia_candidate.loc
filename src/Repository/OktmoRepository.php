@@ -53,7 +53,10 @@ class OktmoRepository extends AppRepository
             ->getQuery()
             ->getResult();
         for ($i = 0; $i < sizeof($cities); $i++) {
-            trim($cities[$i]->setName(preg_replace("/^рп |г |пгт /", "", $cities[$i]->getName())));
+            $cities[$i]->setName(preg_replace(
+                "/((?=^)(\s*))|((\s*)(?>$))/si",
+                "",
+                preg_replace("/^рп |г |пгт /", "", $cities[$i]->getName())));
         }
         return $cities;
     }
