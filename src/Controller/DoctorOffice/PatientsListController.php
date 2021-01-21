@@ -2,18 +2,19 @@
 
 namespace App\Controller\DoctorOffice;
 
+use App\Repository\StaffRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientsListDataTableService;
-use App\Services\TemplateBuilders\DoctorOffice\PatientListTemplate;
 use App\Services\FilterService\FilterService;
-use Exception;
+use App\Services\TemplateBuilders\DoctorOffice\PatientListTemplate;
+use App\Services\TemplateItems\FilterTemplateItem;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class PatientsListController
@@ -47,17 +48,30 @@ class PatientsListController extends DoctorOfficeAbstractController
      * @param Request $request
      * @param PatientsListDataTableService $dataTableService
      * @param FilterService $filterService
-     *
+     * @param StaffRepository $staffRepository
      * @return Response
-     * @throws Exception
      */
-    public function list(Request $request, PatientsListDataTableService $dataTableService, FilterService $filterService): Response
+    public function list(
+        Request $request,
+        PatientsListDataTableService $dataTableService,
+        FilterService $filterService,
+        StaffRepository $staffRepository
+    ): Response
     {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_DOCTOR_HOSPITAL')) {
+            $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
+        }
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['HOSPITAL'],]
-            )
+            ),
+            $options ?? [],
+            function () {
+                $this->templateService
+                    ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->setIsEnabled(false);
+            }
         );
     }
 }

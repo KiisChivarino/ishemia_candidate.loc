@@ -50,15 +50,16 @@ class PatientsListDataTableService extends AdminDatatableService
      *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param array $filters
-     *
+     * @param array|null $filters
+     * @param array $options
      * @return DataTable
      * @throws Exception
      */
     public function getTable(
         Closure $renderOperationsFunction,
         ListTemplateItem $listTemplateItem,
-        array $filters
+        ?array $filters,
+        array $options
     ): DataTable
     {
         $patientInfoService = new PatientInfoService();
@@ -166,7 +167,10 @@ class PatientsListDataTableService extends AdminDatatableService
                     },
                 ]
             );
-        $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']];
+
+        $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
+            ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
+            : $options['hospital'];
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
