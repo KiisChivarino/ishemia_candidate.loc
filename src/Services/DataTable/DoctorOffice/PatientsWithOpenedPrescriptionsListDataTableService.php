@@ -55,7 +55,12 @@ class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatable
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        ?array $filters,
+        array $options
+    ): DataTable
     {
         $patientInfoService = new PatientInfoService();
         $this->addSerialNumber();
@@ -123,7 +128,9 @@ class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatable
                 ]
             )
         ;
-        $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']];
+        $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
+            ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
+            : $options['hospital'];
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

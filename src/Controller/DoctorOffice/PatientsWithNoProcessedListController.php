@@ -2,10 +2,12 @@
 
 namespace App\Controller\DoctorOffice;
 
+use App\Repository\StaffRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientsWithNoProcessedListDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\DoctorOffice\PatientListTemplate;
+use App\Services\TemplateItems\FilterTemplateItem;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,17 +49,31 @@ class PatientsWithNoProcessedListController extends DoctorOfficeAbstractControll
      * @param Request $request
      * @param PatientsWithNoProcessedListDataTableService $dataTableService
      * @param FilterService $filterService
-     *
+     * @param StaffRepository $staffRepository
      * @return Response
      * @throws Exception
      */
-    public function list(Request $request, PatientsWithNoProcessedListDataTableService $dataTableService, FilterService $filterService): Response
+    public function list(
+        Request $request,
+        PatientsWithNoProcessedListDataTableService $dataTableService,
+        FilterService $filterService,
+        StaffRepository $staffRepository
+    ): Response
     {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_DOCTOR_HOSPITAL')) {
+            $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
+        }
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['HOSPITAL'],]
-            )
+            ),
+            $options ?? [],
+            function () {
+                $this->templateService
+                    ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->setIsEnabled(false);
+            }
         );
     }
 }
