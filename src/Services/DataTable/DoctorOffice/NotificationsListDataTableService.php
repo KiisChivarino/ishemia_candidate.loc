@@ -5,6 +5,7 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Controller\AppAbstractController;
 use App\Entity\AuthUser;
 use App\Entity\Notification;
+use App\Entity\NotificationConfirm;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -137,7 +138,19 @@ class NotificationsListDataTableService extends AdminDatatableService
                         return $channels;
                     },
                 ]
-            );
+            )
+            ->add(
+                'Status', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('Status'),
+                    'render' => function (string $data, Notification $notification): string {
+                        /** @var NotificationConfirm $notificationConfirm */
+                        $notificationConfirm = $notification->getPatientNotification()->getNotificationConfirm();
+
+                        return $notificationConfirm->getIsConfirmed() ? 'Подтверждено' : 'Отправлено';
+                    },
+                ]
+            )
+        ;
         $notificationTemplate = $filters[AppAbstractController::FILTER_LABELS['NOTIFICATION']];
         $patient = $options['patient'];
         return

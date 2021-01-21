@@ -53,6 +53,7 @@ class NotificationsListTemplate extends DoctorOfficeTemplateBuilder
         'title' => 'Список уведомлений',
         'fio' => 'ФИО',
         'age' => 'Возраст',
+        'Status' => 'Статус'
     ];
 
     /** @var string[] Common NEW_CONTENT */

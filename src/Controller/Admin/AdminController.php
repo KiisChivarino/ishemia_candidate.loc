@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\PrescriptionMedicine;
 use App\Repository\PatientRepository;
+use App\Repository\PrescriptionMedicineRepository;
 use App\Services\Notification\NotificationData;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
@@ -66,11 +68,14 @@ class AdminController extends AdminAbstractController
     /**
      * @Route("/testNotification", name="testNotification")
      * @param PatientRepository $patientRepository
+     * @param PrescriptionMedicineRepository $prescriptionMedicineRepository
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function testNotification(PatientRepository $patientRepository): Response
+    public function testNotification(PatientRepository $patientRepository, PrescriptionMedicineRepository $prescriptionMedicineRepository): Response
     {
         $notificationService = $this->notificationServiceBuilder
+            ->setPrescriptionMedicine($prescriptionMedicineRepository->find(1))
             ->makeConfirmMedicationNotification(
                 (
                 new NotificationData(
@@ -78,7 +83,8 @@ class AdminController extends AdminAbstractController
                     $patientRepository->findAll()[0],
                     $patientRepository->findAll()[0]->getMedicalHistories()[0],
                     $patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
-                )
+                ),
+                'Конфеты "Каракум" 2 раза в день по 2 штуки'
             );
 
         $this->notifier->notifyPatient(
