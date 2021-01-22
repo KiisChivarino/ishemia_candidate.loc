@@ -28,6 +28,11 @@ class PatientTesting
     private $analysisGroup;
 
     /**
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Данные результатов обследования"})
+     */
+    private $resultData;
+
+    /**
      * @ORM\Column(type="date", nullable=true, options={"comment"="Дата проведенного тестирования"})
      */
     private $analysisDate;
@@ -103,6 +108,24 @@ class PatientTesting
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResultData()
+    {
+        return $this->resultData;
+    }
+
+    /**
+     * @param string|null $resultData
+     * @return PatientTesting
+     */
+    public function setResultData(?string $resultData): PatientTesting
+    {
+        $this->resultData = $resultData;
+        return $this;
     }
 
     /**

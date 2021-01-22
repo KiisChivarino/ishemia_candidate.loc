@@ -450,6 +450,12 @@ class MenuBuilder
                 'route' => 'patients_list'
             ]
         );
+        $menu->addChild(
+            'patient_testings_list', [
+                'label' => 'Обследования',
+                'route' => 'patient_testings_list',
+            ]
+        );
         return $menu;
     }
 }
