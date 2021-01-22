@@ -58,7 +58,7 @@ class PatientsListController extends DoctorOfficeAbstractController
         StaffRepository $staffRepository
     ): Response
     {
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_DOCTOR_HOSPITAL')) {
+        if (in_array('ROLE_DOCTOR_HOSPITAL', $this->getUser()->getRoles())) {
             $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
         }
         return $this->responseList(
@@ -69,8 +69,10 @@ class PatientsListController extends DoctorOfficeAbstractController
             ),
             $options ?? [],
             function () {
-                $this->templateService
-                    ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->setIsEnabled(false);
+                if (in_array('ROLE_DOCTOR_HOSPITAL', $this->getUser()->getRoles())) {
+                    $this->templateService
+                        ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->setIsEnabled(false);
+                }
             }
         );
     }

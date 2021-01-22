@@ -10,9 +10,9 @@ use App\Services\TemplateItems\FormTemplateItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 /**
@@ -57,42 +57,6 @@ class PatientRequiredType extends AbstractType
             )
             ->add('address', null, ['label' => $templateItem->getContentValue('address')])
             ->add(
-                'city', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('city'),
-                    'method' => 'POST',
-                    'multiple' => false,
-                    'remote_route' => 'find_city_ajax',
-                    'class' => City::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 2,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('cityPlaceholder'),
-                    'required' => true
-                ]
-            )
-            ->add(
-                'hospital', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('hospital'),
-                    'method' => 'POST',
-                    'multiple' => false,
-                    'remote_route' => 'find_hospital_ajax',
-                    'class' => Hospital::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 0,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('hospitalPlaceholder'),
-                    'remote_params' => ['city' => '0'],
-                    'required' => true,
-                ]
-            )
-            ->add(
                 'heartAttackDate',
                 DateType::class,
                 [
@@ -102,6 +66,45 @@ class PatientRequiredType extends AbstractType
                     'required' => true,
                 ]
             );
+        if (!$options['isDoctorLPU']) {
+            $builder
+                ->add(
+                    'city', Select2EntityType::class, [
+                        'label' => $templateItem->getContentValue('city'),
+                        'method' => 'POST',
+                        'multiple' => false,
+                        'remote_route' => 'find_city_ajax',
+                        'class' => City::class,
+                        'primary_key' => 'id',
+                        'text_property' => 'name',
+                        'minimum_input_length' => 2,
+                        'page_limit' => 1,
+                        'allow_clear' => true,
+                        'language' => 'ru',
+                        'placeholder' => $templateItem->getContentValue('cityPlaceholder'),
+                        'required' => true
+                    ]
+                )
+                ->add(
+                    'hospital', Select2EntityType::class, [
+                        'label' => $templateItem->getContentValue('hospital'),
+                        'method' => 'POST',
+                        'multiple' => false,
+                        'remote_route' => 'find_hospital_ajax',
+                        'class' => Hospital::class,
+                        'primary_key' => 'id',
+                        'text_property' => 'name',
+                        'minimum_input_length' => 0,
+                        'page_limit' => 1,
+                        'allow_clear' => true,
+                        'delay' => 250,
+                        'language' => 'ru',
+                        'placeholder' => $templateItem->getContentValue('hospitalPlaceholder'),
+                        'remote_params' => ['city' => '0'],
+                        'required' => true,
+                    ]
+                );
+        }
     }
 
     /**
@@ -110,7 +113,7 @@ class PatientRequiredType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => Patient::class,])
+            ->setDefaults(['data_class' => Patient::class, 'isDoctorLPU' => null])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

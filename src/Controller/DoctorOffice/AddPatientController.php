@@ -85,6 +85,15 @@ class AddPatientController extends DoctorOfficeAbstractController
         $staff = $staffRepository->getStaff($this->getUser());
         $patientAuthUser = $authUserCreatorService->createAuthUser();
         $patient = $patientCreator->createPatient();
+        if (in_array('ROLE_DOCTOR_HOSPITAL', $this->getUser()->getRoles())) {
+            $staff = $staffRepository->getStaff($this->getUser());
+            $patient
+                ->setHospital($staff->getHospital())
+                ->setCity($staff->getHospital()->getCity())
+            ;
+            $isDoctorLPU = true;
+        }
+
         $medicalHistory = $medicalHistoryCreatorService->createMedicalHistory();
         $firstPatientAppointment = $patientAppointmentCreatorService->createPatientAppointment($medicalHistory);
         return $this->responseNewMultiForm(
@@ -92,7 +101,7 @@ class AddPatientController extends DoctorOfficeAbstractController
             $patient,
             [
                 new FormData($patientAuthUser,AuthUserRequiredType::class),
-                new FormData($patient, PatientRequiredType::class),
+                new FormData($patient, PatientRequiredType::class, ['isDoctorLPU' => $isDoctorLPU ?? null]),
                 new FormData($medicalHistory, MainDiseaseType::class),
                 new FormData($firstPatientAppointment, AppointmentTypeType::class),
             ],

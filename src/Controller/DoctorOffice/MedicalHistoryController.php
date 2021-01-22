@@ -186,12 +186,15 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         $authUser = $patient->getAuthUser();
         $oldPassword = $authUser->getPassword();
         $this->setRedirectMedicalHistoryRoute($patient->getId());
+        if (in_array('ROLE_DOCTOR_HOSPITAL', $this->getUser()->getRoles())) {
+            $isDoctorLPU = true;
+        }
         return $this->responseEditMultiForm(
             $request,
             $patient,
             [
                 new FormData($authUser, AuthUserPersonalDataType::class),
-                new FormData($patient, PatientRequiredType::class),
+                new FormData($patient, PatientRequiredType::class, ['isDoctorLPU' => $isDoctorLPU ?? null]),
                 new FormData($patient, PatientOptionalType::class),
             ],
             function () use ($authUser, $oldPassword, $passwordEncoder) {

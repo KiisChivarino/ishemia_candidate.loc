@@ -110,7 +110,7 @@ class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatable
                     'label' => $listTemplateItem->getContentValue('hospital'),
                     'field' => 'h.name',
                     'render' => function (string $data, Patient $patient) {
-                        return $patient ? $patient->getCity()->getName() : '';
+                        return $patient ? $patient->getHospital()->getName() : '';
                     },
                     'orderable' => true,
                     'orderField' => 'h.name',
@@ -130,7 +130,9 @@ class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatable
         ;
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
             ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
-            : $options['hospital'];
+            : ($options
+                ? $options['hospital']
+                : "");
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

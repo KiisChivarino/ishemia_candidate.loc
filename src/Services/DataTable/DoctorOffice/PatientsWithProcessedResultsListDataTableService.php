@@ -130,7 +130,9 @@ class PatientsWithProcessedResultsListDataTableService extends AdminDatatableSer
 
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
             ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
-            : $options['hospital'];
+            : ($options
+                ? $options['hospital']
+                : "");
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
