@@ -456,6 +456,12 @@ class MenuBuilder
                 'route' => 'patient_testings_list',
             ]
         );
+        $menu->addChild(
+            'patient_testings_no_processed_list', [
+                'label' => 'Необработанные',
+                'route' => 'patient_testings_no_processed_list',
+            ]
+        );
         return $menu;
     }
 }

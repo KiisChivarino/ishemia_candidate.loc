@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientTestingsListDataTableService extends AdminDatatableService
+class PatientTestingsListPlannedDataTableService extends AdminDatatableService
 {
     private $authUserInfoService;
 
@@ -103,6 +103,7 @@ class PatientTestingsListDataTableService extends AdminDatatableService
                             ->leftJoin('pT.analysisGroup', 'aG')
                             ->andWhere('u.enabled = :val')
                             ->andWhere('p.id = :patientId')
+                            ->andWhere('pT.isByPlan = true')
                             ->setParameter('patientId', $options['patientId'])
                             ->setParameter('val', true);
                         if ($analysisGroup) {

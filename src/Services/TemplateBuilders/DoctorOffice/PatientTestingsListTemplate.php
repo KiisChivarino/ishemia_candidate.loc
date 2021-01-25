@@ -46,6 +46,7 @@ class PatientTestingsListTemplate extends DoctorOfficeTemplateBuilder
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
         'h1' => 'Список обследований',
+        'h1NoProcessed' => 'Список необработанных обследований',
         'title' => 'Список записей',
         'fio' => 'ФИО',
         'age' => 'Возраст',
