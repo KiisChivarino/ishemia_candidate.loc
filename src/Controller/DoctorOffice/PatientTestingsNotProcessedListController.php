@@ -11,6 +11,7 @@ use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientTestingsListDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientTestingsListNoProcessedDataTableService;
 use App\Services\FileService\FileService;
 use App\Services\FilterService\FilterService;
 use App\Services\MultiFormService\FormData;
@@ -67,7 +68,7 @@ class PatientTestingsNotProcessedListController extends DoctorOfficeAbstractCont
     public function list(
         PatientRepository $patientRepository,
         Request $request,
-        PatientTestingsListDataTableService $dataTableService,
+        PatientTestingsListNoProcessedDataTableService $dataTableService,
         FilterService $filterService
     ): Response
     {

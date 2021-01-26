@@ -462,6 +462,24 @@ class MenuBuilder
                 'route' => 'patient_testings_no_processed_list',
             ]
         );
+        $menu->addChild(
+            'patient_testings_planned_list', [
+                'label' => 'Запланированные',
+                'route' => 'patient_testings_planned_list',
+            ]
+        );
+        $menu->addChild(
+            'patient_testings_overdue_list', [
+                'label' => 'Просроченные',
+                'route' => 'patient_testings_overdue_list',
+            ]
+        );
+        $menu->addChild(
+            'patient_testings_history_list', [
+                'label' => 'История',
+                'route' => 'patient_testings_history_list',
+            ]
+        );
         return $menu;
     }
 }
