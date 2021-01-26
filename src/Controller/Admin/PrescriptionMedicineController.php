@@ -2,18 +2,16 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Form\Admin\PrescriptionMedicineType;
-use App\Repository\PrescriptionRepository;
-use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionMedicineDataTableService;
+use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
+use App\Services\EntityActions\Editor\PrescriptionMedicineEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
-use DateTime;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,12 +40,23 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
+     * @param PrescriptionMedicineEditorService $prescriptionMedicineEditorService
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService,
+        PrescriptionMedicineEditorService $prescriptionMedicineEditorService
+
+    )
     {
         parent::__construct($translator);
         $this->templateService = new PrescriptionMedicineTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
+        $this->creatorService = $prescriptionMedicineCreatorService;
+        $this->editorService = $prescriptionMedicineEditorService;
     }
 
     /**
@@ -82,24 +91,17 @@ class PrescriptionMedicineController extends AdminAbstractController
      *
      * @Route("/new", name="prescription_medicine_new", methods={"GET","POST"})
      * @param Request $request
-     * @param PrescriptionRepository $prescriptionRepository
      * @return Response
      * @throws Exception
      */
-    public function new(Request $request, PrescriptionRepository $prescriptionRepository): Response
+    public function new(Request $request): Response
     {
-        $prescriptionMedicine = new PrescriptionMedicine();
-        if ($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)) {
-            /** @var Prescription $prescription */
-            $prescription = $prescriptionRepository
-                ->find($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY));
-            $prescriptionMedicine->setPrescription($prescription);
-        }
-        return $this->responseNew(
-            $request, $prescriptionMedicine, PrescriptionMedicineType::class, null, [],
-            function (EntityActions $actions) {
-                $actions->getEntity()->setInclusionTime(new DateTime());
-            }
+        return $this->responseNewWithActions(
+            $request,
+            PrescriptionMedicineType::class,
+            [
+                'prescription' => $this->getPrescriptionByParameter($request),
+            ]
         );
     }
 

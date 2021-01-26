@@ -64,7 +64,7 @@ abstract class AppAbstractController extends AbstractController
     protected const RESPONSE_FORM_TYPE_EDIT = 'edit';
 
     /** @var TranslatorInterface */
-    private $translator;
+    protected $translator;
 
     public function __construct(TranslatorInterface $translator)
     {
@@ -349,7 +349,7 @@ abstract class AppAbstractController extends AbstractController
      * @param $entity
      * @return Response|void
      */
-    protected function flush($form, $formTemplateName, $entity)
+    protected function flush($form, $formTemplateName, $entity): ?Response
     {
         try {
             $this->getDoctrine()->getManager()->flush();
@@ -541,7 +541,6 @@ abstract class AppAbstractController extends AbstractController
     /**
      * Response new form using Creator service
      * @param Request $request
-     * @param string $entityClass
      * @param array $entityActionsOptions
      * @param string $typeClass
      * @param array $customFormOptions
@@ -552,7 +551,6 @@ abstract class AppAbstractController extends AbstractController
      */
     public function responseNewWithActions(
         Request $request,
-        string $entityClass,
         string $typeClass,
         array $entityActionsOptions = [],
         array $customFormOptions = [],
@@ -560,7 +558,7 @@ abstract class AppAbstractController extends AbstractController
         string $formTemplateName = self::RESPONSE_FORM_TYPE_NEW
     )
     {
-        $this->creatorService->before($entityClass, $entityActionsOptions);
+        $this->creatorService->before($entityActionsOptions);
         $entity = $this->creatorService->getEntity();
         $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
         $form = $this->createForm(
@@ -593,6 +591,7 @@ abstract class AppAbstractController extends AbstractController
      * @param object $entity
      * @param string $typeClass
      * @param array $customFormOptions
+     * @param array $entityActionsOptions
      * @param string $formName
      * @param object|null $formEntity
      * @return Response
@@ -603,6 +602,7 @@ abstract class AppAbstractController extends AbstractController
         object $entity,
         string $typeClass,
         array $customFormOptions = [],
+        array $entityActionsOptions = [],
         string $formName = self::RESPONSE_FORM_TYPE_EDIT,
         object $formEntity = null
     )
@@ -624,13 +624,54 @@ abstract class AppAbstractController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->editorService->after(
                 new EntityActions($entity, $request, $this->getDoctrine()->getManager(), $form),
-                $options
+                $entityActionsOptions
             );
             $this->flush($form, $formName, $entity);
             $this->setLogUpdate($entity);
             return $this->redirectSubmitted($entity->getId());
         }
         return $this->renderForm($formName, $entity, $form);
+    }
+
+    /**
+     * @param Request $request
+     * @param array $formDataArray
+     * @param array $entityActionsOptions
+     * @param string $templateEditName
+     * @return RedirectResponse|Response
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function responseEditMultiformWithActions(
+        Request $request,
+        $entity,
+        array $formDataArray = [],
+        array $entityActionsOptions = [],
+        string $templateEditName = self::RESPONSE_FORM_TYPE_EDIT
+    )
+    {
+        $this->editorService->before($entityActionsOptions, $entity);
+        $template = $this->templateService->edit($entity);
+        $formGeneratorService = new MultiFormService();
+        $formGeneratorService->mergeFormDataOptions(
+            $formDataArray,
+            [
+                'label' => false,
+                self::FORM_TEMPLATE_ITEM_OPTION_TITLE => $template->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),
+            ]
+        );
+        $form = $formGeneratorService->generateForm($this->createFormBuilder(), $formDataArray);
+        $this->handleRequest($request, $form, $templateEditName, $entity);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->editorService->after(
+                new EntityActions($entity, $request, $this->getDoctrine()->getManager(), $form),
+                $entityActionsOptions
+            );
+            $this->flush($form, $templateEditName, $entity);
+            $this->setLogUpdate($entity);
+            return $this->redirectSubmitted($entity->getId());
+        }
+        return $this->renderForm($templateEditName, $entity, $form);
     }
 
     /**
@@ -733,7 +774,6 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function setLogUpdate($entity)
     {
-
         (new LogService($this->getDoctrine()->getManager()))
             ->setUser($this->getUser())
             ->setDescription(
@@ -773,5 +813,37 @@ abstract class AppAbstractController extends AbstractController
                         ->getFiltersViews(),
             ]
         );
+    }
+
+    /**
+     * Returns parameter from GET request array
+     * @param Request $request
+     * @param string $parameterKey
+     * @return mixed|RedirectResponse
+     * @throws Exception
+     */
+    protected function getGETParameter(Request $request, string $parameterKey): int
+    {
+        if ($parameter = $request->query->get($parameterKey)) {
+            return $parameter;
+        } else {
+            throw new Exception($this->translator->trans('app_controller.error.parameter_not_found'));
+        }
+    }
+
+    /**
+     * Returns entity by id
+     * @param $entityClass
+     * @param int $parameter
+     * @return object|RedirectResponse
+     * @throws Exception
+     */
+    protected function getEntityById($entityClass, int $parameter)
+    {
+        $entity = $this->getDoctrine()->getManager()->getRepository($entityClass)->find($parameter);
+        if ($entity === null || !is_a($entity, $entityClass)) {
+            throw new Exception($this->translator->trans('app_controller.error.parameter_not_found'));
+        }
+        return $entity;
     }
 }

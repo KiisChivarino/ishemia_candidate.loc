@@ -15,31 +15,34 @@ use Exception;
 class PrescriptionCreatorService extends AbstractCreatorService
 {
     /**
-     * @param string $entityClass
+     * PrescriptionCreatorService constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct(Prescription::class);
+    }
+
+    /**
      * @param array $options
+     * @param null $entity
      * @throws Exception
      */
-    public function before(string $entityClass, array $options = []): void
+    public function before(array $options = [], $entity = null): void
     {
-        parent::before($entityClass, $options);
-        /** @var Prescription $prescriptionEntity */
-        $prescriptionEntity = $this->getEntity();
-        $prescriptionEntity
-            ->setMedicalHistory($this->options['medicalHistory'])
-            ->setEnabled(true);
+        parent::before($options);
+        $this->getEntity()->setMedicalHistory($this->options['medicalHistory']);
     }
 
     /**
      * @param EntityActions $entityActions
-     * @param array $options
-     * @throws Exception
      */
-    public function after(EntityActions $entityActions, array $options = []): void
+    protected function prepare(EntityActions $entityActions): void
     {
-        parent::after($entityActions, $options);
-        $this->getEntity()->setIsCompleted(false);
-        $this->getEntity()->setIsPatientConfirmed(false);
-        $this->getEntity()->setCreatedTime(new DateTime());
+        /** @var Prescription $prescription */
+        $prescription = $this->getEntity();
+        $prescription->setIsCompleted(false);
+        $prescription->setIsPatientConfirmed(false);
+        $prescription->setCreatedTime(new DateTime());
     }
 
     protected function configureOptions()

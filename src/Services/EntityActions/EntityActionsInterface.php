@@ -14,10 +14,10 @@ interface EntityActionsInterface
     /**
      * Actions with entity before submitting and validating form
      * Usual includes adding options, create new entity if it is a form of new entity and set default values for entity
-     * @param $entityClass
      * @param array $options
+     * @param null $entity
      */
-    public function before(string $entityClass, array $options = []): void;
+    public function before(array $options = [], $entity = null): void;
 
     /**
      * Actions with entity after submitting and validating form

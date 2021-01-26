@@ -31,13 +31,21 @@ class PatientMedicineController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param PatientMedicineCreatorService $patientMedicineCreatorService
+     * @param PatientMedicineEditorService $patientMedicineEditorService
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        PatientMedicineCreatorService $patientMedicineCreatorService,
+        PatientMedicineEditorService $patientMedicineEditorService
+    )
     {
         parent::__construct($translator);
         $this->templateService = new PatientMedicineTemplate($router->getRouteCollection(), get_class($this));
-        $this->creatorService = new PatientMedicineCreatorService();
-        $this->editorService = new PatientMedicineEditorService();
+        $this->creatorService = $patientMedicineCreatorService;
+        $this->editorService = $patientMedicineEditorService;
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -63,7 +71,7 @@ class PatientMedicineController extends AdminAbstractController
      */
     public function new(Request $request): Response
     {
-        return $this->responseNewWithActions($request, PatientMedicine::class, PatientMedicineType::class);
+        return $this->responseNewWithActions($request, PatientMedicineType::class);
     }
 
     /**

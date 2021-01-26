@@ -42,6 +42,12 @@ class PrescriptionMedicine
     private $inclusionTime;
 
     /**
+     * @ORM\OneToOne(targetEntity=PatientMedicine::class, inversedBy="prescriptionMedicine", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $patientMedicine;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -122,6 +128,24 @@ class PrescriptionMedicine
     public function setInclusionTime(DateTimeInterface $inclusionTime): self
     {
         $this->inclusionTime = $inclusionTime;
+        return $this;
+    }
+
+    /**
+     * @return PatientMedicine|null
+     */
+    public function getPatientMedicine(): ?PatientMedicine
+    {
+        return $this->patientMedicine;
+    }
+
+    /**
+     * @param PatientMedicine $patientMedicine
+     * @return $this
+     */
+    public function setPatientMedicine(PatientMedicine $patientMedicine): self
+    {
+        $this->patientMedicine = $patientMedicine;
         return $this;
     }
 }

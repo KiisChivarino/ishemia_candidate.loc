@@ -4,6 +4,7 @@ namespace App\Services\EntityActions\Creator;
 
 use App\Services\EntityActions\AbstractEntityActionsService;
 use Exception;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AbstractCreatorService
@@ -11,29 +12,48 @@ use Exception;
  */
 class AbstractCreatorService extends AbstractEntityActionsService
 {
+
+    /** @var TranslatorInterface */
+    private $translator;
+
+    /**
+     * AbstractCreatorService constructor.
+     * @param string $entityClass
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(string $entityClass, TranslatorInterface $translator)
+    {
+        $this->entityClass = $entityClass;
+        $this->translator = $translator;
+    }
+
     /**
      * Actions with entity before submitting and validating form
-     * @param string $entityClass
      * @param array $options
+     * @param null $entity
      * @throws Exception
      */
-    public function before(string $entityClass, array $options = []): void
+    public function before(array $options = [], $entity = null): void
     {
-        parent::before($entityClass, $options);
-        $this->create($entityClass);
+        parent::before($options, $entity);
+        $this->create();
     }
 
     /**
      * Create new entity
-     * @param string $entityClass
      * @throws Exception
      */
-    protected function create(string $entityClass): void
+    protected function create(): void
     {
-        if (class_exists($entityClass)) {
-            $this->setEntity(new $entityClass, $entityClass);
+        if (class_exists($this->entityClass)) {
+            $this->setEntity(new $this->entityClass);
         } else {
-            throw new Exception('Class ' . $entityClass . ' not found!');
+            throw new Exception(
+                $this->translator->trans(
+                    'command.success',
+                    ['%entityClass%' => $this->entityClass]
+                )
+            );
         }
         if (method_exists($this->entity, 'setEnabled')) {
             $this->entity->setEnabled(true);

@@ -2,14 +2,9 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\MedicalHistory;
-use App\Entity\MedicalRecord;
 use App\Entity\Prescription;
 use App\Form\Admin\Prescription\PrescriptionEditType;
 use App\Form\Admin\PrescriptionType;
-use App\Repository\MedicalHistoryRepository;
-use App\Repository\MedicalRecordRepository;
-use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
@@ -20,7 +15,6 @@ use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\InfoService\MedicalRecordInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
-use DateTime;
 use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,13 +46,21 @@ class PrescriptionController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param PrescriptionCreatorService $prescriptionCreatorService
+     * @param PrescriptionEditorService $prescriptionEditorService
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        PrescriptionCreatorService $prescriptionCreatorService,
+        PrescriptionEditorService $prescriptionEditorService
+    )
     {
         parent::__construct($translator);
         $this->templateService = new PrescriptionTemplate($router->getRouteCollection(), get_class($this));
-        $this->creatorService = new PrescriptionCreatorService();
-        $this->editorService = new PrescriptionEditorService();
+        $this->creatorService = $prescriptionCreatorService;
+        $this->editorService = $prescriptionEditorService;
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -96,30 +98,18 @@ class PrescriptionController extends AdminAbstractController
      *
      * @param Request $request
      *
-     * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return Response
      * @throws Exception
      */
     public function new(
-        Request $request,
-        MedicalHistoryRepository $medicalHistoryRepository
+        Request $request
     ): Response
     {
-        $medicalHistory = null;
-        if ($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)) {
-            /** @var MedicalHistory $medicalHistory */
-            $medicalHistory = $medicalHistoryRepository
-                ->find($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY));
-        }else{
-            $this->addFlash('error', 'История болезни не найдена!');
-            return $this->redirect('prescription_list');
-        }
         return $this->responseNewWithActions(
             $request,
-            Prescription::class,
             PrescriptionType::class,
             [
-                'medicalHistory' => $medicalHistory,
+                'medicalHistory' => $this->getMedicalHistoryByParameter($request),
             ]
         );
     }
@@ -172,32 +162,22 @@ class PrescriptionController extends AdminAbstractController
      * @param Request $request
      * @param Prescription $prescription
      *
-     * @param MedicalRecordRepository $medicalRecordRepository
      * @return Response
      * @throws ReflectionException
      * @throws Exception
      */
     public function edit(
         Request $request,
-        Prescription $prescription,
-        MedicalRecordRepository $medicalRecordRepository
+        Prescription $prescription
     ): Response
     {
-        return $this->responseEditMultiForm(
+        return $this->responseEditMultiformWithActions(
             $request,
             $prescription,
             [
                 new FormData($prescription, PrescriptionType::class),
                 new FormData($prescription, PrescriptionEditType::class),
-            ],
-            function (EntityActions $entityActions)
-            use ($prescription, $medicalRecordRepository)
-            {
-                $this->isCompletedActions(
-                    $entityActions,
-                    $medicalRecordRepository->getMedicalRecord($prescription->getMedicalHistory())
-                );
-            }
+            ]
         );
     }
 
@@ -214,21 +194,5 @@ class PrescriptionController extends AdminAbstractController
     public function delete(Request $request, Prescription $prescription): Response
     {
         return $this->responseDelete($request, $prescription);
-    }
-
-    /**
-     * Actions if flag isCompleted checked
-     *
-     * @param EntityActions $entityActions
-     * @param MedicalRecord $medicalRecord
-     */
-    private function isCompletedActions(EntityActions $entityActions, MedicalRecord $medicalRecord)
-    {
-        /** @var Prescription $prescription */
-        $prescription = $entityActions->getEntity();
-        if ($prescription->getIsCompleted()) {
-            $prescription->setCompletedTime(new DateTime());
-            $prescription->setMedicalRecord($medicalRecord);
-        }
     }
 }

@@ -6,65 +6,49 @@ use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
 use App\Repository\MedicalRecordRepository;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
  * Class MedicalRecordCreatorService
  * @package App\Services\EntityActions\Creator
  */
-class MedicalRecordCreatorService
+class MedicalRecordCreatorService extends AbstractCreatorService
 {
     /**
      * @var MedicalRecordRepository
      */
     private $medicalRecordRepository;
 
-    /** @var EntityManagerInterface $entityManager */
-    protected $entityManager;
-
     /**
      * MedicalRecordCreatorService constructor.
      * @param MedicalRecordRepository $medicalRecordRepository
-     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(MedicalRecordRepository $medicalRecordRepository, EntityManagerInterface $entityManager)
+    public function __construct(MedicalRecordRepository $medicalRecordRepository)
     {
+        parent::__construct(MedicalRecord::class);
         $this->medicalRecordRepository = $medicalRecordRepository;
-        $this->entityManager = $entityManager;
     }
 
     /**
-     * @param MedicalHistory $medicalHistory
-     * @return MedicalRecord
+     * @throws Exception
      */
-    public function createMedicalRecord(MedicalHistory $medicalHistory): MedicalRecord
+    public function create(): void
     {
         $medicalRecord = null;
-        try {
-            $medicalRecord = $this->medicalRecordRepository->getMedicalRecord($medicalHistory);
-        } catch (Exception $e) {
-        }
+        $medicalHistory = $this->options['medicalHistory'];
+        $medicalRecord = $this->medicalRecordRepository->getMedicalRecord($medicalHistory);
         if ($medicalRecord === null) {
-            $medicalRecord = (new MedicalRecord())
-                ->setEnabled(true)
+            parent::create();
+            $this->getEntity()
                 ->setMedicalHistory($medicalHistory)
                 ->setRecordDate(new DateTime());
+        } else {
+            $this->setEntity($medicalRecord);
         }
-        return $medicalRecord;
     }
 
-    /**
-     * Persist medical record
-     * @param MedicalHistory $medicalHistory
-     * @return MedicalRecord
-     */
-    public function persistMedicalRecord(MedicalHistory $medicalHistory): MedicalRecord
+    protected function configureOptions()
     {
-        $medicalRecord = $this->createMedicalRecord($medicalHistory);
-        if (!$this->entityManager->contains($medicalRecord)) {
-            $this->entityManager->persist($medicalRecord);
-        }
-        return $medicalRecord;
+        $this->addOptionCheck(MedicalHistory::class, 'medicalHistory');
     }
 }

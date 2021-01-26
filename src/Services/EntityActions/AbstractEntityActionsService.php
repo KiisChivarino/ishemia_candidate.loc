@@ -17,6 +17,9 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
      */
     protected $entity;
 
+    /** @var string */
+    protected $entityClass;
+
     /**
      * @var array custom variables for actions with entity like [variableName=>variableValue]
      */
@@ -28,12 +31,11 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     /**
      * Sets entity to which actions are performed
      * @param $entity
-     * @param string $class
      * @throws Exception
      */
-    protected function setEntity($entity, string $class)
+    protected function setEntity($entity)
     {
-        if (is_a($entity, $class)) {
+        if (is_a($entity, $this->entityClass)) {
             $this->entity = $entity;
         } else {
             throw new Exception('Invalid class of object');
@@ -56,6 +58,18 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     protected function prepare(EntityActions $entityActions): void
     {
 
+    }
+
+    /**
+     * @param EntityActions $entityActions
+     * @param array $options
+     * @param null $entity
+     * @throws Exception
+     */
+    public function execute(EntityActions $entityActions, array $options = [], $entity = null)
+    {
+        $this->before($options, $entity);
+        $this->after($entityActions, $options);
     }
 
     /**
@@ -115,11 +129,11 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     }
 
     /**
-     * @param string $entityClass
      * @param array $options
+     * @param null $entity
      * @throws Exception
      */
-    public function before(string $entityClass, array $options = []): void
+    public function before(array $options = [], $entity = null): void
     {
         $this->configureOptions();
         $this->setOptions($options);
@@ -128,9 +142,12 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     /**
      * @return mixed
      */
-    public function getEntity(){
+    public function getEntity()
+    {
         return $this->entity;
     }
 
-    protected function configureOptions(){}
+    protected function configureOptions()
+    {
+    }
 }
