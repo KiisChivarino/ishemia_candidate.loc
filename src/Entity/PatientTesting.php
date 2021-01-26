@@ -38,6 +38,11 @@ class PatientTesting
     private $analysisDate;
 
     /**
+     * @ORM\Column(type="boolean", options={"comment"="Статус наличия результатов", "default"=false})
+     */
+    private $hasResult = false;
+
+    /**
      * @ORM\Column(type="boolean", options={"comment"="Статус принятия в работу врачом", "default"=false})
      */
     private $processed;
@@ -395,6 +400,25 @@ class PatientTesting
     public function setIsByPlan(bool $isByPlan): self
     {
         $this->isByPlan = $isByPlan;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getHasResult(): ?bool
+    {
+        return $this->hasResult;
+    }
+
+    /**
+     * @param bool $hasResult
+     * @return $this
+     */
+    public function setHasResult(bool $hasResult): self
+    {
+        $this->hasResult = $hasResult;
+
         return $this;
     }
 }

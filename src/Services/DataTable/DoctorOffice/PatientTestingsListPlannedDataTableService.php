@@ -101,10 +101,13 @@ class PatientTestingsListPlannedDataTableService extends AdminDatatableService
                             ->leftJoin('mH.patient', 'p')
                             ->leftJoin('p.AuthUser', 'u')
                             ->leftJoin('pT.analysisGroup', 'aG')
+                            ->leftJoin('pT.prescriptionTesting', 'prT')
+                            ->andWhere('prT.plannedDate >= :dateTimeNow')
                             ->andWhere('u.enabled = :val')
                             ->andWhere('p.id = :patientId')
-                            ->andWhere('pT.isByPlan = true')
+                            ->andWhere('pT.hasResult = false')
                             ->setParameter('patientId', $options['patientId'])
+                            ->setParameter('dateTimeNow', new \DateTime('now'))
                             ->setParameter('val', true);
                         if ($analysisGroup) {
                             $builder

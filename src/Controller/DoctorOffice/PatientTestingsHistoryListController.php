@@ -11,7 +11,8 @@ use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientTestingsListDataTableService;
-use App\Services\DataTable\DoctorOffice\PatientTestingsListPlannedDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientTestingsListHistoryDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientTestingsListNoProcessedDataTableService;
 use App\Services\FileService\FileService;
 use App\Services\FilterService\FilterService;
 use App\Services\MultiFormService\FormData;
@@ -33,9 +34,9 @@ use Twig\Environment;
  *
  * @package App\Controller\DoctorOffice
  */
-class PatientTestingsPlannedListController extends DoctorOfficeAbstractController
+class PatientTestingsHistoryListController extends DoctorOfficeAbstractController
 {
-    const TEMPLATE_PATH = 'doctorOffice/patient_testings_list_planned/';
+    const TEMPLATE_PATH = 'doctorOffice/patient_testings_list_history/';
 
     /** @var string Name of files collection of entity method */
     protected const FILES_COLLECTION_PROPERTY_NAME = 'patientTestingFiles';
@@ -56,11 +57,11 @@ class PatientTestingsPlannedListController extends DoctorOfficeAbstractControlle
 
     /**
      * List of patient testings
-     * @Route("/patient/patient_testings_planned", name="patient_testings_planned_list", methods={"GET","POST"})
+     * @Route("/patient/patient_testings_history", name="patient_testings_history_list", methods={"GET","POST"})
      *
      * @param PatientRepository $patientRepository
      * @param Request $request
-     * @param PatientTestingsListDataTableService $dataTableService
+     * @param PatientTestingsListHistoryDataTableService $dataTableService
      * @param FilterService $filterService
      *
      * @return Response
@@ -68,7 +69,7 @@ class PatientTestingsPlannedListController extends DoctorOfficeAbstractControlle
     public function list(
         PatientRepository $patientRepository,
         Request $request,
-        PatientTestingsListPlannedDataTableService $dataTableService,
+        PatientTestingsListHistoryDataTableService $dataTableService,
         FilterService $filterService
     ): Response
     {
@@ -83,8 +84,8 @@ class PatientTestingsPlannedListController extends DoctorOfficeAbstractControlle
     }
 
     /**
-     * Редактирование обследования пациента
-     * @Route("/{id}/edit", name="patient_testings_edit_planned", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * Редактирование анализа пациента
+     * @Route("/{id}/edit", name="patient_testing_edit_history", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param PatientTesting $patientTesting

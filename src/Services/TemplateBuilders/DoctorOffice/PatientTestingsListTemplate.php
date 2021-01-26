@@ -47,6 +47,9 @@ class PatientTestingsListTemplate extends DoctorOfficeTemplateBuilder
     protected const LIST_CONTENT = [
         'h1' => 'Список обследований',
         'h1NoProcessed' => 'Список необработанных обследований',
+        'h1Planned' => 'Список запланированных обследований',
+        'h1Overdue' => 'Список просроченных обследований',
+        'h1History' => 'Список закрытых обследований',
         'title' => 'Список записей',
         'fio' => 'ФИО',
         'age' => 'Возраст',
