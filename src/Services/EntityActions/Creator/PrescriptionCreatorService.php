@@ -7,6 +7,7 @@ use App\Entity\Prescription;
 use App\Services\ControllerGetters\EntityActions;
 use DateTime;
 use Exception;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class PrescriptionCreatorService
@@ -16,10 +17,11 @@ class PrescriptionCreatorService extends AbstractCreatorService
 {
     /**
      * PrescriptionCreatorService constructor.
+     * @param TranslatorInterface $translator
      */
-    public function __construct()
+    public function __construct(TranslatorInterface $translator)
     {
-        parent::__construct(Prescription::class);
+        parent::__construct(Prescription::class,  $translator);
     }
 
     /**

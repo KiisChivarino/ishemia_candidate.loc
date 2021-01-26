@@ -7,6 +7,7 @@ use App\Entity\MedicalRecord;
 use App\Repository\MedicalRecordRepository;
 use DateTime;
 use Exception;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class MedicalRecordCreatorService
@@ -22,10 +23,11 @@ class MedicalRecordCreatorService extends AbstractCreatorService
     /**
      * MedicalRecordCreatorService constructor.
      * @param MedicalRecordRepository $medicalRecordRepository
+     * @param TranslatorInterface $translator
      */
-    public function __construct(MedicalRecordRepository $medicalRecordRepository)
+    public function __construct(MedicalRecordRepository $medicalRecordRepository, TranslatorInterface $translator)
     {
-        parent::__construct(MedicalRecord::class);
+        parent::__construct(MedicalRecord::class, $translator);
         $this->medicalRecordRepository = $medicalRecordRepository;
     }
 

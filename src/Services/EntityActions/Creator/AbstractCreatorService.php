@@ -10,7 +10,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Class AbstractCreatorService
  * @package App\Services\EntityActions\Creator
  */
-class AbstractCreatorService extends AbstractEntityActionsService
+abstract class AbstractCreatorService extends AbstractEntityActionsService
 {
 
     /** @var TranslatorInterface */
