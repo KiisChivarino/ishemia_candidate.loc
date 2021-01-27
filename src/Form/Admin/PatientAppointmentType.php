@@ -9,7 +9,6 @@ use App\Entity\PatientAppointment;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -70,6 +69,7 @@ class PatientAppointmentType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('complaintsPlaceholder'),
                     'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
+                    'required' => false
                 ]
             )
             ->add(
@@ -93,15 +93,15 @@ class PatientAppointmentType extends AbstractType
                     'label' => $templateItem->getContentValue('therapy'),
                     'attr' => ['class' => 'tinymce'],
                 ]
-            )
-            ->add(
-                'enabled',
-                CheckboxType::class,
-                [
-                    'label' => $templateItem->getContentValue('enabled'),
-                    'required' => false,
-                ]
             );
+//            ->add(
+//                'enabled',
+//                CheckboxType::class,
+//                [
+//                    'label' => $templateItem->getContentValue('enabled'),
+//                    'required' => false,
+//                ]
+//            );
     }
 
     /**

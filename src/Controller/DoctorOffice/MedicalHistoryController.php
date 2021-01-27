@@ -226,9 +226,6 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     {
         $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
         $this->setRedirectMedicalHistoryRoute($patient->getId());
-        /** @var TextByTemplate $lifeHistory */
-        $lifeHistory = $medicalHistory->getLifeHistory();
-        $lifeAnamnesisText = $lifeHistory ? $lifeHistory->getText() : null;
         return $this->responseEditMultiForm(
             $request,
             $patient,
@@ -236,19 +233,10 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
                 new FormData($medicalHistory, MainDiseaseType::class),
                 new FormData(
                     $medicalHistory,
-                    MedicalHistoryType::class,
-                    [
-                        MedicalHistoryType::ANAMNES_OF_LIFE_TEXT_OPTION_KEY => $lifeAnamnesisText,
-                    ]
+                    MedicalHistoryType::class
                 ),
             ],
-            function (EntityActions $actions) use ($lifeHistory) {
-                $lifeHistoryText = $actions->getForm()
-                    ->get(MultiFormService::getFormName(MedicalHistoryType::class))
-                    ->get(MedicalHistoryType::FORM_LIFE_HISTORY_NAME)
-                    ->getData();
-                $lifeHistory->setText($lifeHistoryText);
-            },
+            null,
             self::EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME
         );
     }

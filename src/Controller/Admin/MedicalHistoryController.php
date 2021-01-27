@@ -7,6 +7,7 @@ use App\Entity\PatientDischargeEpicrisis;
 use App\Form\Admin\MedicalHistory\AnamnesOfLifeType;
 use App\Form\Admin\MedicalHistory\DiseaseHistoryType;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
+use App\Form\Admin\MedicalHistory\EnableMedicalHistoryType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\DischargeEpicrisisType;
@@ -189,6 +190,7 @@ class MedicalHistoryController extends AdminAbstractController
                 new FormData($medicalHistory, DiseaseHistoryType::class),
                 new FormData($medicalHistory, EditMedicalHistoryType::class),
                 new FormData($patientDischargeEpicrisis, DischargeEpicrisisType::class),
+                new FormData($medicalHistory, EnableMedicalHistoryType::class),
             ],
             function (EntityActions $actions) use ($patientTestingFileRepository, $fileService) {
                 $fileService->prepareFiles(
