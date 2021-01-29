@@ -2,36 +2,15 @@
 
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
-use App\Controller\AppAbstractController;
-use App\Entity\NotificationTemplate;
-use App\Repository\NotificationTemplateRepository;
-use App\Services\FilterService\FilterService;
-use App\Services\Template\TemplateFilter;
-use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
-use App\Services\TemplateBuilders\Admin\PatientAppointmentTemplate;
-use App\Services\TemplateBuilders\Admin\PatientTemplate;
-use App\Services\TemplateBuilders\Admin\PatientTestingResultTemplate;
-use App\Services\TemplateBuilders\Admin\PatientTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
-use App\Services\TemplateItems\FilterTemplateItem;
-use App\Services\TemplateItems\FormTemplateItem;
-use App\Services\TemplateItems\ListTemplateItem;
-use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
+/**
+ * Class CustomNotificationTemplate
+ * @package App\Services\TemplateBuilders\DoctorOffice
+ */
 class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
 {
-    /** @var string[] Переводы названий типов уведомлений */
-    const NOTIFICATION_TYPES = [
-        "customMessage" => "Сообщение от врача",
-        "doctorAppointment" => "Прием у врача",
-        "confirmMedication" => "Подтверждение приема лекарств",
-        "testingAppointment" => "Сдача анализов",
-        "confirmAppointment" => "Подтверждение приема",
-        "submitAnalysisResults" => "Результаты анализов",
-        "text" => "Текст сообщения"
-    ];
-
     /** @var string[] Common content for patient templates */
     protected const COMMON_CONTENT = [
         'insuranceNumber' => 'Номер страховки',
@@ -93,7 +72,7 @@ class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
     ];
 
     /**
-     * PatientListTemplate constructor.
+     * CustomNotificationTemplate constructor.
      *
      * @param RouteCollection $routeCollection
      * @param string $className
@@ -113,7 +92,7 @@ class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
             self::ENTITY_CONTENT
         );
     }
-    //$this->setRedirectRoute('patient_sms_list');
+
     /**
      * @param object|null $entity
      *
@@ -125,6 +104,5 @@ class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
         $this->setRedirectRoute('patients_list');
         return $this;
     }
-
 
 }

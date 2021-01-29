@@ -56,22 +56,35 @@ class NotificationConfirm
      */
     private $prescriptionAppointment;
 
+    /**
+     * NotificationConfirm constructor.
+     */
     public function __construct()
     {
         $this->patientNotification = new ArrayCollection();
         $this->isConfirmed = false;
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getIsConfirmed(): ?bool
     {
         return $this->isConfirmed;
     }
 
+    /**
+     * @param bool $isConfirmed
+     * @return $this
+     */
     public function setIsConfirmed(bool $isConfirmed): self
     {
         $this->isConfirmed = $isConfirmed;
@@ -79,11 +92,18 @@ class NotificationConfirm
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEmailCode(): ?string
     {
         return $this->emailCode;
     }
 
+    /**
+     * @param string $emailCode
+     * @return $this
+     */
     public function setEmailCode(string $emailCode): self
     {
         $this->emailCode = $emailCode;
@@ -91,11 +111,18 @@ class NotificationConfirm
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSmsCode(): ?string
     {
         return $this->smsCode;
     }
 
+    /**
+     * @param string $smsCode
+     * @return $this
+     */
     public function setSmsCode(string $smsCode): self
     {
         $this->smsCode = $smsCode;
@@ -111,6 +138,10 @@ class NotificationConfirm
         return $this->patientNotification;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function addPatientNotification(PatientNotification $patientNotification): self
     {
         if (!$this->patientNotification->contains($patientNotification)) {
@@ -121,6 +152,10 @@ class NotificationConfirm
         return $this;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function removePatientNotification(PatientNotification $patientNotification): self
     {
         if ($this->patientNotification->removeElement($patientNotification)) {
@@ -133,11 +168,18 @@ class NotificationConfirm
         return $this;
     }
 
+    /**
+     * @return PrescriptionMedicine|null
+     */
     public function getPrescriptionMedicine(): ?PrescriptionMedicine
     {
         return $this->prescriptionMedicine;
     }
 
+    /**
+     * @param PrescriptionMedicine|null $prescriptionMedicine
+     * @return $this
+     */
     public function setPrescriptionMedicine(?PrescriptionMedicine $prescriptionMedicine): self
     {
         // unset the owning side of the relation if necessary
@@ -155,11 +197,18 @@ class NotificationConfirm
         return $this;
     }
 
+    /**
+     * @return PrescriptionTesting|null
+     */
     public function getPrescriptionTesting(): ?PrescriptionTesting
     {
         return $this->prescriptionTesting;
     }
 
+    /**
+     * @param PrescriptionTesting|null $prescriptionTesting
+     * @return $this
+     */
     public function setPrescriptionTesting(?PrescriptionTesting $prescriptionTesting): self
     {
         // unset the owning side of the relation if necessary
@@ -177,11 +226,18 @@ class NotificationConfirm
         return $this;
     }
 
+    /**
+     * @return PrescriptionAppointment|null
+     */
     public function getPrescriptionAppointment(): ?PrescriptionAppointment
     {
         return $this->prescriptionAppointment;
     }
 
+    /**
+     * @param PrescriptionAppointment|null $prescriptionAppointment
+     * @return $this
+     */
     public function setPrescriptionAppointment(?PrescriptionAppointment $prescriptionAppointment): self
     {
         // unset the owning side of the relation if necessary

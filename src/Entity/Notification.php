@@ -22,7 +22,7 @@ class Notification
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=false, options={"comment"="Текст уведомления"})
+     * @ORM\Column(type="integer", options={"comment"="Id группы уведомлений"})
      */
     private $groupId;
 
@@ -88,9 +88,9 @@ class Notification
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getGroupId(): ?int
+    public function getGroupId(): int
     {
         return $this->groupId;
     }
@@ -98,9 +98,10 @@ class Notification
     /**
      * @param int $groupId
      */
-    public function setGroupId(int $groupId): void
+    public function setGroupId(int $groupId): Notification
     {
         $this->groupId = $groupId;
+        return $this;
     }
 
     /**

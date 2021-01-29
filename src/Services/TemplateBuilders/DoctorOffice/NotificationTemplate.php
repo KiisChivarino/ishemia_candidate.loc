@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\TemplateBuilders\Admin;
+namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
@@ -21,59 +21,63 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * @package App\Services\TemplateBuilders
  */
-class NotificationTemplate extends AdminTemplateBuilder
+class NotificationTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common content for analysis templates */
-    public const COMMON_CONTENT = [
-        'notificationType' => 'Тип уведомления',
-        'staff' => 'Отправивший врач',
-        'notificationTime' => 'Дата и время отправки',
-        'text' => 'Текст',
-        'patient' => 'Пациент',
-        'authUserSender' => 'Отправитель',
-        'smsNotification' => 'SMS уведомление',
-        'notificationReceiverType' => 'Тип получателя',
-        'receiver' => 'Получатель',
-        'medicalHistory' => 'История болезни',
-        'medicalRecord' => 'Запись в истории болезни',
-        'channelType' => 'Канал передачи',
+    protected const COMMON_CONTENT = [
+        'notificationType' =>
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['notificationType'],
+        'staff' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['staff'],
+        'notificationTime' =>
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['notificationTime'],
+        'text' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['text'],
+        'patient' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['patient'],
+        'authUserSender' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['authUserSender'],
+        'smsNotification' =>
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['smsNotification'],
+        'notificationReceiverType' =>
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['notificationReceiverType'],
+        'receiver' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['receiver'],
+        'medicalHistory' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['medicalHistory'],
+        'medicalRecord' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['medicalRecord'],
+        'channelType' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['channelType'],
     ];
     /** @var string[] Common FORM_SHOW_CONTENT */
-    public const FORM_SHOW_CONTENT = [
-        'text' => 'Текст уведомления',
+    protected const FORM_SHOW_CONTENT = [
+        'text' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::FORM_SHOW_CONTENT['text'],
     ];
 
     /** @var string[] Common LIST_CONTENT */
-    public const LIST_CONTENT = [
-        'h1' => 'Уведомления',
-        'title' => 'Список уведомлений',
+    protected const LIST_CONTENT = [
+        'h1' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::LIST_CONTENT['h1'],
+        'title' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::LIST_CONTENT['title'],
     ];
 
     /** @var string[] Common NEW_CONTENT */
-    public const NEW_CONTENT = [
-        'h1' => 'Добавление уведомления',
-        'title' => 'Добавление уведомления',
+    protected const NEW_CONTENT = [
+        'h1' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::NEW_CONTENT['h1'],
+        'title' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::NEW_CONTENT['title'],
     ];
 
     /** @var string[] Common SHOW_CONTENT */
-    public const SHOW_CONTENT = [
-        'h1' => 'Просмотр уведомления',
-        'title' => 'Просмотр уведомления',
+    protected const SHOW_CONTENT = [
+        'h1' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::SHOW_CONTENT['h1'],
+        'title' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::SHOW_CONTENT['title'],
     ];
 
     /** @var string[] Common EDIT_CONTENT */
-    public const EDIT_CONTENT = [
-        'h1' => 'Редактирование уведомления',
-        'title' => 'Редактирование уведомления',
+    protected const EDIT_CONTENT = [
+        'h1' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::EDIT_CONTENT['h1'],
+        'title' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::EDIT_CONTENT['title'],
     ];
 
-    public const FILTER_CONTENT = [
-        'patientFilter' => 'Пациент'
+    protected const FILTER_CONTENT = [
+        'patientFilter' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::FILTER_CONTENT['patientFilter'],
     ];
 
     /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
-        'entity' => 'Уведомление',
+        'entity' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /**
@@ -142,7 +146,7 @@ class NotificationTemplate extends AdminTemplateBuilder
      *
      * @param object|null $entity
      *
-     * @return $this|AdminTemplateBuilder
+     * @return $this|DoctorOfficeTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
@@ -157,7 +161,7 @@ class NotificationTemplate extends AdminTemplateBuilder
      *
      * @param object|null $entity
      *
-     * @return $this|AdminTemplateBuilder
+     * @return $this|DoctorOfficeTemplateBuilder
      */
     public function show(?object $entity = null): AppTemplateBuilder
     {

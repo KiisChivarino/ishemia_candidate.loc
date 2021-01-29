@@ -28,32 +28,17 @@ class NotificationRepository extends AppRepository
     }
 
     /**
-     *
+     * Finds last group notification
      * @return Notification|null
      * @throws NonUniqueResultException
      */
-    public function findLastGroup()
+    public function findLastGroup(): ?Notification
     {
         return $this->createQueryBuilder('n')
             ->orderBy('n.groupId', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
-    }
-
-    /**
-     *
-     * @return Notification|null
-     */
-    public function test()
-    {
-        return $this->createQueryBuilder('n')
-//            ->select('DISTINCT n.id')
-//                            ->andWhere('n.id = MIN (n.id)')
-//                            ->addSelect('n.groupId')
-//            ->addGroupBy('n.groupId')
-            ->getQuery()
-            ->getResult();
     }
 
 }

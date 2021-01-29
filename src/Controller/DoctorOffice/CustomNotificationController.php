@@ -6,9 +6,6 @@ use App\Entity\Notification;
 use App\Entity\Patient;
 use App\Form\Doctor\CustomNotificationType;
 use App\Repository\MedicalHistoryRepository;
-use App\Services\ControllerGetters\FilterLabels;
-use App\Services\DataTable\DoctorOffice\NotificationsListDataTableService;
-use App\Services\FilterService\FilterService;
 use App\Services\Notification\NotificationData;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
@@ -48,7 +45,7 @@ class CustomNotificationController extends DoctorOfficeAbstractController
     private $notificationServiceBuilder;
 
     /**
-     * PatientsListController constructor.
+     * CustomNotificationController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
@@ -71,34 +68,7 @@ class CustomNotificationController extends DoctorOfficeAbstractController
     }
 
     /**
-     * List of patients
-     * @Route("/patient/{id}/notifications/", name="notifications_list", methods={"GET","POST"})
-     *
-     * @param Patient $patient
-     * @param Request $request
-     * @param NotificationsListDataTableService $notificationsListDataTableService
-     * @param FilterService $filterService
-     *
-     * @return Response
-     */
-    public function list(
-        Patient $patient,
-        Request $request,
-        NotificationsListDataTableService $notificationsListDataTableService,
-        FilterService $filterService
-    ): Response
-    {
-        return $this->responseList(
-            $request, $notificationsListDataTableService,
-            (new FilterLabels($filterService))->setFilterLabelsArray(
-                [self::FILTER_LABELS['NOTIFICATION'],]
-            ),
-            ['patient' => $patient]
-        );
-    }
-
-    /**
-     * Edit personal data of patient medical history
+     * Creates new custom notification for patient
      * @Route(
      *     "/{id}/notifications/create_notification",
      *     name="doctor_create_notification",
@@ -124,7 +94,7 @@ class CustomNotificationController extends DoctorOfficeAbstractController
             CustomNotificationType::class,
             [],
             function () use ($request, $patient, $medicalHistoryRepository) {
-                $notificationService = $this->notificationServiceBuilder
+                $notificationServiceBuilder = $this->notificationServiceBuilder
                     ->makeCustomMessageNotification(
                         (
                         new NotificationData(
@@ -137,9 +107,9 @@ class CustomNotificationController extends DoctorOfficeAbstractController
                     );
 
                 $this->notifier->notifyPatient(
-                    $notificationService->getWebNotificationService(),
-                    $notificationService->getSMSNotificationService(),
-                    $notificationService->getEmailNotificationService()
+                    $notificationServiceBuilder->getWebNotificationService(),
+                    $notificationServiceBuilder->getSMSNotificationService(),
+                    $notificationServiceBuilder->getEmailNotificationService()
                 );
                 $this->getDoctrine()->getManager()->flush();
 

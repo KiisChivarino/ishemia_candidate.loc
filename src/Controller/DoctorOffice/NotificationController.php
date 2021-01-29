@@ -7,7 +7,7 @@ use App\Entity\Patient;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\NotificationDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\Admin\NotificationTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\NotificationTemplate;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;

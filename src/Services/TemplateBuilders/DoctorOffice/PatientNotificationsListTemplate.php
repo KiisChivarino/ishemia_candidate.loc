@@ -14,18 +14,8 @@ use App\Services\TemplateItems\ListTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
-class NotificationsListTemplate extends DoctorOfficeTemplateBuilder
+class PatientNotificationsListTemplate extends DoctorOfficeTemplateBuilder
 {
-    /** @var string[] Переводы названий типов уведомлений */
-    const NOTIFICATION_TYPES = [
-        "customMessage" => "Сообщение от врача",
-        "doctorAppointment" => "Прием у врача",
-        "confirmMedication" => "Подтверждение приема лекарств",
-        "testingAppointment" => "Сдача анализов",
-        "confirmAppointment" => "Подтверждение приема",
-        "submitAnalysisResults" => "Результаты анализов"
-    ];
-
     /** @var string[] Common content for patient templates */
     protected const COMMON_CONTENT = [
         'insuranceNumber' => 'Номер страховки',
@@ -49,11 +39,19 @@ class NotificationsListTemplate extends DoctorOfficeTemplateBuilder
 
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
+        "customMessage" => "Сообщение от врача",
+        "doctorAppointment" => "Прием у врача",
+        "confirmMedication" => "Подтверждение приема лекарств",
+        "testingAppointment" => "Сдача анализов",
+        "confirmAppointment" => "Подтверждение приема",
+        "submitAnalysisResults" => "Результаты анализов",
         'h1' => 'Список уведомлений',
         'title' => 'Список уведомлений',
         'fio' => 'ФИО',
         'age' => 'Возраст',
-        'Status' => 'Статус'
+        'Status' => 'Статус',
+        'confirmed' => 'Подтверждено',
+        'sent' => 'Отправлено'
     ];
 
     /** @var string[] Common NEW_CONTENT */
@@ -139,7 +137,7 @@ class NotificationsListTemplate extends DoctorOfficeTemplateBuilder
                             'class' => NotificationTemplate::class,
                             'required' => false,
                             'choice_label' => function ($value) {
-                                return self::NOTIFICATION_TYPES[$value->getName()];
+                                return self::LIST_CONTENT[$value->getName()];
                             },
                             'label' => false,
                             'query_builder' => function (NotificationTemplateRepository $er) {

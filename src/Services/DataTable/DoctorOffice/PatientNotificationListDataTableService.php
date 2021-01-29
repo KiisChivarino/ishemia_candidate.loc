@@ -6,6 +6,7 @@ use App\Controller\AppAbstractController;
 use App\Entity\AuthUser;
 use App\Entity\Notification;
 use App\Entity\NotificationConfirm;
+use App\Entity\Patient;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -26,18 +27,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class NotificationsListDataTableService extends AdminDatatableService
+class PatientNotificationListDataTableService extends AdminDatatableService
 {
-    /** @var string[] Переводы названий типов уведомлений */
-    const NOTIFICATION_TYPES = [
-        "customMessage" => "Сообщение от врача",
-        "doctorAppointment" => "Прием у врача",
-        "confirmMedication" => "Подтверждение приема лекарств",
-        "testingAppointment" => "Сдача анализов",
-        "confirmAppointment" => "Подтверждение приема",
-        "submitAnalysisResults" => "Результаты анализов"
-    ];
-
     /** @var AuthUserInfoService */
     private $authUserInfoService;
 
@@ -82,8 +73,8 @@ class NotificationsListDataTableService extends AdminDatatableService
             ->add(
                 'notificationType', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('notificationType'),
-                    'render' => function (string $data, Notification $notification): string {
-                        return self::NOTIFICATION_TYPES[$notification->getNotificationTemplate()->getName()];
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
+                        return $listTemplateItem->getContentValue($notification->getNotificationTemplate()->getName());
                     },
                 ]
             )
@@ -142,16 +133,19 @@ class NotificationsListDataTableService extends AdminDatatableService
             ->add(
                 'Status', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('Status'),
-                    'render' => function (string $data, Notification $notification): string {
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var NotificationConfirm $notificationConfirm */
                         $notificationConfirm = $notification->getPatientNotification()->getNotificationConfirm();
 
-                        return $notificationConfirm->getIsConfirmed() ? 'Подтверждено' : 'Отправлено';
+                        return $notificationConfirm->getIsConfirmed()
+                            ? $listTemplateItem->getContentValue('confirmed')
+                            : $listTemplateItem->getContentValue('sent');
                     },
                 ]
             )
         ;
         $notificationTemplate = $filters[AppAbstractController::FILTER_LABELS['NOTIFICATION']];
+        /** @var Patient $patient */
         $patient = $options['patient'];
         return
             $this->dataTable

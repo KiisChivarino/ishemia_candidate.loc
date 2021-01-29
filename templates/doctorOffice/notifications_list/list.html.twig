@@ -7,14 +7,10 @@
                     <h1>{{ template.items.list.content.title }}</h1>
                 </li>
                 <li><a class="back-page" href="{{ path('patients_list') }}">Назад</a></li>
-                <li><a class="" href="{{ path('doctor_create_notification', {id: patientId}) }}">Создать уведомление</a></li>
+                <li><a class="" href="{{ path('doctor_create_notification', {id: app.request.attributes.get('id')}) }}">Создать уведомление</a></li>
             </ul>
 
         </div>
-{#        <ul class="content-wrapper__nav">#}
-{#            <li><a class="active" href="#">Новые</a></li>#}
-{#            <li><a href="#">Основные</a></li>#}
-{#        </ul>#}
         <div class="content-wrapper__select">
             {% if template.items.filter.isEnabled %}
                 {{ include(

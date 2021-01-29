@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\PrescriptionMedicine;
 use App\Repository\PatientRepository;
 use App\Repository\PrescriptionMedicineRepository;
 use App\Services\Notification\NotificationData;
@@ -72,7 +71,10 @@ class AdminController extends AdminAbstractController
      * @return Response
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function testNotification(PatientRepository $patientRepository, PrescriptionMedicineRepository $prescriptionMedicineRepository): Response
+    public function testNotification(
+        PatientRepository $patientRepository,
+        PrescriptionMedicineRepository $prescriptionMedicineRepository
+    ): Response
     {
         $notificationService = $this->notificationServiceBuilder
             ->setPrescriptionMedicine($prescriptionMedicineRepository->find(1))
