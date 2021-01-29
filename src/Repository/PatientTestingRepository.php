@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
 use App\Services\InfoService\MedicalHistoryInfoService;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 
@@ -35,7 +36,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets Patient Testings if PatientTesting is not processed
+     * Gets Patient Testings if PatientTesting has result of testing but is not processed by staff
      * @param $patient
      * @return int|mixed|string
      */
@@ -75,7 +76,7 @@ class PatientTestingRepository extends AppRepository
             ->andWhere('p = :patient')
             ->andWhere('paT.hasResult = false')
             ->andWhere('prT.plannedDate <= :dateTimeNow')
-            ->setParameter('dateTimeNow', new \DateTime('now'))
+            ->setParameter('dateTimeNow', new DateTime('now'))
             ->setParameter('patient', $patient)
             ->select('paT')
             ->getQuery()
@@ -83,7 +84,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets Patients`ids array if PatientTesting has no results
+     * Gets Patients`ids array if PatientTesting is processed by staff
      * @return int|mixed|string
      */
     public function getProcessedResultsTestings()
@@ -105,7 +106,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets Patients`ids array if PatientTesting is not processed
+     * Gets Patients`ids array if PatientTesting has result of testing but is not processed by staff
      * @return int|mixed|string
      */
     public function getNoProcessedTestings()
@@ -144,7 +145,7 @@ class PatientTestingRepository extends AppRepository
             ->andWhere('prT.plannedDate <= :dateTimeNow')
             ->select('p.id')
             ->distinct()
-            ->setParameter('dateTimeNow', new \DateTime('now'))
+            ->setParameter('dateTimeNow', new DateTime('now'))
             ->getQuery()
             ->getResult();
     }

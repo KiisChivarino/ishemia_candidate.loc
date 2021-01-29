@@ -30,7 +30,7 @@ class PatientTesting
     /**
      * @ORM\Column(type="text", nullable=true, options={"comment"="Результаты анализов текстом"})
      */
-    private $analysisResults;
+    private $patientTestingResultInfo;
 
     /**
      * @ORM\Column(type="date", nullable=true, options={"comment"="Дата проведенного тестирования"})
@@ -137,17 +137,19 @@ class PatientTesting
     /**
      * @return mixed
      */
-    public function getAnalysisResults()
+    public function getPatientTestingResultInfo()
     {
-        return $this->analysisResults;
+        return $this->patientTestingResultInfo;
     }
 
     /**
-     * @param mixed $analysisResults
+     * @param mixed $patientTestingResultInfo
+     * @return PatientTesting
      */
-    public function setAnalysisResults($analysisResults): void
+    public function setPatientTestingResultInfo($patientTestingResultInfo): PatientTesting
     {
-        $this->analysisResults = $analysisResults;
+        $this->patientTestingResultInfo = $patientTestingResultInfo;
+        return $this;
     }
 
     /**
@@ -160,10 +162,12 @@ class PatientTesting
 
     /**
      * @param bool $hasResult
+     * @return PatientTesting
      */
-    public function setHasResult(bool $hasResult): void
+    public function setHasResult(bool $hasResult): PatientTesting
     {
         $this->hasResult = $hasResult;
+        return $this;
     }
 
     /**
@@ -188,7 +192,7 @@ class PatientTesting
     /**
      * @return bool|null
      */
-    public function getProcessed(): ?bool
+    public function getIsProcessedByStaff(): ?bool
     {
         return $this->isProcessedByStaff;
     }
@@ -197,7 +201,7 @@ class PatientTesting
      * @param bool $isProcessedByStaff
      * @return $this
      */
-    public function setProcessed(bool $isProcessedByStaff): self
+    public function setIsProcessedByStaff(bool $isProcessedByStaff): self
     {
         $this->isProcessedByStaff = $isProcessedByStaff;
         return $this;

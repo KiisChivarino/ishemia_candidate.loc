@@ -39,6 +39,9 @@ class AddPatientController extends DoctorOfficeAbstractController
     /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;
 
+    /** @var string array key name */
+    const IS_DOCTOR_HOSPITAL = 'isDoctorHospital';
+
     /**
      * PatientsListController constructor.
      *
@@ -85,7 +88,7 @@ class AddPatientController extends DoctorOfficeAbstractController
         $staff = $staffRepository->getStaff($this->getUser());
         $patientAuthUser = $authUserCreatorService->createAuthUser();
         $patient = $patientCreator->createPatient();
-        if (in_array('ROLE_DOCTOR_HOSPITAL', $this->getUser()->getRoles())) {
+        if ($this->isDoctorHospital()) {
             $staff = $staffRepository->getStaff($this->getUser());
             $patient
                 ->setHospital($staff->getHospital())
@@ -101,7 +104,7 @@ class AddPatientController extends DoctorOfficeAbstractController
             $patient,
             [
                 new FormData($patientAuthUser,AuthUserRequiredType::class),
-                new FormData($patient, PatientRequiredType::class, ['isDoctorLPU' => $isDoctorLPU ?? null]),
+                new FormData($patient, PatientRequiredType::class, [self::IS_DOCTOR_HOSPITAL => $isDoctorLPU ?? null]),
                 new FormData($medicalHistory, MainDiseaseType::class),
                 new FormData($firstPatientAppointment, AppointmentTypeType::class),
             ],

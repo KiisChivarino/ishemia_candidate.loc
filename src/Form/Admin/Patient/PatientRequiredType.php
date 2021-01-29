@@ -25,6 +25,9 @@ class PatientRequiredType extends AbstractType
     /** @var EntityManagerInterface $entityManager */
     private $entityManager;
 
+    /** @var string array key name */
+    const IS_DOCTOR_HOSPITAL = 'isDoctorHospital';
+
     /**
      * PatientType constructor.
      *
@@ -66,7 +69,7 @@ class PatientRequiredType extends AbstractType
                     'required' => true,
                 ]
             );
-        if (!$options['isDoctorLPU']) {
+        if (!$options[self::IS_DOCTOR_HOSPITAL]) {
             $builder
                 ->add(
                     'city', Select2EntityType::class, [
