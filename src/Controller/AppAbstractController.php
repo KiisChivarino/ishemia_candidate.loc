@@ -125,7 +125,9 @@ abstract class AppAbstractController extends AbstractController
             $filters ?? null,
             $options
         );
-        $listActions();
+        if ($listActions) {
+            $listActions();
+        }
         $table->handleRequest($request);
         if ($table->isCallback()) {
             return $table->getResponse();
