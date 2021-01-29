@@ -19,6 +19,18 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
     public const DOCTOR_MEDICAL_HISTORY_ROUTE_ID_PARAMETER = 'id';
 
     /**
+     * Checks if current user is ROLE_DOCTOR_HOSPITAL
+     * @return bool
+     */
+    protected function isDoctorHospital(): bool
+    {
+        if (in_array('ROLE_DOCTOR_HOSPITAL', $this->getUser()->getRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Set redirect to "doctor_medical_history" when form controller successfully finishes work
      * @param int $entityId
      */
