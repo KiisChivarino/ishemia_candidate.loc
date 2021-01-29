@@ -103,16 +103,19 @@ abstract class AppAbstractController extends AbstractController
      * @param AdminDatatableService $dataTableService
      * @param FilterLabels|null $filterLabels
      * @param array|null $options
+     * @param Closure|null $listActions
      * @return Response
      */
     public function responseList(
         Request $request,
         AdminDatatableService $dataTableService,
         ?FilterLabels $filterLabels = null,
-        ?array $options = []
+        ?array $options = [],
+        ?Closure $listActions = null
     ): Response
     {
         $template = $this->templateService->list($filterLabels ? $filterLabels->getFilterService() : null);
+
         if ($filterLabels) {
             $filters = $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray());
         }
@@ -122,6 +125,9 @@ abstract class AppAbstractController extends AbstractController
             $filters ?? null,
             $options
         );
+        if ($listActions) {
+            $listActions();
+        }
         $table->handleRequest($request);
         if ($table->isCallback()) {
             return $table->getResponse();
