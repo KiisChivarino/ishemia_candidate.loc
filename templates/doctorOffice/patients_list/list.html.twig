@@ -1,10 +1,6 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block content %}
     <div class="content-wrapper__top">
-{#        <ul class="content-wrapper__nav">#}
-{#            <li><a class="active" href="#">Новые</a></li>#}
-{#            <li><a href="#">Основные</a></li>#}
-{#        </ul>#}
         <div class="content-wrapper__select">
             {% if template.items.filter.isEnabled %}
                 {{ include(

@@ -3,13 +3,9 @@
     <div class="content-wrapper__top">
         <ul>
             <li>
-                <h1>{{ template.items.list.content.h1 }}</h1>
+                <h1>{{ template.items.list.content.title }}</h1>
             </li>
         </ul>
-{#        <ul class="content-wrapper__nav">#}
-{#            <li><a class="active" href="#">Новые</a></li>#}
-{#            <li><a href="#">Основные</a></li>#}
-{#        </ul>#}
         <div class="content-wrapper__select">
             {% if template.items.filter.isEnabled %}
                 {{ include(

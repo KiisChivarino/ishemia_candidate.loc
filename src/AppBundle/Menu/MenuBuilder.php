@@ -459,7 +459,7 @@ class MenuBuilder
         $menu->addChild(
             'patient_testings_no_processed_list', [
                 'label' => 'Необработанные',
-                'route' => 'patient_testings_no_processed_list',
+                'route' => 'patient_testings_not_processed_list',
             ]
         );
         $menu->addChild(

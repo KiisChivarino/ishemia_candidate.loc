@@ -11,11 +11,16 @@ use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientTestingsListDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientTestingsListHistoryDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientTestingsListNoProcessedDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientTestingsListOverdueDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientTestingsListPlannedDataTableService;
 use App\Services\FileService\FileService;
 use App\Services\FilterService\FilterService;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\PatientTestingsListTemplate;
+use App\Services\TemplateItems\ListTemplateItem;
 use ReflectionException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,6 +83,134 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
                 [self::FILTER_LABELS['ANALYSIS_GROUP'],]
             ),
             ['patientId' => $patient->getId()]
+        );
+    }
+
+    /**
+     * List of patient testings history
+     * @Route("/patient/patient_testings_history", name="patient_testings_history_list", methods={"GET","POST"})
+     *
+     * @param PatientRepository $patientRepository
+     * @param Request $request
+     * @param PatientTestingsListHistoryDataTableService $dataTableService
+     * @param FilterService $filterService
+     *
+     * @return Response
+     */
+    public function patientTestingsHistoryList(
+        PatientRepository $patientRepository,
+        Request $request,
+        PatientTestingsListHistoryDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
+    {
+        $patient = $patientRepository->findAll()[0];
+        return $this->responseList(
+            $request, $dataTableService,
+            (new FilterLabels($filterService))->setFilterLabelsArray(
+                [self::FILTER_LABELS['ANALYSIS_GROUP'],]
+            ),
+            ['patientId' => $patient->getId()],
+            function () {
+                $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
+                    ->setContent('title', 'История списка обследований');
+            }
+        );
+    }
+
+    /**
+     * List of not processed patient testings
+     * @Route("/patient/patient_testings_not_processed", name="patient_testings_not_processed_list", methods={"GET","POST"})
+     *
+     * @param PatientRepository $patientRepository
+     * @param Request $request
+     * @param PatientTestingsListNoProcessedDataTableService $dataTableService
+     * @param FilterService $filterService
+     *
+     * @return Response
+     */
+    public function patientTestingsNotProcessedList(
+        PatientRepository $patientRepository,
+        Request $request,
+        PatientTestingsListNoProcessedDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
+    {
+        $patient = $patientRepository->findAll()[0];
+        return $this->responseList(
+            $request, $dataTableService,
+            (new FilterLabels($filterService))->setFilterLabelsArray(
+                [self::FILTER_LABELS['ANALYSIS_GROUP'],]
+            ),
+            ['patientId' => $patient->getId()],
+            function () {
+                $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
+                    ->setContent('title', 'Список необработанных обследований');
+            }
+        );
+    }
+
+    /**
+     * List of overdue patient testings
+     * @Route("/patient/patient_testings_overdue", name="patient_testings_overdue_list", methods={"GET","POST"})
+     *
+     * @param PatientRepository $patientRepository
+     * @param Request $request
+     * @param PatientTestingsListOverdueDataTableService $dataTableService
+     * @param FilterService $filterService
+     *
+     * @return Response
+     */
+    public function patientTestingsOverdueList(
+        PatientRepository $patientRepository,
+        Request $request,
+        PatientTestingsListOverdueDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
+    {
+        $patient = $patientRepository->findAll()[0];
+        return $this->responseList(
+            $request, $dataTableService,
+            (new FilterLabels($filterService))->setFilterLabelsArray(
+                [self::FILTER_LABELS['ANALYSIS_GROUP'],]
+            ),
+            ['patientId' => $patient->getId()],
+            function () {
+                $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
+                    ->setContent('title', 'Список просроченных обследований');
+            }
+        );
+    }
+
+    /**
+     * List of planned patient testings
+     * @Route("/patient/patient_testings_planned", name="patient_testings_planned_list", methods={"GET","POST"})
+     *
+     * @param PatientRepository $patientRepository
+     * @param Request $request
+     * @param PatientTestingsListPlannedDataTableService $dataTableService
+     * @param FilterService $filterService
+     *
+     * @return Response
+     */
+    public function patientTestingsPlannedList(
+        PatientRepository $patientRepository,
+        Request $request,
+        PatientTestingsListPlannedDataTableService $dataTableService,
+        FilterService $filterService
+    ): Response
+    {
+        $patient = $patientRepository->findAll()[0];
+        return $this->responseList(
+            $request, $dataTableService,
+            (new FilterLabels($filterService))->setFilterLabelsArray(
+                [self::FILTER_LABELS['ANALYSIS_GROUP'],]
+            ),
+            ['patientId' => $patient->getId()],
+            function () {
+                $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
+                    ->setContent('title', 'Список запланированных обследований');
+            }
         );
     }
 
