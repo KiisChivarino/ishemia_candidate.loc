@@ -170,7 +170,7 @@ class AppFixtures extends Fixture
         );
         /** end Районы */
 
-        // /** begin Города */
+        /** begin Города */
         echo "Добавление городов по Курской области\n";
         $this->dataSowing->addEntitiesFromCatalog(
             $manager->getRepository(Oktmo::class)->getKurskRegionCities(),
