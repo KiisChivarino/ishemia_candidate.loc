@@ -48,9 +48,16 @@ class OktmoRepository extends AppRepository
      */
     public function getKurskRegionCities(): array
     {
-        return $this->createQueryBuilder('c')
+        $cities = $this->createQueryBuilder('c')
             ->where('c.subKod1 = 38 and (c.settlementTypeId = 1 or c.settlementTypeId = 3) and length(c.kod2)=11')
             ->getQuery()
             ->getResult();
+        for ($i = 0; $i < sizeof($cities); $i++) {
+            $cities[$i]->setName(preg_replace(
+                "/((?=^)(\s*))|((\s*)(?>$))/si",
+                "",
+                preg_replace("/^рп |г |пгт /", "", $cities[$i]->getName())));
+        }
+        return $cities;
     }
 }
