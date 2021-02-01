@@ -19,7 +19,7 @@ use Twig\Environment;
  * Class HospitalController
  * Обработка роутов сущности Hospital для кабинета врача
  * @Route("/doctor_office/hospital")
- * @IsGranted("ROLE_DOCTOR_HOSPITAL")
+ * @IsGranted("ROLE_DOCTOR_CONSULTANT")
  *
  * @package App\Controller\DoctorOffice
  */

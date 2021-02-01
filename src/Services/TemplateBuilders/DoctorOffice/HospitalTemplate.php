@@ -7,7 +7,6 @@ use App\Services\TemplateBuilders\Admin\AdminTemplateBuilder;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\EditTemplateItem;
-use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -95,8 +94,6 @@ class HospitalTemplate extends DoctorOfficeTemplateBuilder
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
         parent::list($filterService);
-        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
-            ->setPath($this->getTemplatePath());
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
             ->setIsEnabled(false);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
@@ -104,6 +101,14 @@ class HospitalTemplate extends DoctorOfficeTemplateBuilder
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
             ->setIsEnabled(false);
 
+        return $this;
+    }
+
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show($entity);
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
+        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setIsEnabled(false);
         return $this;
     }
 }

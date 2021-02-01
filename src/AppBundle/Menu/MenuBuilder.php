@@ -2,6 +2,7 @@
 
 namespace App\AppBundle\Menu;
 
+use App\Services\InfoService\AuthUserInfoService;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
@@ -450,12 +451,14 @@ class MenuBuilder
                 'route' => 'patients_list'
             ]
         );
-        $menu->addChild(
-            'hospitalsList', [
-                'label' => 'Больницы',
-                'route' => 'doctor_office_hospital_list'
-            ]
-        );
+        if((new AuthUserInfoService())->isDoctorConsultant($this->security->getUser())) {
+            $menu->addChild(
+                'hospitalsList', [
+                    'label' => 'Больницы',
+                    'route' => 'doctor_office_hospital_list'
+                ]
+            );
+        }
         return $menu;
     }
 }

@@ -98,4 +98,15 @@ class AuthUserInfoService
         }
         return implode($pass); //turn the array into a string
     }
+
+    /**
+     * Checks if user is ROLE_DOCTOR_CONSULTANT
+     * @param AuthUser $authUser
+     * @return bool
+     */
+    public function isDoctorConsultant(AuthUser $authUser): bool
+    {
+        return in_array('ROLE_DOCTOR_CONSULTANT', $authUser->getRoles());
+    }
+
 }
