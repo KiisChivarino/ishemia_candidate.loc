@@ -58,11 +58,93 @@ class PrescriptionAppointment
     private $plannedDateTime;
 
     /**
+     * @ORM\OneToOne(targetEntity=NotificationConfirm::class, inversedBy="prescriptionAppointment")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $notificationConfirm;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getInclusionTime(): ?\DateTimeInterface
+    {
+        return $this->inclusionTime;
+    }
+
+    /**
+     * @param DateTimeInterface $inclusionTime
+     * @return $this
+     */
+    public function setInclusionTime(\DateTimeInterface $inclusionTime): self
+    {
+        $this->inclusionTime = $inclusionTime;
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setEnabled(bool $enabled): self
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getConfirmedByStaff(): ?bool
+    {
+        return $this->confirmedByStaff;
+    }
+
+    /**
+     * @param bool $confirmedByStaff
+     * @return $this
+     */
+    public function setConfirmedByStaff(bool $confirmedByStaff): self
+    {
+        $this->confirmedByStaff = $confirmedByStaff;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getPlannedDateTime(): ?\DateTimeInterface
+    {
+        return $this->plannedDateTime;
+    }
+
+    /**
+     * @param DateTimeInterface $plannedDateTime
+     * @return $this
+     */
+    public function setPlannedDateTime(\DateTimeInterface $plannedDateTime): self
+    {
+        $this->plannedDateTime = $plannedDateTime;
+
+        return $this;
     }
 
     /**
@@ -84,9 +166,6 @@ class PrescriptionAppointment
         return $this;
     }
 
-    /**
-     * @return PatientAppointment|null
-     */
     public function getPatientAppointment(): ?PatientAppointment
     {
         return $this->patientAppointment;
@@ -99,6 +178,7 @@ class PrescriptionAppointment
     public function setPatientAppointment(PatientAppointment $patientAppointment): self
     {
         $this->patientAppointment = $patientAppointment;
+
         return $this;
     }
 
@@ -117,78 +197,26 @@ class PrescriptionAppointment
     public function setStaff(?Staff $staff): self
     {
         $this->staff = $staff;
+
         return $this;
     }
 
     /**
-     * @return DateTimeInterface|null
+     * @return NotificationConfirm|null
      */
-    public function getInclusionTime(): ?DateTimeInterface
+    public function getNotificationConfirm(): ?NotificationConfirm
     {
-        return $this->inclusionTime;
+        return $this->notificationConfirm;
     }
 
     /**
-     * @param DateTimeInterface $inclusionTime
+     * @param NotificationConfirm|null $notificationConfirm
      * @return $this
      */
-    public function setInclusionTime(DateTimeInterface $inclusionTime): self
+    public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
     {
-        $this->inclusionTime = $inclusionTime;
-        return $this;
-    }
+        $this->notificationConfirm = $notificationConfirm;
 
-    /**
-     * @return bool|null
-     */
-    public function getEnabled(): ?bool
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * @param bool $enabled
-     * @return $this
-     */
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getConfirmedByStaff(): ?bool
-    {
-        return $this->confirmedByStaff;
-    }
-
-    /**
-     * @param bool $confirmedByStaff
-     * @return $this
-     */
-    public function setConfirmedByStaff(bool $confirmedByStaff): self
-    {
-        $this->confirmedByStaff = $confirmedByStaff;
-        return $this;
-    }
-
-    /**
-     * @return DateTimeInterface|null
-     */
-    public function getPlannedDateTime(): ?DateTimeInterface
-    {
-        return $this->plannedDateTime;
-    }
-
-    /**
-     * @param DateTimeInterface $plannedDateTime
-     * @return $this
-     */
-    public function setPlannedDateTime(DateTimeInterface $plannedDateTime): self
-    {
-        $this->plannedDateTime = $plannedDateTime;
         return $this;
     }
 }

@@ -6,6 +6,9 @@
             <li><a class="back-page" href="{{ path('patients_list') }}">Назад</a></li>
         </ul>
     </div>
+    <div class="content-wrapper__top">
+        <a href="{{ path('notifications_list', {'id': entity.id}) }}" class="mode">Уведомления пользователя</a>
+    </div>
     <!-- Персональные данные -->
     <div class="statement acc">
         <h2 class="title accordion">{{ template.items.show.content.personalData }}</h2>
@@ -230,7 +233,7 @@
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.objectiveStatus }}</p>
                             <p>
-                                {% if firstAppointment.objectiveStatus is defined %}
+                                {% if firstAppointment.objectiveStatus.text is defined %}
                                     {{ firstAppointment.objectiveStatus.text | raw }}
                                 {% else %}
                                     {{ template.items.show.content.objectiveStatusNotFound }}

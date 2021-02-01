@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\TemplateBuilders\Admin;
+namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
@@ -21,61 +21,8 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * @package App\Services\TemplateBuilders
  */
-class NotificationTemplate extends AdminTemplateBuilder
+class NotificationTemplate extends DoctorOfficeTemplateBuilder
 {
-    /** @var string[] Common content for analysis templates */
-    public const COMMON_CONTENT = [
-        'notificationType' => 'Тип уведомления',
-        'staff' => 'Отправивший врач',
-        'notificationTime' => 'Дата и время отправки',
-        'text' => 'Текст',
-        'patient' => 'Пациент',
-        'authUserSender' => 'Отправитель',
-        'smsNotification' => 'SMS уведомление',
-        'notificationReceiverType' => 'Тип получателя',
-        'receiver' => 'Получатель',
-        'medicalHistory' => 'История болезни',
-        'medicalRecord' => 'Запись в истории болезни',
-        'channelType' => 'Канал передачи',
-    ];
-    /** @var string[] Common FORM_SHOW_CONTENT */
-    public const FORM_SHOW_CONTENT = [
-        'text' => 'Текст уведомления',
-    ];
-
-    /** @var string[] Common LIST_CONTENT */
-    public const LIST_CONTENT = [
-        'h1' => 'Уведомления',
-        'title' => 'Список уведомлений',
-    ];
-
-    /** @var string[] Common NEW_CONTENT */
-    public const NEW_CONTENT = [
-        'h1' => 'Добавление уведомления',
-        'title' => 'Добавление уведомления',
-    ];
-
-    /** @var string[] Common SHOW_CONTENT */
-    public const SHOW_CONTENT = [
-        'h1' => 'Просмотр уведомления',
-        'title' => 'Просмотр уведомления',
-    ];
-
-    /** @var string[] Common EDIT_CONTENT */
-    public const EDIT_CONTENT = [
-        'h1' => 'Редактирование уведомления',
-        'title' => 'Редактирование уведомления',
-    ];
-
-    public const FILTER_CONTENT = [
-        'patientFilter' => 'Пациент'
-    ];
-
-    /** @var string[] Common ENTITY CONTENT */
-    public const ENTITY_CONTENT = [
-        'entity' => 'Уведомление',
-    ];
-
     /**
      * NotificationTemplate constructor.
      *
@@ -86,15 +33,15 @@ class NotificationTemplate extends AdminTemplateBuilder
     {
         parent::__construct($routeCollection, $className);
         $this->addContent(
-            self::LIST_CONTENT,
-            self::NEW_CONTENT,
-            self::SHOW_CONTENT,
-            self::EDIT_CONTENT,
-            self::FORM_CONTENT,
-            self::FORM_SHOW_CONTENT,
-            self::COMMON_CONTENT,
-            self::FILTER_CONTENT,
-            self::ENTITY_CONTENT
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::LIST_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::NEW_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::SHOW_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::EDIT_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::FORM_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::FORM_SHOW_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::FILTER_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::ENTITY_CONTENT
         );
     }
 
@@ -142,7 +89,7 @@ class NotificationTemplate extends AdminTemplateBuilder
      *
      * @param object|null $entity
      *
-     * @return $this|AdminTemplateBuilder
+     * @return $this|DoctorOfficeTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
@@ -157,7 +104,7 @@ class NotificationTemplate extends AdminTemplateBuilder
      *
      * @param object|null $entity
      *
-     * @return $this|AdminTemplateBuilder
+     * @return $this|DoctorOfficeTemplateBuilder
      */
     public function show(?object $entity = null): AppTemplateBuilder
     {

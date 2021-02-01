@@ -59,51 +59,17 @@ class PrescriptionMedicine
     private $inclusionTime;
 
     /**
+     * @ORM\OneToOne(targetEntity=NotificationConfirm::class, inversedBy="prescriptionMedicine")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $notificationConfirm;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Prescription|null
-     */
-    public function getPrescription(): ?Prescription
-    {
-        return $this->prescription;
-    }
-
-    /**
-     * @param Prescription|null $prescription
-     *
-     * @return $this
-     */
-    public function setPrescription(?Prescription $prescription): self
-    {
-        $this->prescription = $prescription;
-
-        return $this;
-    }
-
-    /**
-     * @return Medicine|null
-     */
-    public function getMedicine(): ?Medicine
-    {
-        return $this->medicine;
-    }
-
-    /**
-     * @param Medicine|null $medicine
-     *
-     * @return $this
-     */
-    public function setMedicine(?Medicine $medicine): self
-    {
-        $this->medicine = $medicine;
-
-        return $this;
     }
 
     /**
@@ -116,7 +82,6 @@ class PrescriptionMedicine
 
     /**
      * @param string $instruction
-     *
      * @return $this
      */
     public function setInstruction(string $instruction): self
@@ -136,12 +101,68 @@ class PrescriptionMedicine
 
     /**
      * @param bool $enabled
-     *
      * @return $this
      */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getInclusionTime(): ?\DateTimeInterface
+    {
+        return $this->inclusionTime;
+    }
+
+    /**
+     * @param DateTimeInterface $inclusionTime
+     * @return $this
+     */
+    public function setInclusionTime(\DateTimeInterface $inclusionTime): self
+    {
+        $this->inclusionTime = $inclusionTime;
+
+        return $this;
+    }
+
+    /**
+     * @return Prescription|null
+     */
+    public function getPrescription(): ?Prescription
+    {
+        return $this->prescription;
+    }
+
+    /**
+     * @param Prescription|null $prescription
+     * @return $this
+     */
+    public function setPrescription(?Prescription $prescription): self
+    {
+        $this->prescription = $prescription;
+
+        return $this;
+    }
+
+    /**
+     * @return Medicine|null
+     */
+    public function getMedicine(): ?Medicine
+    {
+        return $this->medicine;
+    }
+
+    /**
+     * @param Medicine|null $medicine
+     * @return $this
+     */
+    public function setMedicine(?Medicine $medicine): self
+    {
+        $this->medicine = $medicine;
 
         return $this;
     }
@@ -156,7 +177,6 @@ class PrescriptionMedicine
 
     /**
      * @param ReceptionMethod|null $receptionMethod
-     *
      * @return $this
      */
     public function setReceptionMethod(?ReceptionMethod $receptionMethod): self
@@ -176,7 +196,6 @@ class PrescriptionMedicine
 
     /**
      * @param Staff|null $staff
-     *
      * @return $this
      */
     public function setStaff(?Staff $staff): self
@@ -187,21 +206,20 @@ class PrescriptionMedicine
     }
 
     /**
-     * @return DateTimeInterface|null
+     * @return NotificationConfirm|null
      */
-    public function getInclusionTime(): ?DateTimeInterface
+    public function getNotificationConfirm(): ?NotificationConfirm
     {
-        return $this->inclusionTime;
+        return $this->notificationConfirm;
     }
 
     /**
-     * @param DateTimeInterface $inclusionTime
-     *
+     * @param NotificationConfirm|null $notificationConfirm
      * @return $this
      */
-    public function setInclusionTime(DateTimeInterface $inclusionTime): self
+    public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
     {
-        $this->inclusionTime = $inclusionTime;
+        $this->notificationConfirm = $notificationConfirm;
 
         return $this;
     }
