@@ -104,7 +104,6 @@ class GetSMSNotificationsCommand extends Command
                 'isConfirmed' => false
             ]
         );
-
         /** @var SimpleXMLElement $message */
         foreach ($this->smsChannelService->getUnreadSMS() ?? [] as $message) {
             if ((string)$message->SMS_TARGET == $this->SMS_CHANNEL_SERVICE_PARAMETERS['sender']) {
@@ -130,7 +129,7 @@ class GetSMSNotificationsCommand extends Command
                             $em->persist($smsChannelService);
                             foreach ($unconfirmedNotifications as $confirm) {
                                 if (
-                                    (string)$message->SMS_TEXT == $confirm->getSmsCode()
+                                    stripos((string)$message->SMS_TEXT, (string)$confirm->getSmsCode()) !== false
                                     && $this->PHONE_PARAMETERS['phone_prefix_ru'] .
                                     $confirm->getPatientNotification()[0]->getPatient()->getAuthUser()->getPhone()
                                     == (string)$message->SMS_SENDER

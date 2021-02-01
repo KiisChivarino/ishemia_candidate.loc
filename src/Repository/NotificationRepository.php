@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Notification;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,4 +26,19 @@ class NotificationRepository extends AppRepository
     {
         parent::__construct($registry, Notification::class);
     }
+
+    /**
+     * Finds last group notification
+     * @return Notification|null
+     * @throws NonUniqueResultException
+     */
+    public function findLastGroup(): ?Notification
+    {
+        return $this->createQueryBuilder('n')
+            ->orderBy('n.groupId', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }

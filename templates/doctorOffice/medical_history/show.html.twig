@@ -6,6 +6,9 @@
             <li><a class="back-page" href="{{ path('patients_list') }}">Назад</a></li>
         </ul>
     </div>
+    <div class="content-wrapper__top">
+        <a href="{{ path('notifications_list', {'id': entity.id}) }}" class="mode">Уведомления пользователя</a>
+    </div>
     <!-- Персональные данные -->
     <div class="statement acc">
         <h2 class="title accordion">{{ template.items.show.content.personalData }}</h2>

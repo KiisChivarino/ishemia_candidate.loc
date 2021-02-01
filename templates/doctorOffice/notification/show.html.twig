@@ -1,0 +1,36 @@
+{% extends 'doctorOffice/index.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
+{% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            <li><a class="back-page" href="{{ path('notifications_list', {id: entity.patientNotification.patient.id}) }}">Назад</a></li>
+        </ul>
+    </div>
+    <li>
+        <span class="title">{{ template.items.show.content.authUserSender }}</span>
+        <p>{{ fio(entity.authUserSender) }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.receiver }}</span>
+        {% if entity.notificationReceiverType.name == 'patient' %}
+            <p>{{ fio(entity.patientNotification.patient.authUser) }}</p>
+        {% endif %}
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.text }}</span>
+        <p>{{ entity.text }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.notificationTime }}</span>
+        <p>{{ entity.notificationTime|date(globals().default_time_formats.default) }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.notificationReceiverType }}</span>
+        <p>{{ entity.notificationReceiverType.name }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.channelType }}</span>
+        <p>{{ entity.channelType.name }}</p>
+    </li>
+
+{% endblock %}
