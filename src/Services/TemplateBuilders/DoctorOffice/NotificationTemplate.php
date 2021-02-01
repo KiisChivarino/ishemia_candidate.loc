@@ -23,63 +23,6 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class NotificationTemplate extends DoctorOfficeTemplateBuilder
 {
-    /** @var string[] Common content for analysis templates */
-    protected const COMMON_CONTENT = [
-        'notificationType' =>
-            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['notificationType'],
-        'staff' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['staff'],
-        'notificationTime' =>
-            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['notificationTime'],
-        'text' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['text'],
-        'patient' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['patient'],
-        'authUserSender' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['authUserSender'],
-        'smsNotification' =>
-            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['smsNotification'],
-        'notificationReceiverType' =>
-            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['notificationReceiverType'],
-        'receiver' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['receiver'],
-        'medicalHistory' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['medicalHistory'],
-        'medicalRecord' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['medicalRecord'],
-        'channelType' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT['channelType'],
-    ];
-    /** @var string[] Common FORM_SHOW_CONTENT */
-    protected const FORM_SHOW_CONTENT = [
-        'text' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::FORM_SHOW_CONTENT['text'],
-    ];
-
-    /** @var string[] Common LIST_CONTENT */
-    protected const LIST_CONTENT = [
-        'h1' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::LIST_CONTENT['h1'],
-        'title' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::LIST_CONTENT['title'],
-    ];
-
-    /** @var string[] Common NEW_CONTENT */
-    protected const NEW_CONTENT = [
-        'h1' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::NEW_CONTENT['h1'],
-        'title' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::NEW_CONTENT['title'],
-    ];
-
-    /** @var string[] Common SHOW_CONTENT */
-    protected const SHOW_CONTENT = [
-        'h1' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::SHOW_CONTENT['h1'],
-        'title' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::SHOW_CONTENT['title'],
-    ];
-
-    /** @var string[] Common EDIT_CONTENT */
-    protected const EDIT_CONTENT = [
-        'h1' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::EDIT_CONTENT['h1'],
-        'title' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::EDIT_CONTENT['title'],
-    ];
-
-    protected const FILTER_CONTENT = [
-        'patientFilter' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::FILTER_CONTENT['patientFilter'],
-    ];
-
-    /** @var string[] Common ENTITY CONTENT */
-    public const ENTITY_CONTENT = [
-        'entity' => \App\Services\TemplateBuilders\Admin\NotificationTemplate::ENTITY_CONTENT['entity'],
-    ];
-
     /**
      * NotificationTemplate constructor.
      *
@@ -90,15 +33,15 @@ class NotificationTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::__construct($routeCollection, $className);
         $this->addContent(
-            self::LIST_CONTENT,
-            self::NEW_CONTENT,
-            self::SHOW_CONTENT,
-            self::EDIT_CONTENT,
-            self::FORM_CONTENT,
-            self::FORM_SHOW_CONTENT,
-            self::COMMON_CONTENT,
-            self::FILTER_CONTENT,
-            self::ENTITY_CONTENT
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::LIST_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::NEW_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::SHOW_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::EDIT_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::FORM_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::FORM_SHOW_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::COMMON_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::FILTER_CONTENT,
+            \App\Services\TemplateBuilders\Admin\NotificationTemplate::ENTITY_CONTENT
         );
     }
 
