@@ -42,12 +42,27 @@ class NotificationConfirm
     private $patientNotification;
 
     /**
+     * @ORM\OneToOne(targetEntity=PrescriptionMedicine::class, mappedBy="notificationConfirm")
+     */
+    private $prescriptionMedicine;
+
+    /**
+     * @ORM\OneToOne(targetEntity=PrescriptionTesting::class, mappedBy="notificationConfirm")
+     */
+    private $prescriptionTesting;
+
+    /**
+     * @ORM\OneToOne(targetEntity=PrescriptionAppointment::class, mappedBy="notificationConfirm")
+     */
+    private $prescriptionAppointment;
+
+    /**
      * NotificationConfirm constructor.
      */
     public function __construct()
     {
-        $this->isConfirmed = false;
         $this->patientNotification = new ArrayCollection();
+        $this->isConfirmed = false;
     }
 
     /**
@@ -123,6 +138,10 @@ class NotificationConfirm
         return $this->patientNotification;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function addPatientNotification(PatientNotification $patientNotification): self
     {
         if (!$this->patientNotification->contains($patientNotification)) {
@@ -133,6 +152,10 @@ class NotificationConfirm
         return $this;
     }
 
+    /**
+     * @param PatientNotification $patientNotification
+     * @return $this
+     */
     public function removePatientNotification(PatientNotification $patientNotification): self
     {
         if ($this->patientNotification->removeElement($patientNotification)) {
@@ -144,4 +167,92 @@ class NotificationConfirm
 
         return $this;
     }
+
+    /**
+     * @return PrescriptionMedicine|null
+     */
+    public function getPrescriptionMedicine(): ?PrescriptionMedicine
+    {
+        return $this->prescriptionMedicine;
+    }
+
+    /**
+     * @param PrescriptionMedicine|null $prescriptionMedicine
+     * @return $this
+     */
+    public function setPrescriptionMedicine(?PrescriptionMedicine $prescriptionMedicine): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($prescriptionMedicine === null && $this->prescriptionMedicine !== null) {
+            $this->prescriptionMedicine->setNotificationConfirm(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($prescriptionMedicine !== null && $prescriptionMedicine->getNotificationConfirm() !== $this) {
+            $prescriptionMedicine->setNotificationConfirm($this);
+        }
+
+        $this->prescriptionMedicine = $prescriptionMedicine;
+
+        return $this;
+    }
+
+    /**
+     * @return PrescriptionTesting|null
+     */
+    public function getPrescriptionTesting(): ?PrescriptionTesting
+    {
+        return $this->prescriptionTesting;
+    }
+
+    /**
+     * @param PrescriptionTesting|null $prescriptionTesting
+     * @return $this
+     */
+    public function setPrescriptionTesting(?PrescriptionTesting $prescriptionTesting): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($prescriptionTesting === null && $this->prescriptionTesting !== null) {
+            $this->prescriptionTesting->setNotificationConfirm(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($prescriptionTesting !== null && $prescriptionTesting->getNotificationConfirm() !== $this) {
+            $prescriptionTesting->setNotificationConfirm($this);
+        }
+
+        $this->prescriptionTesting = $prescriptionTesting;
+
+        return $this;
+    }
+
+    /**
+     * @return PrescriptionAppointment|null
+     */
+    public function getPrescriptionAppointment(): ?PrescriptionAppointment
+    {
+        return $this->prescriptionAppointment;
+    }
+
+    /**
+     * @param PrescriptionAppointment|null $prescriptionAppointment
+     * @return $this
+     */
+    public function setPrescriptionAppointment(?PrescriptionAppointment $prescriptionAppointment): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($prescriptionAppointment === null && $this->prescriptionAppointment !== null) {
+            $this->prescriptionAppointment->setNotificationConfirm(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($prescriptionAppointment !== null && $prescriptionAppointment->getNotificationConfirm() !== $this) {
+            $prescriptionAppointment->setNotificationConfirm($this);
+        }
+
+        $this->prescriptionAppointment = $prescriptionAppointment;
+
+        return $this;
+    }
+
 }

@@ -3,13 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Repository\PatientRepository;
+use App\Repository\PrescriptionMedicineRepository;
 use App\Services\Notification\NotificationData;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
+use Michelf\Markdown;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Michelf\Markdown;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -19,7 +20,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class AdminController extends AdminAbstractController
 {
-    /** @var KernelInterface  */
+    /** @var KernelInterface */
     private $appKernel;
 
     /** @var NotifierService */
@@ -66,19 +67,27 @@ class AdminController extends AdminAbstractController
     /**
      * @Route("/testNotification", name="testNotification")
      * @param PatientRepository $patientRepository
+     * @param PrescriptionMedicineRepository $prescriptionMedicineRepository
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function testNotification(PatientRepository $patientRepository): Response
+    public function testNotification(
+        PatientRepository $patientRepository,
+        PrescriptionMedicineRepository $prescriptionMedicineRepository
+    ): Response
     {
         $notificationService = $this->notificationServiceBuilder
+            ->setPrescriptionMedicine($prescriptionMedicineRepository->find(1))
             ->makeConfirmMedicationNotification(
                 (
-                    new NotificationData($patientRepository->findAll()[0],
-                        $patientRepository->findAll()[0]->getMedicalHistories()[0],
-                        $patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
-                    )
-            )
-        ;
+                new NotificationData(
+                    $this->getDoctrine()->getManager(),
+                    $patientRepository->findAll()[0],
+                    $patientRepository->findAll()[0]->getMedicalHistories()[0],
+                    $patientRepository->findAll()[0]->getMedicalHistories()[0]->getMedicalRecords()[0])
+                ),
+                'Конфеты "Каракум" 2 раза в день по 2 штуки'
+            );
 
         $this->notifier->notifyPatient(
             $notificationService->getWebNotificationService(),

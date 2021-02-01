@@ -1,10 +1,9 @@
-{% extends 'admin/index.html.twig' %}
+{% extends 'doctorOffice/index.html.twig' %}
 {% block title %}{{ template.items.edit.content.title }}{% endblock %}
-{#{% block h1 %}<h1>{{ template.items.edit.content.h1 }}</h1>{% endblock %}#}
 {% block content %}
     <div class="content-wrapper__top">
         <ul>
-            {% if template.items.list.isEnabled %}
+            {% if template.routes.list is defined and template.items.list.isEnabled %}
                 <a class="back-page" href="{{ path(template.routes.list) }}">{{ template.items.edit.content.toList }}</a>
             {% endif %}
         </ul>
@@ -22,7 +21,7 @@
             ) }}
         {% endif %}
         <div class="buttons">
-            {% if template.items.delete.isEnabled %}
+            {% if template.routes.delete is defined and template.items.delete.isEnabled %}
                 {{ include(template.items.delete.path~'_delete_form.html.twig') }}
             {% endif %}
         </div>
