@@ -189,7 +189,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         $authUser = $patient->getAuthUser();
         $oldPassword = $authUser->getPassword();
         $this->setRedirectMedicalHistoryRoute($patient->getId());
-        if ($this->isDoctorHospital()) {
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
             $isDoctorLPU = true;
         }
         return $this->responseEditMultiForm(

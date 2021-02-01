@@ -101,8 +101,6 @@ class PatientListTemplate extends DoctorOfficeTemplateBuilder
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
         parent::list();
-        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
-            ->setPath($this->getTemplatePath());
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->setContent(
                 AppAbstractController::FILTER_LABELS['HOSPITAL'],

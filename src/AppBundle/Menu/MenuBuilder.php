@@ -4,6 +4,8 @@ namespace App\AppBundle\Menu;
 
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
+use App\Entity\Staff;
+use App\Services\InfoService\AuthUserInfoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
@@ -469,7 +471,12 @@ class MenuBuilder
             'patientsWithNoResultsList', [
                 'label' => $this->getLabelWithNotificationNumber(
                     'Без анализов',
-                    $this->entityManager->getRepository(PatientTesting::class)->getNoResultsTestingsMenu()
+                    $this->entityManager->getRepository(PatientTesting::class)->getNoResultsTestingsMenu(
+                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                            ? $this->entityManager->getRepository(Staff::class)
+                            ->getStaff($this->security->getUser())->getHospital()
+                            : null
+                    )
                 ),
                 'route' => 'patients_with_no_results_list'
             ]
@@ -478,17 +485,26 @@ class MenuBuilder
             'patientsWithNoProcessedList', [
                 'label' => $this->getLabelWithNotificationNumber(
                     'Обработать анализы',
-                    $this->entityManager->getRepository(PatientTesting::class)->getNoProcessedTestingsMenu()
+                    $this->entityManager->getRepository(PatientTesting::class)->getNoProcessedTestingsMenu(
+                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                            ? $this->entityManager->getRepository(Staff::class)
+                            ->getStaff($this->security->getUser())->getHospital()
+                            : null
+                    )
                 ),
                 'route' => 'patients_with_no_processed_list'
             ]
         );
-        $patientOpenedPrescriptions =
         $menu->addChild(
             'patientsWithOpenedPrescriptionsList', [
                 'label' => $this->getLabelWithNotificationNumber(
                     'Закрыть назначения',
-                    $this->entityManager->getRepository(Prescription::class)->getOpenedPrescriptionsMenu()
+                    $this->entityManager->getRepository(Prescription::class)->getOpenedPrescriptionsMenu(
+                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                            ? $this->entityManager->getRepository(Staff::class)
+                                ->getStaff($this->security->getUser())->getHospital()
+                            : null
+                    )
                 ),
                 'route' => 'patients_with_opened_prescriptions_list'
             ]

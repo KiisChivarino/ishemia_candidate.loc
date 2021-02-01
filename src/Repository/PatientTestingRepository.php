@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Hospital;
 use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
 use App\Services\InfoService\MedicalHistoryInfoService;
@@ -37,12 +38,12 @@ class PatientTestingRepository extends AppRepository
 
     /**
      * Gets Patient Testings if PatientTesting has result of testing but is not processed by staff
-     * @param $patient
+     * @param Hospital|null $hospital
      * @return int|mixed|string
      */
-    public function getNoProcessedTestingsMenu()
+    public function getNoProcessedTestingsMenu(?Hospital $hospital)
     {
-        return sizeof($this->createQueryBuilder('paT')
+        $qb = $this->createQueryBuilder('paT')
             ->leftJoin('paT.medicalHistory', 'mH')
             ->leftJoin('mH.patient', 'p')
             ->leftJoin('paT.prescriptionTesting', 'prT')
@@ -51,20 +52,27 @@ class PatientTestingRepository extends AppRepository
             ->andWhere('mH.dateEnd IS NULL')
             ->andWhere('u.enabled = true')
             ->andWhere('paT.hasResult = true')
-            ->andWhere('paT.isProcessedByStaff = false')
-            ->select('p.id')
-            ->distinct()
-            ->getQuery()
-            ->getResult());
+            ->andWhere('paT.isProcessedByStaff = false');
+        if (!is_null($hospital)) {
+            $qb->andWhere('p.hospital =:patientHospital')
+                ->setParameter('patientHospital', $hospital);
+        }
+        return sizeof(
+            $qb->select('p.id')
+                ->distinct()
+                ->getQuery()
+                ->getScalarResult()
+        );
     }
 
     /**
      * Gets Patient Testings if PatientTesting has no results
+     * @param Hospital|null $hospital
      * @return int|mixed|string
      */
-    public function getNoResultsTestingsMenu()
+    public function getNoResultsTestingsMenu(?Hospital $hospital)
     {
-        return sizeof($this->createQueryBuilder('paT')
+        $qb = $this->createQueryBuilder('paT')
             ->leftJoin('paT.medicalHistory', 'mH')
             ->leftJoin('mH.patient', 'p')
             ->leftJoin('paT.prescriptionTesting', 'prT')
@@ -74,11 +82,17 @@ class PatientTestingRepository extends AppRepository
             ->andWhere('u.enabled = true')
             ->andWhere('paT.hasResult = false')
             ->andWhere('prT.plannedDate <= :dateTimeNow')
-            ->setParameter('dateTimeNow', new DateTime('now'))
-            ->select('p.id')
-            ->distinct()
-            ->getQuery()
-            ->getResult());
+            ->setParameter('dateTimeNow', new DateTime('now'));
+        if (!is_null($hospital)) {
+            $qb->andWhere('p.hospital =:patientHospital')
+                ->setParameter('patientHospital', $hospital);
+        }
+        return sizeof(
+            $qb->select('p.id')
+                ->distinct()
+                ->getQuery()
+                ->getScalarResult()
+        );
     }
 
     /**

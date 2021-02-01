@@ -10,6 +10,7 @@ use App\Services\DataTable\DoctorOffice\PatientsWithNoResultsListDataTableServic
 use App\Services\DataTable\DoctorOffice\PatientsWithOpenedPrescriptionsListDataTableService;
 use App\Services\DataTable\DoctorOffice\PatientsWithProcessedResultsListDataTableService;
 use App\Services\FilterService\FilterService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateBuilders\DoctorOffice\PatientListTemplate;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -64,7 +65,7 @@ class PatientsListController extends DoctorOfficeAbstractController
         StaffRepository $staffRepository
     ): Response
     {
-        if ($this->isDoctorHospital()) {
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
             $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
         }
         return $this->responseList(
@@ -101,7 +102,7 @@ class PatientsListController extends DoctorOfficeAbstractController
         StaffRepository $staffRepository
     ): Response
     {
-        if ($this->isDoctorHospital()) {
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
             $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
         }
         return $this->responseList(
@@ -140,7 +141,7 @@ class PatientsListController extends DoctorOfficeAbstractController
         StaffRepository $staffRepository
     ): Response
     {
-        if ($this->isDoctorHospital()) {
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
             $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
         }
         return $this->responseList(
@@ -179,7 +180,7 @@ class PatientsListController extends DoctorOfficeAbstractController
         StaffRepository $staffRepository
     ): Response
     {
-        if ($this->isDoctorHospital()) {
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
             $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
         }
         return $this->responseList(
@@ -217,7 +218,7 @@ class PatientsListController extends DoctorOfficeAbstractController
         StaffRepository $staffRepository
     ): Response
     {
-        if ($this->isDoctorHospital()) {
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
             $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
         }
         return $this->responseList(

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Hospital;
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,19 +27,24 @@ class PrescriptionRepository extends AppRepository
 
     /**
      * Gets Patients`ids array if Prescription is opened
+     * @param Hospital|null $hospital
      * @return int|mixed|string
      */
-    public function getOpenedPrescriptionsMenu()
+    public function getOpenedPrescriptionsMenu(?Hospital $hospital)
     {
-        return sizeof($this->createQueryBuilder('pr')
+        $qb = $this->createQueryBuilder('pr')
             ->leftJoin('pr.medicalHistory', 'mH')
             ->leftJoin('mH.patient', 'p')
             ->leftJoin('p.AuthUser', 'u')
             ->andWhere('mH.enabled = true')
             ->andWhere('mH.dateEnd IS NULL')
             ->andWhere('u.enabled = true')
-            ->andWhere('pr.isCompleted = false')
-            ->select('p.id')
+            ->andWhere('pr.isCompleted = false');
+        if (!is_null($hospital)) {
+            $qb->andWhere('p.hospital =:patientHospital')
+                ->setParameter('patientHospital', $hospital);
+        }
+        return sizeof($qb->select('p.id')
             ->distinct()
             ->getQuery()
             ->getScalarResult());
