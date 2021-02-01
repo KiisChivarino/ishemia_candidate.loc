@@ -2,6 +2,9 @@
 
 namespace App\AppBundle\Menu;
 
+use App\Entity\PatientTesting;
+use App\Entity\Prescription;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
@@ -25,15 +28,27 @@ class MenuBuilder
     private $security;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
      * @param FactoryInterface $factory
      * @param ContainerInterface $container
      * @param Security $security
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(FactoryInterface $factory, ContainerInterface $container, Security $security)
+    public function __construct(
+        FactoryInterface $factory,
+        ContainerInterface $container,
+        Security $security,
+        EntityManagerInterface $entityManager
+    )
     {
         $this->factory = $factory;
         $this->container = $container;
         $this->security = $security;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -446,25 +461,35 @@ class MenuBuilder
         $menu->setChildrenAttribute('class', 'sidebar__list');
         $menu->addChild(
             'patientsList', [
-                'label' => 'Все',
+                'label' => 'Пациенты',
                 'route' => 'patients_list'
             ]
         );
         $menu->addChild(
             'patientsWithNoResultsList', [
-                'label' => 'Нет анализов',
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Без анализов',
+                    $this->entityManager->getRepository(PatientTesting::class)->getNoResultsTestingsMenu()
+                ),
                 'route' => 'patients_with_no_results_list'
             ]
         );
         $menu->addChild(
             'patientsWithNoProcessedList', [
-                'label' => 'Обработать анализы',
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Обработать анализы',
+                    $this->entityManager->getRepository(PatientTesting::class)->getNoProcessedTestingsMenu()
+                ),
                 'route' => 'patients_with_no_processed_list'
             ]
         );
+        $patientOpenedPrescriptions =
         $menu->addChild(
             'patientsWithOpenedPrescriptionsList', [
-                'label' => 'Закрыть назначения',
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Закрыть назначения',
+                    $this->entityManager->getRepository(Prescription::class)->getOpenedPrescriptionsMenu()
+                ),
                 'route' => 'patients_with_opened_prescriptions_list'
             ]
         );
@@ -476,5 +501,17 @@ class MenuBuilder
         );
 
         return $menu;
+    }
+
+    /**
+     * @param string $label
+     * @param int $number
+     * @return string
+     */
+    private function getLabelWithNotificationNumber(string $label, int $number): string
+    {
+        return $number
+            ? $label.'<div class="notificationNumber">'.$number.'</div>'
+            : $label;
     }
 }

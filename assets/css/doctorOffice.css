@@ -33,3 +33,17 @@
     align-self: center;
     height: 20px;
 }
+
+.notificationNumber {
+    background-color: #fa3e3e;
+    border-radius: 2px;
+    color: white;
+
+    padding: 1px 3px 1px 3px;
+    font-size: 16px;
+    margin-left: 15px;
+
+    display: flex;
+    align-self: center;
+    height: 20px;
+}

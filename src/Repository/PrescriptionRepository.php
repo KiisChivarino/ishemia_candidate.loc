@@ -26,6 +26,26 @@ class PrescriptionRepository extends AppRepository
 
     /**
      * Gets Patients`ids array if Prescription is opened
+     * @return int|mixed|string
+     */
+    public function getOpenedPrescriptionsMenu()
+    {
+        return sizeof($this->createQueryBuilder('pr')
+            ->leftJoin('pr.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('pr.isCompleted = false')
+            ->select('p.id')
+            ->distinct()
+            ->getQuery()
+            ->getScalarResult());
+    }
+
+    /**
+     * Gets Patients`ids array if Prescription is opened
      * @param $patient
      * @return int|mixed|string
      */
