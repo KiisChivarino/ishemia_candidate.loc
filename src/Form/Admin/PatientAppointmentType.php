@@ -94,14 +94,6 @@ class PatientAppointmentType extends AbstractType
                     'attr' => ['class' => 'tinymce'],
                 ]
             );
-//            ->add(
-//                'enabled',
-//                CheckboxType::class,
-//                [
-//                    'label' => $templateItem->getContentValue('enabled'),
-//                    'required' => false,
-//                ]
-//            );
     }
 
     /**

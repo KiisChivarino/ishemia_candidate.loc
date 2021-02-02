@@ -7,7 +7,7 @@ use App\Entity\PatientDischargeEpicrisis;
 use App\Form\Admin\MedicalHistory\AnamnesOfLifeType;
 use App\Form\Admin\MedicalHistory\DiseaseHistoryType;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
-use App\Form\Admin\MedicalHistory\EnableMedicalHistoryType;
+use App\Form\Admin\MedicalHistory\EnabledType;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Form\DischargeEpicrisisType;
@@ -41,9 +41,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MedicalHistoryController extends AdminAbstractController
 {
-    //путь к twig шаблонам
+    /** @var string путь к twig шаблонам контроллера */
     public const TEMPLATE_PATH = 'admin/medical_history/';
 
+    /** @var string Key of the medical history parameter */
     public const MEDICAL_HISTORY_ID_PARAMETER_KEY = 'medical_history_id';
 
     /** @var string Name of collection of files from entity method */
@@ -190,7 +191,7 @@ class MedicalHistoryController extends AdminAbstractController
                 new FormData($medicalHistory, DiseaseHistoryType::class),
                 new FormData($medicalHistory, EditMedicalHistoryType::class),
                 new FormData($patientDischargeEpicrisis, DischargeEpicrisisType::class),
-                new FormData($medicalHistory, EnableMedicalHistoryType::class),
+                new FormData($medicalHistory, EnabledType::class),
             ],
             function (EntityActions $actions) use ($patientTestingFileRepository, $fileService) {
                 $fileService->prepareFiles(

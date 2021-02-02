@@ -24,13 +24,17 @@ class IndexController extends AbstractController
      */
     public function logout(LogService $logService): RedirectResponse
     {
-        $logger = $logService
-            ->setUser($this->getUser())
-            ->logLogoutEvent();
-        if (!$logger) {
-            $logService->getError();
-            // TODO: when log fails
+        if ($this->getUser() !== null)
+        {
+            $logger = $logService
+                ->setUser($this->getUser())
+                ->logLogoutEvent();
+            if (!$logger) {
+                $logService->getError();
+                // TODO: when log fails
+            }
         }
+
         return $this->redirectToRoute('app_logout');
     }
 }

@@ -47,7 +47,10 @@ class NotifierService
             $smsNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
         }
 
-        if ($emailNotificationService->getNotificationData()->getPatientReceiver()->getEmailInforming()) {
+        if (
+            $emailNotificationService->getNotificationData()->getPatientReceiver()->getEmailInforming()
+            && !is_null($smsNotificationService->getNotificationData()->getPatientReceiver()->getAuthUser()->getEmail())
+        ) {
             $emailNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
         }
     }
