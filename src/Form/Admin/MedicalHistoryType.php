@@ -9,7 +9,6 @@ use App\Entity\MedicalHistory;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -116,12 +115,6 @@ class MedicalHistoryType extends AbstractType
                     'language' => 'ru',
                     'placeholder' => $templateItem->getContentValue('concomitantDiseasesPlaceholder'),
                     'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
-                ]
-            )
-            ->add(
-                'enabled', CheckboxType::class, [
-                    'label' => $templateItem->getContentValue('enabled'),
-                    'required' => false,
                 ]
             );
     }
