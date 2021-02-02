@@ -128,7 +128,9 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
     public function edit(?object $entity = null): AppTemplateBuilder
     {
         parent::edit();
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+        $this->setCommonTemplatePath(($this->getTemplatePath()));
+        $this
+            ->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
             ->setPath($this->getTemplatePath())
             ->addContentArray(
                 array_merge(
