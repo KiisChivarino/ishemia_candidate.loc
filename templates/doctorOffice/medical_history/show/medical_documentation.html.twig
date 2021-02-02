@@ -44,7 +44,7 @@
             <div class="statement__head">
                 <h3 class="subtitle">Обследование: {{ patientTestingTitle(testing) }}</h3>
                 <a class="back-page"
-                   href="{{ path('doctor_edit_patient_testing', {'patient': medicalHistory.patient.id,  "patientTesting": testing.id}) }}">
+                   href="{{ path('doctor_edit_patient_testing', {'id': testing.id}) }}">
                     <span class="statement__edit">{{ template.items.show.content.addPatientTestingResults }}</span>
                 </a>
             </div>

@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Controller\DoctorOffice\MedicalHistory;
+
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
@@ -19,11 +21,10 @@ use App\Repository\TemplateRepository;
 use App\Repository\TemplateTypeRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\MultiFormService\FormData;
-use App\Services\TemplateBuilders\DoctorOffice\InitialExaminationTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
 use App\Services\TextTemplateService\TextTemplateService;
 use Doctrine\ORM\NonUniqueResultException;
-use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,13 +34,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
-/**
- * Class InitialExaminationController
- * Первичный прием
- * @Route("/doctor_office/patient")
- * @IsGranted("ROLE_DOCTOR_HOSPITAL")
- * @package App\Controller\DoctorOffice\MedicalHistory
- */
 class InitialExaminationController extends DoctorOfficeAbstractController
 {
     /** @var string Path to directory with custom templates of controller */
@@ -79,7 +73,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     private const EDIT_OBJECTIVE_DATA_TEMPLATE_NAME = 'edit_initial_examination_data';
 
     /**
-     * InitialExaminationController constructor.
+     * MedicalHistoryController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
@@ -92,34 +86,26 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new InitialExaminationTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
     /**
      * Edit objective data
      * @param Request $request
-     * @param Patient $patient
-     * @param PatientAppointmentRepository $appointmentRepository
-     * @param MedicalHistoryRepository $medicalHistoryRepository
+     * @param PatientAppointment $firstAppointment
      * @return RedirectResponse|Response
-     * @throws NonUniqueResultException
-     * @throws \ReflectionException
      * @Route(
-     *     "/{id}/medical_history/edit_initial_examination_data",
+     *     "/edit_initial_examination_data/{id}/",
      *     name="edit_initial_examination_data",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
      *     )
+     *
+     * @throws Exception
      */
-    public function editInitialExamination(
-        Request $request,
-        Patient $patient,
-        PatientAppointmentRepository $appointmentRepository,
-        MedicalHistoryRepository $medicalHistoryRepository
-    )
+    public function editInitialExamination(Request $request, PatientAppointment $firstAppointment)
     {
-        $firstAppointment = $appointmentRepository->getFirstAppointment($medicalHistoryRepository->getCurrentMedicalHistory($patient));
         $this->setRedirectMedicalHistoryRoute($firstAppointment->getMedicalHistory()->getPatient()->getId());
         $objectiveStatus = $firstAppointment->getObjectiveStatus();
         return $this->responseEditMultiForm(

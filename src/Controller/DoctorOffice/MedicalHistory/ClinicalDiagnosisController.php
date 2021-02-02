@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Controller\DoctorOffice\MedicalHistory;
+
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
@@ -8,11 +10,12 @@ use App\Entity\TextByTemplate;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Repository\MedicalHistoryRepository;
+use App\Services\ControllerGetters\EntityActions;
 use App\Services\MultiFormService\FormData;
-use App\Services\TemplateBuilders\DoctorOffice\ClinicalDiagnosisTemplate;
+use App\Services\MultiFormService\MultiFormService;
+use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
 use ReflectionException;
-use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,13 +24,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
-/**
- * Class ClinicalDiagnosisController
- * Клинический диагноз
- * @Route("/doctor_office/patient")
- * @IsGranted("ROLE_DOCTOR_HOSPITAL")
- * @package App\Controller\DoctorOffice\MedicalHistory
- */
 class ClinicalDiagnosisController extends DoctorOfficeAbstractController
 {
     /** @var string Path to directory with custom templates of controller */
@@ -37,7 +33,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
     private const EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME = 'edit_clinical_diagnosis_data';
 
     /**
-     * ClinicalDiagnosisController constructor.
+     * MedicalHistoryController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
@@ -50,7 +46,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new ClinicalDiagnosisTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -63,7 +59,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
      * @throws ReflectionException
      * @throws Exception
      * @Route(
-     *     "/{id}/medical_history/edit_clinical_diagnosis_data",
+     *     "/{id}/edit_clinical_diagnosis_data",
      *     name="doctor_edit_clinical_diagnosis_data",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
@@ -94,7 +90,13 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
                     ]
                 ),
             ],
-  null,
+            function (EntityActions $actions) use ($lifeHistory) {
+                $lifeHistoryText = $actions->getForm()
+                    ->get(MultiFormService::getFormName(MedicalHistoryType::class))
+                    ->get(MedicalHistoryType::FORM_LIFE_HISTORY_NAME)
+                    ->getData();
+                $lifeHistory->setText($lifeHistoryText);
+            },
             self::EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME
         );
     }

@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Controller\DoctorOffice\MedicalHistory;
+
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\MedicalHistory;
@@ -10,9 +12,8 @@ use App\Form\DischargeEpicrisisType;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FileService\FileService;
 use App\Services\MultiFormService\MultiFormService;
-use App\Services\TemplateBuilders\DoctorOffice\DischargeEpicrisisTemplate;
-use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,13 +22,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
-/**
- * Class DischargeEpicrisisController
- * Выписные эпикризы
- * @Route("/doctor_office/patient")
- * @IsGranted("ROLE_DOCTOR_HOSPITAL")
- * @package App\Controller\DoctorOffice\MedicalHistory
- */
 class DischargeEpicrisisController extends DoctorOfficeAbstractController
 {
     /** @var string Path to directory with custom templates of controller */
@@ -39,7 +33,7 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
     private const NEW_DISCHARGE_EPICRISIS_TEMPLATE_NAME = 'new_discharge_epicrisis';
 
     /**
-     * DischargeEpicrisisController constructor.
+     * MedicalHistoryController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
@@ -52,14 +46,13 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new DischargeEpicrisisTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
     /**
-     * New discharge epicrisis
      * @Route(
-     *     "/{id}/medical_history/new_discharge_epicrisis",
+     *     "/{id}/new_discharge_epicrisis",
      *     name="doctor_new_discharge_epicrisis",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}

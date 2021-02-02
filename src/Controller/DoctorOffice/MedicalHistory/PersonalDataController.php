@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Controller\DoctorOffice\MedicalHistory;
+
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
@@ -10,10 +12,9 @@ use App\Form\Doctor\AuthUserPersonalDataType;
 use App\Services\Creator\AuthUserCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
-use App\Services\TemplateBuilders\DoctorOffice\PersonalDataTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
 use ReflectionException;
-use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,13 +23,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
-/**
- * Class PersonalDataController
- * Личные данные
- * @Route("/doctor_office/patient")
- * @IsGranted("ROLE_DOCTOR_HOSPITAL")
- * @package App\Controller\DoctorOffice\MedicalHistory
- */
 class PersonalDataController extends DoctorOfficeAbstractController
 {
     /** @var string Path to directory with custom templates of controller */
@@ -38,7 +32,7 @@ class PersonalDataController extends DoctorOfficeAbstractController
     protected const EDIT_PERSONAL_DATA_TEMPLATE_NAME = 'edit_personal_data';
 
     /**
-     * PersonalDataController constructor.
+     * MedicalHistoryController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
@@ -51,14 +45,14 @@ class PersonalDataController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new PersonalDataTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
     /**
      * Edit personal data of patient medical history
      * @Route(
-     *     "/{id}/medical_history/edit_personal_data",
+     *     "/{id}/edit_personal_data",
      *     name="doctor_edit_personal_data",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
