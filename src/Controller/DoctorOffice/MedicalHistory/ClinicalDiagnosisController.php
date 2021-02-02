@@ -13,7 +13,7 @@ use App\Repository\MedicalHistoryRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
-use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\ClinicalDiagnosisTemplate;
 use ReflectionException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -46,7 +46,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new ClinicalDiagnosisTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
