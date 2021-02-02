@@ -20,12 +20,12 @@
                     <span class="label">{{ form_label(child) }}</span>
                     {% if child.vars.name == 'lifeHistory' %}
                         <a href="{{ path(
-                            'doctor_edit_anamnestic_data_anamnesis_of_life_using_constructor',
+                            'doctor_edit_initial_examination_data_anamnesis_of_life_using_constructor',
                             { 'id': entity.id}
                         ) }}"
                            class="form-control">Собрать Анамнез жизни</a>
                         <a href="{{ path(
-                            'doctor_edit_anamnestic_data_anamnesis_of_life_by_template',
+                            'doctor_edit_initial_examination_data_anamnesis_of_life_by_template',
                             { 'id': entity.id}
                         ) }}"
                            class="form-control"
@@ -43,7 +43,7 @@
                     <span class="label">{{ form_label(child) }}</span>
                     {% if child.vars.name == 'lifeHistory' %}
                         <a href="{{ path(
-                            'doctor_edit_anamnestic_data_anamnesis_of_life_using_constructor',
+                            'doctor_edit_initial_examination_data_anamnesis_of_life_using_constructor',
                             { 'id': entity.id}
                         ) }}"
                            class="form-control"
@@ -51,7 +51,7 @@
                             Собрать Анамнез жизни
                         </a>
                         <a href="{{ path(
-                            'doctor_edit_anamnestic_data_anamnesis_of_life_by_template',
+                            'doctor_edit_initial_examination_data_anamnesis_of_life_by_template',
                             { 'id': entity.id}
                         ) }}"
                            class="form-control"

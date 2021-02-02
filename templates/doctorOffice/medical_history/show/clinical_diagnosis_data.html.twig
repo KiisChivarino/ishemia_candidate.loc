@@ -1,0 +1,71 @@
+<div class="statement acc">
+    <h2 class="title accordion">{{ template.items.show.content.anamnesticData }}</h2>
+    <div class="statement__wrapper panel">
+        <div class="statement__head">
+            <h3 class="subtitle">{{ template.items.show.content.anamnesticData }}</h3>
+            <a class="back-page"
+               href="{{ path('doctor_edit_clinical_diagnosis_data', {'id': entity.id}) }}">
+                <span class="statement__edit">{{ template.items.show.content.addAnamnesticData }}</span>
+            </a>
+        </div>
+        <div class="statement__content">
+            <div class="statement__info">
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.dateBegin }}</p>
+                    <p>{{ medicalHistory.dateBegin ? medicalHistory.dateBegin|date('d.m.Y') : '' }}</p>
+                </div>
+                {% if medicalHistory.dateEnd %}
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.dateEnd }}</p>
+                        <p>
+                            {{ medicalHistory.dateEnd ? medicalHistory.dateEnd|date('d.m.Y') : '' }}
+                        </p>
+                    </div>
+                {% endif %}
+                {% if medicalHistory.clinicalDiagnosisInfo is defined %}
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.clinicalDiagnosisInfo }}</p>
+                        {{ medicalHistory.clinicalDiagnosisInfo | raw }}
+                    </div>
+                {% endif %}
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.mainDisease }}</p>
+                    <p>
+                        {% if (medicalHistory.mainDisease) %}
+                            {{ medicalHistory.mainDisease.name }}
+                        {% else %}
+                            {{ template.items.show.content.mainDiseaseNotFound }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.backgroundDiseases }}</p>
+                    {% if medicalHistory.backgroundDiseases is empty %}
+                        <p>{{ template.items.show.content.backgroundDiseasesNotFound }}</p>
+                    {% endif %}
+                    {% for backgroundDisease in medicalHistory.backgroundDiseases %}
+                        <p>{{ backgroundDisease.name }}</p>
+                    {% endfor %}
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.complications }}</p>
+                    {% if medicalHistory.complications is empty %}
+                        <p>{{ template.items.show.content.complicationsNotFound }}</p>
+                    {% endif %}
+                    {% for complication in medicalHistory.complications %}
+                        <p>{{ complication.name }}</p>
+                    {% endfor %}
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.concomitantDiseases }}</p>
+                    {% if medicalHistory.concomitantDiseases is empty %}
+                        <p>{{ template.items.show.content.concomitantDiseasesNotFound }}</p>
+                    {% endif %}
+                    {% for concomitantDisease in medicalHistory.concomitantDiseases %}
+                        <p>{{ concomitantDisease.name }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
