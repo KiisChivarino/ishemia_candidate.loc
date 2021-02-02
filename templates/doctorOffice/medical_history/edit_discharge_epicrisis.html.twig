@@ -9,7 +9,7 @@
             <li>
                 {% if template.items.list.isEnabled %}
                     <a class="back-page" href="{{ path(
-                        template.routes.main,
+                        'doctor_medical_history',
                         {id: entity.medicalHistory.patient.id}
                     ) }}">История болезни</a>
                 {% endif %}
