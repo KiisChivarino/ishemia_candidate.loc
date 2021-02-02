@@ -2,6 +2,8 @@
 
 namespace App\AppBundle\Menu;
 
+use App\Entity\PatientTesting;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
@@ -25,16 +27,29 @@ class MenuBuilder
     private $security;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
      * @param FactoryInterface $factory
      * @param ContainerInterface $container
      * @param Security $security
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(FactoryInterface $factory, ContainerInterface $container, Security $security)
+    public function __construct(
+        FactoryInterface $factory,
+        ContainerInterface $container,
+        Security $security,
+        EntityManagerInterface $entityManager
+    )
     {
         $this->factory = $factory;
         $this->container = $container;
         $this->security = $security;
+        $this->entityManager = $entityManager;
     }
+
 
     /**
      * Меню на главной (версия для разработки)
@@ -458,19 +473,31 @@ class MenuBuilder
         );
         $menu->addChild(
             'patient_testings_no_processed_list', [
-                'label' => 'Необработанные',
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Необработанные',
+                    $this->entityManager->getRepository(PatientTesting::class)
+                        ->getNoProcessedTestingsMenu(1)
+                ),
                 'route' => 'patient_testings_not_processed_list',
             ]
         );
         $menu->addChild(
             'patient_testings_planned_list', [
-                'label' => 'Запланированные',
+                'label' => $this->getLabelWithNotificationNumber(
+                    'По плану',
+                    $this->entityManager->getRepository(PatientTesting::class)
+                        ->getPlannedTestingsMenu(1)
+                ),
                 'route' => 'patient_testings_planned_list',
             ]
         );
         $menu->addChild(
             'patient_testings_overdue_list', [
-                'label' => 'Просроченные',
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Просроченные',
+                    $this->entityManager->getRepository(PatientTesting::class)
+                        ->getOverdueTestingsMenu(1)
+                ),
                 'route' => 'patient_testings_overdue_list',
             ]
         );
@@ -482,4 +509,17 @@ class MenuBuilder
         );
         return $menu;
     }
+
+    /**
+     * @param string $label
+     * @param int $number
+     * @return string
+     */
+    private function getLabelWithNotificationNumber(string $label, int $number): string
+    {
+        return $number
+            ? $label.'<div class="notificationNumber">'.$number.'</div>'
+            : $label;
+    }
+
 }

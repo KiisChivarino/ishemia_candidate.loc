@@ -35,6 +35,82 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
+     * Gets overdue testings
+     * @param $patientId
+     * @return int|mixed|string
+     */
+    public function getOverdueTestingsMenu($patientId)
+    {
+        return sizeof($this->createQueryBuilder('pT')
+            ->leftJoin('pT.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('p.AuthUser', 'u')
+            ->leftJoin('pT.analysisGroup', 'aG')
+            ->leftJoin('pT.prescriptionTesting', 'prT')
+            ->andWhere('prT.plannedDate < :dateTimeNow')
+            ->andWhere('u.enabled = :val')
+            ->andWhere('p.id = :patientId')
+            ->andWhere('pT.hasResult = false')
+            ->setParameter('patientId', $patientId)
+            ->setParameter('dateTimeNow', new \DateTime('now'))
+            ->setParameter('val', true)
+            ->select('pT.id')
+            ->distinct()
+            ->getQuery()
+            ->getResult());
+    }
+
+    /**
+     * Gets planned testings
+     * @param $patientId
+     * @return int|mixed|string
+     */
+    public function getPlannedTestingsMenu($patientId)
+    {
+        return sizeof($this->createQueryBuilder('pT')
+            ->leftJoin('pT.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('p.AuthUser', 'u')
+            ->leftJoin('pT.analysisGroup', 'aG')
+            ->leftJoin('pT.prescriptionTesting', 'prT')
+            ->andWhere('prT.plannedDate >= :dateTimeNow')
+            ->andWhere('u.enabled = :val')
+            ->andWhere('p.id = :patientId')
+            ->andWhere('pT.hasResult = false')
+            ->setParameter('patientId', $patientId)
+            ->setParameter('dateTimeNow', new \DateTime('now'))
+            ->setParameter('val', true)
+            ->select('pT.id')
+            ->distinct()
+            ->getQuery()
+            ->getResult());
+    }
+
+    /**
+     * Gets no processed testings
+     * @param $patientId
+     * @return int|mixed|string
+     */
+    public function getNoProcessedTestingsMenu($patientId)
+    {
+        return sizeof($this->createQueryBuilder('pT')
+            ->leftJoin('pT.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('p.AuthUser', 'u')
+            ->leftJoin('pT.analysisGroup', 'aG')
+            ->andWhere('u.enabled = :val')
+            ->andWhere('p.id = :patientId')
+            ->andWhere('pT.processed = false')
+            ->andWhere('pT.hasResult = true')
+            ->setParameter('patientId', $patientId)
+            ->setParameter('val', true)
+            ->select('pT.id')
+            ->distinct()
+            ->getQuery()
+            ->getResult());
+    }
+
+    /**
      * Get first testings
      * @param MedicalHistory $medicalHistory
      * @return int|mixed|string
