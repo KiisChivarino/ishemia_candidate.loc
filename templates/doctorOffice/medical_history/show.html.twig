@@ -6,9 +6,6 @@
             <li><a class="back-page" href="{{ path('patients_list') }}">Назад</a></li>
         </ul>
     </div>
-    <div class="content-wrapper__top">
-        <a href="{{ path('notifications_list', {'id': entity.id}) }}" class="mode">Уведомления пользователя</a>
-    </div>
     <!-- Персональные данные -->
     <div class="statement acc">
         <h2 class="title accordion">{{ template.items.show.content.personalData }}</h2>
@@ -126,8 +123,8 @@
                             </div>
                         {% endif %}
                         <div class="statement__info-block">
-                            <p>{{ template.items.show.content.clinicalDiagnosisInfo }}</p>
-                            {{ medicalHistory.clinicalDiagnosisInfo | raw }}
+                            <p>{{ template.items.show.content.clinicalDiagnosis }}</p>
+                            {{ medicalHistory.clinicalDiagnosis | raw }}
                         </div>
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.mainDisease }}</p>
@@ -233,7 +230,7 @@
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.objectiveStatus }}</p>
                             <p>
-                                {% if firstAppointment.objectiveStatus %}
+                                {% if firstAppointment.objectiveStatus is defined %}
                                     {{ firstAppointment.objectiveStatus.text | raw }}
                                 {% else %}
                                     {{ template.items.show.content.objectiveStatusNotFound }}
@@ -348,7 +345,7 @@
                                     </a>
                                 {% endfor %}
                             </p>
-                            {% if patientTestingResults and enabledTestingResults(testing) is not empty %}
+                            {% if patientTestingResults is defined and enabledTestingResults(testing) is not empty %}
                                 <div class="table-wrapper table-history">
                                     <table>
                                         <thead>
