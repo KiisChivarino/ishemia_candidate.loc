@@ -103,6 +103,9 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     /** @var int Id of Objective status template type */
     private const TEMPLATE_TYPE_ID_OBJECTIVE_STATUS = 3;
 
+    /** @var string array key name */
+    const IS_DOCTOR_HOSPITAL = 'isDoctorHospital';
+
     /**
      * MedicalHistoryController constructor.
      *
@@ -186,12 +189,16 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         $authUser = $patient->getAuthUser();
         $oldPassword = $authUser->getPassword();
         $this->setRedirectMedicalHistoryRoute($patient->getId());
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
+            $isDoctorLPU = true;
+        }
         return $this->responseEditMultiForm(
             $request,
             $patient,
             [
                 new FormData($authUser, AuthUserPersonalDataType::class),
-                new FormData($patient, PatientRequiredType::class),
+                new FormData($patient, PatientRequiredType::class,
+                    [self::IS_DOCTOR_HOSPITAL => $isDoctorLPU ?? null]),
                 new FormData($patient, PatientOptionalType::class),
             ],
             function () use ($authUser, $oldPassword, $passwordEncoder) {
@@ -226,9 +233,6 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     {
         $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
         $this->setRedirectMedicalHistoryRoute($patient->getId());
-        /** @var TextByTemplate $lifeHistory */
-        $lifeHistory = $medicalHistory->getLifeHistory();
-        $lifeAnamnesisText = $lifeHistory ? $lifeHistory->getText() : null;
         return $this->responseEditMultiForm(
             $request,
             $patient,
@@ -236,19 +240,10 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
                 new FormData($medicalHistory, MainDiseaseType::class),
                 new FormData(
                     $medicalHistory,
-                    MedicalHistoryType::class,
-                    [
-                        MedicalHistoryType::ANAMNES_OF_LIFE_TEXT_OPTION_KEY => $lifeAnamnesisText,
-                    ]
+                    MedicalHistoryType::class
                 ),
             ],
-            function (EntityActions $actions) use ($lifeHistory) {
-                $lifeHistoryText = $actions->getForm()
-                    ->get(MultiFormService::getFormName(MedicalHistoryType::class))
-                    ->get(MedicalHistoryType::FORM_LIFE_HISTORY_NAME)
-                    ->getData();
-                $lifeHistory->setText($lifeHistoryText);
-            },
+            null,
             self::EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME
         );
     }

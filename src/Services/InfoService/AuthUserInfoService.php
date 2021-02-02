@@ -109,4 +109,14 @@ class AuthUserInfoService
         return in_array('ROLE_DOCTOR_CONSULTANT', $authUser->getRoles());
     }
 
+
+    /**
+     * Checks if user is ROLE_DOCTOR_HOSPITAL
+     * @param AuthUser $authUser
+     * @return bool
+     */
+    public function isDoctorHospital(AuthUser $authUser): bool
+    {
+        return in_array('ROLE_DOCTOR_HOSPITAL', $authUser->getRoles());
+    }
 }

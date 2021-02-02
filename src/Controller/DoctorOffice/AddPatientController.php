@@ -12,6 +12,7 @@ use App\Services\Creator\AuthUserCreatorService;
 use App\Services\Creator\MedicalHistoryCreatorService;
 use App\Services\Creator\PatientAppointmentCreatorService;
 use App\Services\Creator\PatientCreatorService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,6 +39,9 @@ class AddPatientController extends DoctorOfficeAbstractController
 
     /** @var UserPasswordEncoderInterface $passwordEncoder */
     private $passwordEncoder;
+
+    /** @var string array key name */
+    const IS_DOCTOR_HOSPITAL = 'isDoctorHospital';
 
     /**
      * PatientsListController constructor.
@@ -85,14 +89,22 @@ class AddPatientController extends DoctorOfficeAbstractController
         $staff = $staffRepository->getStaff($this->getUser());
         $patientAuthUser = $authUserCreatorService->createAuthUser();
         $patient = $patientCreator->createPatient();
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
+            $staff = $staffRepository->getStaff($this->getUser());
+            $patient
+                ->setHospital($staff->getHospital())
+                ->setCity($staff->getHospital()->getCity());
+            $isDoctorHospital = true;
+        }
+
         $medicalHistory = $medicalHistoryCreatorService->createMedicalHistory();
         $firstPatientAppointment = $patientAppointmentCreatorService->createPatientAppointment($medicalHistory);
         return $this->responseNewMultiForm(
             $request,
             $patient,
             [
-                new FormData($patientAuthUser,AuthUserRequiredType::class),
-                new FormData($patient, PatientRequiredType::class),
+                new FormData($patientAuthUser, AuthUserRequiredType::class),
+                new FormData($patient, PatientRequiredType::class, [self::IS_DOCTOR_HOSPITAL => $isDoctorHospital ?? null]),
                 new FormData($medicalHistory, MainDiseaseType::class),
                 new FormData($firstPatientAppointment, AppointmentTypeType::class),
             ],
@@ -105,8 +117,7 @@ class AddPatientController extends DoctorOfficeAbstractController
                 $staff,
                 $patientCreator,
                 $authUserCreatorService
-            )
-            {
+            ) {
                 $em = $actions->getEntityManager();
                 $em->getConnection()->beginTransaction();
                 try {
