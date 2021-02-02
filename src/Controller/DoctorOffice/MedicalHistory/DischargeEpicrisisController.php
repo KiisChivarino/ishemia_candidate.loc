@@ -3,6 +3,7 @@
 
 namespace App\Controller\DoctorOffice\MedicalHistory;
 
+
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\MedicalHistory;
 use App\Entity\PatientDischargeEpicrisis;
@@ -11,7 +12,7 @@ use App\Form\DischargeEpicrisisType;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FileService\FileService;
 use App\Services\MultiFormService\MultiFormService;
-use App\Services\TemplateBuilders\DoctorOffice\DischargeEpicrisisTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,7 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new DischargeEpicrisisTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
