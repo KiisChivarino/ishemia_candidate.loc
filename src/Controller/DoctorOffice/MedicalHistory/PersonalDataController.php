@@ -12,7 +12,7 @@ use App\Form\Doctor\AuthUserPersonalDataType;
 use App\Services\Creator\AuthUserCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
-use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\PersonalDataTemplate;
 use ReflectionException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +45,7 @@ class PersonalDataController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new PersonalDataTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 

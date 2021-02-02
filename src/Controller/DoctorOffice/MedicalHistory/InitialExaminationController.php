@@ -21,7 +21,7 @@ use App\Repository\TemplateRepository;
 use App\Repository\TemplateTypeRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\MultiFormService\FormData;
-use App\Services\TemplateBuilders\DoctorOffice\MedicalHistoryTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\InitialExaminationTemplate;
 use App\Services\TextTemplateService\TextTemplateService;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -86,7 +86,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new MedicalHistoryTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new InitialExaminationTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
