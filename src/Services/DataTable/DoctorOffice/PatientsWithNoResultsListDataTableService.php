@@ -5,7 +5,6 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Entity\Prescription;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
@@ -27,7 +26,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientsListDataTableService extends AdminDatatableService
+class PatientsWithNoResultsListDataTableService extends AdminDatatableService
 {
     private $authUserInfoService;
 
@@ -50,8 +49,8 @@ class PatientsListDataTableService extends AdminDatatableService
      *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param array|null $filters
-     * @param array $options
+     * @param array $filters
+     *
      * @return DataTable
      * @throws Exception
      */
@@ -127,46 +126,7 @@ class PatientsListDataTableService extends AdminDatatableService
                     'orderField' => 'h.name',
                 ]
             )
-            ->add(
-                'status', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('status'),
-                    'render' => function (string $data, Patient $patient) {
-                        $patientTestingsWithNoResults = $this->entityManager
-                            ->getRepository(PatientTesting::class)
-                            ->getNoResultsTestingsForPatientsList($patient);
-                        $patientTestingsNoProcessedTestings = $this->entityManager
-                            ->getRepository(PatientTesting::class)
-                            ->getNoProcessedTestingsForPatientsList($patient);
-                        $patientOpenedPrescriptions = $this->entityManager
-                            ->getRepository(Prescription::class)
-                            ->getOpenedPrescriptionsForPatientList($patient);
-
-                        $result = "";
-                        if (!empty($patientTestingsWithNoResults)) {
-                            $result .= $this->getLink('Нет анализов',
-                                $patient->getId(),
-                                'doctor_medical_history'
-                            );
-                        }
-                        if (!empty($patientTestingsNoProcessedTestings)) {
-                            !empty($patientTestingsWithNoResults) ? $result .= "<hr>" : $result .= "";
-                            $result .= $this->getLink('Обработать анализы',
-                                $patient->getId(),
-                                'doctor_medical_history'
-                            );
-                        }
-                        if (!empty($patientOpenedPrescriptions)) {
-                            !empty($patientTestingsNoProcessedTestings) ? $result .= "<hr>" : $result .= "";
-                            $result .= $this->getLink('Закрыть назначения',
-                                $patient->getId(),
-                                'doctor_medical_history'
-                            );
-                        }
-
-                        return $result;
-                    },
-                ]
-            );
+        ;
 
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
             ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
@@ -181,10 +141,14 @@ class PatientsListDataTableService extends AdminDatatableService
                         $builder
                             ->select('p')
                             ->from(Patient::class, 'p')
-                            ->leftJoin('p.AuthUser', 'u')
-                            ->leftJoin('p.hospital', 'h')
-                            ->andWhere('u.enabled = :val')
-                            ->setParameter('val', true);
+                            ->andWhere('p.id IN (:patients)')
+                            ->setParameter(
+                                'patients',
+                                $this->entityManager
+                                    ->getRepository(PatientTesting::class)->getNoResultsTestings()
+                            )
+                        ;
+
                         if ($hospital) {
                             $builder
                                 ->andWhere('p.hospital = :valHospital')

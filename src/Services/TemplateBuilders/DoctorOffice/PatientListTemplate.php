@@ -34,9 +34,13 @@ class PatientListTemplate extends DoctorOfficeTemplateBuilder
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
         'h1' => 'Список записей',
-        'title' => 'Список записей',
+        'title' => 'Список пациентов',
         'fio' => 'ФИО',
         'age' => 'Возраст',
+        'hospital' => 'Больница',
+        'dateOfBirth' => 'Дата рождения',
+        'city' => 'Город',
+        'status' => 'Статус'
     ];
 
     /** @var string[] Common NEW_CONTENT */
@@ -97,8 +101,6 @@ class PatientListTemplate extends DoctorOfficeTemplateBuilder
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
         parent::list();
-        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
-            ->setPath($this->getTemplatePath());
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->setContent(
                 AppAbstractController::FILTER_LABELS['HOSPITAL'],
