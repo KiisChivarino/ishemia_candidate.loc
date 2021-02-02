@@ -48,6 +48,12 @@ class PrescriptionMedicine
     private $patientMedicine;
 
     /**
+     * @ORM\OneToOne(targetEntity=NotificationConfirm::class, inversedBy="prescriptionMedicine")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $notificationConfirm;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -103,12 +109,29 @@ class PrescriptionMedicine
 
     /**
      * @param Staff|null $staff
-     *
      * @return $this
      */
     public function setStaff(?Staff $staff): self
     {
         $this->staff = $staff;
+        return $this;
+    }
+    /**
+     * @return NotificationConfirm|null
+     */
+    public function getNotificationConfirm(): ?NotificationConfirm
+    {
+        return $this->notificationConfirm;
+    }
+
+    /**
+     * @param NotificationConfirm|null $notificationConfirm
+     * @return $this
+     */
+    public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
+    {
+        $this->notificationConfirm = $notificationConfirm;
+
         return $this;
     }
 

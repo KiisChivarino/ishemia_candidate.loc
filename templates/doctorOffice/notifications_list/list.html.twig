@@ -1,6 +1,16 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block content %}
     <div class="content-wrapper__top">
+        <div class="content-wrapper__top">
+            <ul>
+                <li>
+                    <h1>{{ template.items.list.content.title }}</h1>
+                </li>
+                <li><a class="back-page" href="{{ path('patients_list') }}">Назад</a></li>
+                <li><a class="" href="{{ path('doctor_create_notification', {id: app.request.attributes.get('id')}) }}">Создать уведомление</a></li>
+            </ul>
+
+        </div>
         <div class="content-wrapper__select">
             {% if template.items.filter.isEnabled %}
                 {{ include(

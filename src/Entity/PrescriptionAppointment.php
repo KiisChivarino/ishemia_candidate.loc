@@ -48,9 +48,20 @@ class PrescriptionAppointment
     private $enabled;
 
     /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг подтверждения врачом назначения на прием", "default"=false})
+     */
+    private $confirmedByStaff;
+
+    /**
      * @ORM\Column(type="datetime", options={"comment"="Назначенные дата и время проведения приема"})
      */
     private $plannedDateTime;
+
+    /**
+     * @ORM\OneToOne(targetEntity=NotificationConfirm::class, inversedBy="prescriptionAppointment")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $notificationConfirm;
 
     /**
      * @return int|null
@@ -152,6 +163,24 @@ class PrescriptionAppointment
     }
 
     /**
+     * @return bool|null
+     */
+    public function getConfirmedByStaff(): ?bool
+    {
+        return $this->confirmedByStaff;
+    }
+
+    /**
+     * @param bool $confirmedByStaff
+     * @return $this
+     */
+    public function setConfirmedByStaff(bool $confirmedByStaff): self
+    {
+        $this->confirmedByStaff = $confirmedByStaff;
+        return $this;
+    }
+
+    /**
      * @return DateTimeInterface|null
      */
     public function getPlannedDateTime(): ?DateTimeInterface
@@ -166,6 +195,24 @@ class PrescriptionAppointment
     public function setPlannedDateTime(DateTimeInterface $plannedDateTime): self
     {
         $this->plannedDateTime = $plannedDateTime;
+        return $this;
+    }
+
+    /**
+     * @return NotificationConfirm|null
+     */
+    public function getNotificationConfirm(): ?NotificationConfirm
+    {
+        return $this->notificationConfirm;
+    }
+
+    /**
+     * @param NotificationConfirm|null $notificationConfirm
+     * @return $this
+     */
+    public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
+    {
+        $this->notificationConfirm = $notificationConfirm;
         return $this;
     }
 }

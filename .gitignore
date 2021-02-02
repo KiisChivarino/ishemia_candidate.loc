@@ -16,6 +16,7 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 .htaccess
+!/public/.htaccess
 /data/patient_files/
 /web/bundles
 /web/

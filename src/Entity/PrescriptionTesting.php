@@ -53,6 +53,12 @@ class PrescriptionTesting
     private $plannedDate;
 
     /**
+     * @ORM\OneToOne(targetEntity=NotificationConfirm::class, inversedBy="prescriptionTesting")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $notificationConfirm;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -170,6 +176,24 @@ class PrescriptionTesting
     public function setPlannedDate(DateTimeInterface $plannedDate): self
     {
         $this->plannedDate = $plannedDate;
+        return $this;
+    }
+
+    /**
+     * @return NotificationConfirm|null
+     */
+    public function getNotificationConfirm(): ?NotificationConfirm
+    {
+        return $this->notificationConfirm;
+    }
+
+    /**
+     * @param NotificationConfirm|null $notificationConfirm
+     * @return $this
+     */
+    public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
+    {
+        $this->notificationConfirm = $notificationConfirm;
         return $this;
     }
 }

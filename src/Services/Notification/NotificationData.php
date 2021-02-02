@@ -4,7 +4,10 @@ namespace App\Services\Notification;
 
 use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
+use App\Entity\Notification;
 use App\Entity\Patient;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\Persistence\ObjectManager;
 
 /**
  * Class NotificationData
@@ -21,17 +24,37 @@ class NotificationData
     /** @var MedicalRecord */
     private $medicalRecord;
 
+    /** @var int */
+    private $groupId;
+
     /**
      * NotificationData constructor.
+     * @param ObjectManager $em
      * @param Patient $patient
      * @param MedicalHistory $medicalHistory
      * @param MedicalRecord|null $medicalRecord
+     * @throws NonUniqueResultException
      */
-    public function __construct(Patient $patient, MedicalHistory $medicalHistory, MedicalRecord $medicalRecord = null)
+    public function __construct(
+        ObjectManager $em,
+        Patient $patient,
+        MedicalHistory $medicalHistory,
+        MedicalRecord $medicalRecord = null
+    )
     {
+        $lastNotification = $em->getRepository(Notification::class)->findLastGroup();
+        $this->groupId = $lastNotification ? $lastNotification->getGroupId() + 1 : 1;
         $this->patientReceiver = $patient;
         $this->medicalHistory = $medicalHistory;
         $this->medicalRecord = $medicalRecord;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroupId(): int
+    {
+        return $this->groupId;
     }
 
     /**
