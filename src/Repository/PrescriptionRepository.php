@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Hospital;
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,6 +23,72 @@ class PrescriptionRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Prescription::class);
+    }
+
+    /**
+     * Gets Patients`ids array if Prescription is opened
+     * @param Hospital|null $hospital
+     * @return int|mixed|string
+     */
+    public function getOpenedPrescriptionsMenu(?Hospital $hospital)
+    {
+        $qb = $this->createQueryBuilder('pr')
+            ->leftJoin('pr.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('pr.isCompleted = false');
+        if (!is_null($hospital)) {
+            $qb->andWhere('p.hospital =:patientHospital')
+                ->setParameter('patientHospital', $hospital);
+        }
+        return sizeof($qb->select('p.id')
+            ->distinct()
+            ->getQuery()
+            ->getScalarResult());
+    }
+
+    /**
+     * Gets Patients`ids array if Prescription is opened
+     * @param $patient
+     * @return int|mixed|string
+     */
+    public function getOpenedPrescriptionsForPatientList($patient)
+    {
+        return $this->createQueryBuilder('pr')
+            ->leftJoin('pr.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('p = :patient')
+            ->andWhere('pr.isCompleted = false')
+            ->setParameter('patient', $patient)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Gets Patients`ids array if Prescription is opened
+     * @return int|mixed|string
+     */
+    public function getOpenedPrescriptions()
+    {
+        return $this->createQueryBuilder('pr')
+            ->leftJoin('pr.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true')
+            ->andWhere('pr.isCompleted = false')
+            ->select('p.id')
+            ->distinct()
+            ->getQuery()
+            ->getResult();
     }
 
     /**

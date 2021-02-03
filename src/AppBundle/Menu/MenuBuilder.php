@@ -8,6 +8,11 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\TransactionRequiredException;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\PatientTesting;
+use App\Entity\Prescription;
+use App\Entity\Staff;
+use App\Services\InfoService\AuthUserInfoService;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
@@ -31,15 +36,27 @@ class MenuBuilder
     private $security;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
      * @param FactoryInterface $factory
      * @param ContainerInterface $container
      * @param Security $security
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(FactoryInterface $factory, ContainerInterface $container, Security $security)
+    public function __construct(
+        FactoryInterface $factory,
+        ContainerInterface $container,
+        Security $security,
+        EntityManagerInterface $entityManager
+    )
     {
         $this->factory = $factory;
         $this->container = $container;
         $this->security = $security;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -475,6 +492,67 @@ class MenuBuilder
                 );
             }
         }
+
+        $menu->addChild(
+            'patientsWithNoResultsList', [
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Без анализов',
+                    $this->entityManager->getRepository(PatientTesting::class)->getNoResultsTestingsMenu(
+                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                            ? $this->entityManager->getRepository(Staff::class)
+                            ->getStaff($this->security->getUser())->getHospital()
+                            : null
+                    )
+                ),
+                'route' => 'patients_with_no_results_list'
+            ]
+        );
+        $menu->addChild(
+            'patientsWithNoProcessedList', [
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Обработать анализы',
+                    $this->entityManager->getRepository(PatientTesting::class)->getNoProcessedTestingsMenu(
+                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                            ? $this->entityManager->getRepository(Staff::class)
+                            ->getStaff($this->security->getUser())->getHospital()
+                            : null
+                    )
+                ),
+                'route' => 'patients_with_no_processed_list'
+            ]
+        );
+        $menu->addChild(
+            'patientsWithOpenedPrescriptionsList', [
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Закрыть назначения',
+                    $this->entityManager->getRepository(Prescription::class)->getOpenedPrescriptionsMenu(
+                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                            ? $this->entityManager->getRepository(Staff::class)
+                            ->getStaff($this->security->getUser())->getHospital()
+                            : null
+                    )
+                ),
+                'route' => 'patients_with_opened_prescriptions_list'
+            ]
+        );
+        $menu->addChild(
+            'patientsWithProcessedResultsList', [
+                'label' => 'Обработанные',
+                'route' => 'patients_with_processed_results_list'
+            ]
+        );
         return $menu;
+    }
+
+    /**
+     * @param string $label
+     * @param int $number
+     * @return string
+     */
+    private function getLabelWithNotificationNumber(string $label, int $number): string
+    {
+        return $number
+            ? $label.'<div class="notificationNumber">'.$number.'</div>'
+            : $label;
     }
 }

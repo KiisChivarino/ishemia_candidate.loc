@@ -108,6 +108,7 @@ abstract class AppAbstractController extends AbstractController
      * @param AdminDatatableService $dataTableService
      * @param FilterLabels|null $filterLabels
      * @param array|null $options
+     * @param Closure|null $listActions
      * @return Response
      * @throws Exception
      */
@@ -115,10 +116,12 @@ abstract class AppAbstractController extends AbstractController
         Request $request,
         AdminDatatableService $dataTableService,
         ?FilterLabels $filterLabels = null,
-        ?array $options = []
+        ?array $options = [],
+        ?Closure $listActions = null
     ): Response
     {
         $template = $this->templateService->list($filterLabels ? $filterLabels->getFilterService() : null);
+
         if ($filterLabels) {
             $filters = $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray());
         }
@@ -128,6 +131,9 @@ abstract class AppAbstractController extends AbstractController
             $filters ?? null,
             $options
         );
+        if ($listActions) {
+            $listActions();
+        }
         $table->handleRequest($request);
         if ($table->isCallback()) {
             return $table->getResponse();
@@ -352,7 +358,7 @@ abstract class AppAbstractController extends AbstractController
      * @param $entity
      * @return Response|void
      */
-    protected function flush($form, $formTemplateName, $entity): ?Response
+    protected function flush($form, $formTemplateName, $entity)
     {
         try {
             $this->getDoctrine()->getManager()->flush();

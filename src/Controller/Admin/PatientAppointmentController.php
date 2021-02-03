@@ -6,6 +6,7 @@ use App\Entity\MedicalHistory;
 use App\Entity\PatientAppointment;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\ConfirmedType;
+use App\Form\Admin\PatientAppointment\EnabledType;
 use App\Form\Admin\PatientAppointment\StaffType;
 use App\Form\Admin\PatientAppointmentType;
 use App\Repository\MedicalHistoryRepository;
@@ -185,6 +186,7 @@ class PatientAppointmentController extends AdminAbstractController
                 new FormData($patientAppointment, StaffType::class),
                 new FormData($patientAppointment, AppointmentTypeType::class),
                 new FormData($patientAppointment, ConfirmedType::class),
+                new FormData($patientAppointment, EnabledType::class),
             ],
             function () use ($patientAppointment, $patientAppointmentCreator) {
                 $patientAppointmentCreator->checkAndPersistRegularPatientAppointment($patientAppointment);
