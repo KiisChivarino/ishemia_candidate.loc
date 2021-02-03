@@ -75,7 +75,7 @@ class PatientTestingsListTemplate extends DoctorOfficeTemplateBuilder
     ];
     /** @var string[] Common FILTER_CONTENT */
     protected const FILTER_CONTENT = [
-        'label' => 'Фильтр по пациенту',
+        'label' => 'Фильтр по группе анализов',
     ];
 
     /** @var string[] Common ENTITY_CONTENT */

@@ -3,25 +3,21 @@
 namespace App\Services\DataTable\DoctorOffice;
 
 use App\Controller\AppAbstractController;
-use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
-use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
-use Omines\DataTablesBundle\Column\DateTimeColumn;
-use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class DataTableService
+ * Class PatientTestingsListPlannedDataTableService
  * methods for adding data tables
  *
  * @package App\DataTable
@@ -61,32 +57,7 @@ class PatientTestingsListPlannedDataTableService extends AdminDatatableService
         array $options
     ): DataTable
     {
-        $patientInfoService = new PatientInfoService();
-        $this->addSerialNumber();
-        $this->dataTable
-            ->add(
-                'analysisGroup', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('analysisGroup'),
-                    'field' => 'aG.name',
-                    'render' => function (string $data, PatientTesting $patientTesting) {
-                        return
-                            $patientTesting
-                                ? $patientTesting ->getAnalysisGroup()->getName()
-                                : '';
-                    },
-                    'orderable' => true,
-                    'orderField' => 'aG.name',
-                ]
-            )
-            ->add(
-                'analysisDate', DateTimeColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('analysisDate'),
-                    'searchable' => false,
-                    'format' => 'd.m.Y H:i'
-                ]
-            )
-        ;
-        $this->addOperationsWithParametersForPatientTestings($renderOperationsFunction, $listTemplateItem);
+        $this->generateTableForPatientTestingsInDoctorOffice($renderOperationsFunction, $listTemplateItem);
 
         $analysisGroup = $filters[AppAbstractController::FILTER_LABELS['ANALYSIS_GROUP']];
         return $this->dataTable

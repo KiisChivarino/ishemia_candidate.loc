@@ -3,11 +3,9 @@
 namespace App\Controller\DoctorOffice;
 
 use App\Entity\Patient;
-use App\Entity\PatientTesting;
 use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTestingResultType;
 use App\Form\PatientTestingFileType;
-use App\Repository\PatientRepository;
 use App\Repository\PatientTestingRepository;
 use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\EntityActions;
@@ -42,9 +40,6 @@ use Twig\Environment;
 class PatientTestingsListController extends DoctorOfficeAbstractController
 {
     const TEMPLATE_PATH = 'doctorOffice/patient_testings_list/';
-
-    /** @var string Name of files collection of entity method */
-    protected const FILES_COLLECTION_PROPERTY_NAME = 'patientTestingFiles';
 
     /**
      * PatientsListController constructor.
@@ -216,8 +211,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      * @Route("patientTesting/{id}/edit", name="patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @param Request $request
-     * @param PatientTesting $patientTesting
-     *
+     * @param PatientTestingRepository $patientTestingRepository
      * @param FileService $fileService
      * @param PatientTestingResultRepository $patientTestingResultRepository
      * @return Response
@@ -228,7 +222,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
         PatientTestingRepository $patientTestingRepository,
         FileService $fileService,
         PatientTestingResultRepository $patientTestingResultRepository
-    )
+    ): Response
     {
         $patientTesting = $patientTestingRepository->find($request->query->get('patientTestingId'));
         $this->setRedirectMedicalHistoryRoute($patientTesting->getMedicalHistory()->getPatient()->getId());
