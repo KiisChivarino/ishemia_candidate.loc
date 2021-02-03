@@ -7,7 +7,7 @@
     {% endif %}
     {% if template.items.edit.isEnabled %}
         <span>
-            <a href="{{ path(template.routes.edit, {'id': rowId}) }}"><img
+            <a href="{{ path(template.routes.edit, parameters) }}"><img
                         src="{{ asset('build/images/operation-icon-2.svg') }}" alt=""></a>
         </span>
     {% endif %}

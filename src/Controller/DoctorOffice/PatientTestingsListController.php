@@ -2,11 +2,13 @@
 
 namespace App\Controller\DoctorOffice;
 
+use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTestingResultType;
 use App\Form\PatientTestingFileType;
 use App\Repository\PatientRepository;
+use App\Repository\PatientTestingRepository;
 use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
@@ -60,9 +62,9 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of patient testings
-     * @Route("/patient/patient_testings", name="patient_testings_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testings", name="patient_testings_list", methods={"GET","POST"})
      *
-     * @param PatientRepository $patientRepository
+     * @param Patient $patient
      * @param Request $request
      * @param PatientTestingsListDataTableService $dataTableService
      * @param FilterService $filterService
@@ -70,13 +72,12 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      * @return Response
      */
     public function list(
-        PatientRepository $patientRepository,
+        Patient $patient,
         Request $request,
         PatientTestingsListDataTableService $dataTableService,
         FilterService $filterService
     ): Response
     {
-        $patient = $patientRepository->findAll()[0];
         return $this->responseList(
             $request, $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
@@ -88,9 +89,9 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of patient testings history
-     * @Route("/patient/patient_testings_history", name="patient_testings_history_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testings_history", name="patient_testings_history_list", methods={"GET","POST"})
      *
-     * @param PatientRepository $patientRepository
+     * @param Patient $patient
      * @param Request $request
      * @param PatientTestingsListHistoryDataTableService $dataTableService
      * @param FilterService $filterService
@@ -98,13 +99,12 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      * @return Response
      */
     public function patientTestingsHistoryList(
-        PatientRepository $patientRepository,
+        Patient $patient,
         Request $request,
         PatientTestingsListHistoryDataTableService $dataTableService,
         FilterService $filterService
     ): Response
     {
-        $patient = $patientRepository->findAll()[0];
         return $this->responseList(
             $request, $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
@@ -120,9 +120,9 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of not processed patient testings
-     * @Route("/patient/patient_testings_not_processed", name="patient_testings_not_processed_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testings_not_processed", name="patient_testings_not_processed_list", methods={"GET","POST"})
      *
-     * @param PatientRepository $patientRepository
+     * @param Patient $patient
      * @param Request $request
      * @param PatientTestingsListNoProcessedDataTableService $dataTableService
      * @param FilterService $filterService
@@ -130,13 +130,12 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      * @return Response
      */
     public function patientTestingsNotProcessedList(
-        PatientRepository $patientRepository,
+        Patient $patient,
         Request $request,
         PatientTestingsListNoProcessedDataTableService $dataTableService,
         FilterService $filterService
     ): Response
     {
-        $patient = $patientRepository->findAll()[0];
         return $this->responseList(
             $request, $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
@@ -152,9 +151,9 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of overdue patient testings
-     * @Route("/patient/patient_testings_overdue", name="patient_testings_overdue_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testings_overdue", name="patient_testings_overdue_list", methods={"GET","POST"})
      *
-     * @param PatientRepository $patientRepository
+     * @param Patient $patient
      * @param Request $request
      * @param PatientTestingsListOverdueDataTableService $dataTableService
      * @param FilterService $filterService
@@ -162,13 +161,12 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      * @return Response
      */
     public function patientTestingsOverdueList(
-        PatientRepository $patientRepository,
+        Patient $patient,
         Request $request,
         PatientTestingsListOverdueDataTableService $dataTableService,
         FilterService $filterService
     ): Response
     {
-        $patient = $patientRepository->findAll()[0];
         return $this->responseList(
             $request, $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
@@ -184,9 +182,9 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of planned patient testings
-     * @Route("/patient/patient_testings_planned", name="patient_testings_planned_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testings_planned", name="patient_testings_planned_list", methods={"GET","POST"})
      *
-     * @param PatientRepository $patientRepository
+     * @param Patient $patient
      * @param Request $request
      * @param PatientTestingsListPlannedDataTableService $dataTableService
      * @param FilterService $filterService
@@ -194,13 +192,12 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      * @return Response
      */
     public function patientTestingsPlannedList(
-        PatientRepository $patientRepository,
+        Patient $patient,
         Request $request,
         PatientTestingsListPlannedDataTableService $dataTableService,
         FilterService $filterService
     ): Response
     {
-        $patient = $patientRepository->findAll()[0];
         return $this->responseList(
             $request, $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
@@ -216,7 +213,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * Редактирование анализа пациента
-     * @Route("/{id}/edit", name="patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("patientTesting/{id}/edit", name="patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param PatientTesting $patientTesting
@@ -228,11 +225,12 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      */
     public function edit(
         Request $request,
-        PatientTesting $patientTesting,
+        PatientTestingRepository $patientTestingRepository,
         FileService $fileService,
         PatientTestingResultRepository $patientTestingResultRepository
     )
     {
+        $patientTesting = $patientTestingRepository->find($request->query->get('patientTestingId'));
         $this->setRedirectMedicalHistoryRoute($patientTesting->getMedicalHistory()->getPatient()->getId());
         $this->templateService->setCommonTemplatePath(self::TEMPLATE_PATH);
         $enabledTestingResults = $patientTestingResultRepository->getEnabledTestingResults($patientTesting);

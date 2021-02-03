@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
@@ -465,48 +466,58 @@ class MenuBuilder
                 'route' => 'patients_list'
             ]
         );
-        $menu->addChild(
-            'patient_testings_list', [
-                'label' => 'Обследования',
-                'route' => 'patient_testings_list',
-            ]
-        );
-        $menu->addChild(
-            'patient_testings_no_processed_list', [
-                'label' => $this->getLabelWithNotificationNumber(
-                    'Необработанные',
-                    $this->entityManager->getRepository(PatientTesting::class)
-                        ->getNoProcessedTestingsMenu(1)
-                ),
-                'route' => 'patient_testings_not_processed_list',
-            ]
-        );
-        $menu->addChild(
-            'patient_testings_planned_list', [
-                'label' => $this->getLabelWithNotificationNumber(
-                    'По плану',
-                    $this->entityManager->getRepository(PatientTesting::class)
-                        ->getPlannedTestingsMenu(1)
-                ),
-                'route' => 'patient_testings_planned_list',
-            ]
-        );
-        $menu->addChild(
-            'patient_testings_overdue_list', [
-                'label' => $this->getLabelWithNotificationNumber(
-                    'Просроченные',
-                    $this->entityManager->getRepository(PatientTesting::class)
-                        ->getOverdueTestingsMenu(1)
-                ),
-                'route' => 'patient_testings_overdue_list',
-            ]
-        );
-        $menu->addChild(
-            'patient_testings_history_list', [
-                'label' => 'История',
-                'route' => 'patient_testings_history_list',
-            ]
-        );
+        /** @var Request $request */
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $patientId = $request->get('id');
+        if (!is_null($patientId)) {
+            $menu->addChild(
+                'patient_testings_list', [
+                    'label' => 'Обследования',
+                    'route' => 'patient_testings_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
+            $menu->addChild(
+                'patient_testings_no_processed_list', [
+                    'label' => $this->getLabelWithNotificationNumber(
+                        'Необработанные',
+                        $this->entityManager->getRepository(PatientTesting::class)
+                            ->getNoProcessedTestingsMenu($patientId)
+                    ),
+                    'route' => 'patient_testings_not_processed_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
+            $menu->addChild(
+                'patient_testings_planned_list', [
+                    'label' => $this->getLabelWithNotificationNumber(
+                        'По плану',
+                        $this->entityManager->getRepository(PatientTesting::class)
+                            ->getPlannedTestingsMenu($patientId)
+                    ),
+                    'route' => 'patient_testings_planned_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
+            $menu->addChild(
+                'patient_testings_overdue_list', [
+                    'label' => $this->getLabelWithNotificationNumber(
+                        'Просроченные',
+                        $this->entityManager->getRepository(PatientTesting::class)
+                            ->getOverdueTestingsMenu($patientId)
+                    ),
+                    'route' => 'patient_testings_overdue_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
+            $menu->addChild(
+                'patient_testings_history_list', [
+                    'label' => 'История',
+                    'route' => 'patient_testings_history_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
+        }
         return $menu;
     }
 

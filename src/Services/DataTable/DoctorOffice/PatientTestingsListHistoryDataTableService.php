@@ -86,7 +86,7 @@ class PatientTestingsListHistoryDataTableService extends AdminDatatableService
                 ]
             )
         ;
-        $this->addOperations($renderOperationsFunction, $listTemplateItem);
+        $this->addOperationsWithParametersForPatientTestings($renderOperationsFunction, $listTemplateItem);
 
         $analysisGroup = $filters[AppAbstractController::FILTER_LABELS['ANALYSIS_GROUP']];
         return $this->dataTable
