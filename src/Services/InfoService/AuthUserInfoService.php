@@ -11,7 +11,6 @@ use App\Entity\Role;
  */
 class AuthUserInfoService
 {
-
     /**
      * ФИО пользователя
      *
@@ -97,5 +96,15 @@ class AuthUserInfoService
             $pass[] = $alphabet[$n];
         }
         return implode($pass); //turn the array into a string
+    }
+
+    /**
+     * Checks if user is ROLE_DOCTOR_HOSPITAL
+     * @param AuthUser $authUser
+     * @return bool
+     */
+    public function isDoctorHospital(AuthUser $authUser): bool
+    {
+        return in_array('ROLE_DOCTOR_HOSPITAL', $authUser->getRoles());
     }
 }

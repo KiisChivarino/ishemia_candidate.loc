@@ -100,7 +100,7 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
                         ->get(MultiFormService::getFormName(PatientTestingFileType::class) . 's')
                 );
                 $patientTesting->setEnabled(true);
-                $patientTesting->setProcessed(true);
+                $patientTesting->setIsProcessedByStaff(true);
             }
         );
     }

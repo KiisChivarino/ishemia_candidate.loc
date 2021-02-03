@@ -28,9 +28,9 @@ class PatientTesting
     private $analysisGroup;
 
     /**
-     * @ORM\Column(type="text", nullable=true, options={"comment"="Данные результатов обследования"})
+     * @ORM\Column(type="text", nullable=true, options={"comment"="Результаты анализов текстом"})
      */
-    private $resultData;
+    private $patientTestingResultInfo;
 
     /**
      * @ORM\Column(type="date", nullable=true, options={"comment"="Дата проведенного тестирования"})
@@ -38,14 +38,9 @@ class PatientTesting
     private $analysisDate;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Статус наличия результатов", "default"=false})
-     */
-    private $hasResult = false;
-
-    /**
      * @ORM\Column(type="boolean", options={"comment"="Статус принятия в работу врачом", "default"=false})
      */
-    private $processed;
+    private $isProcessedByStaff;
 
     /**
      * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
@@ -99,6 +94,11 @@ class PatientTesting
     private $isByPlan;
 
     /**
+     * @ORM\Column(type="boolean", options={"comment"="Флаг: Указаны ли результаты анализов", "default"=false})
+     */
+    private $hasResult = false;
+
+    /**
      * PatientTesting constructor.
      */
     public function __construct()
@@ -113,24 +113,6 @@ class PatientTesting
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResultData()
-    {
-        return $this->resultData;
-    }
-
-    /**
-     * @param string|null $resultData
-     * @return PatientTesting
-     */
-    public function setResultData(?string $resultData): PatientTesting
-    {
-        $this->resultData = $resultData;
-        return $this;
     }
 
     /**
@@ -149,6 +131,42 @@ class PatientTesting
     public function setAnalysisGroup(?AnalysisGroup $analysisGroup): self
     {
         $this->analysisGroup = $analysisGroup;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPatientTestingResultInfo()
+    {
+        return $this->patientTestingResultInfo;
+    }
+
+    /**
+     * @param mixed $patientTestingResultInfo
+     * @return PatientTesting
+     */
+    public function setPatientTestingResultInfo($patientTestingResultInfo): PatientTesting
+    {
+        $this->patientTestingResultInfo = $patientTestingResultInfo;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasResult(): bool
+    {
+        return $this->hasResult;
+    }
+
+    /**
+     * @param bool $hasResult
+     * @return PatientTesting
+     */
+    public function setHasResult(bool $hasResult): PatientTesting
+    {
+        $this->hasResult = $hasResult;
         return $this;
     }
 
@@ -174,19 +192,18 @@ class PatientTesting
     /**
      * @return bool|null
      */
-    public function getProcessed(): ?bool
+    public function getIsProcessedByStaff(): ?bool
     {
-        return $this->processed;
+        return $this->isProcessedByStaff;
     }
 
     /**
-     * @param bool $processed
-     *
+     * @param bool $isProcessedByStaff
      * @return $this
      */
-    public function setProcessed(bool $processed): self
+    public function setIsProcessedByStaff(bool $isProcessedByStaff): self
     {
-        $this->processed = $processed;
+        $this->isProcessedByStaff = $isProcessedByStaff;
         return $this;
     }
 
@@ -400,25 +417,6 @@ class PatientTesting
     public function setIsByPlan(bool $isByPlan): self
     {
         $this->isByPlan = $isByPlan;
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getHasResult(): ?bool
-    {
-        return $this->hasResult;
-    }
-
-    /**
-     * @param bool $hasResult
-     * @return $this
-     */
-    public function setHasResult(bool $hasResult): self
-    {
-        $this->hasResult = $hasResult;
-
         return $this;
     }
 }

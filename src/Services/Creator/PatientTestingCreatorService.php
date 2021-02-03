@@ -70,7 +70,7 @@ class PatientTestingCreatorService
         return (new PatientTesting())
             ->setMedicalHistory($medicalHistory)
             ->setAnalysisGroup($planTesting->getAnalysisGroup())
-            ->setProcessed(false)
+            ->setIsProcessedByStaff(false)
             ->setEnabled(true)
             ->setAnalysisDate(null)
             ->setIsFirst($isFirst)
@@ -160,7 +160,7 @@ class PatientTestingCreatorService
      */
     public function checkPatientTestingForRegular(PatientTesting $patientTesting): bool
     {
-        return $patientTesting->getProcessed()
+        return $patientTesting->getIsProcessedByStaff()
             && $patientTesting->getIsByPlan()
             && $patientTesting->getPlanTesting()->getTimeRange()->getIsRegular();
     }
