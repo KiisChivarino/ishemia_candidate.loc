@@ -75,8 +75,8 @@ class PatientTestingDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
-                'processed', BoolColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('processed'),
+                'isProcessedByStaff', BoolColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('isProcessedByStaff'),
                     'trueValue' => 'да',
                     'falseValue' => 'нет',
                     'searchable' => false,

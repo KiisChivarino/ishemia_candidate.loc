@@ -30,7 +30,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
     public const COMMON_CONTENT = [
         'analysisGroup' => 'Группа анализов',
         'analysisDate' => 'Проведено',
-        'processed' => 'Обработано врачом',
+        'isProcessedByStaff' => 'Обработано врачом',
         'patientTestingFiles'=> 'Сканкопии результатов анализов'
     ];
 

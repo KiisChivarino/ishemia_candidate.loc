@@ -25,8 +25,8 @@
         <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : '' }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.processed }}</span>
-        <p>{{ entity.processed ?
+        <span class="title">{{ template.items.show.content.isProcessedByStaff }}</span>
+        <p>{{ entity.isProcessedByStaff ?
             template.items.show.content.trueValue :
             template.items.show.content.falseValue }}
         </p>

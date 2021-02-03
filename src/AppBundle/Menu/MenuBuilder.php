@@ -433,6 +433,12 @@ class MenuBuilder
             ]
         );
         $menu->addChild(
+            'add_prescription', [
+                'label' => 'Добавить назначение',
+                'route' => 'adding_patient_by_doctor'
+            ]
+        );
+        $menu->addChild(
             'logout', [
                 'label' => 'Выйти',
                 'route' => 'logout_from_app'
