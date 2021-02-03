@@ -7,7 +7,6 @@ use App\Entity\Prescription;
 use App\Entity\Staff;
 use App\Services\InfoService\AuthUserInfoService;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Services\InfoService\AuthUserInfoService;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
@@ -51,6 +50,7 @@ class MenuBuilder
         $this->factory = $factory;
         $this->container = $container;
         $this->security = $security;
+        $this->entityManager = $entityManager;
     }
 
     /**
