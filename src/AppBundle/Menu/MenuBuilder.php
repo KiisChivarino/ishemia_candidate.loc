@@ -534,34 +534,38 @@ class MenuBuilder
 
     /**
      * Checks if current page and menu item belongs to the medical history pages block
+     * @param string $entityClass
+     * @param string $GETParameterKey
      * @return bool
      */
-    private function isMedicalHistoryMenu(): bool
+    private function isMenuForEntity(string $entityClass, string $GETParameterKey): bool
     {
-        $medicalHistoryId = $this->getMedicalHistoryId();
-        if ($medicalHistoryId == null) {
+        $entityId = $this->getEntityId($GETParameterKey);
+        if ($entityId == null) {
             return false;
         }
-        $medicalHistory = $this->getMedicalHistoryById($medicalHistoryId);
-        return ($medicalHistory && is_a($medicalHistory, MedicalHistory::class));
+        $entity = $this->getEntityById($entityId, $entityClass);
+        return ($entity && is_a($entity, MedicalHistory::class));
     }
 
     /**
      * Returns id of medical history by GET parameter
+     * @param string $GETParameterKey
      * @return int|null
      */
-    private function getMedicalHistoryId(): ?int
+    private function getEntityId(string $GETParameterKey): ?int
     {
-        return $this->container->get('request_stack')->getCurrentRequest()->get('medical_history');
+        return $this->container->get('request_stack')->getCurrentRequest()->get($GETParameterKey);
     }
 
     /**
      * Returns medical history by id
      * @param int $medicalHistoryId
+     * @param string $entityClass
      * @return MedicalHistory|null
      */
-    private function getMedicalHistoryById(int $medicalHistoryId): ?MedicalHistory
+    private function getEntityById(int $medicalHistoryId, string $entityClass): ?MedicalHistory
     {
-        return $this->entityManager->find(MedicalHistory::class, $medicalHistoryId);
+        return $this->entityManager->find($entityClass, $medicalHistoryId);
     }
 }
