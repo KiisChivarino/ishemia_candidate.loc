@@ -2,7 +2,7 @@
 
 namespace App\AppBundle\Menu;
 
-use App\Entity\MedicalHistory;
+use App\Entity\MedicalHistory as MedicalHistoryAlias;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\Staff;
@@ -504,7 +504,7 @@ class MenuBuilder
                     $this->entityManager->getRepository(Prescription::class)->getOpenedPrescriptionsMenu(
                         (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
                             ? $this->entityManager->getRepository(Staff::class)
-                                ->getStaff($this->security->getUser())->getHospital()
+                            ->getStaff($this->security->getUser())->getHospital()
                             : null
                     )
                 ),
@@ -581,12 +581,12 @@ class MenuBuilder
     private function getLabelWithNotificationNumber(string $label, int $number): string
     {
         return $number
-            ? $label.'<div class="notificationNumber">'.$number.'</div>'
+            ? $label . '<div class="notificationNumber">' . $number . '</div>'
             : $label;
     }
 
     /**
-     * Checks if current page and menu item belongs to the medical history pages block
+     * Checks if current page and menu item belongs to the entity object pages block
      * @param string $entityClass
      * @param string $GETParameterKey
      * @return bool
@@ -598,11 +598,11 @@ class MenuBuilder
             return false;
         }
         $entity = $this->getEntityById($entityId, $entityClass);
-        return ($entity && is_a($entity, MedicalHistory::class));
+        return ($entity && is_a($entity, $entityClass));
     }
 
     /**
-     * Returns id of medical history by GET parameter
+     * Returns id of entity object by GET parameter
      * @param string $GETParameterKey
      * @return int|null
      */
@@ -612,13 +612,13 @@ class MenuBuilder
     }
 
     /**
-     * Returns medical history by id
-     * @param int $medicalHistoryId
+     * Returns entity object by id
+     * @param int $entityId
      * @param string $entityClass
-     * @return MedicalHistory|null
+     * @return object|null
      */
-    private function getEntityById(int $medicalHistoryId, string $entityClass): ?MedicalHistory
+    private function getEntityById(int $entityId, string $entityClass): ?object
     {
-        return $this->entityManager->find($entityClass, $medicalHistoryId);
+        return $this->entityManager->find($entityClass, $entityId);
     }
 }
