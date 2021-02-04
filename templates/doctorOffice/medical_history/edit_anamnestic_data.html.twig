@@ -14,29 +14,6 @@
     </div>
     <div class="adm-users-edit">
         {{ form_start(form) }}
-        {% for child in form.mainDisease %}
-            <ul>
-                <li>
-                    <span class="label">{{ form_label(child) }}</span>
-                    {% if child.vars.name == 'lifeHistory' %}
-                        <a href="{{ path(
-                            'doctor_edit_anamnestic_data_anamnesis_of_life_using_constructor',
-                            { 'id': entity.id}
-                        ) }}"
-                           class="form-control">Собрать Анамнез жизни</a>
-                        <a href="{{ path(
-                            'doctor_edit_anamnestic_data_anamnesis_of_life_by_template',
-                            { 'id': entity.id}
-                        ) }}"
-                           class="form-control"
-                        >
-                            Выбрать из шаблона Анамнез жизни
-                        </a>
-                    {% endif %}
-                    {{ form_widget(child) }}
-                </li>
-            </ul>
-        {% endfor %}
         {% for child in form.medicalHistory %}
             <ul>
                 <li {% if 'checkbox' in child.vars.block_prefixes %}class="checks" {% endif %}>
@@ -59,6 +36,22 @@
                             Выбрать из шаблона Анамнез жизни
                         </a>
                     {% endif %}
+                    {{ form_widget(child) }}
+                </li>
+            </ul>
+        {% endfor %}
+        {% for child in form.patientClinicalDiagnosisText %}
+            <ul>
+                <li>
+                    {{ form_label(child) }}
+                    {{ form_widget(child) }}
+                </li>
+            </ul>
+        {% endfor %}
+        {% for child in form.patientMKBCode %}
+            <ul>
+                <li>
+                    {{ form_label(child) }}
                     {{ form_widget(child) }}
                 </li>
             </ul>

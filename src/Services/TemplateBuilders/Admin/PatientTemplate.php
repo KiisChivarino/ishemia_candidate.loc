@@ -24,6 +24,8 @@ class PatientTemplate extends AdminTemplateBuilder
         'phone' => 'Телефон',
         'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
         'appointmentType' => AppointmentTypeTemplate::ENTITY_CONTENT['entity'],
+        'MKBCode' => 'Код клинического диагноза',
+        'text' => 'Текст клинического диагноза',
     ];
 
     /** @var string[] Common content for form, show templates */
@@ -50,6 +52,7 @@ class PatientTemplate extends AdminTemplateBuilder
         'diagnosisPlaceholder' => 'Выберите диагноз',
         'cityPlaceholder' => 'Выберите город',
         'staffFio' => StaffTemplate::ENTITY_CONTENT['staffFio'],
+        'MKBCodePlaceholder' => 'Выберите код МКБ',
     ];
 
     /** @var string[] Common LIST_CONTENT */

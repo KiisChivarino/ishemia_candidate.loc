@@ -2,9 +2,7 @@
 
 namespace App\Form\Admin;
 
-use App\Controller\AjaxController;
 use App\Controller\AppAbstractController;
-use App\Entity\Diagnosis;
 use App\Entity\MedicalHistory;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
@@ -12,7 +10,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 /**
  * Class MedicalHistoryType
@@ -43,78 +40,6 @@ class MedicalHistoryType extends AbstractType
                     'label' => $templateItem->getContentValue('dateBegin'),
                     'widget' => 'single_text',
                     'format' => 'yyyy-MM-dd',
-                ]
-            )
-            ->add(
-                'mainDisease', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('mainDisease'),
-                    'method' => 'POST',
-                    'remote_route' => 'find_diagnosis_ajax',
-                    'class' => Diagnosis::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 3,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('mainDiseasePlaceholder'),
-                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
-                    'required' => false
-                ]
-            )
-            ->add(
-                'backgroundDiseases', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('backgroundDiseases'),
-                    'method' => 'POST',
-                    'multiple' => true,
-                    'remote_route' => 'find_diagnosis_ajax',
-                    'class' => Diagnosis::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 3,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('backgroundDiseasesPlaceholder'),
-                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
-                ]
-            )
-            ->add(
-                'complications', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('complications'),
-                    'method' => 'POST',
-                    'multiple' => true,
-                    'remote_route' => 'find_diagnosis_ajax',
-                    'class' => Diagnosis::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 3,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('complicationsPlaceholder'),
-                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
-                ]
-            )
-            ->add(
-                'concomitantDiseases', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('concomitantDiseases'),
-                    'method' => 'POST',
-                    'multiple' => true,
-                    'remote_route' => 'find_diagnosis_ajax',
-                    'class' => Diagnosis::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 3,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('concomitantDiseasesPlaceholder'),
-                    'attr' => ['class' => AjaxController::AJAX_INIT_CSS_CLASS],
                 ]
             );
     }

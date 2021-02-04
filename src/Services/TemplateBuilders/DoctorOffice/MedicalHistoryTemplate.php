@@ -79,6 +79,17 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'entity' => \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
     ];
 
+    /** @var string[] Common COMMON_CONTENT */
+    protected const COMMON_CONTENT = [
+        'text' => 'Текст клинического диагноза',
+        'MKBCode' => 'Код клинического диагноза',
+    ];
+
+    /** @var string[] Common FORM_CONTENT */
+    protected const FORM_CONTENT = [
+        'MKBCodePlaceholder' => 'Выберите код МКБ',
+    ];
+
     /**
      * MedicalHistoryTemplate constructor.
      *

@@ -117,6 +117,14 @@
                             <p>{{ template.items.show.content.dateBegin }}</p>
                             <p>{{ medicalHistory.dateBegin ? medicalHistory.dateBegin|date('d.m.Y') : '' }}</p>
                         </div>
+                        <div class="statement__info-block">
+                            <p>{{ template.items.show.content.MKBCode }}</p>
+                            <p>{{ medicalHistory.clinicalDiagnosis.MKBCode.code }}</p>
+                        </div>
+                        <div class="statement__info-block">
+                            <p>{{ template.items.show.content.text }}</p>
+                            <p>{{ medicalHistory.clinicalDiagnosis.text }}</p>
+                        </div>
                         {% if medicalHistory.dateEnd %}
                             <div class="statement__info-block">
                                 <p>{{ template.items.show.content.dateEnd }}</p>
@@ -125,47 +133,6 @@
                                 </p>
                             </div>
                         {% endif %}
-                        <div class="statement__info-block">
-                            <p>{{ template.items.show.content.clinicalDiagnosisInfo }}</p>
-                            {{ medicalHistory.clinicalDiagnosisInfo | raw }}
-                        </div>
-                        <div class="statement__info-block">
-                            <p>{{ template.items.show.content.mainDisease }}</p>
-                            <p>
-                                {% if (medicalHistory.mainDisease) %}
-                                    {{ medicalHistory.mainDisease.name }}
-                                {% else %}
-                                    {{ template.items.show.content.mainDiseaseNotFound }}
-                                {% endif %}
-                            </p>
-                        </div>
-                        <div class="statement__info-block">
-                            <p>{{ template.items.show.content.backgroundDiseases }}</p>
-                            {% if medicalHistory.backgroundDiseases is empty %}
-                                <p>{{ template.items.show.content.backgroundDiseasesNotFound }}</p>
-                            {% endif %}
-                            {% for backgroundDisease in medicalHistory.backgroundDiseases %}
-                                <p>{{ backgroundDisease.name }}</p>
-                            {% endfor %}
-                        </div>
-                        <div class="statement__info-block">
-                            <p>{{ template.items.show.content.complications }}</p>
-                            {% if medicalHistory.complications is empty %}
-                                <p>{{ template.items.show.content.complicationsNotFound }}</p>
-                            {% endif %}
-                            {% for complication in medicalHistory.complications %}
-                                <p>{{ complication.name }}</p>
-                            {% endfor %}
-                        </div>
-                        <div class="statement__info-block">
-                            <p>{{ template.items.show.content.concomitantDiseases }}</p>
-                            {% if medicalHistory.concomitantDiseases is empty %}
-                                <p>{{ template.items.show.content.concomitantDiseasesNotFound }}</p>
-                            {% endif %}
-                            {% for concomitantDisease in medicalHistory.concomitantDiseases %}
-                                <p>{{ concomitantDisease.name }}</p>
-                            {% endfor %}
-                        </div>
                     </div>
                 </div>
             </div>
@@ -348,18 +315,18 @@
                                     </a>
                                 {% endfor %}
                             </p>
-                            {% if patientTestingResults and enabledTestingResults(testing) is not empty %}
-                                <div class="table-wrapper table-history">
-                                    <table>
-                                        <thead>
-                                        <tr>
-                                            <th>Анализ</th>
-                                            <th>Результат</th>
-                                        </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            {% endif %}
+{#                            {% if patientTestingResults and enabledTestingResults(testing) is not empty %}#}
+{#                                <div class="table-wrapper table-history">#}
+{#                                    <table>#}
+{#                                        <thead>#}
+{#                                        <tr>#}
+{#                                            <th>Анализ</th>#}
+{#                                            <th>Результат</th>#}
+{#                                        </tr>#}
+{#                                        </thead>#}
+{#                                    </table>#}
+{#                                </div>#}
+{#                            {% endif %}#}
                         </div>
                     </div>
                     <div class="statement__info">
