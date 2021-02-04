@@ -208,7 +208,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * Редактирование анализа пациента
-     * @Route("patientTesting/{id}/edit", name="patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/patientTesting/{id}/edit", name="patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param PatientTestingRepository $patientTestingRepository
@@ -256,7 +256,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
                         ->get(MultiFormService::getFormName(PatientTestingFileType::class) . 's')
                 );
                 $patientTesting->setEnabled(true);
-                $patientTesting->setProcessed(true);
+                $patientTesting->setIsProcessedByStaff(true);
             }
         );
     }

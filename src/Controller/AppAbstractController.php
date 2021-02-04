@@ -79,7 +79,7 @@ abstract class AppAbstractController extends AbstractController
                 $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
                 [
                     'template' => $this->templateService,
-                    'parameters' => array_merge(['id' => $value], $options ?? [])
+                    'parameters' => array_merge(['id' => $value], is_array($options) ? $options : [])
                 ]
             )->getContent();
         };

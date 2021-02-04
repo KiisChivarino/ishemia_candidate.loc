@@ -49,7 +49,7 @@ class PatientTestingNotRequiredType extends AbstractType
                 ]
             )
             ->add(
-                'processed', CheckboxType::class, [
+                'isProcessedByStaff', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('processed'),
                     'required' => false,
                 ]

@@ -74,7 +74,7 @@ class PatientTestingsListNoProcessedDataTableService extends AdminDatatableServi
                             ->leftJoin('pT.analysisGroup', 'aG')
                             ->andWhere('u.enabled = :val')
                             ->andWhere('p.id = :patientId')
-                            ->andWhere('pT.processed = false')
+                            ->andWhere('pT.isProcessedByStaff = false')
                             ->andWhere('pT.hasResult = true')
                             ->setParameter('patientId', $options['patientId'])
                             ->setParameter('val', true);

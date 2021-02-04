@@ -2,7 +2,7 @@
 
 namespace App\AppBundle\Menu;
 
-use App\Entity\MedicalHistory as MedicalHistoryAlias;
+use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\Staff;
@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
@@ -404,13 +403,7 @@ class MenuBuilder
                 'route' => 'web_notification_list'
             ]
         );
-        foreach ($menu->getChildren() as $item) {
-            foreach ($item->getChildren() as $childrenItem) {
-                if ($childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()) {
-                    $childrenItem->setCurrent(true);
-                }
-            }
-        }
+        $this->activateStoringSelectedMenuItem($menu, $requestStack);
         return $menu;
     }
 
@@ -457,112 +450,141 @@ class MenuBuilder
     /**
      * Меню кабинета врача в sidebar
      *
+     * @param RequestStack $requestStack
      * @return ItemInterface
      */
-    public function createDoctorOfficeSidebarMenu(): ItemInterface
+    public function createDoctorOfficeSidebarMenu(RequestStack $requestStack): ItemInterface
     {
         $menu = $this->factory->createItem('root');
-        $menu->setChildrenAttribute('class', 'sidebar__list');
+        $menu->setAttribute('class', 'sidebar__list');
+
+        $patientsNoResultsTestingsCount = $this->entityManager->getRepository(PatientTesting::class)
+            ->getNoResultsTestingsMenu(
+            (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                ? $this->entityManager->getRepository(Staff::class)
+                ->getStaff($this->security->getUser())->getHospital()
+                : null
+        );
+        $patientsNoProcessedTestingsCount = $this->entityManager->getRepository(PatientTesting::class)
+            ->getNoProcessedTestingsMenu(
+            (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                ? $this->entityManager->getRepository(Staff::class)
+                ->getStaff($this->security->getUser())->getHospital()
+                : null
+        );
+        $patientsOpenedPrescriptionsCount = $this->entityManager->getRepository(Prescription::class)
+            ->getOpenedPrescriptionsMenu(
+            (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                ? $this->entityManager->getRepository(Staff::class)
+                ->getStaff($this->security->getUser())->getHospital()
+                : null
+        );
+
         $menu->addChild(
             'patientsList', [
-                'label' => 'Пациенты',
-                'route' => 'patients_list'
+                'label' => $this->getLabelWithNotificationNumber(
+                    'Пациенты',
+                    $patientsNoResultsTestingsCount
+                        + $patientsNoProcessedTestingsCount
+                        + $patientsOpenedPrescriptionsCount
+                )
             ]
-        );
-        $menu->addChild(
+        )->setAttribute('class', 'sublist');
+
+        $menu['patientsList']->addChild(
+            'patientsList', [
+            'label' => 'Все',
+            'route' => 'patients_list'
+        ]);
+        $menu['patientsList']->addChild(
             'patientsWithNoResultsList', [
                 'label' => $this->getLabelWithNotificationNumber(
                     'Без анализов',
-                    $this->entityManager->getRepository(PatientTesting::class)->getNoResultsTestingsMenu(
-                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
-                            ? $this->entityManager->getRepository(Staff::class)
-                            ->getStaff($this->security->getUser())->getHospital()
-                            : null
-                    )
+                    $patientsNoResultsTestingsCount
                 ),
                 'route' => 'patients_with_no_results_list'
             ]
         );
-        $menu->addChild(
+        $menu['patientsList']->addChild(
             'patientsWithNoProcessedList', [
                 'label' => $this->getLabelWithNotificationNumber(
                     'Обработать анализы',
-                    $this->entityManager->getRepository(PatientTesting::class)->getNoProcessedTestingsMenu(
-                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
-                            ? $this->entityManager->getRepository(Staff::class)
-                            ->getStaff($this->security->getUser())->getHospital()
-                            : null
-                    )
+                    $patientsNoProcessedTestingsCount
                 ),
                 'route' => 'patients_with_no_processed_list'
             ]
         );
-        $menu->addChild(
+        $menu['patientsList']->addChild(
             'patientsWithOpenedPrescriptionsList', [
                 'label' => $this->getLabelWithNotificationNumber(
                     'Закрыть назначения',
-                    $this->entityManager->getRepository(Prescription::class)->getOpenedPrescriptionsMenu(
-                        (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
-                            ? $this->entityManager->getRepository(Staff::class)
-                            ->getStaff($this->security->getUser())->getHospital()
-                            : null
-                    )
+                    $patientsOpenedPrescriptionsCount
                 ),
                 'route' => 'patients_with_opened_prescriptions_list'
             ]
         );
-        $menu->addChild(
+        $menu['patientsList']->addChild(
             'patientsWithProcessedResultsList', [
                 'label' => 'Обработанные',
                 'route' => 'patients_with_processed_results_list'
             ]
         );
 
-        /** @var Request $request */
-        $request = $this->container->get('request_stack')->getCurrentRequest();
-        $patientId = $request->get('id');
-        if (!is_null($patientId)) {
+        if ($this->isMenuForEntity(Patient::class, 'id')) {
+            $patientId = $this->getEntityId('id');
+            $noProcessedTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
+                ->getNoProcessedTestingsMenu($patientId);
+            $plannedTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
+                ->getPlannedTestingsMenu($patientId);
+            $overdueTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
+                ->getOverdueTestingsMenu($patientId);
+
             $menu->addChild(
+                'patientTestings', [
+                    'label' => $this->getLabelWithNotificationNumber(
+                        'Обследования пациента',
+                        $noProcessedTestingsCounter + $plannedTestingsCounter + $overdueTestingsCounter
+                    )
+                ]
+            )->setAttribute('class', 'sublist');
+            $menu['patientTestings']->addChild(
                 'patient_testings_list', [
-                    'label' => 'Обследования',
+                    'label' => 'Все',
                     'route' => 'patient_testings_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
-            $menu->addChild(
+            $menu['patientTestings']->addChild(
                 'patient_testings_no_processed_list', [
                     'label' => $this->getLabelWithNotificationNumber(
                         'Необработанные',
-                        $this->entityManager->getRepository(PatientTesting::class)
-                            ->getNoProcessedTestingsMenu($patientId)
+                        $noProcessedTestingsCounter
                     ),
                     'route' => 'patient_testings_not_processed_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
-            $menu->addChild(
+            $menu['patientTestings']->addChild(
                 'patient_testings_planned_list', [
                     'label' => $this->getLabelWithNotificationNumber(
                         'По плану',
-                        $this->entityManager->getRepository(PatientTesting::class)
-                            ->getPlannedTestingsMenu($patientId)
+                        $plannedTestingsCounter
                     ),
                     'route' => 'patient_testings_planned_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
-            $menu->addChild(
+            $menu['patientTestings']->addChild(
                 'patient_testings_overdue_list', [
                     'label' => $this->getLabelWithNotificationNumber(
                         'Просроченные',
-                        $this->entityManager->getRepository(PatientTesting::class)
-                            ->getOverdueTestingsMenu($patientId)
+                        $overdueTestingsCounter
                     ),
                     'route' => 'patient_testings_overdue_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
-            $menu->addChild(
+            $menu['patientTestings']->addChild(
                 'patient_testings_history_list', [
                     'label' => 'История',
                     'route' => 'patient_testings_history_list',
@@ -570,6 +592,7 @@ class MenuBuilder
                 ]
             );
         }
+        $this->activateStoringSelectedMenuItem($menu, $requestStack);
         return $menu;
     }
 
@@ -620,5 +643,22 @@ class MenuBuilder
     private function getEntityById(int $entityId, string $entityClass): ?object
     {
         return $this->entityManager->find($entityClass, $entityId);
+    }
+
+    /**
+     * Activates storing the selected menu item
+     * @param $menu
+     * @param $requestStack
+     * @return void
+     */
+    private function activateStoringSelectedMenuItem($menu, $requestStack): void
+    {
+        foreach ($menu->getChildren() as $item) {
+            foreach ($item->getChildren() as $childrenItem) {
+                if ($childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()) {
+                    $childrenItem->setCurrent(true);
+                }
+            }
+        }
     }
 }

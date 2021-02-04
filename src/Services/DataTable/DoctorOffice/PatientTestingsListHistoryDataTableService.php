@@ -74,7 +74,7 @@ class PatientTestingsListHistoryDataTableService extends AdminDatatableService
                             ->leftJoin('pT.analysisGroup', 'aG')
                             ->andWhere('u.enabled = :val')
                             ->andWhere('p.id = :patientId')
-                            ->andWhere('pT.processed = true')
+                            ->andWhere('pT.isProcessedByStaff = true')
                             ->andWhere('pT.hasResult = true')
                             ->setParameter('patientId', $options['patientId'])
                             ->setParameter('val', true);
