@@ -2,6 +2,7 @@
 
 namespace App\AppBundle\Menu;
 
+use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\Staff;
@@ -529,5 +530,38 @@ class MenuBuilder
         return $number
             ? $label.'<div class="notificationNumber">'.$number.'</div>'
             : $label;
+    }
+
+    /**
+     * Checks if current page and menu item belongs to the medical history pages block
+     * @return bool
+     */
+    private function isMedicalHistoryMenu(): bool
+    {
+        $medicalHistoryId = $this->getMedicalHistoryId();
+        if ($medicalHistoryId == null) {
+            return false;
+        }
+        $medicalHistory = $this->getMedicalHistoryById($medicalHistoryId);
+        return ($medicalHistory && is_a($medicalHistory, MedicalHistory::class));
+    }
+
+    /**
+     * Returns id of medical history by GET parameter
+     * @return int|null
+     */
+    private function getMedicalHistoryId(): ?int
+    {
+        return $this->container->get('request_stack')->getCurrentRequest()->get('medical_history');
+    }
+
+    /**
+     * Returns medical history by id
+     * @param int $medicalHistoryId
+     * @return MedicalHistory|null
+     */
+    private function getMedicalHistoryById(int $medicalHistoryId): ?MedicalHistory
+    {
+        return $this->entityManager->find(MedicalHistory::class, $medicalHistoryId);
     }
 }
