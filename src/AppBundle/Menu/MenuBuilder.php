@@ -3,11 +3,9 @@
 namespace App\AppBundle\Menu;
 
 use App\Entity\MedicalHistory;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\TransactionRequiredException;
-use Symfony\Component\HttpFoundation\Request;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\Staff;
@@ -432,12 +430,15 @@ class MenuBuilder
                 'route' => 'adding_patient_by_doctor'
             ]
         );
-        $menu->addChild(
-            'add_prescription', [
-                'label' => 'Добавить назначение',
-                'route' => 'adding_patient_by_doctor'
-            ]
-        );
+        if ($this->isMedicalHistoryMenu()) {
+            $menu->addChild(
+                'add_prescription', [
+                    'label' => 'Добавить назначение',
+                    'route' => 'adding_patient_by_doctor',
+                    'routeParameters' => ['medical_history' => $this->getMedicalHistoryId()]
+                ]
+            );
+        }
         $menu->addChild(
             'logout', [
                 'label' => 'Выйти',
@@ -481,24 +482,15 @@ class MenuBuilder
                 'route' => 'patients_list'
             ]
         );
-        /** @var Request $request */
-        $request = $this->container->get('request_stack')->getCurrentRequest();
-        $medicalHistoryId = $request->get('medical_history');
-        if ($medicalHistoryId !== null) {
-            /** @var EntityManager $entityManager */
-            $entityManager = $this->container->get('doctrine')->getManager();
-            $medicalHistory = $entityManager->find(MedicalHistory::class, $medicalHistoryId);
-            if($medicalHistory && is_a($medicalHistory, MedicalHistory::class)){
-                $menu->addChild(
-                    'prescriptionList', [
-                        'label' => 'Назначения',
-                        'route' => 'prescription_list',
-                        'routeParameters' => ['medical_history' => $medicalHistoryId]
-                    ]
-                );
-            }
+        if ($this->isMedicalHistoryMenu()) {
+            $menu->addChild(
+                'prescriptionList', [
+                    'label' => 'Назначения',
+                    'route' => 'prescription_list',
+                    'routeParameters' => ['medical_history' => $this->getMedicalHistoryId()]
+                ]
+            );
         }
-
         $menu->addChild(
             'patientsWithNoResultsList', [
                 'label' => $this->getLabelWithNotificationNumber(
@@ -558,7 +550,40 @@ class MenuBuilder
     private function getLabelWithNotificationNumber(string $label, int $number): string
     {
         return $number
-            ? $label.'<div class="notificationNumber">'.$number.'</div>'
+            ? $label . '<div class="notificationNumber">' . $number . '</div>'
             : $label;
+    }
+
+    /**
+     * Checks if current page and menu item belongs to the medical history pages block
+     * @return bool
+     */
+    private function isMedicalHistoryMenu(): bool
+    {
+        $medicalHistoryId = $this->getMedicalHistoryId();
+        if ($medicalHistoryId == null) {
+            return false;
+        }
+        $medicalHistory = $this->getMedicalHistoryById($medicalHistoryId);
+        return ($medicalHistory && is_a($medicalHistory, MedicalHistory::class));
+    }
+
+    /**
+     * Returns id of medical history by GET parameter
+     * @return int|null
+     */
+    private function getMedicalHistoryId(): ?int
+    {
+        return $this->container->get('request_stack')->getCurrentRequest()->get('medical_history');
+    }
+
+    /**
+     * Returns medical history by id
+     * @param int $medicalHistoryId
+     * @return MedicalHistory|null
+     */
+    private function getMedicalHistoryById(int $medicalHistoryId): ?MedicalHistory
+    {
+        return $this->entityManager->find(MedicalHistory::class, $medicalHistoryId);
     }
 }
