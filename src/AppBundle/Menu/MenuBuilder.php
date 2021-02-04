@@ -2,10 +2,7 @@
 
 namespace App\AppBundle\Menu;
 
-use App\Entity\MedicalHistory;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\TransactionRequiredException;
+use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\Staff;
@@ -24,6 +21,8 @@ use Symfony\Component\Security\Core\Security;
  */
 class MenuBuilder
 {
+    private const PATIENT_GET_PARAMETER_NAME = 'id';
+
     /** @var FactoryInterface $factory */
     private $factory;
 
@@ -430,12 +429,15 @@ class MenuBuilder
                 'route' => 'adding_patient_by_doctor'
             ]
         );
-        if ($this->isMedicalHistoryMenu()) {
+        if ($this->isMenuForEntity(Patient::class, self::PATIENT_GET_PARAMETER_NAME)) {
             $menu->addChild(
                 'add_prescription', [
                     'label' => 'Добавить назначение',
                     'route' => 'adding_patient_by_doctor',
-                    'routeParameters' => ['medical_history' => $this->getMedicalHistoryId()]
+                    'routeParameters' => [
+                        self::PATIENT_GET_PARAMETER_NAME =>
+                            $this->getEntityId(self::PATIENT_GET_PARAMETER_NAME)
+                    ]
                 ]
             );
         }
@@ -468,9 +470,7 @@ class MenuBuilder
      * Меню кабинета врача в sidebar
      *
      * @return ItemInterface
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws TransactionRequiredException
+     *
      */
     public function createDoctorOfficeSidebarMenu(): ItemInterface
     {
@@ -482,12 +482,17 @@ class MenuBuilder
                 'route' => 'patients_list'
             ]
         );
-        if ($this->isMedicalHistoryMenu()) {
+        if ($this->isMenuForEntity(Patient::class, self::PATIENT_GET_PARAMETER_NAME)) {
             $menu->addChild(
                 'prescriptionList', [
                     'label' => 'Назначения',
                     'route' => 'prescription_list',
-                    'routeParameters' => ['medical_history' => $this->getMedicalHistoryId()]
+                    'routeParameters' =>
+                        [
+                            self::PATIENT_GET_PARAMETER_NAME => $this->getEntityId(
+                                self::PATIENT_GET_PARAMETER_NAME
+                            )
+                        ]
                 ]
             );
         }
@@ -555,35 +560,39 @@ class MenuBuilder
     }
 
     /**
-     * Checks if current page and menu item belongs to the medical history pages block
+     * Checks if current page and menu item belongs to the entity object pages block
+     * @param string $entityClass
+     * @param string $GETParameterKey
      * @return bool
      */
-    private function isMedicalHistoryMenu(): bool
+    private function isMenuForEntity(string $entityClass, string $GETParameterKey): bool
     {
-        $medicalHistoryId = $this->getMedicalHistoryId();
-        if ($medicalHistoryId == null) {
+        $entityId = $this->getEntityId($GETParameterKey);
+        if ($entityId == null) {
             return false;
         }
-        $medicalHistory = $this->getMedicalHistoryById($medicalHistoryId);
-        return ($medicalHistory && is_a($medicalHistory, MedicalHistory::class));
+        $entity = $this->getEntityById($entityId, $entityClass);
+        return ($entity && is_a($entity, $entityClass));
     }
 
     /**
-     * Returns id of medical history by GET parameter
+     * Returns id of entity object by GET parameter
+     * @param string $GETParameterKey
      * @return int|null
      */
-    private function getMedicalHistoryId(): ?int
+    private function getEntityId(string $GETParameterKey): ?int
     {
-        return $this->container->get('request_stack')->getCurrentRequest()->get('medical_history');
+        return $this->container->get('request_stack')->getCurrentRequest()->get($GETParameterKey);
     }
 
     /**
-     * Returns medical history by id
-     * @param int $medicalHistoryId
-     * @return MedicalHistory|null
+     * Returns entity object by id
+     * @param int $entityId
+     * @param string $entityClass
+     * @return object|null
      */
-    private function getMedicalHistoryById(int $medicalHistoryId): ?MedicalHistory
+    private function getEntityById(int $entityId, string $entityClass): ?object
     {
-        return $this->entityManager->find(MedicalHistory::class, $medicalHistoryId);
+        return $this->entityManager->find($entityClass, $entityId);
     }
 }

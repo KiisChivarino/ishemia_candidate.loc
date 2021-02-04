@@ -3,7 +3,6 @@
 namespace App\Services\DataTable\DoctorOffice;
 
 use App\Controller\AppAbstractController;
-use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
@@ -78,14 +77,10 @@ class PatientsListDataTableService extends AdminDatatableService
                     'field' => 'u.lastName',
                     'render' => function (string $data, Patient $patient) {
                         return
-                            '<a href="' . $this->router->generate('doctor_medical_history', [
-                                    'id' => $patient->getId(),
-                                    'medical_history' =>
-                                        $this
-                                            ->entityManager
-                                            ->getRepository(MedicalHistory::class)
-                                            ->getCurrentMedicalHistory($patient)
-                                            ->getId()
+                            '<a href="' . $this->router->generate(
+                                'doctor_medical_history',
+                                [
+                                    'id' => $patient->getId()
                                 ]
                             ) . '">' . $this->authUserInfoService->getFIO($patient->getAuthUser()) . '</a>';
                     },
