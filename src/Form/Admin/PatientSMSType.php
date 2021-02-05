@@ -32,7 +32,10 @@ class PatientSMSType extends AbstractType
             ->add('created_at',DateTimeType::class, [
                 'label' => $templateItem->getContentValue('created_at'),
                 'widget' => 'single_text',
-                'required' => true
+                'required' => true,
+                'attr' => [
+                    'readonly' => true
+                ]
             ])
             ->add('text', TextType::class, [
                 'label' => $templateItem->getContentValue('text'),

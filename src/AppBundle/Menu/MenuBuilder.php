@@ -3,6 +3,7 @@
 namespace App\AppBundle\Menu;
 
 use App\Entity\Patient;
+use App\Entity\PatientSMS;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\Staff;
@@ -618,6 +619,19 @@ class MenuBuilder
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
+            $patientSmsCounter = $this->entityManager->getRepository(PatientSMS::class)
+                ->getPatientSMSMenu($patientId);
+            $menu->addChild(
+                'patient_sms_list', [
+                    'label' => $this->getLabelWithNotificationNumber(
+                        'Сообщения от пациента',
+                        $patientSmsCounter,
+                        'patientSMSCount'
+                    ),
+                    'route' => 'received_sms_from_patient_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
         }
         $this->activateStoringSelectedMenuItem($menu, $requestStack);
         return $menu;
@@ -626,12 +640,13 @@ class MenuBuilder
     /**
      * @param string $label
      * @param int $number
+     * @param string|null $customClasses
      * @return string
      */
-    private function getLabelWithNotificationNumber(string $label, int $number): string
+    private function getLabelWithNotificationNumber(string $label, int $number, string $customClasses = ""): string
     {
         return $number
-            ? $label . '<div class="notificationNumber">' . $number . '</div>'
+            ? $label . '<div class="notificationNumber '.$customClasses.'">' . $number . '</div>'
             : $label;
     }
 

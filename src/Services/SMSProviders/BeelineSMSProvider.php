@@ -63,7 +63,7 @@ class BeelineSMSProvider
      */
     public function getMessages(): string
     {
-        return $this->sms->status_inbox(false, 0, $this->dateTimeStart, $this->dateTimeEnd);
+        return $this->sms->status_inbox('3303', 0, $this->dateTimeStart, $this->dateTimeEnd);
     }
 
     /**
