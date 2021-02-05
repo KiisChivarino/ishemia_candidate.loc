@@ -61,7 +61,8 @@ class PatientNotificationListController extends DoctorOfficeAbstractController
     ): Response
     {
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['NOTIFICATION'],]
             ),

@@ -422,6 +422,16 @@ class MenuBuilder
                 'route' => 'adding_patient_by_doctor'
             ]
         );
+        $patientId = $this->getEntityId('id');
+        if ($this->isMenuForEntity(Patient::class, 'id')) {
+        $menu->addChild(
+            'doctor_create_notification', [
+                'label' => 'Сообщение пациенту',
+                'route' => 'doctor_create_notification',
+                'routeParameters' => ['id' => $patientId]
+            ]
+        );
+        }
         $menu->addChild(
             'logout', [
                 'label' => 'Выйти',
@@ -540,6 +550,16 @@ class MenuBuilder
                 ->getOverdueTestingsMenu($patientId);
 
             $menu->addChild(
+                'patient', [
+                    'label' => '<strong>' . (new AuthUserInfoService())->getFIO(
+                        $this->entityManager->getRepository(Patient::class)->find($patientId)->getAuthUser(),
+                        true
+                    ) . '</strong>',
+                    'route' => 'doctor_medical_history',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            )->setAttributes(['class' => 'jbffasjfasjfba']);
+            $menu->addChild(
                 'patientTestings', [
                     'label' => $this->getLabelWithNotificationNumber(
                         'Обследования пациента',
@@ -588,6 +608,13 @@ class MenuBuilder
                 'patient_testings_history_list', [
                     'label' => 'История',
                     'route' => 'patient_testings_history_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
+            $menu->addChild(
+                'notifications_list', [
+                    'label' => 'Уведомления пациента',
+                    'route' => 'notifications_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
