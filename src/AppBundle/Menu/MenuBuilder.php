@@ -433,7 +433,7 @@ class MenuBuilder
             $menu->addChild(
                 'add_prescription', [
                     'label' => 'Добавить назначение',
-                    'route' => 'adding_patient_by_doctor',
+                    'route' => 'adding_prescriprion_by_doctor',
                     'routeParameters' => [
                         self::PATIENT_GET_PARAMETER_NAME =>
                             $this->getEntityId(self::PATIENT_GET_PARAMETER_NAME)

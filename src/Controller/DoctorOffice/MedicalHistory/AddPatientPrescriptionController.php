@@ -3,11 +3,12 @@
 namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
+use App\Entity\MedicalHistory;
 use App\Entity\Patient;
-use App\Form\Admin\PrescriptionType;
-use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
+use App\Services\ControllerGetters\EntityActions;
+use App\Services\EntityActions\Creator\PrescriptionCreatorService;
+use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
 use Exception;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -17,7 +18,7 @@ use Twig\Environment;
 
 /**
  * Class PatientPrescriptionController
- * @Route("/doctor_office/prescription/")
+ * @Route("/doctor_office/")
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  *
  * @package App\Controller\DoctorOffice
@@ -40,39 +41,58 @@ class AddPatientPrescriptionController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new CreateNewPatientTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new AddPatientPrescriptionTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
     /**
      * New prescription
-     * @Route("{id}/new", name="prescription_new", methods={"GET","POST"})
+     * @Route("patient/{id}/prescription/new", name="adding_prescriprion_by_doctor", methods={"GET","POST"})
      *
-     * @param Request $request
-     *
+     * @param Patient $patient
+     * @param PrescriptionCreatorService $prescriptionCreatorService
      * @return Response
      * @throws Exception
      */
     public function new(
-        Request $request
+        Patient $patient,
+        PrescriptionCreatorService $prescriptionCreatorService
     ): Response
     {
-        return $this->responseNewWithActions(
-            $request,
-            PrescriptionType::class,
+        $this->templateService->new();
+        $entityManager = $this->getDoctrine()->getManager();
+        $staff = $this->getStaff($patient);
+        $medicalHistory = $entityManager->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+        $prescriptionCreatorService->before(
             [
-                'medicalHistory' => $this->getMedicalHistoryByParameter($request),
+                PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
+                PrescriptionCreatorService::STAFF_OPTION => $staff,
+            ]
+        );
+        $prescriptionCreatorService->after(
+            new EntityActions(
+                $prescriptionCreatorService->getEntity(),
+                null,
+                $entityManager
+            )
+        );
+        $this->flushToMedicalHistory($patient);
+        $this->setLogCreate($prescriptionCreatorService->getEntity());
+        return $this->redirectToRoute(
+            'add_prescription_show', [
+                'id' => $patient->getId(),
             ]
         );
     }
 
     /**
      * Show prescription
-     * @Route("{id}/show", name="add_prescription_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("patient/{id}/prescription/show", name="add_prescription_show", methods={"GET"}, requirements={"id"="\d+"})
      * @param Patient $patient
      * @return Response
      */
-    public function show(Patient $patient){
+    public function show(Patient $patient): Response
+    {
         $this->templateService->show($patient);
         return $this->render(
             self::TEMPLATE_PATH . 'prescription_show.html.twig',
