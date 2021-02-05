@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use App\Controller\Admin\MedicalHistoryController;
+use App\Controller\Admin\PrescriptionController;
+use App\Entity\MedicalHistory;
+use App\Entity\Prescription;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AdminDatatableService;
@@ -854,5 +858,34 @@ abstract class AppAbstractController extends AbstractController
             throw new Exception($this->translator->trans('app_controller.error.parameter_not_found'));
         }
         return $entity;
+    }
+
+    /**
+     * Returns MedicalHistory entity by GET parameter
+     * @param Request $request
+     * @return MedicalHistory|object|RedirectResponse
+     * @throws Exception
+     */
+    protected function getMedicalHistoryByParameter(Request $request): MedicalHistory
+    {
+        return $this->getEntityById(
+            MedicalHistory::class,
+            $this->getGETParameter($request, MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)
+        );
+    }
+
+    /**
+     * Returns Prescription entity by GET parameter
+     * @param Request $request
+     * @return Prescription|object|RedirectResponse
+     * @throws Exception
+     */
+    protected function getPrescriptionByParameter(Request $request): Prescription
+    {
+        /** @var Prescription $prescription */
+        return $this->getEntityById(
+            Prescription::class,
+            $this->getGETParameter($request, PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)
+        );
     }
 }
