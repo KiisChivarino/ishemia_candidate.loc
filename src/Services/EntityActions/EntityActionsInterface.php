@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Services\EntityActions;
-use App\Services\ControllerGetters\EntityActions;
 
 /**
  * Interface CreatorInterface
@@ -22,8 +21,7 @@ interface EntityActionsInterface
     /**
      * Actions with entity after submitting and validating form
      * Usual prepares entity for persist, sets custom values for entity, all other actions, persists entity
-     * @param EntityActions $entityActions
      * @param array $options
      */
-    public function after(EntityActions $entityActions, array $options = []): void;
+    public function after(array $options = []): void;
 }

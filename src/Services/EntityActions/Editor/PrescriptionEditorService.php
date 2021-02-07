@@ -6,6 +6,7 @@ use App\Entity\Prescription;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
@@ -20,40 +21,36 @@ class PrescriptionEditorService extends AbstractEditorService
     /**
      * PrescriptionEditorService constructor.
      * @param MedicalRecordCreatorService $medicalRecordCreatorService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(MedicalRecordCreatorService $medicalRecordCreatorService)
+    public function __construct(
+        MedicalRecordCreatorService $medicalRecordCreatorService,
+        EntityManagerInterface $entityManager)
     {
-        parent::__construct(Prescription::class);
+        parent::__construct($entityManager);
         $this->medicalRecordCreatorService = $medicalRecordCreatorService;
     }
 
     /**
      * @param EntityActions $entityActions
-     * @param array $options
      * @throws Exception
      */
-    public function after(EntityActions $entityActions, array $options = []): void
-    {
-        $this->prepare($entityActions);
-        $this->persist($entityActions->getEntityManager());
-    }
-
-    /**
-     * @param EntityActions $entityActions
-     * @throws Exception
-     */
-    protected function prepare(EntityActions $entityActions): void
+    protected function prepare(): void
     {
         /** @var Prescription $prescription */
         $prescription = $this->getEntity();
         if($prescription->getIsCompleted() && !$prescription->getCompletedTime()){
             $this->medicalRecordCreatorService->execute(
-                $entityActions,
                 [
                     'medicalHistory' => $prescription->getMedicalHistory(),
                 ]
             );
             $prescription->setCompletedTime(new DateTime());
         }
+    }
+
+    protected function configureOptions(): void
+    {
+        $this->setEntityClass(Prescription::class);
     }
 }

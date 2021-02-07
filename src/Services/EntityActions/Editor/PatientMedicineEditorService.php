@@ -3,6 +3,7 @@
 namespace App\Services\EntityActions\Editor;
 
 use App\Entity\PatientMedicine;
+use Exception;
 
 /**
  * Class PatientMedicineEditorService
@@ -11,10 +12,10 @@ use App\Entity\PatientMedicine;
 class PatientMedicineEditorService extends AbstractEditorService
 {
     /**
-     * PatientMedicineCreatorService constructor.
+     * @throws Exception
      */
-    public function __construct()
+    protected function configureOptions(): void
     {
-        parent::__construct(PatientMedicine::class);
+        $this->setEntityClass(PatientMedicine::class);
     }
 }

@@ -6,8 +6,8 @@ use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
 use App\Repository\MedicalRecordRepository;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class MedicalRecordCreatorService
@@ -23,11 +23,11 @@ class MedicalRecordCreatorService extends AbstractCreatorService
     /**
      * MedicalRecordCreatorService constructor.
      * @param MedicalRecordRepository $medicalRecordRepository
-     * @param TranslatorInterface $translator
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(MedicalRecordRepository $medicalRecordRepository, TranslatorInterface $translator)
+    public function __construct(MedicalRecordRepository $medicalRecordRepository, EntityManagerInterface $entityManager)
     {
-        parent::__construct(MedicalRecord::class, $translator);
+        parent::__construct($entityManager);
         $this->medicalRecordRepository = $medicalRecordRepository;
     }
 
@@ -49,8 +49,12 @@ class MedicalRecordCreatorService extends AbstractCreatorService
         }
     }
 
-    protected function configureOptions()
+    /**
+     * @throws Exception
+     */
+    protected function configureOptions():void
     {
+        $this->setEntityClass(MedicalRecord::class);
         $this->addOptionCheck(MedicalHistory::class, 'medicalHistory');
     }
 }

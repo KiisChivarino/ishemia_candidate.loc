@@ -2,7 +2,11 @@
 
 namespace App\Services\EntityActions\Creator;
 
+use App\Entity\MedicalHistory;
 use App\Entity\PatientMedicine;
+use App\Entity\PrescriptionMedicine;
+use DateTime;
+use Exception;
 
 /**
  * Class PatientMedicineCreatorService
@@ -10,11 +14,27 @@ use App\Entity\PatientMedicine;
  */
 class PatientMedicineCreatorService extends AbstractCreatorService
 {
-    /**
-     * PatientMedicineCreatorService constructor.
-     */
-    public function __construct()
+
+    protected function prepare(): void
     {
-        parent::__construct(PatientMedicine::class);
+        /** @var PatientMedicine $patientMedicine */
+        $patientMedicine = $this->getEntity();
+        $patientMedicine
+            ->setMedicalHistory($this->options['medicalHistory'])
+            ->setInstruction('инструкция')
+            ->setDateBegin(new DateTime())
+            ->setMedicineName('Тестовый препарат')
+            ->setPrescriptionMedicine($this->options['prescriptionMedicine'])
+        ;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function configureOptions(): void
+    {
+        $this->setEntityClass(PatientMedicine::class);
+        $this->addOptionCheck(MedicalHistory::class, 'medicalHistory');
+        $this->addOptionCheck(PrescriptionMedicine::class, 'prescriptionMedicine');
     }
 }

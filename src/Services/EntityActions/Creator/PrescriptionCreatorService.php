@@ -5,10 +5,8 @@ namespace App\Services\EntityActions\Creator;
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
 use App\Entity\Staff;
-use App\Services\ControllerGetters\EntityActions;
 use DateTime;
 use Exception;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class PrescriptionCreatorService
@@ -21,15 +19,6 @@ class PrescriptionCreatorService extends AbstractCreatorService
 
     /** @var string Medical option of entity action */
     const MEDICAL_HISTORY_OPTION = 'medicalHistory';
-
-    /**
-     * PrescriptionCreatorService constructor.
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(TranslatorInterface $translator)
-    {
-        parent::__construct(Prescription::class,  $translator);
-    }
 
     /**
      * Actions with entity before submiting form
@@ -46,9 +35,8 @@ class PrescriptionCreatorService extends AbstractCreatorService
 
     /**
      * Actions with entity before persisting one
-     * @param EntityActions $entityActions
      */
-    protected function prepare(EntityActions $entityActions): void
+    protected function prepare(): void
     {
         /** @var Prescription $prescription */
         $prescription = $this->getEntity();
@@ -56,15 +44,18 @@ class PrescriptionCreatorService extends AbstractCreatorService
         $prescription->setIsPatientConfirmed(false);
         $prescription->setCreatedTime(new DateTime());
         /** Executes without form */
-        if (!$prescription->getStaff())
-        {
+        if (!$prescription->getStaff()) {
             $prescription->setStaff($this->options[self::STAFF_OPTION]);
         }
     }
 
-    protected function configureOptions()
+    /**
+     * @throws Exception
+     */
+    protected function configureOptions(): void
     {
+        $this->setEntityClass(Prescription::class);
         $this->addOptionCheck(MedicalHistory::class, self::MEDICAL_HISTORY_OPTION);
-        $this->addOptionCheck( Staff::class, self::STAFF_OPTION);
+        $this->addOptionCheck(Staff::class, self::STAFF_OPTION);
     }
 }

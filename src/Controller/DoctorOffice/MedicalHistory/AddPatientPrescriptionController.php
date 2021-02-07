@@ -5,7 +5,6 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
-use App\Services\ControllerGetters\EntityActions;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
 use Exception;
@@ -63,18 +62,11 @@ class AddPatientPrescriptionController extends DoctorOfficeAbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $staff = $this->getStaff($patient);
         $medicalHistory = $entityManager->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
-        $prescriptionCreatorService->before(
+        $prescriptionCreatorService->execute(
             [
                 PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
                 PrescriptionCreatorService::STAFF_OPTION => $staff,
             ]
-        );
-        $prescriptionCreatorService->after(
-            new EntityActions(
-                $prescriptionCreatorService->getEntity(),
-                null,
-                $entityManager
-            )
         );
         $this->flushToMedicalHistory($patient);
         $this->setLogCreate($prescriptionCreatorService->getEntity());

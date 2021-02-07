@@ -2,8 +2,7 @@
 
 namespace App\Services\EntityActions;
 
-use App\Services\ControllerGetters\EntityActions;
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
@@ -12,6 +11,22 @@ use Exception;
  */
 abstract class AbstractEntityActionsService implements EntityActionsInterface
 {
+
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
+     * AuthUserRoleType constructor.
+     *
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     /**
      * entity object
      */
@@ -44,46 +59,40 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
 
     /**
      * Persists entity
-     * @param ObjectManager $entityManager
      */
-    protected function persist(ObjectManager $entityManager)
+    protected function persist()
     {
-        $entityManager->persist($this->entity);
+        $this->entityManager->persist($this->getEntity());
     }
 
     /**
      * Actions with entity before persist
-     * @param EntityActions $entityActions
      */
-    protected function prepare(EntityActions $entityActions): void
+    protected function prepare(): void
     {
-
     }
 
     /**
-     * @param EntityActions $entityActions
      * @param array $options
      * @param null $entity
      * @throws Exception
      */
-    public function execute(EntityActions $entityActions, array $options = [], $entity = null)
+    public function execute(array $options = [], $entity = null)
     {
         $this->before($options, $entity);
-        $this->after($entityActions, $options);
+        $this->after($options);
     }
 
     /**
      * Operations after submitting and validation form
-     * @param EntityActions $entityActions
      * @param array|null $options
      * @throws Exception
      */
-    public function after(EntityActions $entityActions, array $options = []): void
+    public function after(array $options = []): void
     {
-        $this->configureOptions();
         $this->setOptions($options);
-        $this->prepare($entityActions);
-        $this->persist($entityActions->getEntityManager());
+        $this->prepare();
+        $this->persist();
     }
 
     /**
@@ -100,7 +109,7 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
                 throw new Exception('Option with key ' . $optionKey . ' doesn\'t allowed!');
             }
         }
-        $this->options = $options;
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
@@ -147,7 +156,21 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
         return $this->entity;
     }
 
-    protected function configureOptions()
+    /**
+     * Set entity class and set options: name of option and type of option
+     */
+    abstract protected function configureOptions(): void;
+
+    /**
+     * @param string $entityClass
+     * @throws Exception
+     */
+    protected function setEntityClass(string $entityClass): void
     {
+        if (class_exists($entityClass)) {
+            $this->entityClass = $entityClass;
+        } else {
+            throw new Exception('Class ' . $entityClass . ' does not exists!');
+        }
     }
 }

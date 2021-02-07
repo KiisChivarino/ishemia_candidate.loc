@@ -587,10 +587,7 @@ abstract class AppAbstractController extends AbstractController
         );
         $this->handleRequest($request, $form, $formTemplateName, $entity);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->creatorService->after(
-                new EntityActions($entity, $request, $this->getDoctrine()->getManager(), $form),
-                $entityActionsOptions
-            );
+            $this->creatorService->after($entityActionsOptions);
             $this->flush($form, $formTemplateName, $entity);
             $this->setLogCreate($entity);
             return $this->redirectSubmitted($entity->getId());
@@ -636,7 +633,6 @@ abstract class AppAbstractController extends AbstractController
         $this->handleRequest($request, $form, $formName, $entity);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->editorService->after(
-                new EntityActions($entity, $request, $this->getDoctrine()->getManager(), $form),
                 $entityActionsOptions
             );
             $this->flush($form, $formName, $entity);
@@ -677,7 +673,6 @@ abstract class AppAbstractController extends AbstractController
         $this->handleRequest($request, $form, $templateEditName, $entity);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->editorService->after(
-                new EntityActions($entity, $request, $this->getDoctrine()->getManager(), $form),
                 $entityActionsOptions
             );
             $this->flush($form, $templateEditName, $entity);

@@ -3,6 +3,7 @@
 namespace App\Services\EntityActions\Editor;
 
 use App\Entity\PrescriptionMedicine;
+use Exception;
 
 /**
  * Class PrescriptionMedicineEditorService
@@ -11,10 +12,10 @@ use App\Entity\PrescriptionMedicine;
 class PrescriptionMedicineEditorService extends AbstractEditorService
 {
     /**
-     * PrescriptionCreatorService constructor.
+     * @throws Exception
      */
-    public function __construct()
+    protected function configureOptions(): void
     {
-        parent::__construct(PrescriptionMedicine::class);
+        $this->setEntityClass(PrescriptionMedicine::class);
     }
 }

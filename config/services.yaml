@@ -89,3 +89,7 @@ services:
     arguments: [
         '@App\Services\EntityActions\Creator\MedicalRecordCreatorService'
     ]
+
+  App\Services\EntityActions\AbstractEntityActionsService:
+    abstract: true
+    arguments: [ '@doctrine.orm.entity_manager' ]

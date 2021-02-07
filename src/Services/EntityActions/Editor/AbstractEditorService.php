@@ -12,15 +12,6 @@ use Exception;
 abstract class AbstractEditorService extends AbstractEntityActionsService
 {
     /**
-     * AbstractEditorService constructor.
-     * @param string $entityClass
-     */
-    public function __construct(string $entityClass)
-    {
-        $this->entityClass = $entityClass;
-    }
-
-    /**
      * @param array $options
      * @param null $entity
      * @throws Exception

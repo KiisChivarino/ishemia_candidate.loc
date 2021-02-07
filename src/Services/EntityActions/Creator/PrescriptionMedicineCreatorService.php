@@ -4,8 +4,8 @@ namespace App\Services\EntityActions\Creator;
 
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
-use App\Services\ControllerGetters\EntityActions;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
@@ -20,30 +20,40 @@ class PrescriptionMedicineCreatorService extends AbstractCreatorService
     /**
      * PrescriptionCreatorService constructor.
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(PatientMedicineCreatorService $patientMedicineCreatorService)
+    public function __construct(
+        PatientMedicineCreatorService $patientMedicineCreatorService,
+        EntityManagerInterface $entityManager
+    )
     {
-        parent::__construct(PrescriptionMedicine::class);
+        parent::__construct($entityManager);
         $this->patientMedicineCreatorService = $patientMedicineCreatorService;
     }
 
     /**
-     * @param EntityActions $entityActions
      * @throws Exception
      */
-    protected function prepare(EntityActions $entityActions): void
+    protected function prepare(): void
     {
         /** @var PrescriptionMedicine $prescriptionMedicine */
         $prescriptionMedicine = $this->getEntity();
-        $this->patientMedicineCreatorService->execute($entityActions);
+        $this->patientMedicineCreatorService->execute([
+            'medicalHistory'=> $this->options['prescription']->getMedicalHistory(),
+            'prescriptionMedicine' => $prescriptionMedicine,
+        ]);
         $prescriptionMedicine
             ->setInclusionTime(new DateTime())
             ->setPrescription($this->options['prescription'])
             ->setPatientMedicine($this->patientMedicineCreatorService->getEntity());
     }
 
-    protected function configureOptions()
+    /**
+     * @throws Exception
+     */
+    protected function configureOptions(): void
     {
+        $this->setEntityClass(PrescriptionMedicine::class);
         $this->addOptionCheck(Prescription::class, 'prescription');
     }
 }
