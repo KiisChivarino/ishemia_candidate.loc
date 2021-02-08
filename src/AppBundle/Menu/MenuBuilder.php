@@ -425,20 +425,14 @@ class MenuBuilder
         );
         $patientId = $this->getEntityId('id');
         if ($this->isMenuForEntity(Patient::class, 'id')) {
-        $menu->addChild(
-            'doctor_create_notification', [
-                'label' => 'Сообщение пациенту',
-                'route' => 'doctor_create_notification',
-                'routeParameters' => ['id' => $patientId]
-            ]
-        );
+            $menu->addChild(
+                'doctor_create_notification', [
+                    'label' => 'Сообщение пациенту',
+                    'route' => 'doctor_create_notification',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
         }
-        $menu->addChild(
-            'logout', [
-                'label' => 'Выйти',
-                'route' => 'logout_from_app'
-            ]
-        );
         return $menu;
     }
 
@@ -471,33 +465,33 @@ class MenuBuilder
 
         $patientsNoResultsTestingsCount = $this->entityManager->getRepository(PatientTesting::class)
             ->getNoResultsTestingsMenu(
-            (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
-                ? $this->entityManager->getRepository(Staff::class)
-                ->getStaff($this->security->getUser())->getHospital()
-                : null
-        );
+                (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                    ? $this->entityManager->getRepository(Staff::class)
+                    ->getStaff($this->security->getUser())->getHospital()
+                    : null
+            );
         $patientsNoProcessedTestingsCount = $this->entityManager->getRepository(PatientTesting::class)
             ->getNoProcessedTestingsMenu(
-            (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
-                ? $this->entityManager->getRepository(Staff::class)
-                ->getStaff($this->security->getUser())->getHospital()
-                : null
-        );
+                (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                    ? $this->entityManager->getRepository(Staff::class)
+                    ->getStaff($this->security->getUser())->getHospital()
+                    : null
+            );
         $patientsOpenedPrescriptionsCount = $this->entityManager->getRepository(Prescription::class)
             ->getOpenedPrescriptionsMenu(
-            (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
-                ? $this->entityManager->getRepository(Staff::class)
-                ->getStaff($this->security->getUser())->getHospital()
-                : null
-        );
+                (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                    ? $this->entityManager->getRepository(Staff::class)
+                    ->getStaff($this->security->getUser())->getHospital()
+                    : null
+            );
 
         $menu->addChild(
             'patientsList', [
                 'label' => $this->getLabelWithNotificationNumber(
                     'Пациенты',
                     $patientsNoResultsTestingsCount
-                        + $patientsNoProcessedTestingsCount
-                        + $patientsOpenedPrescriptionsCount
+                    + $patientsNoProcessedTestingsCount
+                    + $patientsOpenedPrescriptionsCount
                 )
             ]
         )->setAttribute('class', 'sublist');
@@ -553,9 +547,9 @@ class MenuBuilder
             $menu->addChild(
                 'patient', [
                     'label' => '<strong>' . (new AuthUserInfoService())->getFIO(
-                        $this->entityManager->getRepository(Patient::class)->find($patientId)->getAuthUser(),
-                        true
-                    ) . '</strong>',
+                            $this->entityManager->getRepository(Patient::class)->find($patientId)->getAuthUser(),
+                            true
+                        ) . '</strong>',
                     'route' => 'doctor_medical_history',
                     'routeParameters' => ['id' => $patientId]
                 ]
@@ -646,7 +640,7 @@ class MenuBuilder
     private function getLabelWithNotificationNumber(string $label, int $number, string $customClasses = ""): string
     {
         return $number
-            ? $label . '<div class="notificationNumber '.$customClasses.'">' . $number . '</div>'
+            ? $label . '<div class="notificationNumber ' . $customClasses . '">' . $number . '</div>'
             : $label;
     }
 
