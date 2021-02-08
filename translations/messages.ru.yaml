@@ -25,3 +25,10 @@ admin_controller:
 entity_actions:
   error:
     entity_class_not_found: Класс %entityClass% не найден!
+doctor_office_abstract_controller:
+  success:
+    add: Запись успешно сохранена!
+  error:
+    dbal_exception: Не удалось сохранить запись!
+    exception: Ошибка cохранения записи!
+    staff_not_found: Врач не найден

@@ -9,6 +9,7 @@ use Doctrine\DBAL\DBALException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Controller\AppAbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class DoctorOfficeAbstractController
@@ -38,36 +39,44 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
     /**
      * Flush entity and redirect to Medical History if is Exception
      * @param Patient $patient
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
-    protected function flushToMedicalHistory(Patient $patient)
+    protected function flushToMedicalHistory(Patient $patient): RedirectResponse
     {
         try {
             $this->getDoctrine()->getManager()->flush();
         } catch (DBALException $e) {
-            $this->addFlash('error', 'Не удалось сохранить запись!');
+            $this->addFlash('error',
+                $this->translator->trans(
+                    'doctor_office_abstract_controller.error.dbal_exception'
+                ));
             return $this->redirectToRoute(
                 'doctor_medical_history', [
                     'id' => $patient->getId(),
                 ]
             );
         } catch (Exception $e) {
-            $this->addFlash('error', 'Ошибка cохранения записи!');
+            $this->addFlash('error', $this->translator->trans(
+                'doctor_office_abstract_controller.error.exception'
+            ));
             return $this->redirectToRoute(
                 'doctor_medical_history', [
                     'id' => $patient->getId(),
                 ]
             );
         }
-        $this->addFlash('success', 'Запись успешно сохранена!');
+        $this->addFlash('success',
+            $this->translator->trans(
+            'doctor_office_abstract_controller.success.add'
+        ));
     }
 
     /**
      * Returns staff or redirects to MedicalHistory page with error
      * @param Patient $patient
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
-    protected function getStaff(Patient $patient)
+    protected function getStaff(Patient $patient): RedirectResponse
     {
         $staffUser = $this->getUser();
         $entityManager = $this->getDoctrine()->getManager();
