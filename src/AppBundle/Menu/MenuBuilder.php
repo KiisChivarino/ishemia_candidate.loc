@@ -517,6 +517,14 @@ class MenuBuilder
             ]
         );
 
+        if((new AuthUserInfoService())->isDoctorConsultant($this->security->getUser())) {
+            $menu->addChild(
+                'hospitalsList', [
+                    'label' => 'Больницы',
+                    'route' => 'doctor_office_hospital_list'
+                ]
+            );
+        }
         return $menu;
     }
 

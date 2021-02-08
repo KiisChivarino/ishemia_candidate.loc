@@ -1,4 +1,4 @@
-{% extends template.commonTemplatePath~'show.html.twig' %}
+{% extends 'doctorOffice/common_template/show.html.twig' %}
 {% block show_content %}
     <li>
         <span class="title">{{ template.items.show.content.address }}</span>
@@ -28,7 +28,7 @@
         <span class="title">{{ template.items.show.content.city }}</span>
         <p>
             {% if entity.city %}
-                <a href="{{ path('city_show', {'id': entity.city.id}) }}">{{ entity.city.name }}</a>
+                <p>{{ entity.city.name }}</p>
             {% endif %}
         </p>
     </li>
@@ -36,9 +36,7 @@
         <span class="title">{{ template.items.show.content.region }}</span>
         <p>
             {% if entity.region %}
-                <a href="{{ path('region_show', {'id': entity.region.id}) }}">
-                    {{ entity.region.name }}
-                </a>
+                <p>{{ entity.region.name }}</p>
             {% endif %}
         </p>
     </li>
