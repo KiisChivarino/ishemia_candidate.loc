@@ -3,6 +3,7 @@
 namespace App\Controller\DoctorOffice;
 
 use App\Entity\Patient;
+use App\Entity\PatientTesting;
 use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTestingResultType;
 use App\Form\PatientTestingFileType;
@@ -39,7 +40,7 @@ use Twig\Environment;
  */
 class PatientTestingsListController extends DoctorOfficeAbstractController
 {
-    const TEMPLATE_PATH = 'doctorOffice/patient_testings_list/';
+    const TEMPLATE_PATH = 'doctorOffice/patient_testing_list/';
 
     /**
      * PatientsListController constructor.
@@ -57,7 +58,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of patient testings
-     * @Route("/patient/{id}/patient_testings", name="patient_testings_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testing", name="patient_testing_list", methods={"GET","POST"})
      *
      * @param Patient $patient
      * @param Request $request
@@ -84,7 +85,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of patient testings history
-     * @Route("/patient/{id}/patient_testings_history", name="patient_testings_history_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testing_history", name="patient_testing_history_list", methods={"GET","POST"})
      *
      * @param Patient $patient
      * @param Request $request
@@ -115,7 +116,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of not processed patient testings
-     * @Route("/patient/{id}/patient_testings_not_processed", name="patient_testings_not_processed_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testing_not_processed", name="patient_testing_not_processed_list", methods={"GET","POST"})
      *
      * @param Patient $patient
      * @param Request $request
@@ -146,7 +147,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of overdue patient testings
-     * @Route("/patient/{id}/patient_testings_overdue", name="patient_testings_overdue_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testing_overdue", name="patient_testing_overdue_list", methods={"GET","POST"})
      *
      * @param Patient $patient
      * @param Request $request
@@ -177,7 +178,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of planned patient testings
-     * @Route("/patient/{id}/patient_testings_planned", name="patient_testings_planned_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/patient_testing_planned", name="patient_testing_planned_list", methods={"GET","POST"})
      *
      * @param Patient $patient
      * @param Request $request
@@ -208,12 +209,13 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * Редактирование анализа пациента
-     * @Route("/patientTesting/{id}/edit", name="patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/patient/{id}/patient_testing/{patientTesting}/edit", name="patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param PatientTestingRepository $patientTestingRepository
      * @param FileService $fileService
      * @param PatientTestingResultRepository $patientTestingResultRepository
+     * @param PatientTesting $patientTesting
      * @return Response
      * @throws ReflectionException
      */
@@ -221,10 +223,10 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
         Request $request,
         PatientTestingRepository $patientTestingRepository,
         FileService $fileService,
-        PatientTestingResultRepository $patientTestingResultRepository
+        PatientTestingResultRepository $patientTestingResultRepository,
+        PatientTesting $patientTesting
     ): Response
     {
-        $patientTesting = $patientTestingRepository->find($request->query->get('patientTestingId'));
         $this->setRedirectMedicalHistoryRoute($patientTesting->getMedicalHistory()->getPatient()->getId());
         $this->templateService->setCommonTemplatePath(self::TEMPLATE_PATH);
         $enabledTestingResults = $patientTestingResultRepository->getEnabledTestingResults($patientTesting);

@@ -151,7 +151,8 @@ abstract class AdminDatatableService extends DataTableService
     protected function generateTableForPatientTestingsInDoctorOffice(
         Closure $renderOperationsFunction,
         ListTemplateItem $listTemplateItem
-    ) {
+    )
+    {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
@@ -161,7 +162,9 @@ abstract class AdminDatatableService extends DataTableService
                     'render' => function (string $data, PatientTesting $patientTesting) {
                         return
                             $patientTesting
-                                ? $patientTesting ->getAnalysisGroup()->getName()
+                                ? $this->isPatientTestingInRangeOfReferentValues($patientTesting)
+                                    ? $patientTesting->getAnalysisGroup()->getName()
+                                    : '<span class="redRow">'.$patientTesting->getAnalysisGroup()->getName().'</span>'
                                 : '';
                     },
                     'orderable' => true,
@@ -174,17 +177,46 @@ abstract class AdminDatatableService extends DataTableService
                     'searchable' => false,
                     'format' => 'd.m.Y H:i'
                 ]
-            )
-        ;
+            );
         $this->addOperationsWithParameters(
             $listTemplateItem,
             function (string $data, PatientTesting $patientTesting) use ($renderOperationsFunction) {
                 return
                     $renderOperationsFunction(
-                        (string) $patientTesting->getMedicalHistory()->getPatient()->getId(),
-                        ['patientTestingId' => $patientTesting->getId()]
+                        (string)$patientTesting->getMedicalHistory()->getPatient()->getId(),
+                        ['patientTesting' => $patientTesting->getId()]
                     );
             }
         );
+    }
+
+    /**
+     * Checks if patient analysis is in range of referent values
+     * If analysis doesnt have referent values returns true
+     * @param $patientTesting
+     * @return bool
+     */
+    private function isPatientTestingInRangeOfReferentValues($patientTesting): bool
+    {
+        foreach ($patientTesting->getPatientTestingResults() as $result) {
+            if (!is_null($result->getResult())
+                && !is_null($result->getAnalysisRate())
+                && !is_null($result->getAnalysisRate()->getRateMax())
+                && !is_null($result->getAnalysisRate()->getRateMin())
+            ) {
+                if (
+                    $result->getAnalysisRate()->getRateMax() >= $result->getResult()
+                    && $result->getResult() >= $result->getAnalysisRate()->getRateMin()
+                ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        } {
+        return true;
+    }
     }
 }

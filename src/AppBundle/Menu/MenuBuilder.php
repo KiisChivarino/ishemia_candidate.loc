@@ -548,46 +548,46 @@ class MenuBuilder
                 ]
             )->setAttribute('class', 'sublist');
             $menu['patientTestings']->addChild(
-                'patient_testings_list', [
+                'patient_testing_list', [
                     'label' => 'Все',
-                    'route' => 'patient_testings_list',
+                    'route' => 'patient_testing_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
-                'patient_testings_no_processed_list', [
+                'patient_testing_no_processed_list', [
                     'label' => $this->getLabelWithNotificationNumber(
-                        'Необработанные',
+                        'Обработать',
                         $noProcessedTestingsCounter
                     ),
-                    'route' => 'patient_testings_not_processed_list',
+                    'route' => 'patient_testing_not_processed_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
-                'patient_testings_planned_list', [
+                'patient_testing_planned_list', [
                     'label' => $this->getLabelWithNotificationNumber(
                         'По плану',
                         $plannedTestingsCounter
                     ),
-                    'route' => 'patient_testings_planned_list',
+                    'route' => 'patient_testing_planned_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
-                'patient_testings_overdue_list', [
+                'patient_testing_overdue_list', [
                     'label' => $this->getLabelWithNotificationNumber(
                         'Просроченные',
                         $overdueTestingsCounter
                     ),
-                    'route' => 'patient_testings_overdue_list',
+                    'route' => 'patient_testing_overdue_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
-                'patient_testings_history_list', [
+                'patient_testing_history_list', [
                     'label' => 'История',
-                    'route' => 'patient_testings_history_list',
+                    'route' => 'patient_testing_history_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
@@ -663,7 +663,15 @@ class MenuBuilder
     {
         foreach ($menu->getChildren() as $item) {
             foreach ($item->getChildren() as $childrenItem) {
-                if ($childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()) {
+                if (
+                    $childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()
+                    || preg_replace(
+                        '/\/new|\/\d+\/(edit|show)$/', // Вырезает с конца /число/(edit или show) или /new
+                        "",
+                        $requestStack->getCurrentRequest()->getRequestUri()
+                    ) == $childrenItem->getUri()
+                ) {
+
                     $childrenItem->setCurrent(true);
                 }
             }

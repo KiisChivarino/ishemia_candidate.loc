@@ -121,7 +121,7 @@ class PatientTestingRepository extends AppRepository
      */
     public function getOverdueTestingsMenu($patientId)
     {
-        return sizeof($this->createQueryBuilder('pT')
+        return $this->createQueryBuilder('pT')
             ->leftJoin('pT.medicalHistory', 'mH')
             ->leftJoin('mH.patient', 'p')
             ->leftJoin('p.AuthUser', 'u')
@@ -134,10 +134,10 @@ class PatientTestingRepository extends AppRepository
             ->setParameter('patientId', $patientId)
             ->setParameter('dateTimeNow', new \DateTime('now'))
             ->setParameter('val', true)
-            ->select('pT.id')
+            ->select('count(pT.id)')
             ->distinct()
             ->getQuery()
-            ->getResult());
+            ->getSingleScalarResult();
     }
 
     /**
@@ -147,7 +147,7 @@ class PatientTestingRepository extends AppRepository
      */
     public function getPlannedTestingsMenu($patientId)
     {
-        return sizeof($this->createQueryBuilder('pT')
+        return $this->createQueryBuilder('pT')
             ->leftJoin('pT.medicalHistory', 'mH')
             ->leftJoin('mH.patient', 'p')
             ->leftJoin('p.AuthUser', 'u')
@@ -160,10 +160,10 @@ class PatientTestingRepository extends AppRepository
             ->setParameter('patientId', $patientId)
             ->setParameter('dateTimeNow', new \DateTime('now'))
             ->setParameter('val', true)
-            ->select('pT.id')
+            ->select('count(pT.id)')
             ->distinct()
             ->getQuery()
-            ->getResult());
+            ->getSingleScalarResult();
     }
 
     /**
@@ -173,7 +173,7 @@ class PatientTestingRepository extends AppRepository
      */
     public function getNoProcessedTestingsMenu($patientId)
     {
-        return sizeof($this->createQueryBuilder('pT')
+        return $this->createQueryBuilder('pT')
             ->leftJoin('pT.medicalHistory', 'mH')
             ->leftJoin('mH.patient', 'p')
             ->leftJoin('p.AuthUser', 'u')
@@ -184,10 +184,10 @@ class PatientTestingRepository extends AppRepository
             ->andWhere('pT.hasResult = true')
             ->setParameter('patientId', $patientId)
             ->setParameter('val', true)
-            ->select('pT.id')
+            ->select('count(pT.id)')
             ->distinct()
             ->getQuery()
-            ->getResult());
+            ->getSingleScalarResult();
     }
 
     /**

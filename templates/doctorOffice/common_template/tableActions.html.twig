@@ -7,6 +7,9 @@
     {% endif %}
     {% if template.items.edit.isEnabled %}
         <span>
+{#            {% for key,value in parameters %}#}
+{#                <h1>{{ key }} => {{ value }}</h1>#}
+{#            {% endfor %}#}
             <a href="{{ path(template.routes.edit, parameters) }}"><img
                         src="{{ asset('build/images/operation-icon-2.svg') }}" alt=""></a>
         </span>
