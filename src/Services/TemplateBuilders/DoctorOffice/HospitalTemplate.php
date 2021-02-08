@@ -95,8 +95,6 @@ class HospitalTemplate extends DoctorOfficeTemplateBuilder
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
         parent::list($filterService);
-        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
-            ->setPath($this->getTemplatePath());
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
             ->setIsEnabled(false);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
