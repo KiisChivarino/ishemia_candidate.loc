@@ -2,7 +2,7 @@
 {% block title %}{{ template.items.show.content.title }}{% endblock %}
 {% block content %}
     <div>
-        <h2>{{ template.items.show.content.h1 }}</h2>
+        <h2>{{ template.items.show.content.h2 }}</h2>
         {{ include('flashmessages.html.twig') }}
     </div>
     <div class="buttons">
@@ -27,5 +27,13 @@
                 ) }}';">
             Добавление приема
         </button>
+    </div>
+    <div>
+        <div>{{ template.items.show.content.createdTime }}</div>
+        {{ prescription.createdTime ? prescription.createdTime|date('d.m.Y') : '' }}
+    </div>
+    <div>
+        <div>{{ template.items.show.content.doctor }}</div>
+        {{ fio(prescription.staff.AuthUser) }}
     </div>
 {% endblock %}

@@ -13,7 +13,9 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
 {
     protected const SHOW_CONTENT = [
         'title' => 'Просмотр назначения',
-        'h1' => 'Просмотр назначения',
+        'h2' => 'Просмотр назначения',
+        'createdTime' => 'Дата и время создания назначения',
+        'doctor' => 'Врач',
     ];
 
     /**

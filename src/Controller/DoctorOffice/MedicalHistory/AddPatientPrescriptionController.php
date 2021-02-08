@@ -5,9 +5,11 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
+use App\Entity\Prescription;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -73,23 +75,27 @@ class AddPatientPrescriptionController extends DoctorOfficeAbstractController
         return $this->redirectToRoute(
             'add_prescription_show', [
                 'id' => $patient->getId(),
+                'prescription' => $prescriptionCreatorService->getEntity()->getId()
             ]
         );
     }
 
     /**
      * Show prescription
-     * @Route("patient/{id}/prescription/show", name="add_prescription_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("patient/{id}/prescription/{prescription}/show", name="add_prescription_show", methods={"GET"}, requirements={"id"="\d+"})
      * @param Patient $patient
+     * @param Prescription $prescription
+     * @param Request $request
      * @return Response
      */
-    public function show(Patient $patient): Response
+    public function show(Patient $patient, Prescription $prescription): Response
     {
         $this->templateService->show($patient);
         return $this->render(
             self::TEMPLATE_PATH . 'prescription_show.html.twig',
             [
                 'patient' => $patient,
+                'prescription' => $prescription,
             ]
         );
     }
