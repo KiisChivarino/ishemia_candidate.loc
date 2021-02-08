@@ -157,12 +157,12 @@ class PatientsListDataTableService extends AdminDatatableService
                         }
                         if (!empty($patientOpenedPrescriptions)) {
                             !empty($patientTestingsNoProcessedTestings) ? $result .= "<hr>" : $result .= "";
+                            !empty($patientTestingsWithNoResults) ? $result .= "<hr>" : $result .= "";
                             $result .= $this->getLink('Закрыть назначения',
                                 $patient->getId(),
                                 'doctor_medical_history'
                             );
                         }
-
                         return $result;
                     },
                 ]
