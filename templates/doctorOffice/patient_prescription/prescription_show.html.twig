@@ -1,4 +1,31 @@
 {% extends 'doctorOffice/index.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
 {% block content %}
-    {{ include('flashmessages.html.twig') }}
+    <div>
+        <h2>{{ template.items.show.content.h1 }}</h2>
+        {{ include('flashmessages.html.twig') }}
+    </div>
+    <div class="buttons">
+        <button class="button main-button"
+                onclick="location.href='{{ path(
+                    'adding_survey_by_doctor',
+                    {'id': patient.id}
+                ) }}';">
+            Добавление обследования
+        </button>
+        <button class="button main-button"
+                onclick="location.href='{{ path(
+                    'adding_medication_by_doctor',
+                    {'id': patient.id}
+                ) }}';">
+            Добавление лекарства
+        </button>
+        <button class="button main-button"
+                onclick="location.href='{{ path(
+                    'adding_reception_by_doctor',
+                    {'id': patient.id}
+                ) }}';">
+            Добавление приема
+        </button>
+    </div>
 {% endblock %}

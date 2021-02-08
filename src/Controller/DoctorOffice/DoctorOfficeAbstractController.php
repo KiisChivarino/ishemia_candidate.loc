@@ -39,9 +39,9 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
     /**
      * Flush entity and redirect to Medical History if is Exception
      * @param Patient $patient
-     * @return RedirectResponse
+     * @return void|RedirectResponse
      */
-    protected function flushToMedicalHistory(Patient $patient): RedirectResponse
+    protected function flushToMedicalHistory(Patient $patient)
     {
         try {
             $this->getDoctrine()->getManager()->flush();
@@ -74,9 +74,9 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
     /**
      * Returns staff or redirects to MedicalHistory page with error
      * @param Patient $patient
-     * @return RedirectResponse
+     * @return Staff|RedirectResponse
      */
-    protected function getStaff(Patient $patient): RedirectResponse
+    protected function getStaff(Patient $patient)
     {
         $staffUser = $this->getUser();
         $entityManager = $this->getDoctrine()->getManager();

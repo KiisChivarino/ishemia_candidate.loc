@@ -11,6 +11,11 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
 {
+    protected const SHOW_CONTENT = [
+        'title' => 'Просмотр назначения',
+        'h1' => 'Просмотр назначения',
+    ];
+
     /**
      * AddPatientPrescriptionTemplate constructor.
      * @param RouteCollection $routeCollection
