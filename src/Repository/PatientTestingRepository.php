@@ -39,11 +39,11 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets Patient Testings if PatientTesting has no results
+     * Gets patients with NoResults patient testings count
      * @param Hospital|null $hospital
      * @return int|mixed|string
      */
-    public function getNoResultsTestingsMenu(?Hospital $hospital)
+    public function getNoResultsTestingsCount(?Hospital $hospital)
     {
         $qb = $this->generateStandardQueryBuilder()
             ->andWhere('paT.hasResult = false')
@@ -54,10 +54,10 @@ class PatientTestingRepository extends AppRepository
                 ->setParameter('patientHospital', $hospital);
         }
         return
-            $qb->select('count(p.id)')
+            sizeof($qb->select('p.id')
                 ->distinct()
                 ->getQuery()
-                ->getSingleScalarResult();
+                ->getResult());
     }
 
     /**
@@ -79,7 +79,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets Patient Testings if PatientTesting has result of testing but is not processed by staff
+     * Gets Patient Testings if PatientTesting has result but is not processed by staff
      * @param $patient
      * @return int|mixed|string
      */
@@ -95,11 +95,11 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets overdue testings
+     * Gets overdue patient testings count
      * @param $patientId
      * @return int|mixed|string
      */
-    public function getOverdueTestingsMenu($patientId)
+    public function getOverdueTestingsCount($patientId)
     {
         return $this->countByPatientTestingId(
             $this->generateOverdueQueryBuilder(
@@ -110,11 +110,11 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets planned testings
+     * Gets planned patient testings count
      * @param $patientId
      * @return int|mixed|string
      */
-    public function getPlannedTestingsMenu($patientId)
+    public function getPlannedTestingsCount($patientId)
     {
         return $this->countByPatientTestingId(
             $this->generatePlannedQueryBuilder(
@@ -125,11 +125,11 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets no processed testings
+     * Gets no processed patient testings count
      * @param $patientId
      * @return int|mixed|string
      */
-    public function getNoProcessedTestingsMenu($patientId)
+    public function getNoProcessedTestingsCount($patientId)
     {
         return $this->countByPatientTestingId(
             $this->generateNoProcessedQueryBuilder(
@@ -140,12 +140,17 @@ class PatientTestingRepository extends AppRepository
 
     }
 
-    private function countByPatientTestingId($qb)
+    /**
+     * Add count by patient testing id
+     * @param $qb
+     * @return int
+     */
+    private function countByPatientTestingId($qb): int
     {
-        return $qb->select('count(paT.id)')
+        return sizeof($qb->select('paT.id')
             ->distinct()
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getResult());
     }
 
     /**
@@ -168,58 +173,60 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets Patients`ids array if PatientTesting is processed by staff
+     * Gets Patients`ids array for PatientTestings processed by staff
      * @return int|mixed|string
      */
     public function getProcessedResultsTestings()
     {
-        return $this->generateStandardQueryBuilder()
+        return $this->selectDistinctPatients($this->generateStandardQueryBuilder()
             ->andWhere('paT.hasResult = true')
-            ->andWhere('paT.isProcessedByStaff = true')
-            ->select('p.id')
-            ->distinct()
-            ->getQuery()
-            ->getResult();
+            ->andWhere('paT.isProcessedByStaff = true'));
     }
 
     /**
-     * Gets Patients`ids array if PatientTesting has result of testing but is not processed by staff
+     * Gets Patients`ids array for PatientTesting with result and not processed by staff
      * @return int|mixed|string
      */
     public function getNoProcessedTestings()
     {
-        return $this->generateStandardQueryBuilder()
+        return $this->selectDistinctPatients($this->generateStandardQueryBuilder()
             ->andWhere('paT.hasResult = true')
-            ->andWhere('paT.isProcessedByStaff = false')
-            ->select('p.id')
-            ->distinct()
-            ->getQuery()
-            ->getResult();
+            ->andWhere('paT.isProcessedByStaff = false'));
     }
 
     /**
-     * Gets Patients`ids array if PatientTesting has no results
+     * Gets Patients`ids array for PatientTesting with no results
      * @return int|mixed|string
      */
     public function getNoResultsTestings()
     {
-        return $this->generateStandardQueryBuilder()
+        return $this->selectDistinctPatients($this->generateStandardQueryBuilder()
             ->andWhere('paT.hasResult = false')
             ->andWhere('prT.plannedDate <= :dateTimeNow')
-            ->select('p.id')
+            ->setParameter('dateTimeNow', new DateTime('now')));
+    }
+
+    /**
+     * Add select and distinct by patient id
+     * @param $qb
+     * @return int
+     */
+    private function selectDistinctPatients($qb)
+    {
+        return $qb->select('p.id')
             ->distinct()
-            ->setParameter('dateTimeNow', new DateTime('now'))
             ->getQuery()
             ->getResult();
     }
 
     /**
+     * Gets patient testings for Datatable
      * @param QueryBuilder $qb
      * @param $patientId
      * @param $analysisGroup
      * @return QueryBuilder
      */
-    public function patientTestingsForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
+    public function getPatientTestingsForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
     {
         $this->generateStandardJoinsAndWheres(
             $this->generateQueryBuilderForDatatable($qb)
@@ -233,12 +240,13 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
+     * Gets closed patient testings for Datatable
      * @param QueryBuilder $qb
      * @param $patientId
      * @param $analysisGroup
      * @return QueryBuilder
      */
-    public function patientTestingsHistoryForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
+    public function getPatientTestingsHistoryForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
     {
         $this->generateStandardJoinsAndWheres(
             $this->generateQueryBuilderForDatatable($qb)
@@ -253,12 +261,13 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
+     * Gets no processed patient testings for Datatable
      * @param QueryBuilder $qb
      * @param $patientId
      * @param $analysisGroup
      * @return QueryBuilder
      */
-    public function patientTestingsNoProcessedForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
+    public function getPatientTestingsNoProcessedForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
     {
         $this->generateNoProcessedQueryBuilder(
             $this->generateQueryBuilderForDatatable($qb),
@@ -269,12 +278,13 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
+     * Gets overdue patient testings for Datatable
      * @param QueryBuilder $qb
      * @param $patientId
      * @param $analysisGroup
      * @return QueryBuilder
      */
-    public function patientTestingsOverdueForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
+    public function getPatientTestingsOverdueForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
     {
         $this->generateOverdueQueryBuilder(
             $this->generateQueryBuilderForDatatable($qb),
@@ -285,12 +295,13 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
+     * Gets planned patient testings for Datatable
      * @param QueryBuilder $qb
      * @param $patientId
      * @param $analysisGroup
      * @return QueryBuilder
      */
-    public function patientTestingsPlannedForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
+    public function getPatientTestingsPlannedForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
     {
         $this->generatePlannedQueryBuilder(
             $this->generateQueryBuilderForDatatable($qb),
@@ -330,7 +341,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Generate Standard Query Builder For Patient Testings Where MedicalHistory Is Current And User Is Enabled
+     * Generate Planned Query Builder For Patient Testings
      * @param $qb
      * @param $patientId
      * @return QueryBuilder
@@ -346,7 +357,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Generate Overdue Query Builder For Patient Testings Where MedicalHistory Is Current And User Is Enabled
+     * Generate Overdue Query Builder For Patient Testings
      * @param $qb
      * @param $patientId
      * @return QueryBuilder
@@ -362,7 +373,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Generate Overdue Query Builder For Patient Testings Where MedicalHistory Is Current And User Is Enabled
+     * Generate No Processed Query Builder For Patient Testings
      * @param $qb
      * @param $patientId
      * @return QueryBuilder
@@ -377,7 +388,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Generate Overdue Query Builder For Patient Testings Where MedicalHistory Is Current And User Is Enabled
+     * Generates Query Builder For Datatable
      * @param $qb
      * @return QueryBuilder
      */
@@ -389,7 +400,7 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Generate Overdue Query Builder For Patient Testings Where MedicalHistory Is Current And User Is Enabled
+     * Generates Anslisys Group Filter
      * @param QueryBuilder $qb
      * @param AnalysisGroup|null $analysisGroup
      * @return QueryBuilder

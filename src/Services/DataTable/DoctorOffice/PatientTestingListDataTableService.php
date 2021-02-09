@@ -70,7 +70,7 @@ class PatientTestingListDataTableService extends AdminDatatableService
                     'entity' => PatientTesting::class,
                     'query' => function (QueryBuilder $builder) use ($analysisGroup, $options) {
                         $this->entityManager->getRepository(PatientTesting::class)
-                            ->patientTestingsForDatatable($builder, $options['patientId'], $analysisGroup);
+                            ->getPatientTestingsForDatatable($builder, $options['patientId'], $analysisGroup);
                     }
                 ]
             );

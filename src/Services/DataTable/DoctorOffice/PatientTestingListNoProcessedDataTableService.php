@@ -66,7 +66,7 @@ class PatientTestingListNoProcessedDataTableService extends AdminDatatableServic
                     'entity' => PatientTesting::class,
                     'query' => function (QueryBuilder $builder) use ($analysisGroup, $options) {
                         $this->entityManager->getRepository(PatientTesting::class)
-                            ->patientTestingsNoProcessedForDatatable($builder, $options['patientId'], $analysisGroup);
+                            ->getPatientTestingsNoProcessedForDatatable($builder, $options['patientId'], $analysisGroup);
                     },
                 ]
             );

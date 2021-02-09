@@ -66,7 +66,7 @@ class PatientTestingListOverdueDataTableService extends AdminDatatableService
                     'entity' => PatientTesting::class,
                     'query' => function (QueryBuilder $builder) use ($analysisGroup, $options) {
                         $this->entityManager->getRepository(PatientTesting::class)
-                            ->patientTestingsOverdueForDatatable($builder, $options['patientId'], $analysisGroup);
+                            ->getPatientTestingsOverdueForDatatable($builder, $options['patientId'], $analysisGroup);
                     },
                 ]
             );

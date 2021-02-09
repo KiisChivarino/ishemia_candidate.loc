@@ -27,11 +27,11 @@ class PrescriptionRepository extends AppRepository
     }
 
     /**
-     * Gets Patients`ids array if Prescription is opened
+     * Gets patients with opened prescriptions count
      * @param Hospital|null $hospital
      * @return int|mixed|string
      */
-    public function getOpenedPrescriptionsMenu(?Hospital $hospital)
+    public function getOpenedPrescriptionsCount(?Hospital $hospital)
     {
         $qb = $this->generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser()
             ->andWhere('pr.isCompleted = false');

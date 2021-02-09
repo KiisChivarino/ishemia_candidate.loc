@@ -459,21 +459,21 @@ class MenuBuilder
         $menu->setAttribute('class', 'sidebar__list');
 
         $patientsNoResultsTestingsCount = $this->entityManager->getRepository(PatientTesting::class)
-            ->getNoResultsTestingsMenu(
+            ->getNoResultsTestingsCount(
             (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
                 ? $this->entityManager->getRepository(Staff::class)
                 ->getStaff($this->security->getUser())->getHospital()
                 : null
         );
         $patientsNoProcessedTestingsCount = $this->entityManager->getRepository(PatientTesting::class)
-            ->getNoProcessedTestingsMenu(
+            ->getNoProcessedTestingsCount(
             (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
                 ? $this->entityManager->getRepository(Staff::class)
                 ->getStaff($this->security->getUser())->getHospital()
                 : null
         );
         $patientsOpenedPrescriptionsCount = $this->entityManager->getRepository(Prescription::class)
-            ->getOpenedPrescriptionsMenu(
+            ->getOpenedPrescriptionsCount(
             (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
                 ? $this->entityManager->getRepository(Staff::class)
                 ->getStaff($this->security->getUser())->getHospital()
@@ -533,11 +533,11 @@ class MenuBuilder
         if ($this->isMenuForEntity(Patient::class, 'id')) {
             $patientId = $this->getEntityId('id');
             $noProcessedTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
-                ->getNoProcessedTestingsMenu($patientId);
+                ->getNoProcessedTestingsCount($patientId);
             $plannedTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
-                ->getPlannedTestingsMenu($patientId);
+                ->getPlannedTestingsCount($patientId);
             $overdueTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
-                ->getOverdueTestingsMenu($patientId);
+                ->getOverdueTestingsCount($patientId);
 
             $menu->addChild(
                 'patientTestings', [
