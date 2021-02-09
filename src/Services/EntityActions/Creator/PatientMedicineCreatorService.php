@@ -6,6 +6,8 @@ use App\Entity\MedicalHistory;
 use App\Entity\PatientMedicine;
 use App\Entity\PrescriptionMedicine;
 use DateTime;
+
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
@@ -14,6 +16,28 @@ use Exception;
  */
 class PatientMedicineCreatorService extends AbstractCreatorService
 {
+    /**
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     */
+    private $MEDICAL_HISTORY_OPTION;
+
+    /**
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     */
+    private $PRESCRIPTION_MEDICINE;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        string $medicalHistoryOption,
+        string $prescriptionMedicine
+    )
+    {
+        parent::__construct($entityManager);
+        $this->MEDICAL_HISTORY_OPTION = $medicalHistoryOption;
+        $this->PRESCRIPTION_MEDICINE = $prescriptionMedicine;
+    }
 
     protected function prepare(): void
     {
@@ -34,7 +58,7 @@ class PatientMedicineCreatorService extends AbstractCreatorService
     protected function configureOptions(): void
     {
         $this->setEntityClass(PatientMedicine::class);
-        $this->addOptionCheck(MedicalHistory::class, 'medicalHistory');
-        $this->addOptionCheck(PrescriptionMedicine::class, 'prescriptionMedicine');
+        $this->addOptionCheck(MedicalHistory::class, $this->MEDICAL_HISTORY_OPTION);
+        $this->addOptionCheck(PrescriptionMedicine::class, $this->PRESCRIPTION_MEDICINE);
     }
 }

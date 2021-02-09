@@ -15,6 +15,7 @@ imports:
   - { resource: services/notifications/sms_notification_service.yml }
   - { resource: services/notifications/notification_channel_types.yaml }
   - { resource: services/notifications/notification_receiver_types.yaml }
+  - { resource: services/entityActions/doctor_office_entity_actions.yml }
 services:
   # default configuration for services in *this* file
   _defaults:
@@ -33,6 +34,11 @@ services:
       $defaultTimeFormats: '%default_time_formats%'
       $channelTypes: '%channel_types%'
       $notificationReceiverTypes: '%notification_receiver_types%'
+      $staffOption: '%staff_option%'
+      $prescriptionOption: '%prescription_option%'
+      $medicalHistoryOption: '%medical_history_option%'
+      $prescriptionMedicine: '%prescription_medicine%'
+
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name

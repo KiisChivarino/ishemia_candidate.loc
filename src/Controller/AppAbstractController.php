@@ -573,6 +573,7 @@ abstract class AppAbstractController extends AbstractController
     {
         $this->creatorService->before($entityActionsOptions);
         $entity = $this->creatorService->getEntity();
+        /** @var TemplateService $template */
         $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
         $form = $this->createForm(
             $typeClass,

@@ -9,21 +9,30 @@
         <button class="button main-button"
                 onclick="location.href='{{ path(
                     'adding_survey_by_doctor',
-                    {'id': patient.id}
+                    {
+                        'id': patient.id,
+                        'prescription' : prescription.id
+                    }
                 ) }}';">
             Добавление обследования
         </button>
         <button class="button main-button"
                 onclick="location.href='{{ path(
-                    'adding_medication_by_doctor',
-                    {'id': patient.id}
+                    'prescription_patient_medicine_new',
+                    {
+                        'id': patient.id,
+                        'prescription' : prescription.id
+                    }
                 ) }}';">
             Добавление лекарства
         </button>
         <button class="button main-button"
                 onclick="location.href='{{ path(
                     'adding_reception_by_doctor',
-                    {'id': patient.id}
+                    {
+                        'id': patient.id,
+                        'prescription' : prescription.id
+                    }
                 ) }}';">
             Добавление приема
         </button>

@@ -2,7 +2,10 @@
 
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
+use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
+use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\ListTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -11,6 +14,12 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
 {
+    protected const FORM_CONTENT = [
+        'medicineName' => 'Название лекарства',
+        'instruction' => 'Инструкция по применению',
+        'dateBegin' => 'Планируемая дата начала приема лекарства',
+    ];
+
     protected const SHOW_CONTENT = [
         'title' => 'Просмотр назначения',
         'h2' => 'Просмотр назначения',
@@ -37,5 +46,12 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
             self::FILTER_CONTENT,
             PrescriptionTemplate::ENTITY_CONTENT
         );
+    }
+
+    public function new(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::new($filterService);
+        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
+        return $this;
     }
 }

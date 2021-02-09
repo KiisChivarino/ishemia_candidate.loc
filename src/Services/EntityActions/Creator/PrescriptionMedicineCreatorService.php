@@ -4,6 +4,7 @@ namespace App\Services\EntityActions\Creator;
 
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
+use App\Entity\Staff;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -14,21 +15,27 @@ use Exception;
  */
 class PrescriptionMedicineCreatorService extends AbstractCreatorService
 {
-    /** @var PatientMedicineCreatorService $patientMedicineCreatorService */
-    private $patientMedicineCreatorService;
+    /**
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     */
+    private $STAFF_OPTION;
 
     /**
-     * PrescriptionCreatorService constructor.
-     * @param PatientMedicineCreatorService $patientMedicineCreatorService
-     * @param EntityManagerInterface $entityManager
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
      */
+    private $PRESCRITION_OPTION;
+
     public function __construct(
-        PatientMedicineCreatorService $patientMedicineCreatorService,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        string $staffOption,
+        string $prescriptionOption
     )
     {
         parent::__construct($entityManager);
-        $this->patientMedicineCreatorService = $patientMedicineCreatorService;
+        $this->STAFF_OPTION = $staffOption;
+        $this->PRESCRITION_OPTION = $prescriptionOption;
     }
 
     /**
@@ -38,14 +45,13 @@ class PrescriptionMedicineCreatorService extends AbstractCreatorService
     {
         /** @var PrescriptionMedicine $prescriptionMedicine */
         $prescriptionMedicine = $this->getEntity();
-        $this->patientMedicineCreatorService->execute([
-            'medicalHistory'=> $this->options['prescription']->getMedicalHistory(),
-            'prescriptionMedicine' => $prescriptionMedicine,
-        ]);
         $prescriptionMedicine
             ->setInclusionTime(new DateTime())
-            ->setPrescription($this->options['prescription'])
-            ->setPatientMedicine($this->patientMedicineCreatorService->getEntity());
+            ->setPrescription($this->options['prescription']);
+        /** Executes without form */
+        if (!$prescriptionMedicine->getStaff()) {
+            $prescriptionMedicine->setStaff($this->options[$this->STAFF_OPTION]);
+        }
     }
 
     /**
@@ -54,6 +60,7 @@ class PrescriptionMedicineCreatorService extends AbstractCreatorService
     protected function configureOptions(): void
     {
         $this->setEntityClass(PrescriptionMedicine::class);
-        $this->addOptionCheck(Prescription::class, 'prescription');
+        $this->addOptionCheck(Prescription::class, $this->PRESCRITION_OPTION);
+        $this->addOptionCheck(Staff::class, $this->STAFF_OPTION);
     }
 }
