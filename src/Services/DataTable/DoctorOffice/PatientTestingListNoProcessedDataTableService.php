@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientTestingsListNoProcessedDataTableService extends AdminDatatableService
+class PatientTestingListNoProcessedDataTableService extends AdminDatatableService
 {
     private $authUserInfoService;
 
@@ -65,24 +65,8 @@ class PatientTestingsListNoProcessedDataTableService extends AdminDatatableServi
                 ORMAdapter::class, [
                     'entity' => PatientTesting::class,
                     'query' => function (QueryBuilder $builder) use ($analysisGroup, $options) {
-                        $builder
-                            ->select('pT')
-                            ->from(PatientTesting::class, 'pT')
-                            ->leftJoin('pT.medicalHistory', 'mH')
-                            ->leftJoin('mH.patient', 'p')
-                            ->leftJoin('p.AuthUser', 'u')
-                            ->leftJoin('pT.analysisGroup', 'aG')
-                            ->andWhere('u.enabled = :val')
-                            ->andWhere('p.id = :patientId')
-                            ->andWhere('pT.isProcessedByStaff = false')
-                            ->andWhere('pT.hasResult = true')
-                            ->setParameter('patientId', $options['patientId'])
-                            ->setParameter('val', true);
-                        if ($analysisGroup) {
-                            $builder
-                                ->andWhere('pT.analysisGroup = :valAnalysisGroup')
-                                ->setParameter('valAnalysisGroup', $analysisGroup);
-                        }
+                        $this->entityManager->getRepository(PatientTesting::class)
+                            ->patientTestingsNoProcessedForDatatable($builder, $options['patientId'], $analysisGroup);
                     },
                 ]
             );

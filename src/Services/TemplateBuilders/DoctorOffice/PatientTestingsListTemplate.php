@@ -21,6 +21,10 @@ use App\Services\TemplateItems\ShowTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
+/**
+ * Class PatientTestingsListTemplate
+ * @package App\Services\TemplateBuilders\DoctorOffice
+ */
 class PatientTestingsListTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common content for patient templates */
@@ -161,7 +165,7 @@ class PatientTestingsListTemplate extends DoctorOfficeTemplateBuilder
             ->setPath($this->getTemplatePath())
             ->setContents(self::FORM_EDIT_CONTENT);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath())
+            ->setPath('doctorOffice/edit_patient_testing/')
             ->setContents(self::FORM_EDIT_CONTENT);
         $this->setCommonTemplatePath($this->getTemplatePath());
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);

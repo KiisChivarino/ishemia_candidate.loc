@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Hospital;
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -32,13 +33,7 @@ class PrescriptionRepository extends AppRepository
      */
     public function getOpenedPrescriptionsMenu(?Hospital $hospital)
     {
-        $qb = $this->createQueryBuilder('pr')
-            ->leftJoin('pr.medicalHistory', 'mH')
-            ->leftJoin('mH.patient', 'p')
-            ->leftJoin('p.AuthUser', 'u')
-            ->andWhere('mH.enabled = true')
-            ->andWhere('mH.dateEnd IS NULL')
-            ->andWhere('u.enabled = true')
+        $qb = $this->generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser()
             ->andWhere('pr.isCompleted = false');
         if (!is_null($hospital)) {
             $qb->andWhere('p.hospital =:patientHospital')
@@ -57,13 +52,7 @@ class PrescriptionRepository extends AppRepository
      */
     public function getOpenedPrescriptionsForPatientList($patient)
     {
-        return $this->createQueryBuilder('pr')
-            ->leftJoin('pr.medicalHistory', 'mH')
-            ->leftJoin('mH.patient', 'p')
-            ->leftJoin('p.AuthUser', 'u')
-            ->andWhere('mH.enabled = true')
-            ->andWhere('mH.dateEnd IS NULL')
-            ->andWhere('u.enabled = true')
+        return $this->generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser()
             ->andWhere('p = :patient')
             ->andWhere('pr.isCompleted = false')
             ->setParameter('patient', $patient)
@@ -77,13 +66,7 @@ class PrescriptionRepository extends AppRepository
      */
     public function getOpenedPrescriptions()
     {
-        return $this->createQueryBuilder('pr')
-            ->leftJoin('pr.medicalHistory', 'mH')
-            ->leftJoin('mH.patient', 'p')
-            ->leftJoin('p.AuthUser', 'u')
-            ->andWhere('mH.enabled = true')
-            ->andWhere('mH.dateEnd IS NULL')
-            ->andWhere('u.enabled = true')
+        return $this->generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser()
             ->andWhere('pr.isCompleted = false')
             ->select('p.id')
             ->distinct()
@@ -106,5 +89,19 @@ class PrescriptionRepository extends AppRepository
                 'medicalHistory' => $medicalHistory
             ]
         );
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    public function generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser(): QueryBuilder
+    {
+        return $this->createQueryBuilder('pr')
+            ->leftJoin('pr.medicalHistory', 'mH')
+            ->leftJoin('mH.patient', 'p')
+            ->leftJoin('p.AuthUser', 'u')
+            ->andWhere('mH.enabled = true')
+            ->andWhere('mH.dateEnd IS NULL')
+            ->andWhere('u.enabled = true');
     }
 }

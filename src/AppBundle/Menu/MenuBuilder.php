@@ -550,7 +550,7 @@ class MenuBuilder
             $menu['patientTestings']->addChild(
                 'patient_testing_list', [
                     'label' => 'Все',
-                    'route' => 'patient_testing_list',
+                    'route' => 'doctor_patient_testing_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
@@ -560,7 +560,7 @@ class MenuBuilder
                         'Обработать',
                         $noProcessedTestingsCounter
                     ),
-                    'route' => 'patient_testing_not_processed_list',
+                    'route' => 'doctor_patient_testing_not_processed_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
@@ -570,7 +570,7 @@ class MenuBuilder
                         'По плану',
                         $plannedTestingsCounter
                     ),
-                    'route' => 'patient_testing_planned_list',
+                    'route' => 'doctor_patient_testing_planned_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
@@ -580,14 +580,14 @@ class MenuBuilder
                         'Просроченные',
                         $overdueTestingsCounter
                     ),
-                    'route' => 'patient_testing_overdue_list',
+                    'route' => 'doctor_patient_testing_overdue_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
                 'patient_testing_history_list', [
                     'label' => 'История',
-                    'route' => 'patient_testing_history_list',
+                    'route' => 'doctor_patient_testing_history_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );

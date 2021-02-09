@@ -17,12 +17,12 @@ use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class PatientTestingsListHistoryDataTableService
+ * Class PatientTestingsListPlannedDataTableService
  * methods for adding data tables
  *
  * @package App\DataTable
  */
-class PatientTestingsListHistoryDataTableService extends AdminDatatableService
+class PatientTestingListPlannedDataTableService extends AdminDatatableService
 {
     private $authUserInfoService;
 
@@ -65,24 +65,8 @@ class PatientTestingsListHistoryDataTableService extends AdminDatatableService
                 ORMAdapter::class, [
                     'entity' => PatientTesting::class,
                     'query' => function (QueryBuilder $builder) use ($analysisGroup, $options) {
-                        $builder
-                            ->select('pT')
-                            ->from(PatientTesting::class, 'pT')
-                            ->leftJoin('pT.medicalHistory', 'mH')
-                            ->leftJoin('mH.patient', 'p')
-                            ->leftJoin('p.AuthUser', 'u')
-                            ->leftJoin('pT.analysisGroup', 'aG')
-                            ->andWhere('u.enabled = :val')
-                            ->andWhere('p.id = :patientId')
-                            ->andWhere('pT.isProcessedByStaff = true')
-                            ->andWhere('pT.hasResult = true')
-                            ->setParameter('patientId', $options['patientId'])
-                            ->setParameter('val', true);
-                        if ($analysisGroup) {
-                            $builder
-                                ->andWhere('pT.analysisGroup = :valAnalysisGroup')
-                                ->setParameter('valAnalysisGroup', $analysisGroup);
-                        }
+                        $this->entityManager->getRepository(PatientTesting::class)
+                            ->patientTestingsPlannedForDatatable($builder, $options['patientId'], $analysisGroup);
                     },
                 ]
             );
