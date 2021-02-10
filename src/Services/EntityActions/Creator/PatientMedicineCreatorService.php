@@ -5,7 +5,6 @@ namespace App\Services\EntityActions\Creator;
 use App\Entity\MedicalHistory;
 use App\Entity\PatientMedicine;
 use App\Entity\PrescriptionMedicine;
-use DateTime;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -45,11 +44,7 @@ class PatientMedicineCreatorService extends AbstractCreatorService
         $patientMedicine = $this->getEntity();
         $patientMedicine
             ->setMedicalHistory($this->options['medicalHistory'])
-            ->setInstruction('инструкция')
-            ->setDateBegin(new DateTime())
-            ->setMedicineName('Тестовый препарат')
-            ->setPrescriptionMedicine($this->options['prescriptionMedicine'])
-        ;
+            ->setPrescriptionMedicine($this->options['prescriptionMedicine']);
     }
 
     /**

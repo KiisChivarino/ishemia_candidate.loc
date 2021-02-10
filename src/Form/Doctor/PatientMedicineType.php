@@ -7,11 +7,11 @@ use App\Entity\PatientMedicine;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 /**
  * Class PatientPersonalData
@@ -36,12 +36,16 @@ class PatientMedicineType extends AbstractType
             ->add('instruction', TextareaType::class, array(
                 'label' => $templateItem->getContentValue('instruction'),
             ))
-            ->add('dateBegin', DateTimeType::class, array(
-                'label' => $templateItem->getContentValue('dateBegin'),
-                'attr' => [
-                    'value' => date("Y-m-d H:i:s"),
+            ->add(
+                'dateBegin', DateType::class, [
+                    'label' => $templateItem->getContentValue('dateBegin'),
+                    'widget' => 'single_text',
+                    'format' => 'yyyy-MM-dd',
+                    'attr' => [
+                        'min' => date('Y-m-d'),
+                    ]
                 ]
-            ));
+            );
     }
 
     /**

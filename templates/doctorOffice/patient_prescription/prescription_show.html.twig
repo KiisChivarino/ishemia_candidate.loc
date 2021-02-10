@@ -39,7 +39,7 @@
     </div>
     <div>
         <div>{{ template.items.show.content.createdTime }}</div>
-        {{ prescription.createdTime ? prescription.createdTime|date('d.m.Y') : '' }}
+        {{ prescription.createdTime ? prescription.createdTime|date('Y-m-d') : '' }}
     </div>
     <div>
         <div>{{ template.items.show.content.doctor }}</div>
