@@ -4,7 +4,6 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Entity\City;
 use App\Entity\Hospital;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
@@ -19,7 +18,7 @@ use Omines\DataTablesBundle\DataTable;
  *
  * @package App\Services\DataTable\DoctorOffice
  */
-class HospitalDataTableService extends AdminDatatableService
+class HospitalDataTableService extends DoctorOfficeDatatableService
 {
     /**
      * @param Closure $renderOperationsFunction

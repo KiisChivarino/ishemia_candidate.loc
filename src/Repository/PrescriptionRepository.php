@@ -33,7 +33,7 @@ class PrescriptionRepository extends AppRepository
      */
     public function getOpenedPrescriptionsCount(?Hospital $hospital)
     {
-        $qb = $this->generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser()
+        $qb = $this->generateBuilder()
             ->andWhere('pr.isCompleted = false');
         if (!is_null($hospital)) {
             $qb->andWhere('p.hospital =:patientHospital')
@@ -52,7 +52,7 @@ class PrescriptionRepository extends AppRepository
      */
     public function getOpenedPrescriptionsForPatientList($patient)
     {
-        return $this->generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser()
+        return $this->generateBuilder()
             ->andWhere('p = :patient')
             ->andWhere('pr.isCompleted = false')
             ->setParameter('patient', $patient)
@@ -66,7 +66,7 @@ class PrescriptionRepository extends AppRepository
      */
     public function getOpenedPrescriptions()
     {
-        return $this->generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser()
+        return $this->generateBuilder()
             ->andWhere('pr.isCompleted = false')
             ->select('p.id')
             ->distinct()
@@ -92,9 +92,10 @@ class PrescriptionRepository extends AppRepository
     }
 
     /**
+     * Generate Builder For Prescription With Current Medical History And Enabled User
      * @return QueryBuilder
      */
-    public function generateBuilderForPrescriptionWithCurrentMedicalHistoryAndEnabledUser(): QueryBuilder
+    public function generateBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('pr')
             ->leftJoin('pr.medicalHistory', 'mH')

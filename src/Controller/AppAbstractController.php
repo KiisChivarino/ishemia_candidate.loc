@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\Template\TemplateService;
@@ -100,7 +99,7 @@ abstract class AppAbstractController extends AbstractController
      * Отображает шаблон вывода списка элементов с использованием datatable
      *
      * @param Request $request
-     * @param AdminDatatableService $dataTableService
+     * @param $dataTableService
      * @param FilterLabels|null $filterLabels
      * @param array|null $options
      * @param Closure|null $listActions
@@ -108,7 +107,7 @@ abstract class AppAbstractController extends AbstractController
      */
     public function responseList(
         Request $request,
-        AdminDatatableService $dataTableService,
+        $dataTableService,
         ?FilterLabels $filterLabels = null,
         ?array $options = [],
         ?Closure $listActions = null

@@ -4,7 +4,7 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PatientTesting;
-use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Repository\PatientTestingDatatableRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
@@ -22,9 +22,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientTestingListDataTableService extends AdminDatatableService
+class PatientTestingListDataTableService extends DoctorOfficeDatatableService
 {
     private $authUserInfoService;
+
+    /** @var PatientTestingDatatableRepository */
+    private $patientTestingDatatableRepository;
 
     /**
      * DataTableService constructor.
@@ -33,16 +36,19 @@ class PatientTestingListDataTableService extends AdminDatatableService
      * @param UrlGeneratorInterface $router
      * @param EntityManagerInterface $em
      * @param AuthUserInfoService $authUserInfoService
+     * @param PatientTestingDatatableRepository $patientTestingDatatableRepository
      */
     public function __construct(
         DataTableFactory $dataTableFactory,
         UrlGeneratorInterface $router,
         EntityManagerInterface $em,
-        AuthUserInfoService $authUserInfoService
+        AuthUserInfoService $authUserInfoService,
+        PatientTestingDatatableRepository $patientTestingDatatableRepository
     )
     {
         parent::__construct($dataTableFactory, $router, $em);
         $this->authUserInfoService = $authUserInfoService;
+        $this->patientTestingDatatableRepository = $patientTestingDatatableRepository;
     }
 
     /**
@@ -69,7 +75,7 @@ class PatientTestingListDataTableService extends AdminDatatableService
                 ORMAdapter::class, [
                     'entity' => PatientTesting::class,
                     'query' => function (QueryBuilder $builder) use ($analysisGroup, $options) {
-                        $this->entityManager->getRepository(PatientTesting::class)
+                        $this->patientTestingDatatableRepository
                             ->getPatientTestingsForDatatable($builder, $options['patientId'], $analysisGroup);
                     }
                 ]

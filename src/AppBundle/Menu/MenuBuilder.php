@@ -3,9 +3,9 @@
 namespace App\AppBundle\Menu;
 
 use App\Entity\Patient;
-use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\Staff;
+use App\Repository\PatientTestingCounterRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
@@ -451,21 +451,22 @@ class MenuBuilder
      * Меню кабинета врача в sidebar
      *
      * @param RequestStack $requestStack
+     * @param PatientTestingCounterRepository $patientTestingCounterRepository
      * @return ItemInterface
      */
-    public function createDoctorOfficeSidebarMenu(RequestStack $requestStack): ItemInterface
+    public function createDoctorOfficeSidebarMenu(RequestStack $requestStack, PatientTestingCounterRepository $patientTestingCounterRepository): ItemInterface
     {
         $menu = $this->factory->createItem('root');
         $menu->setAttribute('class', 'sidebar__list');
 
-        $patientsNoResultsTestingsCount = $this->entityManager->getRepository(PatientTesting::class)
+        $patientsNoResultsTestingsCount = $patientTestingCounterRepository
             ->getNoResultsTestingsCount(
             (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
                 ? $this->entityManager->getRepository(Staff::class)
                 ->getStaff($this->security->getUser())->getHospital()
                 : null
         );
-        $patientsNoProcessedTestingsCount = $this->entityManager->getRepository(PatientTesting::class)
+        $patientsNoProcessedTestingsCount = $patientTestingCounterRepository
             ->getNoProcessedTestingsCount(
             (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
                 ? $this->entityManager->getRepository(Staff::class)
@@ -532,11 +533,11 @@ class MenuBuilder
 
         if ($this->isMenuForEntity(Patient::class, 'id')) {
             $patientId = $this->getEntityId('id');
-            $noProcessedTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
+            $noProcessedTestingsCounter = $patientTestingCounterRepository
                 ->getNoProcessedTestingsCount($patientId);
-            $plannedTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
+            $plannedTestingsCounter = $patientTestingCounterRepository
                 ->getPlannedTestingsCount($patientId);
-            $overdueTestingsCounter = $this->entityManager->getRepository(PatientTesting::class)
+            $overdueTestingsCounter = $patientTestingCounterRepository
                 ->getOverdueTestingsCount($patientId);
 
             $menu->addChild(

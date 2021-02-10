@@ -5,7 +5,7 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Entity\Prescription;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
+class PatientListDataTableService extends DoctorOfficeDatatableService
 {
     private $authUserInfoService;
 
@@ -38,7 +38,12 @@ class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
      * @param EntityManagerInterface $em
      * @param AuthUserInfoService $authUserInfoService
      */
-    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $em, AuthUserInfoService $authUserInfoService)
+    public function __construct(
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        EntityManagerInterface $em,
+        AuthUserInfoService $authUserInfoService
+    )
     {
         parent::__construct($dataTableFactory, $router, $em);
         $this->authUserInfoService = $authUserInfoService;
@@ -49,8 +54,8 @@ class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
      *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param array $filters
-     *
+     * @param array|null $filters
+     * @param array $options
      * @return DataTable
      * @throws Exception
      */
@@ -126,13 +131,56 @@ class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
                     'orderField' => 'h.name',
                 ]
             )
-        ;
+            ->add(
+                'status', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('status'),
+                    'render' => function (string $data, Patient $patient) {
+                        $patientTestingsWithNoResults = $this->entityManager
+                            ->getRepository(PatientTesting::class)
+                            ->getNoResultsTestingsForPatientsList($patient);
+                        $patientTestingsNoProcessedTestings = $this->entityManager
+                            ->getRepository(PatientTesting::class)
+                            ->getNoProcessedTestingsForPatientsList($patient);
+                        $patientOpenedPrescriptions = $this->entityManager
+                            ->getRepository(Prescription::class)
+                            ->getOpenedPrescriptionsForPatientList($patient);
 
-        $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
-            ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
-            : ($options
-                ? $options['hospital']
-                : "");
+                        $result = "";
+                        if (!empty($patientTestingsWithNoResults)) {
+                            $result .= $this->getLink('Нет анализов',
+                                $patient->getId(),
+                                'doctor_medical_history'
+                            );
+                        }
+                        if (!empty($patientTestingsNoProcessedTestings)) {
+                            $result .= $this->generateResultStringIfNotEmpty($patientTestingsWithNoResults);
+                            $result .= $this->getLink('Обработать анализы',
+                                $patient->getId(),
+                                'doctor_medical_history'
+                            );
+                        }
+                        if (!empty($patientOpenedPrescriptions)) {
+                            $result .= $this->generateResultStringIfNotEmpty($patientTestingsNoProcessedTestings);
+                            $result .= $this->generateResultStringIfNotEmpty($patientTestingsWithNoResults);
+                            $result .= $this->getLink('Закрыть назначения',
+                                $patient->getId(),
+                                'doctor_medical_history'
+                            );
+                        }
+                        return $result;
+                    },
+                ]
+            );
+
+        if ($filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== "") {
+            $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']];
+        } elseif ($options) {
+            $hospital = $options['hospital'];
+        } else {
+            $hospital = "";
+        }
+
+
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
@@ -141,14 +189,10 @@ class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
                         $builder
                             ->select('p')
                             ->from(Patient::class, 'p')
-                            ->andWhere('p.id IN (:patients)')
-                            ->setParameter(
-                                'patients',
-                                $this->entityManager
-                                    ->getRepository(PatientTesting::class)->getNoProcessedTestings()
-                            )
-                        ;
-
+                            ->leftJoin('p.AuthUser', 'u')
+                            ->leftJoin('p.hospital', 'h')
+                            ->andWhere('u.enabled = :val')
+                            ->setParameter('val', true);
                         if ($hospital) {
                             $builder
                                 ->andWhere('p.hospital = :valHospital')
@@ -157,5 +201,14 @@ class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
                     },
                 ]
             );
+    }
+
+    /**
+     * @param $patientTestings
+     * @return string
+     */
+    private function generateResultStringIfNotEmpty($patientTestings): string
+    {
+        return !empty($patientTestings) ? "<hr>" : "";
     }
 }

@@ -5,7 +5,6 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -26,7 +25,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientsWithNoResultsListDataTableService extends AdminDatatableService
+class PatientWithProcessedResultsListDataTableService extends DoctorOfficeDatatableService
 {
     private $authUserInfoService;
 
@@ -49,8 +48,8 @@ class PatientsWithNoResultsListDataTableService extends AdminDatatableService
      *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param array $filters
-     *
+     * @param array|null $filters
+     * @param array|null $options
      * @return DataTable
      * @throws Exception
      */
@@ -145,7 +144,7 @@ class PatientsWithNoResultsListDataTableService extends AdminDatatableService
                             ->setParameter(
                                 'patients',
                                 $this->entityManager
-                                    ->getRepository(PatientTesting::class)->getNoResultsTestings()
+                                    ->getRepository(PatientTesting::class)->getProcessedResultsTestings()
                             )
                         ;
 

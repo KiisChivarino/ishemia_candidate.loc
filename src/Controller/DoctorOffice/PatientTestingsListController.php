@@ -20,7 +20,7 @@ use App\Services\FileService\FileService;
 use App\Services\FilterService\FilterService;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
-use App\Services\TemplateBuilders\DoctorOffice\PatientTestingsListTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\PatientTestingListTemplate;
 use App\Services\TemplateItems\ListTemplateItem;
 use ReflectionException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -52,7 +52,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
     public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
         parent::__construct($translator);
-        $this->templateService = new PatientTestingsListTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new PatientTestingListTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 

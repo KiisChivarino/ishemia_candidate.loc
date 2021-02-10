@@ -4,11 +4,11 @@ namespace App\Controller\DoctorOffice;
 
 use App\Repository\StaffRepository;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\DataTable\DoctorOffice\PatientsListDataTableService;
-use App\Services\DataTable\DoctorOffice\PatientsWithNoProcessedListDataTableService;
-use App\Services\DataTable\DoctorOffice\PatientsWithNoResultsListDataTableService;
-use App\Services\DataTable\DoctorOffice\PatientsWithOpenedPrescriptionsListDataTableService;
-use App\Services\DataTable\DoctorOffice\PatientsWithProcessedResultsListDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientListDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientWithNoProcessedListDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientWithNoResultsListDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientWithOpenedPrescriptionsListDataTableService;
+use App\Services\DataTable\DoctorOffice\PatientWithProcessedResultsListDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateBuilders\DoctorOffice\PatientListTemplate;
@@ -53,14 +53,14 @@ class PatientsListController extends DoctorOfficeAbstractController
      * @Route("/patients", name="patients_list", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param PatientsListDataTableService $dataTableService
+     * @param PatientListDataTableService $dataTableService
      * @param FilterService $filterService
      * @param StaffRepository $staffRepository
      * @return Response
      */
     public function list(
         Request $request,
-        PatientsListDataTableService $dataTableService,
+        PatientListDataTableService $dataTableService,
         FilterService $filterService,
         StaffRepository $staffRepository
     ): Response
@@ -89,7 +89,7 @@ class PatientsListController extends DoctorOfficeAbstractController
      * @Route("/patients_with_no_processed", name="patients_with_no_processed_list", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param PatientsWithNoProcessedListDataTableService $dataTableService
+     * @param PatientWithNoProcessedListDataTableService $dataTableService
      * @param FilterService $filterService
      * @param StaffRepository $staffRepository
      * @return Response
@@ -97,7 +97,7 @@ class PatientsListController extends DoctorOfficeAbstractController
      */
     public function patientsWithNoProcessedList(
         Request $request,
-        PatientsWithNoProcessedListDataTableService $dataTableService,
+        PatientWithNoProcessedListDataTableService $dataTableService,
         FilterService $filterService,
         StaffRepository $staffRepository
     ): Response
@@ -128,7 +128,7 @@ class PatientsListController extends DoctorOfficeAbstractController
      * @Route("/patients_with_no_results", name="patients_with_no_results_list", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param PatientsWithNoResultsListDataTableService $dataTableService
+     * @param PatientWithNoResultsListDataTableService $dataTableService
      * @param FilterService $filterService
      * @param StaffRepository $staffRepository
      * @return Response
@@ -136,7 +136,7 @@ class PatientsListController extends DoctorOfficeAbstractController
      */
     public function patientsWithNoResultsList(
         Request $request,
-        PatientsWithNoResultsListDataTableService $dataTableService,
+        PatientWithNoResultsListDataTableService $dataTableService,
         FilterService $filterService,
         StaffRepository $staffRepository
     ): Response
@@ -167,7 +167,7 @@ class PatientsListController extends DoctorOfficeAbstractController
      * @Route("/patients_with_opened_prescriptions", name="patients_with_opened_prescriptions_list", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param PatientsWithOpenedPrescriptionsListDataTableService $dataTableService
+     * @param PatientWithOpenedPrescriptionsListDataTableService $dataTableService
      * @param FilterService $filterService
      * @param StaffRepository $staffRepository
      * @return Response
@@ -175,7 +175,7 @@ class PatientsListController extends DoctorOfficeAbstractController
      */
     public function patientsWithOpenedPrescriptionsList(
         Request $request,
-        PatientsWithOpenedPrescriptionsListDataTableService $dataTableService,
+        PatientWithOpenedPrescriptionsListDataTableService $dataTableService,
         FilterService $filterService,
         StaffRepository $staffRepository
     ): Response
@@ -206,14 +206,14 @@ class PatientsListController extends DoctorOfficeAbstractController
      * @Route("/patients_with_processed_results", name="patients_with_processed_results_list", methods={"GET","POST"})
      *
      * @param Request $request
-     * @param PatientsWithProcessedResultsListDataTableService $dataTableService
+     * @param PatientWithProcessedResultsListDataTableService $dataTableService
      * @param FilterService $filterService
      * @param StaffRepository $staffRepository
      * @return Response
      */
     public function patientsWithProcessedResultsList(
         Request $request,
-        PatientsWithProcessedResultsListDataTableService $dataTableService,
+        PatientWithProcessedResultsListDataTableService $dataTableService,
         FilterService $filterService,
         StaffRepository $staffRepository
     ): Response

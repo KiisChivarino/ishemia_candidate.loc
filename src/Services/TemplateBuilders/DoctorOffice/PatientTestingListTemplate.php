@@ -25,7 +25,7 @@ use Symfony\Component\Routing\RouteCollection;
  * Class PatientTestingsListTemplate
  * @package App\Services\TemplateBuilders\DoctorOffice
  */
-class PatientTestingsListTemplate extends DoctorOfficeTemplateBuilder
+class PatientTestingListTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common content for patient templates */
     protected const COMMON_CONTENT = [

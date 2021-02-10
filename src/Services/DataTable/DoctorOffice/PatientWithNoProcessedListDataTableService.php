@@ -5,8 +5,6 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Entity\Prescription;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -27,7 +25,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatableService
+class PatientWithNoProcessedListDataTableService extends DoctorOfficeDatatableService
 {
     private $authUserInfoService;
 
@@ -39,7 +37,12 @@ class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatable
      * @param EntityManagerInterface $em
      * @param AuthUserInfoService $authUserInfoService
      */
-    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $em, AuthUserInfoService $authUserInfoService)
+    public function __construct(
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        EntityManagerInterface $em,
+        AuthUserInfoService $authUserInfoService
+    )
     {
         parent::__construct($dataTableFactory, $router, $em);
         $this->authUserInfoService = $authUserInfoService;
@@ -50,8 +53,8 @@ class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatable
      *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param array $filters
-     *
+     * @param array|null $filters
+     * @param array $options
      * @return DataTable
      * @throws Exception
      */
@@ -128,6 +131,7 @@ class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatable
                 ]
             )
         ;
+
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
             ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
             : ($options
@@ -145,7 +149,7 @@ class PatientsWithOpenedPrescriptionsListDataTableService extends AdminDatatable
                             ->setParameter(
                                 'patients',
                                 $this->entityManager
-                                    ->getRepository(Prescription::class)->getOpenedPrescriptions()
+                                    ->getRepository(PatientTesting::class)->getNoProcessedTestings()
                             )
                         ;
 

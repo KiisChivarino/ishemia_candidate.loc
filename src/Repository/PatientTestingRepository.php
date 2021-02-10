@@ -2,8 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\AnalysisGroup;
-use App\Entity\Hospital;
 use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
 use App\Services\InfoService\MedicalHistoryInfoService;
@@ -39,28 +37,6 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets patients with NoResults patient testings count
-     * @param Hospital|null $hospital
-     * @return int|mixed|string
-     */
-    public function getNoResultsTestingsCount(?Hospital $hospital)
-    {
-        $qb = $this->generateStandardQueryBuilder()
-            ->andWhere('paT.hasResult = false')
-            ->andWhere('prT.plannedDate <= :dateTimeNow')
-            ->setParameter('dateTimeNow', new DateTime('now'));
-        if (!is_null($hospital)) {
-            $qb->andWhere('p.hospital =:patientHospital')
-                ->setParameter('patientHospital', $hospital);
-        }
-        return
-            sizeof($qb->select('p.id')
-                ->distinct()
-                ->getQuery()
-                ->getResult());
-    }
-
-    /**
      * Gets Patient Testings if PatientTesting has no results
      * @param $patient
      * @return int|mixed|string
@@ -92,65 +68,6 @@ class PatientTestingRepository extends AppRepository
             ->setParameter('patient', $patient)
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * Gets overdue patient testings count
-     * @param $patientId
-     * @return int|mixed|string
-     */
-    public function getOverdueTestingsCount($patientId)
-    {
-        return $this->countByPatientTestingId(
-            $this->generateOverdueQueryBuilder(
-                $this->createQueryBuilder('paT'),
-                $patientId
-            )
-        );
-    }
-
-    /**
-     * Gets planned patient testings count
-     * @param $patientId
-     * @return int|mixed|string
-     */
-    public function getPlannedTestingsCount($patientId)
-    {
-        return $this->countByPatientTestingId(
-            $this->generatePlannedQueryBuilder(
-                $this->createQueryBuilder('paT'),
-                $patientId
-            )
-        );
-    }
-
-    /**
-     * Gets no processed patient testings count
-     * @param $patientId
-     * @return int|mixed|string
-     */
-    public function getNoProcessedTestingsCount($patientId)
-    {
-        return $this->countByPatientTestingId(
-            $this->generateNoProcessedQueryBuilder(
-                $this->createQueryBuilder('paT'),
-                $patientId
-            )
-        );
-
-    }
-
-    /**
-     * Add count by patient testing id
-     * @param $qb
-     * @return int
-     */
-    private function countByPatientTestingId($qb): int
-    {
-        return sizeof($qb->select('paT.id')
-            ->distinct()
-            ->getQuery()
-            ->getResult());
     }
 
     /**
@@ -209,7 +126,7 @@ class PatientTestingRepository extends AppRepository
     /**
      * Add select and distinct by patient id
      * @param $qb
-     * @return int
+     * @return mixed
      */
     private function selectDistinctPatients($qb)
     {
@@ -220,102 +137,10 @@ class PatientTestingRepository extends AppRepository
     }
 
     /**
-     * Gets patient testings for Datatable
-     * @param QueryBuilder $qb
-     * @param $patientId
-     * @param $analysisGroup
-     * @return QueryBuilder
-     */
-    public function getPatientTestingsForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
-    {
-        $this->generateStandardJoinsAndWheres(
-            $this->generateQueryBuilderForDatatable($qb)
-        )
-            ->andWhere('u.enabled = :val')
-            ->andWhere('p.id = :patientId')
-            ->setParameter('patientId', $patientId)
-            ->setParameter('val', true);
-        $this->generateAnslisysGroupFilter($qb, $analysisGroup);
-        return $qb;
-    }
-
-    /**
-     * Gets closed patient testings for Datatable
-     * @param QueryBuilder $qb
-     * @param $patientId
-     * @param $analysisGroup
-     * @return QueryBuilder
-     */
-    public function getPatientTestingsHistoryForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
-    {
-        $this->generateStandardJoinsAndWheres(
-            $this->generateQueryBuilderForDatatable($qb)
-        )
-            ->andWhere('p.id = :patientId')
-            ->andWhere('paT.isProcessedByStaff = true')
-            ->andWhere('paT.hasResult = true')
-            ->setParameter('patientId', $patientId)
-            ->setParameter('val', true);
-        $this->generateAnslisysGroupFilter($qb, $analysisGroup);
-        return $qb;
-    }
-
-    /**
-     * Gets no processed patient testings for Datatable
-     * @param QueryBuilder $qb
-     * @param $patientId
-     * @param $analysisGroup
-     * @return QueryBuilder
-     */
-    public function getPatientTestingsNoProcessedForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
-    {
-        $this->generateNoProcessedQueryBuilder(
-            $this->generateQueryBuilderForDatatable($qb),
-            $patientId
-        );
-        $this->generateAnslisysGroupFilter($qb, $analysisGroup);
-        return $qb;
-    }
-
-    /**
-     * Gets overdue patient testings for Datatable
-     * @param QueryBuilder $qb
-     * @param $patientId
-     * @param $analysisGroup
-     * @return QueryBuilder
-     */
-    public function getPatientTestingsOverdueForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
-    {
-        $this->generateOverdueQueryBuilder(
-            $this->generateQueryBuilderForDatatable($qb),
-            $patientId
-        );
-        $this->generateAnslisysGroupFilter($qb, $analysisGroup);
-        return $qb;
-    }
-
-    /**
-     * Gets planned patient testings for Datatable
-     * @param QueryBuilder $qb
-     * @param $patientId
-     * @param $analysisGroup
-     * @return QueryBuilder
-     */
-    public function getPatientTestingsPlannedForDatatable(QueryBuilder $qb, $patientId, $analysisGroup): QueryBuilder
-    {
-        $this->generatePlannedQueryBuilder(
-            $this->generateQueryBuilderForDatatable($qb),
-            $patientId
-        );
-        $this->generateAnslisysGroupFilter($qb, $analysisGroup);
-        return $qb;
-    }
-
-    /**
      * Generate Standard Query Builder For Patient Testings Where MedicalHistory Is Current And User Is Enabled
      * @return QueryBuilder
      */
-    private function generateStandardQueryBuilder(): QueryBuilder
+    protected function generateStandardQueryBuilder(): QueryBuilder
     {
         return $this->generateStandardJoinsAndWheres(
             $this->createQueryBuilder('paT')
@@ -327,7 +152,7 @@ class PatientTestingRepository extends AppRepository
      * @param QueryBuilder $qb
      * @return QueryBuilder
      */
-    private function generateStandardJoinsAndWheres(QueryBuilder $qb): QueryBuilder
+    protected function generateStandardJoinsAndWheres(QueryBuilder $qb): QueryBuilder
     {
         return $qb
             ->leftJoin('paT.medicalHistory', 'mH')
@@ -346,7 +171,7 @@ class PatientTestingRepository extends AppRepository
      * @param $patientId
      * @return QueryBuilder
      */
-    private function generatePlannedQueryBuilder(QueryBuilder $qb, $patientId): QueryBuilder
+    protected function generatePlannedQueryBuilder(QueryBuilder $qb, $patientId): QueryBuilder
     {
         return $this->generateStandardJoinsAndWheres($qb)
             ->andWhere('prT.plannedDate >= :dateTimeNow')
@@ -362,7 +187,7 @@ class PatientTestingRepository extends AppRepository
      * @param $patientId
      * @return QueryBuilder
      */
-    private function generateOverdueQueryBuilder(QueryBuilder $qb, $patientId): QueryBuilder
+    protected function generateOverdueQueryBuilder(QueryBuilder $qb, $patientId): QueryBuilder
     {
         return $this->generateStandardJoinsAndWheres($qb)
             ->andWhere('prT.plannedDate < :dateTimeNow')
@@ -378,37 +203,12 @@ class PatientTestingRepository extends AppRepository
      * @param $patientId
      * @return QueryBuilder
      */
-    private function generateNoProcessedQueryBuilder(QueryBuilder $qb, $patientId): QueryBuilder
+    protected function generateNoProcessedQueryBuilder(QueryBuilder $qb, $patientId): QueryBuilder
     {
         return $this->generateStandardJoinsAndWheres($qb)
             ->andWhere('p.id = :patientId')
             ->andWhere('paT.isProcessedByStaff = false')
             ->andWhere('paT.hasResult = true')
             ->setParameter('patientId', $patientId);
-    }
-
-    /**
-     * Generates Query Builder For Datatable
-     * @param $qb
-     * @return QueryBuilder
-     */
-    private function generateQueryBuilderForDatatable(QueryBuilder $qb): QueryBuilder
-    {
-        return $qb
-            ->select('paT')
-            ->from(PatientTesting::class, 'paT');
-    }
-
-    /**
-     * Generates Anslisys Group Filter
-     * @param QueryBuilder $qb
-     * @param AnalysisGroup|null $analysisGroup
-     * @return QueryBuilder
-     */
-    private function generateAnslisysGroupFilter(QueryBuilder $qb, $analysisGroup = null): QueryBuilder
-    {
-        return !is_null($analysisGroup) && $analysisGroup != "" ? $qb
-            ->andWhere('paT.analysisGroup = :valAnalysisGroup')
-            ->setParameter('valAnalysisGroup', $analysisGroup) : $qb;
     }
 }
