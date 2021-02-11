@@ -79,7 +79,11 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['ANALYSIS_GROUP'],]
             ),
-            ['patientId' => $patient->getId()]
+            ['patientId' => $patient->getId()],
+            function () {
+                $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
+                    ->setContent('title', 'Список обследований');
+            }
         );
     }
 

@@ -3,12 +3,14 @@
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Controller\AppAbstractController;
+use App\Controller\DoctorOffice\EditPatientTestingController;
 use App\Entity\AnalysisGroup;
 use App\Entity\PatientTesting;
 use App\Repository\AnalysisGroupRepository;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\Template\TemplateFilter;
+use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
 use App\Services\TemplateBuilders\Admin\PatientTestingResultTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
@@ -29,46 +31,15 @@ class PatientTestingListTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common content for patient templates */
     protected const COMMON_CONTENT = [
-        'insuranceNumber' => 'Номер страховки',
-        'dateBirth' => 'Дата рождения',
-        'dateStartOfTreatment' => 'Начало гестации',
-        'phone' => 'Телефон',
-        'diagnoses' => 'Диагнозы',
-        'unprocessedTestings' => 'Показатели',
-        'analysisGroup' => 'Группа анализов',
         'analysisDate' => 'Дата проведения обследования',
         'processed' => 'Обработано',
-        'resultData' => 'Результаты обследования'
+        'resultData' => 'Результаты обследования',
+        'analysisGroup' => AnalysisGroupTemplate::ENTITY_CONTENT['entity']
     ];
-
-    /** @var string[] Common FORM_CONTENT */
-    protected const FORM_CONTENT = [];
-
-    /** @var string[] Common FORM_SHOW_CONTENT */
-    protected const FORM_SHOW_CONTENT = [];
 
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
-        'h1' => 'Список обследований',
-        'h1NoProcessed' => 'Список необработанных обследований',
-        'h1Planned' => 'Список запланированных обследований',
-        'h1Overdue' => 'Список просроченных обследований',
-        'h1History' => 'Список закрытых обследований',
-        'title' => 'Список записей',
-        'fio' => 'ФИО',
-        'age' => 'Возраст',
-    ];
-
-    /** @var string[] Common NEW_CONTENT */
-    protected const NEW_CONTENT = [
-        'h1' => 'Новая запись',
-        'title' => 'Новая запись',
-    ];
-
-    /** @var string[] Common SHOW_CONTENT */
-    protected const SHOW_CONTENT = [
-        'h1' => 'Просмотр записи',
-        'title' => 'Просмотр записи',
+        'title' => 'Список обследований',
     ];
 
     /** @var array Common content for form and edit templates */
@@ -84,7 +55,7 @@ class PatientTestingListTemplate extends DoctorOfficeTemplateBuilder
 
     /** @var string[] Common ENTITY_CONTENT */
     public const ENTITY_CONTENT = [
-        'entity' => 'Список пациентов',
+        'entity' => 'Список обследований',
     ];
 
     /**
@@ -165,7 +136,7 @@ class PatientTestingListTemplate extends DoctorOfficeTemplateBuilder
             ->setPath($this->getTemplatePath())
             ->setContents(self::FORM_EDIT_CONTENT);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath('doctorOffice/edit_patient_testing/')
+            ->setPath(EditPatientTestingController::TEMPLATE_PATH)
             ->setContents(self::FORM_EDIT_CONTENT);
         $this->setCommonTemplatePath($this->getTemplatePath());
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
