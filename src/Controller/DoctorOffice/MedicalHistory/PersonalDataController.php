@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller\DoctorOffice\MedicalHistory;
-
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
@@ -23,6 +21,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
+/**
+ * Class PersonalDataController
+ * Личные данные
+ * @package App\Controller\DoctorOffice\MedicalHistory
+ */
 class PersonalDataController extends DoctorOfficeAbstractController
 {
     /** @var string Path to directory with custom templates of controller */
@@ -32,7 +35,7 @@ class PersonalDataController extends DoctorOfficeAbstractController
     protected const EDIT_PERSONAL_DATA_TEMPLATE_NAME = 'edit_personal_data';
 
     /**
-     * MedicalHistoryController constructor.
+     * PersonalDataController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
