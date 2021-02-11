@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
@@ -21,6 +20,11 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
+/**
+ * Class DischargeEpicrisisController
+ * Выписные эпикризы
+ * @package App\Controller\DoctorOffice\MedicalHistory
+ */
 class DischargeEpicrisisController extends DoctorOfficeAbstractController
 {
     /** @var string Path to directory with custom templates of controller */
@@ -32,7 +36,7 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
     private const NEW_DISCHARGE_EPICRISIS_TEMPLATE_NAME = 'new_discharge_epicrisis';
 
     /**
-     * MedicalHistoryController constructor.
+     * DischargeEpicrisisController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
