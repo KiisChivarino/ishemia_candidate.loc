@@ -24,13 +24,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
- * Class PatientsListController
+ * Class PatientListController
  * @route ("/doctor_office")
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  *
  * @package App\Controller\DoctorOffice
  */
-class PatientsListController extends DoctorOfficeAbstractController
+class PatientListController extends DoctorOfficeAbstractController
 {
     const TEMPLATE_PATH = 'doctorOffice/patients_list/';
 
