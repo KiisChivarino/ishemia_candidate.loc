@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller\DoctorOffice\MedicalHistory;
-
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
@@ -34,6 +32,11 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
+/**
+ * Class InitialExaminationController
+ * Первичный прием
+ * @package App\Controller\DoctorOffice\MedicalHistory
+ */
 class InitialExaminationController extends DoctorOfficeAbstractController
 {
     /** @var string Path to directory with custom templates of controller */
@@ -73,7 +76,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     private const EDIT_OBJECTIVE_DATA_TEMPLATE_NAME = 'edit_initial_examination_data';
 
     /**
-     * MedicalHistoryController constructor.
+     * InitialExaminationController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router

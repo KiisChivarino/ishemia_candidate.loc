@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller\DoctorOffice\MedicalHistory;
-
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
@@ -24,6 +22,11 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
+/**
+ * Class ClinicalDiagnosisController
+ * Клинический диагноз
+ * @package App\Controller\DoctorOffice\MedicalHistory
+ */
 class ClinicalDiagnosisController extends DoctorOfficeAbstractController
 {
     /** @var string Path to directory with custom templates of controller */
@@ -33,7 +36,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
     private const EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME = 'edit_clinical_diagnosis_data';
 
     /**
-     * MedicalHistoryController constructor.
+     * ClinicalDiagnosisController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
