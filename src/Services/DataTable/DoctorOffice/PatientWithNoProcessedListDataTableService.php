@@ -5,7 +5,6 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -26,7 +25,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
+class PatientWithNoProcessedListDataTableService extends DoctorOfficeDatatableService
 {
     private $authUserInfoService;
 
@@ -38,7 +37,12 @@ class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
      * @param EntityManagerInterface $em
      * @param AuthUserInfoService $authUserInfoService
      */
-    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $em, AuthUserInfoService $authUserInfoService)
+    public function __construct(
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        EntityManagerInterface $em,
+        AuthUserInfoService $authUserInfoService
+    )
     {
         parent::__construct($dataTableFactory, $router, $em);
         $this->authUserInfoService = $authUserInfoService;
@@ -49,8 +53,8 @@ class PatientsWithNoProcessedListDataTableService extends AdminDatatableService
      *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param array $filters
-     *
+     * @param array|null $filters
+     * @param array $options
      * @return DataTable
      * @throws Exception
      */

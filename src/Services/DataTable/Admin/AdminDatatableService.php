@@ -2,12 +2,15 @@
 
 namespace App\Services\DataTable\Admin;
 
+use App\Entity\PatientTesting;
 use App\Services\DataTable\DataTableService;
 use App\Services\Template\TemplateItem;
+use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Omines\DataTablesBundle\Column\BoolColumn;
+use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
@@ -75,7 +78,7 @@ abstract class AdminDatatableService extends DataTableService
             'searchable' => false,
         ];
         if ($prefix) {
-            $addParameters['field'] = $prefix.'.enabled';
+            $addParameters['field'] = $prefix . '.enabled';
         }
         return $this->dataTable
             ->add('enabled', BoolColumn::class, $addParameters);
@@ -105,6 +108,33 @@ abstract class AdminDatatableService extends DataTableService
     }
 
     /**
+     * Добавляет поле с операциями c возможностью добавления параметров
+     * Клоушура используется для render, чтобы можно было задать сколь угодно много динамических параметров
+     * Клоушура задается в DataTable сервисе
+     *
+     * @param TemplateItem $templateItem
+     * @param Closure $renderFunction
+     * @return DataTable
+     * @throws Exception
+     */
+    protected function addOperationsWithParameters(
+        TemplateItem $templateItem,
+        Closure $renderFunction
+    ): DataTable
+    {
+        return $this->dataTable
+            ->add(
+                'operations', TextColumn::class, [
+                    'label' => $templateItem->getContentValue('operations'),
+                    'className' => 'dataTableOperations',
+                    'render' => $renderFunction,
+                    'field' => 'e.id',
+                    'searchable' => false
+                ]
+            );
+    }
+
+    /**
      * Get link
      *
      * @param string $value
@@ -115,6 +145,6 @@ abstract class AdminDatatableService extends DataTableService
      */
     protected function getLink(string $value, int $id, string $route): string
     {
-        return '<a href="'.$this->router->generate($route, ['id' => $id]).'">'.$value.'</a>';
+        return '<a href="' . $this->router->generate($route, ['id' => $id]) . '">' . $value . '</a>';
     }
 }

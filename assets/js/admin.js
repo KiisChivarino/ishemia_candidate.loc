@@ -2,6 +2,7 @@ import './app';
 
 require('jquery-mask-plugin');
 require('datatables');
+
 import './select2';
 import './tabs';
 import '../css/admin.scss'
@@ -9,6 +10,7 @@ import './mask';
 import './hospitalByCity';
  // import './tinymce';
 import './fileUpload';
+import './menu';
 
 
 
@@ -87,13 +89,6 @@ $(document).ready(function () {
     }).on('change', function () {
         $("form[name=" + $(this).data('filter_name') + "]").submit();
     });
-
-    //раскрытие текущего пункта меню
-    $(".sublist .active").closest('ul').show();
-    //выпадающий список в меню
-    $(".sublist").on("click", (function () {
-        $(this).children("ul").slideToggle()
-    }));
 
     //раскрывающиеся списки ссылок в просмотре записи
     $('.btn--show').on('click', function () {

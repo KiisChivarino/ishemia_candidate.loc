@@ -4,8 +4,7 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
-use App\Entity\PatientTesting;
-use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Entity\Prescription;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -26,7 +25,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientsWithProcessedResultsListDataTableService extends AdminDatatableService
+class PatientWithOpenedPrescriptionsListDataTableService extends DoctorOfficeDatatableService
 {
     private $authUserInfoService;
 
@@ -50,7 +49,7 @@ class PatientsWithProcessedResultsListDataTableService extends AdminDatatableSer
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
      * @param array|null $filters
-     * @param array|null $options
+     * @param array $options
      * @return DataTable
      * @throws Exception
      */
@@ -127,7 +126,6 @@ class PatientsWithProcessedResultsListDataTableService extends AdminDatatableSer
                 ]
             )
         ;
-
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
             ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
             : ($options
@@ -145,7 +143,7 @@ class PatientsWithProcessedResultsListDataTableService extends AdminDatatableSer
                             ->setParameter(
                                 'patients',
                                 $this->entityManager
-                                    ->getRepository(PatientTesting::class)->getProcessedResultsTestings()
+                                    ->getRepository(Prescription::class)->getOpenedPrescriptions()
                             )
                         ;
 

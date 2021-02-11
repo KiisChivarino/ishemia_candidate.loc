@@ -11,6 +11,13 @@ $(document).ready(function () {
                     cell.innerHTML = settings._iDisplayStart + i + 1;
                 });
                 $('.pagination a').addClass('item');
-            }
-        });
+            },
+        }).then(function(dt) {
+        dt.on('draw', function() {
+            // Выделение строки красным
+            $('.redRow').each(function () {
+                $(this).parent().parent().attr('class', 'zapredel')
+            })
+        })
+    });
 });

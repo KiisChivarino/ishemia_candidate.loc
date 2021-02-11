@@ -7,7 +7,6 @@ use App\Entity\AuthUser;
 use App\Entity\Notification;
 use App\Entity\NotificationConfirm;
 use App\Entity\Patient;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
@@ -27,7 +26,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientNotificationListDataTableService extends AdminDatatableService
+class PatientNotificationListDataTableService extends DoctorOfficeDatatableService
 {
     /** @var AuthUserInfoService */
     private $authUserInfoService;
