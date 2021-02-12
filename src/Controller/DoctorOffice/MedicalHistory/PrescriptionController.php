@@ -24,7 +24,7 @@ use Twig\Environment;
  *
  * @package App\Controller\DoctorOffice
  */
-class AddPatientPrescriptionController extends DoctorOfficeAbstractController
+class PrescriptionController extends DoctorOfficeAbstractController
 {
     /** @var string Path to custom template directory */
     const TEMPLATE_PATH = 'doctorOffice/patient_prescription/';
