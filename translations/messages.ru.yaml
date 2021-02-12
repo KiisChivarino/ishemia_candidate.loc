@@ -32,3 +32,6 @@ doctor_office_abstract_controller:
     dbal_exception: Не удалось сохранить запись!
     exception: Ошибка cохранения записи!
     staff_not_found: Врач не найден
+prescription_appointment_controller:
+  error:
+    new_appointment: Прием уже существует!

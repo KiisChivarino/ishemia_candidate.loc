@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,5 +25,21 @@ class PrescriptionAppointmentRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PrescriptionAppointment::class);
+    }
+
+    /**
+     * @param Prescription $prescription
+     * @return int
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function getEnabledAppointmentsCount(Prescription $prescription): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->where('u.enabled = :name')
+            ->setParameter('name', 'true')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

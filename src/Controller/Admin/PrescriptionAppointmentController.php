@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
-use App\Form\PrescriptionAppointmentType;
+use App\Form\Admin\Prescription\PrescriptionAppointmentType;
 use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionAppointmentDataTableService;

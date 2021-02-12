@@ -8,14 +8,19 @@ use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\PatientTestingResult;
 use App\Entity\PlanTesting;
+use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
+use App\Repository\PrescriptionAppointmentRepository;
 use App\Services\InfoService\AnalysisRateInfoService;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Services\InfoService\PatientAppointmentInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\InfoService\PlanTestingInfoService;
 use App\Services\InfoService\PrescriptionTestingInfoService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -34,6 +39,10 @@ class AppExtension extends AbstractExtension
 
     /** @var array */
     private $projectInfo;
+    /**
+     * @var PrescriptionAppointmentRepository
+     */
+    private $prescriptionAppointmentRepository;
 
     /**
      * AppExtension constructor.
@@ -41,12 +50,19 @@ class AppExtension extends AbstractExtension
      * @param EntityManagerInterface $entityManager
      * @param $projectInfo
      * @param $defaultTimeFormats
+     * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
      */
-    public function __construct(EntityManagerInterface $entityManager, $projectInfo, $defaultTimeFormats)
+    public function __construct(
+        EntityManagerInterface $entityManager, 
+        $projectInfo, 
+        $defaultTimeFormats,
+        PrescriptionAppointmentRepository $prescriptionAppointmentRepository
+    )
     {
         $this->entityManager = $entityManager;
         $this->defaultTimeFormats = $defaultTimeFormats;
         $this->projectInfo = $projectInfo;
+        $this->prescriptionAppointmentRepository = $prescriptionAppointmentRepository;
     }
 
     /**
@@ -126,7 +142,13 @@ class AppExtension extends AbstractExtension
                      $this,
                      'globals'
                  ]
-             )
+             ),
+            new TwigFunction(
+                'isAppointmentNotExists', [
+                    $this,
+                    'isAppointmentNotExists'
+                ]
+            ),
         ];
     }
 
@@ -260,5 +282,22 @@ class AppExtension extends AbstractExtension
             'default_time_formats' => $this->defaultTimeFormats,
             'project_info' => $this->projectInfo
         ];
+    }
+
+    /**
+     * Check for empty Appointment
+     * @param Prescription $prescription
+     * @return bool
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function isAppointmentNotExists(
+        Prescription $prescription
+    ): bool
+    {
+        return PatientAppointmentInfoService::isAppointmentNotExists(
+            $prescription,
+            $this->prescriptionAppointmentRepository
+        );
     }
 }
