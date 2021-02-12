@@ -53,7 +53,8 @@ class TemplateItemsFactory
             new ShowActionsTemplateItem($this->templateService),
             new ListTemplateItem($this->templateService),
             new EditTemplateItem($this->templateService),
-            new DeleteTemplateItem($this->templateService)
+            new DeleteTemplateItem($this->templateService),
+            new TableActionsTemplateItem($this->templateService)
         ];
     }
 

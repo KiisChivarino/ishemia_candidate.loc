@@ -3,8 +3,11 @@
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
+use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -25,7 +28,12 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
         'h2' => 'Просмотр назначения',
         'createdTime' => 'Дата и время создания назначения',
         'doctor' => 'Врач',
+        'analysisGroup' => AnalysisGroupTemplate::ENTITY_CONTENT['entity'],
+        'plannedDate' => PrescriptionTestingTemplate::COMMON_CONTENT['plannedDate'],
+        'operations' => ListTemplateItem::DEFAULT_CONTENT['operations'],
+        'loadTableData' => ListTemplateItem::DEFAULT_CONTENT['loadTableData'],
     ];
+
 
     /**
      * AddPatientPrescriptionTemplate constructor.
@@ -52,6 +60,13 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::new($filterService);
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
+        return $this;
+    }
+
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show($entity);
+        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setIsEnabled(false);
         return $this;
     }
 }

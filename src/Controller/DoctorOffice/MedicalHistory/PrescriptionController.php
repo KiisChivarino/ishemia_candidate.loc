@@ -6,8 +6,11 @@ use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\Prescription;
+use App\Entity\PrescriptionTesting;
+use App\Services\DataTable\DoctorOffice\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
+use App\Services\TemplateItems\ShowTemplateItem;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +51,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /**
      * New prescription
-     * @Route("patient/{id}/prescription/new", name="adding_prescriprion_by_doctor", methods={"GET","POST"})
+     * @Route("patient/{patient}/prescription/new", name="adding_prescriprion_by_doctor", methods={"GET","POST"})
      *
      * @param Patient $patient
      * @param PrescriptionCreatorService $prescriptionCreatorService
@@ -74,7 +77,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
         $this->setLogCreate($prescriptionCreatorService->getEntity());
         return $this->redirectToRoute(
             'add_prescription_show', [
-                'id' => $patient->getId(),
+                'patient' => $patient->getId(),
                 'prescription' => $prescriptionCreatorService->getEntity()->getId()
             ]
         );
@@ -82,21 +85,80 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /**
      * Show prescription
-     * @Route("patient/{id}/prescription/{prescription}/show", name="add_prescription_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("patient/{patient}/prescription/{prescription}/show", name="add_prescription_show", methods={"GET", "POST"}, requirements={"patient"="\d+"})
      * @param Patient $patient
      * @param Prescription $prescription
+     * @param PrescriptionTesting $prescriptionTesting
      * @param Request $request
+     * @param PrescriptionTestingDataTableService $prescriptionTestingDataTableService
      * @return Response
+     * @throws Exception
      */
-    public function show(Patient $patient, Prescription $prescription): Response
+    public function show(
+        Patient $patient,
+        Prescription $prescription,
+        Request $request,
+        PrescriptionTestingDataTableService $prescriptionTestingDataTableService
+    ): Response
     {
         $this->templateService->show($patient);
+        $patientTestingTable = $prescriptionTestingDataTableService->getTable(
+            function ($value) use ($prescription, $patient) {
+                return $this->render(
+                    $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
+                    [
+                        'template' => $this->templateService,
+                        'parameters' => [
+                            'patient' => $patient->getId(),
+                            'prescription' => $prescription->getId(),
+                            'prescriptionTesting' => $value,
+                        ]
+                    ]
+                )->getContent();
+            },
+            $this->templateService->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME),
+            $prescription
+        );
+        $patientTestingTable->handleRequest($request);
+        if ($patientTestingTable->isCallback()) {
+            return $patientTestingTable->getResponse();
+        }
         return $this->render(
             self::TEMPLATE_PATH . 'prescription_show.html.twig',
             [
+                'patientTestingTable' => $patientTestingTable,
                 'patient' => $patient,
-                'prescription' => $prescription,
+                'prescription' => $prescription
             ]
         );
+    }
+
+    /**
+     * Delete testing prescription
+     * @Route("patient/{patient}/prescription/{prescription}/prescription_testing/{prescriptionTesting}/delete", name="prescription_testing_delete", methods={"DELETE"}, requirements={"patient"="\d+"})
+     *
+     * @param Request $request
+     * @param PrescriptionTesting $prescriptionTesting
+     * @param Patient $patient
+     * @param Prescription $prescription
+     * @return Response
+     * @throws Exception
+     */
+    public function delete(
+        Request $request,
+        Patient $patient,
+        Prescription $prescription,
+        PrescriptionTesting $prescriptionTesting
+    ): Response
+    {
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $patient->getId(),
+                'prescription' => $prescription->getId()
+            ]
+        );
+
+        return $this->responseDelete($request, $prescriptionTesting);
     }
 }

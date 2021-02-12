@@ -28,7 +28,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common content for PatientTesting templates */
     public const COMMON_CONTENT = [
-        'analysisGroup' => 'Группа анализов',
+        'analysisGroup' => AnalysisGroupTemplate::ENTITY_CONTENT['entity'],
         'analysisDate' => 'Проведено',
         'isProcessedByStaff' => 'Обработано врачом',
         'patientTestingFiles'=> 'Сканкопии результатов анализов'

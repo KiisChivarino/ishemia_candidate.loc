@@ -16,7 +16,7 @@ class ListTemplateItem extends TemplateItem
     public const TEMPLATE_ITEM_LIST_NAME = 'list';
 
     /** @var string[] Common content of list template item */
-    protected const DEFAULT_CONTENT = [
+    public const DEFAULT_CONTENT = [
         'title' => 'Список записей',
         'h1' => 'Список записей',
         'loadTableData' => 'Загрузка данных, пожалуйста, подождите...',
