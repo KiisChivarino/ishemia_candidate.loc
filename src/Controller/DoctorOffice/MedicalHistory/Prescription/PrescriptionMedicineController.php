@@ -8,7 +8,7 @@ use App\Entity\Prescription;
 use App\Form\Doctor\PatientMedicineType;
 use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
-use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\PatientMedicineTemplate;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory\Prescription
  */
-class AddPatientMedicineController extends DoctorOfficeAbstractController
+class PrescriptionMedicineController extends DoctorOfficeAbstractController
 {
     /** @var string Path to custom template directory */
     const TEMPLATE_PATH = 'doctorOffice/patient_medicine/';
@@ -72,7 +72,7 @@ class AddPatientMedicineController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new AddPatientPrescriptionTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new PatientMedicineTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
         $this->creatorService = $patientMedicineCreatorService;
         $this->STAFF_OPTION = $staffOption;
