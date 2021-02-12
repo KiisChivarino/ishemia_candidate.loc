@@ -4,8 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
-use App\Form\Admin\PatientTesting\PatientTestingRequiredType;
+use App\Form\PatientTesting\PatientTestingNotRequiredType;
+use App\Form\PatientTesting\PatientTestingRequiredType;
 use App\Repository\MedicalHistoryRepository;
 use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\FilterLabels;

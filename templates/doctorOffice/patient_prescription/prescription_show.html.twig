@@ -11,7 +11,7 @@
                     'adding_survey_by_doctor',
                     {
                         'id': patient.id,
-                        'prescription' : prescription.id
+                        'prescription': prescription.id
                     }
                 ) }}';">
             Добавление обследования
@@ -26,16 +26,18 @@
                 ) }}';">
             Добавление лекарства
         </button>
-        <button class="button main-button"
-                onclick="location.href='{{ path(
-                    'adding_reception_by_doctor',
-                    {
-                        'id': patient.id,
-                        'prescription' : prescription.id
-                    }
-                ) }}';">
-            Добавление приема
-        </button>
+        {% if isAppointmentNotExists(prescription) %}
+            <button class="button main-button"
+                    onclick="location.href='{{ path(
+                        'adding_reception_by_doctor',
+                        {
+                            'id': patient.id,
+                            'prescription' : prescription.id
+                        }
+                    ) }}';">
+                Добавление приема
+            </button>
+        {% endif %}
     </div>
     <div>
         <div>{{ template.items.show.content.createdTime }}</div>

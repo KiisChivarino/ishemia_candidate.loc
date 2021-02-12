@@ -3,7 +3,7 @@
 namespace App\Controller\DoctorOffice;
 
 use App\Entity\PatientTesting;
-use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
+use App\Form\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTestingResultType;
 use App\Form\PatientTestingFileType;
 use App\Repository\PatientTestingResultRepository;

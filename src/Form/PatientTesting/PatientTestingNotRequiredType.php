@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Admin\PatientTesting;
+namespace App\Form\PatientTesting;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PatientTesting;

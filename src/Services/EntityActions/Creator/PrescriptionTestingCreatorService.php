@@ -9,6 +9,7 @@ use App\Entity\PrescriptionTesting;
 use App\Entity\Staff;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
@@ -16,18 +17,41 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
  * Class PrescriptionTestingCreatorService
  * @package App\Services\EntityActions\Creator
  */
-class PrescriptionTestingCreatorService
+class PrescriptionTestingCreatorService extends AbstractCreatorService
 {
     /** @var FlashBagInterface $flashBag */
     protected $flashBag;
 
     /**
-     * PrescriptionTestingCreatorService constructor.
-     * @param FlashBagInterface $flashBag
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
      */
-    public function __construct(FlashBagInterface $flashBag)
+    private $STAFF_OPTION;
+
+    /**
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     */
+    private $PRESCRIPTION_OPTION;
+
+    /**
+     * PrescriptionTestingCreatorService constructor.
+     * @param EntityManagerInterface $entityManager
+     * @param FlashBagInterface $flashBag
+     * @param string $staffOption
+     * @param string $prescriptionOption
+     */
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        FlashBagInterface $flashBag,
+        string $staffOption,
+        string $prescriptionOption
+    )
     {
+        parent::__construct($entityManager);
         $this->flashBag = $flashBag;
+        $this->STAFF_OPTION = $staffOption;
+        $this->PRESCRIPTION_OPTION = $prescriptionOption;
     }
 
     /**
@@ -85,5 +109,15 @@ class PrescriptionTestingCreatorService
             return null;
         }
         return $plannedDate;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function configureOptions(): void
+    {
+        $this->setEntityClass(PrescriptionTesting::class);
+        $this->addOptionCheck(Prescription::class, $this->STAFF_OPTION);
+        $this->addOptionCheck(Staff::class, $this->PRESCRIPTION_OPTION);
     }
 }

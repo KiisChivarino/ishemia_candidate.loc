@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Admin;
+namespace App\Form;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PrescriptionTesting;
