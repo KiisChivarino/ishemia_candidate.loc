@@ -6,7 +6,6 @@ use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -27,7 +26,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @package App\DataTable
  */
-class PatientsListDataTableService extends AdminDatatableService
+class PatientListDataTableService extends DoctorOfficeDatatableService
 {
     private $authUserInfoService;
 
@@ -39,7 +38,12 @@ class PatientsListDataTableService extends AdminDatatableService
      * @param EntityManagerInterface $em
      * @param AuthUserInfoService $authUserInfoService
      */
-    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $em, AuthUserInfoService $authUserInfoService)
+    public function __construct(
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        EntityManagerInterface $em,
+        AuthUserInfoService $authUserInfoService
+    )
     {
         parent::__construct($dataTableFactory, $router, $em);
         $this->authUserInfoService = $authUserInfoService;
@@ -149,30 +153,34 @@ class PatientsListDataTableService extends AdminDatatableService
                             );
                         }
                         if (!empty($patientTestingsNoProcessedTestings)) {
-                            !empty($patientTestingsWithNoResults) ? $result .= "<hr>" : $result .= "";
+                            $result .= $this->generateResultStringIfNotEmpty($patientTestingsWithNoResults);
                             $result .= $this->getLink('Обработать анализы',
                                 $patient->getId(),
                                 'doctor_medical_history'
                             );
                         }
                         if (!empty($patientOpenedPrescriptions)) {
-                            !empty($patientTestingsNoProcessedTestings) ? $result .= "<hr>" : $result .= "";
+                            $result .= $this->generateResultStringIfNotEmpty($patientTestingsNoProcessedTestings);
+                            $result .= $this->generateResultStringIfNotEmpty($patientTestingsWithNoResults);
                             $result .= $this->getLink('Закрыть назначения',
                                 $patient->getId(),
                                 'doctor_medical_history'
                             );
                         }
-
                         return $result;
                     },
                 ]
             );
 
-        $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
-            ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
-            : ($options
-                ? $options['hospital']
-                : "");
+        if ($filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== "") {
+            $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']];
+        } elseif ($options) {
+            $hospital = $options['hospital'];
+        } else {
+            $hospital = "";
+        }
+
+
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
@@ -193,5 +201,14 @@ class PatientsListDataTableService extends AdminDatatableService
                     },
                 ]
             );
+    }
+
+    /**
+     * @param $patientTestings
+     * @return string
+     */
+    private function generateResultStringIfNotEmpty($patientTestings): string
+    {
+        return !empty($patientTestings) ? "<hr>" : "";
     }
 }

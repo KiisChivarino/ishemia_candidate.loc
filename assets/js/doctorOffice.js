@@ -8,6 +8,7 @@ import './initDatatable';
 import './fileUpload';
 import './app';
 import './mask';
+import './menu';
 
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');

@@ -6,9 +6,6 @@
             <li><a class="back-page" href="{{ path('patients_list') }}">Назад</a></li>
         </ul>
     </div>
-    <div class="content-wrapper__top">
-        <a href="{{ path('notifications_list', {'id': entity.id}) }}" class="mode">Уведомления пользователя</a>
-    </div>
     <!-- Персональные данные -->
     <div class="statement acc">
         <h2 class="title accordion">{{ template.items.show.content.personalData }}</h2>
@@ -123,7 +120,7 @@
                         </div>
                         <div class="statement__info-block">
                             <p>{{ template.items.show.content.text }}</p>
-                            <p>{{ medicalHistory.clinicalDiagnosis.text }}</p>
+                            <p>{{ medicalHistory.clinicalDiagnosis.text | raw }}</p>
                         </div>
                         {% if medicalHistory.dateEnd %}
                             <div class="statement__info-block">
@@ -293,7 +290,7 @@
                 <div class="statement__head">
                     <h3 class="subtitle">Обследование: {{ patientTestingTitle(testing) }}</h3>
                     <a class="back-page"
-                       href="{{ path('doctor_edit_patient_testing', {'id': testing.id}) }}">
+                       href="{{ path('doctor_edit_patient_testing', {'patient': entity.id, 'patientTesting': testing.id}) }}">
                         <span class="statement__edit">{{ template.items.show.content.addPatientTestingResults }}</span>
                     </a>
                 </div>
@@ -315,18 +312,18 @@
                                     </a>
                                 {% endfor %}
                             </p>
-{#                            {% if patientTestingResults and enabledTestingResults(testing) is not empty %}#}
-{#                                <div class="table-wrapper table-history">#}
-{#                                    <table>#}
-{#                                        <thead>#}
-{#                                        <tr>#}
-{#                                            <th>Анализ</th>#}
-{#                                            <th>Результат</th>#}
-{#                                        </tr>#}
-{#                                        </thead>#}
-{#                                    </table>#}
-{#                                </div>#}
-{#                            {% endif %}#}
+                            {% if patientTestingResults is defined and enabledTestingResults(testing) is not empty %}
+                                <div class="table-wrapper table-history">
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Анализ</th>
+                                            <th>Результат</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="statement__info">
@@ -373,160 +370,5 @@
         </div>
     </div>
     <div class="table-wrapper table-history">
-        <table>
-            <thead>
-            <tr>
-                <th>Дата</th>
-                <th>Результаты анализов</th>
-                <th>Назначения обследований</th>
-                <th>Назначения лекарств</th>
-                <th>Приемы пациентов</th>
-            </tr>
-            </thead>
-            <tr>
-                <th><span>20.10.2020</span></th>
-                <th>
-                    <div class="th-inner"><span class="mode"> Липидный профиль  </span></div>
-                    <div class="th-inner"><span class="mode-2">Дата сдачи: 20.10.2020</span></div>
-                    <div class="th-inner"><span>Общий белок - 74 ммоль/л</span></div>
-                    <div class="th-inner"><span>Мочевина - 3,8 ммоль/л</span></div>
-                    <div class="th-inner"><span>Креатинин - 82 ммоль/л</span></div>
-                    <div class="th-inner"><span>Холестерин общий - 6,4 ммоль/л</span></div>
-                    <div class="th-inner"><span>Триглицериды - 0,7 ммоль/л</span></div>
-                    <a class="button table-button" href="#">Открыть фото</a>
-                    <div class="th-inner">
-                        <span class="table__small-text">
-                            Данные переданы <br> через личный <br> кабинет
-                        </span>
-                    </div>
-                </th>
-                <th>
-                    <div class="th-inner"><span class="mode">Биохимия крови</span></div>
-                    <div class="th-inner"><span class="mode-2">Назначенная дата сдачи: 28.10.2020</span></div>
-                    <div class="th-inner">
-                        <span class="table__small-text">
-                            Данные переданы <br> через личный <br> кабинет
-                        </span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__small-text">Врач</span>
-                        <span>Иванович М. С.</span>
-                    </div>
-                </th>
-                <th>
-                    <div class="th-inner">
-                        <span class="table__min-title">Принимать</span>
-                        <span>Клопидогрель 75 мг утро</span>
-                        <span>АЦСК 75 мг вечер</span>
-                        <span>Бисопролол 2,5 мг утро</span>
-                        <span>Рамиприл 2,5 мг 2 р/д</span>
-                        <span>Розувастатин 20 мг вечер</span>
-                        <span>Торасемид 5 мг утро</span>
-                        <span>Спиронолактон 25 мг утро</span>
-                    </div>
-                    {# <div class="th-inner"> #}
-                    {# <span class="table__min-title">Рекоммендации врача</span> #}
-                    {# <span>Фраксипарин 0,3 один раз.</span> #}
-                    {# </div> #}
-                    {# <div class="th-inner"> #}
-                    {# <span class="table__min-title">Сдать анализы </span> #}
-                    {# <span>D-димер через 2 недели </span> #}
-                    {# </div> #}
-                    {# <div class="th-inner"> #}
-                    {# <span class="table__small-text"> #}
-                    {# Рекомендации направлены <br> на согласование врачу гематологу #}
-                    {# </span> #}
-                    {# </div> #}
-                    <div class="th-inner">
-                        <span class="table__small-text">Врач</span>
-                        <span>Иванов М. С.</span>
-                    </div>
-                </th>
-                <th>
-                    <div class="th-inner"><span class="mode-2">Дата приема: 20.10.2020</span></div>
-                    <div class="th-inner">
-                        <span class="table__small-text">Вид приема</span>
-                        <span>Очно</span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__small-text">Жалобы</span>
-                        <span>одышка при ходьбе, слабость, головная боль</span>
-                    </div>
-                    <div class="th-inner">
-                        <span class="table__small-text">Врач</span>
-                        <span>Иванов М. С.</span>
-                    </div>
-                </th>
-            </tr>
-            {# <tr> #}
-            {# <th><span class="green">3.04.2020 </span></th> #}
-            {# <th> #}
-            {# <div class="th-inner"> #}
-            {# <span class="mode">Показатели коагулограммы  </span> #}
-            {# <span>АПТВ – 26, ПТИ – 76%, Фибриноген – 3,4 </span> #}
-            {# </div> #}
-            {# <div class="th-inner"><span class="mode-2">D-димер 845 нг/мл </span></div> #}
-            {# <div class="th-inner"><span>Фото ОАК </span></div> #}
-            {# <a class="button table-button" href="#">Открыть фото</a> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__small-text">Данные внесены <br> врачом-консультантом </span> #}
-            {# </div> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__small-text">Врач</span> #}
-            {# <span>Иванов И. И.</span> #}
-            {# </div> #}
-            {# </th> #}
-            {# <th> #}
-            {# <div class="th-inner"><span>Выполнена консультация врача-гематолога</span></div> #}
-            {# <div class="th-inner"><span class="green-check">Лечение согласовано</span></div> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__small-text">Врач - гематолог</span> #}
-            {# <span>Петров А. А.</span> #}
-            {# </div> #}
-            {# </th> #}
-            {# <th> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__min-title">Принимать</span> #}
-            {# <span>Ангиовит 1 таблетка в суткиКурантил 25 мг по 1 таблетки 3 раза в день. </span> #}
-            {# </div> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__min-title">Вводить подкожно</span> #}
-            {# <span>Фраксипарин 0,3 один раз.</span> #}
-            {# </div> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__min-title">Сдать анализы </span> #}
-            {# <span>D-димер через 2 недели </span> #}
-            {# </div> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__small-text"> #}
-            {# Рекомендации направлены <br> на согласование врачу гематологу #}
-            {# </span> #}
-            {# </div> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__small-text">Врач</span> #}
-            {# <span>Иванов И. И.</span> #}
-            {# </div> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__small-text"> #}
-            {# Рекомендации направлены в личный кабинет пациентки, #}
-            {# дополнительно произведено информирование посредством SMS сообщения #}
-            {# </span> #}
-            {# </div> #}
-            {# <div class="th-inner"> #}
-            {# <span class="table__small-text"> #}
-            {# SMS – «Вам в личный кабинет отправлены новые рекомендации по лечению» #}
-            {# </span> #}
-            {# </div> #}
-            {# </th> #}
-            {# <th> #}
-            {# <div class="th-inner"> #}
-            {# <span> #}
-            {# С пациенткой произведен личный разговор по телефону. Каких-либо жалоб не предъявляет. #}
-            {# </span> #}
-            {# </div> #}
-            {# <div class="th-inner"><span class="table__small-text">Врач</span><span>Иванов И. И.</span></div> #}
-            {# </th> #}
-            {# </tr> #}
-        </table>
     </div>
 {% endblock %}

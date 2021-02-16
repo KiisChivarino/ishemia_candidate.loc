@@ -2,6 +2,7 @@ import './app';
 
 require('jquery-mask-plugin');
 require('datatables');
+
 import './select2';
 import './tabs';
 import '../css/admin.scss'
@@ -9,6 +10,7 @@ import './mask';
 import './hospitalByCity';
  // import './tinymce';
 import './fileUpload';
+import './menu';
 
 
 
@@ -17,27 +19,6 @@ require('../images/operation-icon-2.svg');
 require('../images/operation-icon-3.svg');
 require('../images/favicons/adm-fav.ico');
 require('fancybox')($);
-
-
-// // Import TinyMCE
-// var tinymce = require('tinymce/tinymce');
-//
-// // Default icons are required for TinyMCE 5.3 or above
-// require('tinymce/icons/default');
-//
-// // A theme is also required
-// require('tinymce/themes/silver');
-//
-// // Any plugins you want to use has to be imported
-// require('tinymce/plugins/paste');
-// require('tinymce/plugins/link');
-//
-// // Initialize the app
-// tinymce.init({
-//     selector: '.tinymce',
-//     language: 'ru',
-//     plugins: ['paste', 'link']
-// });
 
 
 $(document).ready(function () {
@@ -87,13 +68,6 @@ $(document).ready(function () {
     }).on('change', function () {
         $("form[name=" + $(this).data('filter_name') + "]").submit();
     });
-
-    //раскрытие текущего пункта меню
-    $(".sublist .active").closest('ul').show();
-    //выпадающий список в меню
-    $(".sublist").on("click", (function () {
-        $(this).children("ul").slideToggle()
-    }));
 
     //раскрывающиеся списки ссылок в просмотре записи
     $('.btn--show').on('click', function () {

@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -42,7 +43,13 @@ class PatientTestingNotRequiredType extends AbstractType
                 ]
             )
             ->add(
-                'processed', CheckboxType::class, [
+                'resultData', TextareaType::class, [
+                    'label' => $templateItem->getContentValue('resultData'),
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'isProcessedByStaff', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('processed'),
                     'required' => false,
                 ]
