@@ -10,7 +10,7 @@
                 onclick="location.href='{{ path(
                     'adding_survey_by_doctor',
                     {
-                        'patient': patient.id,
+                        'id': patient.id,
                         'prescription': prescription.id
                     }
                 ) }}';">
@@ -20,7 +20,7 @@
                 onclick="location.href='{{ path(
                     'prescription_patient_medicine_new',
                     {
-                        'patient': patient.id,
+                        'id': patient.id,
                         'prescription' : prescription.id
                     }
                 ) }}';">
@@ -31,7 +31,7 @@
                     onclick="location.href='{{ path(
                         'adding_reception_by_doctor',
                         {
-                            'patient': patient.id,
+                            'id': patient.id,
                             'prescription' : prescription.id
                         }
                     ) }}';">
@@ -52,11 +52,13 @@
             {{ fio(prescription.staff.AuthUser) }}
         </div>
     </div>
+
     <div id="prescriptionTestingList">
         <div class="table-wrapper table-pacients">
             <div class="box-body table-responsive">
                 <div
-                        id="datatable" class="dataTables_wrapper form-inline dt-bootstrap"
+                        data-datatable
+                        class="dataTables_wrapper form-inline dt-bootstrap"
                         data-table_settings='{{ datatable_settings(patientTestingTable) }}'
                 >
                 <span class="label label-info">
@@ -67,4 +69,22 @@
             </div>
         </div>
     </div>
+
+    <div id="prescriptionMedicineList">
+        <div class="table-wrapper table-pacients">
+            <div class="box-body table-responsive">
+                <div
+                        data-datatable
+                        class="dataTables_wrapper form-inline dt-bootstrap"
+                        data-table_settings='{{ datatable_settings(patientMedicineTable) }}'
+                >
+                <span class="label label-info">
+                    <i class="fa fa-sync-alt fa-spin fa-1x fa-fw"></i>
+                    {{ template.items.show.content.loadTableData }}
+                </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

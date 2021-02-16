@@ -18,7 +18,8 @@
         {{ include('flashmessages.html.twig') }}
         <div class="box-body table-responsive table-wrapper table-pacients tabs__content active">
             <div
-                    id="datatable" class="dataTables_wrapper form-inline dt-bootstrap"
+                    data-datatable
+                    class="dataTables_wrapper form-inline dt-bootstrap"
                     data-table_settings='{{ datatable_settings(datatable) }}'
             >
             <span class="label label-info">

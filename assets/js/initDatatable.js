@@ -1,6 +1,17 @@
 $(document).ready(function () {
-    let datatable = $('#datatable');
-    datatable.initDataTables(datatable.data('table_settings'),
+    //initializes all datatables on the page
+    $('div[data-datatable]').each(function () {
+            initCustomDataTables($(this));
+        }
+    );
+});
+
+/**
+ * Init datatables one
+ * @param datatableElement
+ */
+function initCustomDataTables(datatableElement) {
+    datatableElement.initDataTables(datatableElement.data('table_settings'),
         {
             searching: true,
             drawCallback: function (settings) {
@@ -13,4 +24,4 @@ $(document).ready(function () {
                 $('.pagination a').addClass('item');
             }
         });
-});
+}
