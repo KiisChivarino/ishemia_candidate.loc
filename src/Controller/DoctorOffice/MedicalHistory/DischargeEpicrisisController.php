@@ -11,7 +11,8 @@ use App\Services\ControllerGetters\EntityActions;
 use App\Services\FileService\FileService;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\DischargeEpicrisisTemplate;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,8 @@ use Twig\Environment;
 /**
  * Class DischargeEpicrisisController
  * Выписные эпикризы
+ * @Route("/doctor_office/patient")
+ * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory
  */
 class DischargeEpicrisisController extends DoctorOfficeAbstractController
@@ -54,8 +57,9 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
     }
 
     /**
+     * New discharge epicrisis
      * @Route(
-     *     "/{id}/new_discharge_epicrisis",
+     *     "/{id}/medical_history/new_discharge_epicrisis",
      *     name="doctor_new_discharge_epicrisis",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
