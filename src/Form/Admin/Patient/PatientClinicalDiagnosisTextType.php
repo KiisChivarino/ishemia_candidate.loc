@@ -5,17 +5,22 @@ namespace App\Form\Admin\Patient;
 use App\Controller\AppAbstractController;
 use App\Entity\ClinicalDiagnosis;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class PatientClinicalDiagnosisTextType
+ * @package App\Form\Admin\Patient
+ */
 class PatientClinicalDiagnosisTextType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

@@ -8,6 +8,8 @@ use App\Form\Admin\ClinicalDiagnosis\DiseasesType;
 use App\Services\DataTable\Admin\ClinicalDiagnosisDataTableService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\ClinicalDiagnosisTemplate;
+use Exception;
+use ReflectionException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,7 +59,7 @@ class ClinicalDiagnosisController extends AdminAbstractController
      * @Route("/new", name="clinical_diagnosis_new", methods={"GET","POST"})
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function new(Request $request): Response
     {
@@ -76,7 +78,7 @@ class ClinicalDiagnosisController extends AdminAbstractController
      * @Route("/{id}", name="clinical_diagnosis_show", methods={"GET"}, requirements={"id"="\d+"})
      * @param ClinicalDiagnosis $clinicalDiagnosi
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function show(ClinicalDiagnosis $clinicalDiagnosi): Response
     {
@@ -89,7 +91,7 @@ class ClinicalDiagnosisController extends AdminAbstractController
      * @param Request $request
      * @param ClinicalDiagnosis $clinicalDiagnosis
      * @return Response
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function edit(Request $request, ClinicalDiagnosis $clinicalDiagnosis): Response
     {
@@ -108,7 +110,7 @@ class ClinicalDiagnosisController extends AdminAbstractController
      * @param Request $request
      * @param ClinicalDiagnosis $clinicalDiagnosis
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function delete(Request $request, ClinicalDiagnosis $clinicalDiagnosis): Response
     {

@@ -3,7 +3,7 @@
 {% block show_content %}
     <li>
         <span class="title">{{ template.items.show.content.text }}</span>
-        <p>{{ entity.text }}</p>
+        <p>{{ entity.text | raw }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.MKBCode }}</span>
