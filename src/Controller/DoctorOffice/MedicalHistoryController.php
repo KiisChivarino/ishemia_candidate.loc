@@ -10,8 +10,9 @@ use App\Entity\TemplateType;
 use App\Entity\TextByTemplate;
 use App\Form\Admin\MedicalHistory\AnamnesOfLifeType;
 use App\Form\Admin\MedicalHistory\DiseaseHistoryType;
-use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
+use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
+use App\Form\Admin\Patient\PatientMKBCodeType;
 use App\Form\Admin\Patient\PatientOptionalType;
 use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointmentType;
@@ -232,18 +233,48 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     )
     {
         $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
+        $lifeHistory = $medicalHistory->getLifeHistory();
+        $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
+        $lifeAnamnesisText = $lifeHistory ? $lifeHistory->getText() : null;
         $this->setRedirectMedicalHistoryRoute($patient->getId());
         return $this->responseEditMultiForm(
             $request,
             $patient,
             [
-                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData(
+                    $clinicalDiagnosis,
+                    PatientClinicalDiagnosisTextType::class
+                ),
+                new FormData(
+                    $clinicalDiagnosis,
+                    PatientMKBCodeType::class
+                ),
                 new FormData(
                     $medicalHistory,
-                    MedicalHistoryType::class
+                    MedicalHistoryType::class,
+                    [
+                        MedicalHistoryType::ANAMNES_OF_LIFE_TEXT_OPTION_KEY => $lifeAnamnesisText,
+                    ]
                 ),
             ],
-            null,
+//            null,
+            function (EntityActions $actions)
+            use (
+                $patient,
+                $medicalHistory,
+                $clinicalDiagnosis
+            ) {
+                $em = $actions->getEntityManager();
+                $em->getConnection()->beginTransaction();
+                try {
+                    $em->flush();
+                    $em->getConnection()->commit();
+                } catch (Exception $e) {
+                    $em->getConnection()->rollBack();
+                    throw $e;
+                }
+                $this->setRedirectMedicalHistoryRoute($patient->getId());
+            },
             self::EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME
         );
     }

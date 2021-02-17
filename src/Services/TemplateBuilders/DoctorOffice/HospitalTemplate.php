@@ -7,7 +7,6 @@ use App\Services\TemplateBuilders\Admin\AdminTemplateBuilder;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\EditTemplateItem;
-use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -105,6 +104,10 @@ class HospitalTemplate extends DoctorOfficeTemplateBuilder
         return $this;
     }
 
+    /**
+     * @param object|null $entity
+     * @return AppTemplateBuilder
+     */
     public function show(?object $entity = null): AppTemplateBuilder
     {
         parent::show($entity);

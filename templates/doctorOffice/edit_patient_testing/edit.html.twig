@@ -17,6 +17,8 @@
         </ul>
     </div>
     <div class="adm-users-edit">
-        {{ include(constant('App\\Controller\\DoctorOffice\\EditPatientTestingController::TEMPLATE_PATH')~'_form_patient_testing.html.twig') }}
+        {{ include(
+            constant('App\\Controller\\DoctorOffice\\EditPatientTestingController::TEMPLATE_PATH')
+            ~'_form_patient_testing.html.twig') }}
     </div>
 {% endblock %}

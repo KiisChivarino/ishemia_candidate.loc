@@ -33,7 +33,11 @@ abstract class DoctorOfficeDatatableService extends DataTableService
      * @param UrlGeneratorInterface|null $router
      * @param EntityManagerInterface|null $entityManager
      */
-    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $entityManager = null)
+    public function __construct(
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        EntityManagerInterface $entityManager = null
+    )
     {
         parent::__construct($dataTableFactory);
         $this->router = $router;

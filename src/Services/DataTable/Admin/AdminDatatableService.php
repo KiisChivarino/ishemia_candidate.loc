@@ -2,15 +2,12 @@
 
 namespace App\Services\DataTable\Admin;
 
-use App\Entity\PatientTesting;
 use App\Services\DataTable\DataTableService;
 use App\Services\Template\TemplateItem;
-use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Omines\DataTablesBundle\Column\BoolColumn;
-use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;

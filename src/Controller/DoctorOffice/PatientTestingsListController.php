@@ -7,7 +7,6 @@ use App\Entity\PatientTesting;
 use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTestingResultType;
 use App\Form\PatientTestingFileType;
-use App\Repository\PatientTestingRepository;
 use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
@@ -120,7 +119,11 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * List of not processed patient testings
-     * @Route("/patient/{id}/patient_testing_not_processed", name="doctor_patient_testing_not_processed_list", methods={"GET","POST"})
+     * @Route(
+     *     "/patient/{id}/patient_testing_not_processed",
+     *     name="doctor_patient_testing_not_processed_list",
+     *     methods={"GET","POST"}
+     *     )
      *
      * @param Patient $patient
      * @param Request $request
@@ -213,10 +216,14 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
 
     /**
      * Редактирование анализа пациента
-     * @Route("/patient/{id}/patient_testing/{patientTesting}/edit", name="doctor_patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route(
+     *     "/patient/{id}/patient_testing/{patientTesting}/edit",
+     *     name="doctor_patient_testing_edit",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     *     )
      *
      * @param Request $request
-     * @param PatientTestingRepository $patientTestingRepository
      * @param FileService $fileService
      * @param PatientTestingResultRepository $patientTestingResultRepository
      * @param PatientTesting $patientTesting
@@ -225,7 +232,6 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      */
     public function edit(
         Request $request,
-        PatientTestingRepository $patientTestingRepository,
         FileService $fileService,
         PatientTestingResultRepository $patientTestingResultRepository,
         PatientTesting $patientTesting

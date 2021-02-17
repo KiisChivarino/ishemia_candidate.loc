@@ -5,7 +5,6 @@ $(document).ready(function ()
 
     //выпадающий список в меню
     $(".sublist").on("click", (function () {
-        $(this).children("ul").slideToggle()
+        $(this).children("ul").slideToggle();
     }));
-
 });

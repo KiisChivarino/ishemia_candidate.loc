@@ -12,12 +12,12 @@ $(document).ready(function () {
                 });
                 $('.pagination a').addClass('item');
             },
-        }).then(function(dt) {
-        dt.on('draw', function() {
-            // Выделение строки красным
-            $('.redRow').each(function () {
-                $(this).parent().parent().attr('class', 'zapredel')
-            })
-        })
-    });
+        }).then(function (dt) {
+            dt.on('draw', function () {
+                    // Выделение красным строки пациента с анализами, вышедшими за пределы нормальных значений
+                    $('.redRow').each(function () {
+                        $(this).closest().attr('class', 'zapredel')
+                    });
+                });
+        });
 });
