@@ -8,12 +8,11 @@ use App\Entity\TextByTemplate;
 use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
 use App\Repository\MedicalHistoryRepository;
-use App\Services\ControllerGetters\EntityActions;
 use App\Services\MultiFormService\FormData;
-use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\ClinicalDiagnosisTemplate;
 use ReflectionException;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +24,8 @@ use Twig\Environment;
 /**
  * Class ClinicalDiagnosisController
  * Клинический диагноз
+ * @Route("/doctor_office/patient")
+ * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory
  */
 class ClinicalDiagnosisController extends DoctorOfficeAbstractController
@@ -62,7 +63,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
      * @throws ReflectionException
      * @throws Exception
      * @Route(
-     *     "/{id}/edit_clinical_diagnosis_data",
+     *     "/{id}/medical_history/edit_clinical_diagnosis_data",
      *     name="doctor_edit_clinical_diagnosis_data",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
@@ -93,13 +94,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
                     ]
                 ),
             ],
-            function (EntityActions $actions) use ($lifeHistory) {
-                $lifeHistoryText = $actions->getForm()
-                    ->get(MultiFormService::getFormName(MedicalHistoryType::class))
-                    ->get(MedicalHistoryType::FORM_LIFE_HISTORY_NAME)
-                    ->getData();
-                $lifeHistory->setText($lifeHistoryText);
-            },
+  null,
             self::EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME
         );
     }

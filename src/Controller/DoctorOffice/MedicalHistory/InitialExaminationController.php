@@ -22,7 +22,8 @@ use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\InitialExaminationTemplate;
 use App\Services\TextTemplateService\TextTemplateService;
 use Doctrine\ORM\NonUniqueResultException;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,6 +36,8 @@ use Twig\Environment;
 /**
  * Class InitialExaminationController
  * Первичный прием
+ * @Route("/doctor_office/patient")
+ * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory
  */
 class InitialExaminationController extends DoctorOfficeAbstractController
@@ -96,19 +99,27 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     /**
      * Edit objective data
      * @param Request $request
-     * @param PatientAppointment $firstAppointment
+     * @param Patient $patient
+     * @param PatientAppointmentRepository $appointmentRepository
+     * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return RedirectResponse|Response
+     * @throws NonUniqueResultException
+     * @throws \ReflectionException
      * @Route(
-     *     "/edit_initial_examination_data/{id}/",
+     *     "/{id}/medical_history/edit_initial_examination_data",
      *     name="edit_initial_examination_data",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
      *     )
-     *
-     * @throws Exception
      */
-    public function editInitialExamination(Request $request, PatientAppointment $firstAppointment)
+    public function editInitialExamination(
+        Request $request,
+        Patient $patient,
+        PatientAppointmentRepository $appointmentRepository,
+        MedicalHistoryRepository $medicalHistoryRepository
+    )
     {
+        $firstAppointment = $appointmentRepository->getFirstAppointment($medicalHistoryRepository->getCurrentMedicalHistory($patient));
         $this->setRedirectMedicalHistoryRoute($firstAppointment->getMedicalHistory()->getPatient()->getId());
         $objectiveStatus = $firstAppointment->getObjectiveStatus();
         return $this->responseEditMultiForm(
