@@ -2,15 +2,12 @@
 
 namespace App\Services\DataTable\Admin;
 
-use App\Entity\PatientTesting;
 use App\Services\DataTable\DataTableService;
 use App\Services\Template\TemplateItem;
-use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Omines\DataTablesBundle\Column\BoolColumn;
-use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
@@ -146,45 +143,5 @@ abstract class AdminDatatableService extends DataTableService
     protected function getLink(string $value, int $id, string $route): string
     {
         return '<a href="' . $this->router->generate($route, ['id' => $id]) . '">' . $value . '</a>';
-    }
-
-    protected function generateTableForPatientTestingsInDoctorOffice(
-        Closure $renderOperationsFunction,
-        ListTemplateItem $listTemplateItem
-    ) {
-        $this->addSerialNumber();
-        $this->dataTable
-            ->add(
-                'analysisGroup', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('analysisGroup'),
-                    'field' => 'aG.name',
-                    'render' => function (string $data, PatientTesting $patientTesting) {
-                        return
-                            $patientTesting
-                                ? $patientTesting ->getAnalysisGroup()->getName()
-                                : '';
-                    },
-                    'orderable' => true,
-                    'orderField' => 'aG.name',
-                ]
-            )
-            ->add(
-                'analysisDate', DateTimeColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('analysisDate'),
-                    'searchable' => false,
-                    'format' => 'd.m.Y H:i'
-                ]
-            )
-        ;
-        $this->addOperationsWithParameters(
-            $listTemplateItem,
-            function (string $data, PatientTesting $patientTesting) use ($renderOperationsFunction) {
-                return
-                    $renderOperationsFunction(
-                        (string) $patientTesting->getMedicalHistory()->getPatient()->getId(),
-                        ['patientTestingId' => $patientTesting->getId()]
-                    );
-            }
-        );
     }
 }

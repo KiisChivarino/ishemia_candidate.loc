@@ -5,7 +5,6 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Entity\Hospital;
 use App\Entity\Patient;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use Doctrine\ORM\QueryBuilder;
@@ -19,7 +18,7 @@ use Omines\DataTablesBundle\DataTable;
  *
  * @package App\DataTable
  */
-class NewDataTableService extends AdminDatatableService
+class NewDataTableService extends DoctorOfficeDatatableService
 {
     /**
      * Таблица диагнозов в админке

@@ -8,8 +8,9 @@ use App\Form\Admin\MedicalHistory\AnamnesOfLifeType;
 use App\Form\Admin\MedicalHistory\DiseaseHistoryType;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
 use App\Form\Admin\MedicalHistory\EnabledType;
-use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
+use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
+use App\Form\Admin\Patient\PatientMKBCodeType;
 use App\Form\DischargeEpicrisisType;
 use App\Repository\PatientTestingFileRepository;
 use App\Repository\PrescriptionRepository;
@@ -181,11 +182,13 @@ class MedicalHistoryController extends AdminAbstractController
         $medicalHistory->setPatientDischargeEpicrisis($patientDischargeEpicrisis);
         $this->getDoctrine()->getManager()->persist($patientDischargeEpicrisis);
         $this->getDoctrine()->getManager()->flush();
+        $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
         return $this->responseEditMultiForm(
             $request,
             $medicalHistory,
             [
-                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData($clinicalDiagnosis, PatientClinicalDiagnosisTextType::class),
+                new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
                 new FormData($medicalHistory, MedicalHistoryType::class),
                 new FormData($medicalHistory, AnamnesOfLifeType::class),
                 new FormData($medicalHistory, DiseaseHistoryType::class),

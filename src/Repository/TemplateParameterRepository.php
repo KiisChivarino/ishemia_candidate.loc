@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TemplateParameter;
+use App\Entity\TemplateType;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,5 +23,19 @@ class TemplateParameterRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TemplateParameter::class);
+    }
+
+    /**
+     * Gets Template Type With Objective Status Id.
+     * @param $templateType
+     * @return TemplateParameter[]
+     */
+    public function getTemplateParameterByTemplateType(TemplateType $templateType): array
+    {
+        return $this->findBy(
+            [
+                'templateType' => $templateType
+            ]
+        );
     }
 }

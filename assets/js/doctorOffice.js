@@ -8,6 +8,7 @@ import './initDatatable';
 import './fileUpload';
 import './app';
 import './mask';
+import './menu';
 import swal from 'sweetalert2';
 
 require('../images/operation-icon-1.svg');
@@ -97,12 +98,6 @@ $(document).ready(function () {
         $(this).parent().parent().remove()
     })
 
-    //раскрытие текущего пункта меню
-    $(".sublist .active").closest('ul').show();
-    //выпадающий список в меню
-    $(".sublist").on("click", (function () {
-        $(this).children("ul").slideToggle()
-    }));
 });
 
 // Функция уменьшающая количество уведомлений в меню на 1 для СМС пациента

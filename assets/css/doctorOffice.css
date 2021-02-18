@@ -47,12 +47,12 @@
     align-self: center;
     height: 20px;
 }
-
+/* Убирает баг в кабинете врача, чтобы меню не отодвигалась на полстраницы */
 .sidebar__sublist {
     margin-top: 0;
     margin-bottom: 0;
 }
-
+/* Делает линки в саблисте жирными */
 .sublist > a {
     font-weight: bold;
 }
