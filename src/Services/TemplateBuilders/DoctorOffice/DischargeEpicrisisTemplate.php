@@ -19,6 +19,11 @@ class DischargeEpicrisisTemplate extends DoctorOfficeTemplateBuilder
         'discharge_epicrisis' => 'Выписные эпикризы',
     ];
 
+    /** @var string[] Common form content for new templates */
+    protected const NEW_CONTENT  = [
+        'discharge_epicrisis' => 'Выписные эпикризы',
+    ];
+
     /** @var string[] Common ENTITY_CONTENT */
     public const ENTITY_CONTENT = [
         'entity' => \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
@@ -35,7 +40,7 @@ class DischargeEpicrisisTemplate extends DoctorOfficeTemplateBuilder
         parent::__construct($routeCollection, $className);
         $this->addContent(
             null,
-            null,
+            self::EDIT_CONTENT,
             null,
             self::EDIT_CONTENT,
             null,

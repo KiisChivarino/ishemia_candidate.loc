@@ -12,7 +12,8 @@ use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PersonalDataTemplate;
 use ReflectionException;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,6 +25,8 @@ use Twig\Environment;
 /**
  * Class PersonalDataController
  * Личные данные
+ * @Route("/doctor_office/patient")
+ * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory
  */
 class PersonalDataController extends DoctorOfficeAbstractController
@@ -55,7 +58,7 @@ class PersonalDataController extends DoctorOfficeAbstractController
     /**
      * Edit personal data of patient medical history
      * @Route(
-     *     "/{id}/edit_personal_data",
+     *     "/{id}/medical_history/edit_personal_data",
      *     name="doctor_edit_personal_data",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}

@@ -3,15 +3,17 @@
 namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
-use App\Entity\MedicalHistory;
+use App\Entity\Patient;
 use App\Entity\PatientDischargeEpicrisis;
 use App\Form\DischargeEpicrisisFileType;
 use App\Form\DischargeEpicrisisType;
+use App\Repository\MedicalHistoryRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FileService\FileService;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\DischargeEpicrisisTemplate;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +25,8 @@ use Twig\Environment;
 /**
  * Class DischargeEpicrisisController
  * Выписные эпикризы
+ * @Route("/doctor_office/patient")
+ * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory
  */
 class DischargeEpicrisisController extends DoctorOfficeAbstractController
@@ -55,24 +59,27 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
 
     /**
      * @Route(
-     *     "/{id}/new_discharge_epicrisis",
+     *     "/{id}/medical_history/new_discharge_epicrisis",
      *     name="doctor_new_discharge_epicrisis",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
      * )
      * @param Request $request
-     * @param MedicalHistory $medicalHistory
+     * @param Patient $patient
+     * @param MedicalHistoryRepository $medicalHistoryRepository
      * @param FileService $fileService
      * @return RedirectResponse|Response
      * @throws Exception
      */
     public function new(
         Request $request,
-        MedicalHistory $medicalHistory,
+        Patient $patient,
+        MedicalHistoryRepository $medicalHistoryRepository,
         FileService $fileService
     )
     {
-        $this->setRedirectMedicalHistoryRoute($medicalHistory->getPatient()->getId());
+        $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
+        $this->setRedirectMedicalHistoryRoute($patient->getId());
         return $this->responseNew(
             $request,
             (new PatientDischargeEpicrisis())->setMedicalHistory($medicalHistory),

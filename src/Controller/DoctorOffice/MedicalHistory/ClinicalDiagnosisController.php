@@ -11,7 +11,8 @@ use App\Repository\MedicalHistoryRepository;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\ClinicalDiagnosisTemplate;
 use ReflectionException;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,8 @@ use Twig\Environment;
 /**
  * Class ClinicalDiagnosisController
  * Клинический диагноз
+ * @Route("/doctor_office/patient")
+ * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory
  */
 class ClinicalDiagnosisController extends DoctorOfficeAbstractController
@@ -60,7 +63,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
      * @throws ReflectionException
      * @throws Exception
      * @Route(
-     *     "/{id}/edit_clinical_diagnosis_data",
+     *     "/{id}/medical_history/edit_clinical_diagnosis_data",
      *     name="doctor_edit_clinical_diagnosis_data",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
