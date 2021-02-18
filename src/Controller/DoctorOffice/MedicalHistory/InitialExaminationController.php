@@ -449,7 +449,8 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      * @param TemplateType $templateType
      * @return TextByTemplate
      */
-    private function getTextByTemplate(MedicalHistory $medicalHistory, TemplateType $templateType) {
+    private function getTextByTemplate(MedicalHistory $medicalHistory, TemplateType $templateType): TextByTemplate
+ {
         if ($medicalHistory->getLifeHistory()) {
             $textByTemplate = $medicalHistory->getLifeHistory();
         } else {
