@@ -4,13 +4,11 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
-use App\Entity\TextByTemplate;
-use App\Form\Admin\MedicalHistory\MainDiseaseType;
 use App\Form\Admin\MedicalHistoryType;
+use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
+use App\Form\Admin\Patient\PatientMKBCodeType;
 use App\Repository\MedicalHistoryRepository;
-use App\Services\ControllerGetters\EntityActions;
 use App\Services\MultiFormService\FormData;
-use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\ClinicalDiagnosisTemplate;
 use ReflectionException;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -33,7 +31,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
     const TEMPLATE_PATH = 'doctorOffice/medical_history/';
 
     /** @var string Name of form template edit Clinical Diagnosis data */
-    private const EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME = 'edit_clinical_diagnosis_data';
+    private const EDIT_CLINICAL_DIAGNOSIS_DATA_TEMPLATE_NAME = 'edit_clinical_diagnosis_data';
 
     /**
      * ClinicalDiagnosisController constructor.
@@ -76,15 +74,22 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
     )
     {
         $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
-        $this->setRedirectMedicalHistoryRoute($patient->getId());
-        /** @var TextByTemplate $lifeHistory */
         $lifeHistory = $medicalHistory->getLifeHistory();
+        $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
         $lifeAnamnesisText = $lifeHistory ? $lifeHistory->getText() : null;
+        $this->setRedirectMedicalHistoryRoute($patient->getId());
         return $this->responseEditMultiForm(
             $request,
             $patient,
             [
-                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData(
+                    $clinicalDiagnosis,
+                    PatientClinicalDiagnosisTextType::class
+                ),
+                new FormData(
+                    $clinicalDiagnosis,
+                    PatientMKBCodeType::class
+                ),
                 new FormData(
                     $medicalHistory,
                     MedicalHistoryType::class,
@@ -93,14 +98,8 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
                     ]
                 ),
             ],
-            function (EntityActions $actions) use ($lifeHistory) {
-                $lifeHistoryText = $actions->getForm()
-                    ->get(MultiFormService::getFormName(MedicalHistoryType::class))
-                    ->get(MedicalHistoryType::FORM_LIFE_HISTORY_NAME)
-                    ->getData();
-                $lifeHistory->setText($lifeHistoryText);
-            },
-            self::EDIT_ANAMNESTIC_DATA_TEMPLATE_NAME
+            null,
+            self::EDIT_CLINICAL_DIAGNOSIS_DATA_TEMPLATE_NAME
         );
     }
 }

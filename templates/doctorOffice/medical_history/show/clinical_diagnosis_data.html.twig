@@ -29,41 +29,12 @@
                     </div>
                 {% endif %}
                 <div class="statement__info-block">
-                    <p>{{ template.items.show.content.mainDisease }}</p>
-                    <p>
-                        {% if (medicalHistory.mainDisease) %}
-                            {{ medicalHistory.mainDisease.name }}
-                        {% else %}
-                            {{ template.items.show.content.mainDiseaseNotFound }}
-                        {% endif %}
-                    </p>
+                    <p>{{ template.items.show.content.MKBCode }}</p>
+                    <p>{{ medicalHistory.clinicalDiagnosis.MKBCode.code }}</p>
                 </div>
                 <div class="statement__info-block">
-                    <p>{{ template.items.show.content.backgroundDiseases }}</p>
-                    {% if medicalHistory.backgroundDiseases is empty %}
-                        <p>{{ template.items.show.content.backgroundDiseasesNotFound }}</p>
-                    {% endif %}
-                    {% for backgroundDisease in medicalHistory.backgroundDiseases %}
-                        <p>{{ backgroundDisease.name }}</p>
-                    {% endfor %}
-                </div>
-                <div class="statement__info-block">
-                    <p>{{ template.items.show.content.complications }}</p>
-                    {% if medicalHistory.complications is empty %}
-                        <p>{{ template.items.show.content.complicationsNotFound }}</p>
-                    {% endif %}
-                    {% for complication in medicalHistory.complications %}
-                        <p>{{ complication.name }}</p>
-                    {% endfor %}
-                </div>
-                <div class="statement__info-block">
-                    <p>{{ template.items.show.content.concomitantDiseases }}</p>
-                    {% if medicalHistory.concomitantDiseases is empty %}
-                        <p>{{ template.items.show.content.concomitantDiseasesNotFound }}</p>
-                    {% endif %}
-                    {% for concomitantDisease in medicalHistory.concomitantDiseases %}
-                        <p>{{ concomitantDisease.name }}</p>
-                    {% endfor %}
+                    <p>{{ template.items.show.content.text }}</p>
+                    <p>{{ medicalHistory.clinicalDiagnosis.text | raw }}</p>
                 </div>
             </div>
         </div>
