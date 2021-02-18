@@ -143,7 +143,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Edit Initial examination data Objective Status Using Constructor
+     * Edit initial examination objective status using constructor
      * @param Request $request
      * @param Patient $patient
      * @param PatientAppointmentRepository $patientAppointmentRepository
@@ -157,7 +157,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      *     name="doctor_edit_initial_examination_data_objective_status_using_constructor",
      *     methods={"GET","POST"})
      */
-    public function editInitialExaminationDataObjectiveStatusUsingConstructor(
+    public function editObjectiveStatusUsingConstructor(
         Request $request,
         Patient $patient,
         PatientAppointmentRepository $patientAppointmentRepository,
@@ -201,7 +201,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Edit Initial Examination Data Objective Status By Template
+     * Edit initial examination objective status by template
      * @param Request $request
      * @param Patient $patient
      * @param TemplateTypeRepository $templateTypeRepository
@@ -218,7 +218,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      *     methods={"GET","POST"}
      *     )
      */
-    public function editInitialExaminationDataObjectiveStatusByTemplate(
+    public function editObjectiveStatusByTemplate(
         Request $request,
         Patient $patient,
         TemplateTypeRepository $templateTypeRepository,
@@ -267,7 +267,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Edit Initial Examination Data Anamnesis Of Life Using Constructor
+     * Edit initial examination anamnesis of life using constructor
      * @param Request $request
      * @param Patient $patient
      * @param TemplateTypeRepository $templateTypeRepository
@@ -284,7 +284,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      *     requirements={"id"="\d+"}
      *     )
      */
-    public function editInitialExaminationDataAnamnesisOfLifeUsingConstructor(
+    public function editAnamnesisOfLifeUsingConstructor(
         Request $request,
         Patient $patient,
         TemplateTypeRepository $templateTypeRepository,
@@ -322,7 +322,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Edit Initial Examination Data Anamnesis Of Life By Template
+     * Edit initial examination anamnesis of life by template
      * @param Request $request
      * @param Patient $patient
      * @param TemplateTypeRepository $templateTypeRepository
@@ -338,7 +338,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      *     requirements={"id"="\d+"}
      *     )
      */
-    public function editInitialExaminationDataAnamnesisOfLifeByTemplate(
+    public function editAnamnesisOfLifeByTemplate(
         Request $request,
         Patient $patient,
         TemplateTypeRepository $templateTypeRepository,
@@ -437,7 +437,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      * @param string $textByParameterTextArray
      * @param TextByTemplate $textByTemplate
      */
-    protected function persistTextByTemplate(string $textByParameterTextArray, TextByTemplate $textByTemplate)
+    protected function persistTextByTemplate(string $textByParameterTextArray, TextByTemplate $textByTemplate): void
     {
         $textByTemplate->setText($textByParameterTextArray);
         $this->getDoctrine()->getManager()->persist($textByTemplate);
@@ -449,7 +449,8 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      * @param TemplateType $templateType
      * @return TextByTemplate
      */
-    private function getTextByTemplate(MedicalHistory $medicalHistory, TemplateType $templateType) {
+    private function getTextByTemplate(MedicalHistory $medicalHistory, TemplateType $templateType): TextByTemplate
+    {
         if ($medicalHistory->getLifeHistory()) {
             $textByTemplate = $medicalHistory->getLifeHistory();
         } else {

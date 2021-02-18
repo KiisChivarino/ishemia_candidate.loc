@@ -105,7 +105,6 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
      *     requirements={"id"="\d+"}
      *     )
      * @param Request $request
-     * @param Patient $id
      * @param PatientDischargeEpicrisis $dischargeEpicrisis
      * @param FileService $fileService
      * @return RedirectResponse|Response
@@ -113,7 +112,6 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
      */
     public function edit(
         Request $request,
-        Patient $id,
         PatientDischargeEpicrisis $dischargeEpicrisis,
         FileService $fileService
     )

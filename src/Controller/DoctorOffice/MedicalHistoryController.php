@@ -48,6 +48,7 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Shows medical history page for patient
      * @Route("/{id}/medical_history", name="doctor_medical_history", methods={"GET","POST"}, requirements={"id"="\d+"})
      * @param Patient $patient
      *
