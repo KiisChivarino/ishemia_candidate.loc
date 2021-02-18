@@ -10,7 +10,10 @@
                 {% if template.items.list.isEnabled %}
                     <a
                             class="back-page"
-                            href="{{ path('doctor_medical_history', {id: entity.medicalHistory.patient.id}) }}"
+                            href="{{
+                            path('doctor_medical_history',
+                                {id: entity.medicalHistory.patient.id})
+                            }}"
                     >История болезни</a>
                 {% endif %}
             </li>

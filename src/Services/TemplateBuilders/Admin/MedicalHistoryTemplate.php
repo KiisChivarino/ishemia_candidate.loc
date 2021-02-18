@@ -27,8 +27,8 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'dateBegin' => 'Дата создания',
         'dateEnd' => 'Дата завершения',
         'mainDisease' => 'Основное заболевание',
-        'text' => 'Текст клинического диагноза',
-        'MKBCode' => 'Код клинического диагноза',
+        'text' => ClinicalDiagnosisTemplate::COMMON_CONTENT['text'],
+        'MKBCode' => ClinicalDiagnosisTemplate::COMMON_CONTENT['MKBCode'],
     ];
 
     /** @var string[] FORM_SHOW_CONTENT */
@@ -44,7 +44,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'lifeHistory' => 'Анамнез жизни',
         'dischargeEpicrisis' => 'Выписные эпикризы',
         'clinicalDiagnosis' => 'Клинический диагноз',
-        'MKBCodePlaceholder' => 'Выберите код МКБ',
+        'MKBCodePlaceholder' => ClinicalDiagnosisTemplate::FORM_CONTENT['MKBCodePlaceholder'],
     ];
 
     /** @var string[] Common LIST_CONTENT */

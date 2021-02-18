@@ -7,6 +7,7 @@ use App\Controller\AppAbstractController;
 use App\Entity\ClinicalDiagnosis;
 use App\Entity\Diagnosis;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -23,7 +24,7 @@ class ClinicalDiagnosisType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -32,7 +33,8 @@ class ClinicalDiagnosisType extends AbstractType
         $builder
             ->add('text', TextareaType::class, [
                 'required' => true,
-                'label' => $templateItem->getContentValue('text')
+                'label' => $templateItem->getContentValue('text'),
+                'attr' => ['class' => 'tinymce'],
             ])
             ->add(
                 'MKBCode', Select2EntityType::class, [
