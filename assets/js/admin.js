@@ -8,7 +8,6 @@ import './tabs';
 import '../css/admin.scss'
 import './mask';
 import './hospitalByCity';
- // import './tinymce';
 import './fileUpload';
 import './menu';
 

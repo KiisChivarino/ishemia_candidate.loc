@@ -19,9 +19,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MedicalHistoryType extends AbstractType
 {
-    /** @var string Name of life history form */
-    public const FORM_LIFE_HISTORY_NAME = 'lifeHistory';
-
     /** @var string Key of anamnesis of life text option */
     public const ANAMNES_OF_LIFE_TEXT_OPTION_KEY = 'anamnesOfLifeText';
 

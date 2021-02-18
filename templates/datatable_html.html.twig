@@ -11,7 +11,7 @@
     {% if datatable.option('searching') and datatable.setting('column_filter') in ['both', 'thead'] %}
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
-                <td>{% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}</td>
+                <td>{% if column.filter != null %}{% include column.filter.templateHtml%}{% endif %}</td>
             {% endfor %}
         </tr>
     {% endif %}
@@ -25,6 +25,6 @@
         </tr>
         </tfoot>
     {% endif %}
-    <tbody>
+    <tbody class="test">
     </tbody>
 </table>

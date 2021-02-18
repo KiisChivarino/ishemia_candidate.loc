@@ -35,13 +35,13 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
     ];
 
     /** @var string[] Common COMMON_CONTENT */
-    protected const COMMON_CONTENT = [
+    public const COMMON_CONTENT = [
         'text' => 'Текст клинического диагноза',
         'MKBCode' => 'Код клинического диагноза',
     ];
 
     /** @var string[] Common FORM_CONTENT */
-    protected const FORM_CONTENT = [
+    public const FORM_CONTENT = [
         'MKBCodePlaceholder' => 'Выберите код МКБ',
         'mainDiseasePlaceholder' => 'Выберите заболевание',
         'backgroundDiseasesPlaceholder' => 'Выберите фоновые заболевания',

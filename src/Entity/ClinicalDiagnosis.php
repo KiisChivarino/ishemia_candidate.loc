@@ -9,8 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinTable;
 
 /**
+ * Class ClinicalDiagnosis
  * @ORM\Entity(repositoryClass=ClinicalDiagnosisRepository::class)
  * @ORM\Table(options={"comment":"Клинический диагноз"});
+ * @package App\Entity
  */
 class ClinicalDiagnosis
 {
