@@ -647,7 +647,11 @@ class MenuBuilder
      */
     private function getEntityId(string $GETParameterKey): ?int
     {
-        return $this->container->get('request_stack')->getCurrentRequest()->get($GETParameterKey);
+        $entityId = $this->container->get('request_stack')->getCurrentRequest()->get($GETParameterKey);
+        if (is_object($entityId)) {
+            return $entityId->getId();
+        }
+        return $entityId;
     }
 
     /**
