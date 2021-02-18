@@ -24,7 +24,7 @@
                         {% if child.vars.name == 'objectiveStatus' %}
                             <a href="{{ path(
                                 'doctor_edit_initial_examination_data_objective_status_using_constructor',
-                                { 'id': entity.id }
+                                { 'id': entity.medicalHistory.patient.id }
                             ) }}"
                                class="form-control"
                             >
@@ -32,7 +32,7 @@
                             </a>
                             <a href="{{ path(
                                 'doctor_edit_initial_examination_data_objective_status_by_template',
-                                { 'id': entity.id }
+                                { 'id': entity.medicalHistory.patient.id }
                             ) }}"
                                class="form-control">
                                 Выбрать из шаблона Объективный статус

@@ -4,7 +4,6 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
-use App\Entity\PatientAppointment;
 use App\Entity\TemplateType;
 use App\Entity\TextByTemplate;
 use App\Form\Admin\MedicalHistory\AnamnesOfLifeType;
@@ -149,24 +148,31 @@ class InitialExaminationController extends DoctorOfficeAbstractController
 
     /**
      * @param Request $request
-     * @param PatientAppointment $firstAppointment
+     * @param Patient $patient
+     * @param PatientAppointmentRepository $patientAppointmentRepository
+     * @param MedicalHistoryRepository $medicalHistoryRepository
      * @param TemplateParameterRepository $templateParameterRepository
      * @param TemplateTypeRepository $templateTypeRepository
      * @param TextTemplateService $textTemplateService
      * @return RedirectResponse|Response
-     * @throws Exception|\Exception
-     * @Route("/edit_initial_examination_data/{id}/objective_status_using_constructor",
+     * @throws NonUniqueResultException
+     * @Route("/{id}/medical_history/edit_initial_examination_data/objective_status_using_constructor",
      *     name="doctor_edit_initial_examination_data_objective_status_using_constructor",
      *     methods={"GET","POST"})
      */
     public function editObjectiveDataObjectiveStatusUsingConstructor(
         Request $request,
-        PatientAppointment $firstAppointment,
+        Patient $patient,
+        PatientAppointmentRepository $patientAppointmentRepository,
+        MedicalHistoryRepository $medicalHistoryRepository,
         TemplateParameterRepository $templateParameterRepository,
         TemplateTypeRepository $templateTypeRepository,
         TextTemplateService $textTemplateService
     )
     {
+        $firstAppointment = $patientAppointmentRepository->getFirstAppointment(
+            $medicalHistoryRepository->getCurrentMedicalHistory($patient)
+        );
         $templateType = $templateTypeRepository->findOneBy(
             [
                 'id' => self::TEMPLATE_TYPE_ID_OBJECTIVE_STATUS
@@ -207,26 +213,34 @@ class InitialExaminationController extends DoctorOfficeAbstractController
 
     /**
      * @param Request $request
-     * @param PatientAppointment $firstAppointment
+     * @param Patient $patient
      * @param TemplateTypeRepository $templateTypeRepository
      * @param TemplateRepository $templateRepository
      * @param TextTemplateService $textTemplateService
+     * @param PatientAppointmentRepository $patientAppointmentRepository
+     * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return RedirectResponse|Response
-     * @throws Exception|\Exception
+     * @throws NonUniqueResultException
+     * @throws Exception
      * @Route(
-     *     "/edit_initial_examination_data/{id}/objective_status_by_template",
+     *     "/{id}/medical_history/edit_initial_examination_data/objective_status_by_template",
      *     name="doctor_edit_initial_examination_data_objective_status_by_template",
      *     methods={"GET","POST"}
      *     )
      */
     public function editObjectiveDataObjectiveStatusByTemplate(
         Request $request,
-        PatientAppointment $firstAppointment,
+        Patient $patient,
         TemplateTypeRepository $templateTypeRepository,
         TemplateRepository $templateRepository,
-        TextTemplateService $textTemplateService
+        TextTemplateService $textTemplateService,
+        PatientAppointmentRepository $patientAppointmentRepository,
+        MedicalHistoryRepository $medicalHistoryRepository
     )
     {
+        $firstAppointment = $patientAppointmentRepository->getFirstAppointment(
+            $medicalHistoryRepository->getCurrentMedicalHistory($patient)
+        );
         /** @var TemplateType $templateType */
         $templateType = $templateTypeRepository->findOneBy(
             [
@@ -277,7 +291,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      * @return RedirectResponse|Response
      * @throws NonUniqueResultException
      * @Route(
-     *     "/{id}/edit_initial_examination_data_anamnesis_of_life_using_constructor",
+     *     "/{id}/medical_history/edit_initial_examination_data/anamnesis_of_life_using_constructor",
      *     name="doctor_edit_initial_examination_data_anamnesis_of_life_using_constructor",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
@@ -344,7 +358,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      * @return RedirectResponse|Response
      * @throws Exception
      * @Route(
-     *     "/{id}/edit_initial_examination_data_anamnesis_of_life_by_template",
+     *     "/{id}/medical_history/edit_initial_examination_data/anamnesis_of_life_by_template",
      *     name="doctor_edit_initial_examination_data_anamnesis_of_life_by_template",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
