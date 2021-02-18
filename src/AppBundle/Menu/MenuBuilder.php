@@ -4,7 +4,6 @@ namespace App\AppBundle\Menu;
 
 use App\Entity\Patient;
 use App\Entity\PatientSMS;
-use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\Staff;
 use App\Repository\PatientTestingCounterRepository;
