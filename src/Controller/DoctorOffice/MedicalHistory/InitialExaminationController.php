@@ -3,6 +3,7 @@
 namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
+use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\TemplateType;
 use App\Entity\TextByTemplate;
@@ -21,6 +22,7 @@ use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\InitialExaminationTemplate;
 use App\Services\TextTemplateService\TextTemplateService;
 use Doctrine\ORM\NonUniqueResultException;
+use ReflectionException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Exception;
 use Symfony\Component\Form\FormInterface;
@@ -63,12 +65,6 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     /** @var string Name of form with template data */
     private const FORM_TEMPLATE_NAME = 'template';
 
-    //Ids of template type
-    /** @var int Id of Anamnesis of life template type */
-    private const TEMPLATE_TYPE_ID_ANAMNESIS_LIFE = 1;
-    /** @var int Id of Objective status template type */
-    private const TEMPLATE_TYPE_ID_OBJECTIVE_STATUS = 3;
-
     /** @var string Name of form template edit OBJECTIVE data */
     private const EDIT_OBJECTIVE_DATA_TEMPLATE_NAME = 'edit_initial_examination_data';
 
@@ -91,14 +87,14 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Edit objective data
+     * Edit initial examination data
      * @param Request $request
      * @param Patient $patient
      * @param PatientAppointmentRepository $patientAppointmentRepository
      * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return RedirectResponse|Response
      * @throws NonUniqueResultException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws Exception
      * @Route(
      *     "/{id}/medical_history/edit_initial_examination_data",
@@ -147,6 +143,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Edit Initial examination data Objective Status Using Constructor
      * @param Request $request
      * @param Patient $patient
      * @param PatientAppointmentRepository $patientAppointmentRepository
@@ -160,7 +157,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      *     name="doctor_edit_initial_examination_data_objective_status_using_constructor",
      *     methods={"GET","POST"})
      */
-    public function editObjectiveDataObjectiveStatusUsingConstructor(
+    public function editInitialExaminationDataObjectiveStatusUsingConstructor(
         Request $request,
         Patient $patient,
         PatientAppointmentRepository $patientAppointmentRepository,
@@ -173,16 +170,8 @@ class InitialExaminationController extends DoctorOfficeAbstractController
         $firstAppointment = $patientAppointmentRepository->getFirstAppointment(
             $medicalHistoryRepository->getCurrentMedicalHistory($patient)
         );
-        $templateType = $templateTypeRepository->findOneBy(
-            [
-                'id' => self::TEMPLATE_TYPE_ID_OBJECTIVE_STATUS
-            ]
-        );
-        $parameters = $templateParameterRepository->findBy(
-            [
-                'templateType' => $templateType
-            ]
-        );
+        $templateType = $templateTypeRepository->getTemplateTypeWithObjectiveStatusId();
+        $parameters = $templateParameterRepository->getTemplateParameterByTemplateType($templateType);
         if ($firstAppointment->getObjectiveStatus()) {
             $textByTemplate = $firstAppointment->getObjectiveStatus();
         } else {
@@ -212,6 +201,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Edit Initial Examination Data Objective Status By Template
      * @param Request $request
      * @param Patient $patient
      * @param TemplateTypeRepository $templateTypeRepository
@@ -228,7 +218,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      *     methods={"GET","POST"}
      *     )
      */
-    public function editObjectiveDataObjectiveStatusByTemplate(
+    public function editInitialExaminationDataObjectiveStatusByTemplate(
         Request $request,
         Patient $patient,
         TemplateTypeRepository $templateTypeRepository,
@@ -242,11 +232,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
             $medicalHistoryRepository->getCurrentMedicalHistory($patient)
         );
         /** @var TemplateType $templateType */
-        $templateType = $templateTypeRepository->findOneBy(
-            [
-                'id' => self::TEMPLATE_TYPE_ID_OBJECTIVE_STATUS
-            ]
-        );
+        $templateType = $templateTypeRepository->getTemplateTypeWithObjectiveStatusId();
         if ($firstAppointment->getObjectiveStatus()) {
             $textByTemplate = $firstAppointment->getObjectiveStatus();
         } else {
@@ -281,6 +267,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Edit Initial Examination Data Anamnesis Of Life Using Constructor
      * @param Request $request
      * @param Patient $patient
      * @param TemplateTypeRepository $templateTypeRepository
@@ -316,23 +303,9 @@ class InitialExaminationController extends DoctorOfficeAbstractController
             ]
         );
         $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
-        $templateType = $templateTypeRepository->findOneBy(
-            [
-                'id' => self::TEMPLATE_TYPE_ID_ANAMNESIS_LIFE
-            ]
-        );
-        $parameters = $templateParameterRepository->findBy(
-            [
-                'templateType' => $templateType
-            ]
-        );
-        if ($medicalHistory->getLifeHistory()) {
-            $textByTemplate = $medicalHistory->getLifeHistory();
-        } else {
-            $textByTemplate = new TextByTemplate();
-            $textByTemplate->setTemplateType($templateType);
-            $medicalHistory->setLifeHistory($textByTemplate);
-        }
+        $templateType = $templateTypeRepository->getTemplateTypeWithAmnamnesisOfLifeId();
+        $parameters = $templateParameterRepository->getTemplateParameterByTemplateType($templateType);
+        $textByTemplate = $this->getTextByTemplate($medicalHistory, $templateType);
         return $this->responseEdit(
             $request,
             $patient,
@@ -349,6 +322,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Edit Initial Examination Data Anamnesis Of Life By Template
      * @param Request $request
      * @param Patient $patient
      * @param TemplateTypeRepository $templateTypeRepository
@@ -374,18 +348,8 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     )
     {
         $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
-        $templateType = $templateTypeRepository->findOneBy(
-            [
-                'id' => self::TEMPLATE_TYPE_ID_ANAMNESIS_LIFE
-            ]
-        );
-        if ($medicalHistory->getLifeHistory()) {
-            $textByTemplate = $medicalHistory->getLifeHistory();
-        } else {
-            $textByTemplate = new TextByTemplate();
-            $textByTemplate->setTemplateType($templateType);
-            $medicalHistory->setLifeHistory($textByTemplate);
-        }
+        $templateType = $templateTypeRepository->getTemplateTypeWithAmnamnesisOfLifeId();
+        $textByTemplate = $this->getTextByTemplate($medicalHistory, $templateType);
         $this->setRedirectAnamnesticDataRoute($patient->getId());
         return $this->responseEdit(
             $request,
@@ -477,5 +441,22 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     {
         $textByTemplate->setText($textByParameterTextArray);
         $this->getDoctrine()->getManager()->persist($textByTemplate);
+    }
+
+    /**
+     * Gets or creates TextByTemplate
+     * @param MedicalHistory $medicalHistory
+     * @param TemplateType $templateType
+     * @return TextByTemplate
+     */
+    private function getTextByTemplate(MedicalHistory $medicalHistory, TemplateType $templateType) {
+        if ($medicalHistory->getLifeHistory()) {
+            $textByTemplate = $medicalHistory->getLifeHistory();
+        } else {
+            $textByTemplate = new TextByTemplate();
+            $textByTemplate->setTemplateType($templateType);
+            $medicalHistory->setLifeHistory($textByTemplate);
+        }
+    return $textByTemplate;
     }
 }

@@ -60,11 +60,6 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'MKBCode' => 'Код клинического диагноза',
     ];
 
-    /** @var string[] Common FORM_CONTENT */
-    protected const FORM_CONTENT = [
-        'MKBCodePlaceholder' => 'Выберите код МКБ',
-    ];
-
     /**
      * MedicalHistoryTemplate constructor.
      *

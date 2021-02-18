@@ -8,7 +8,7 @@
                 <a class="back-page"
                    href="{{ path(
                        'doctor_edit_discharge_epicrisis',
-                       {'id': patientDischargeEpicrisis.id}
+                       {'id': medicalHistory.patient.id, 'dischargeEpicrisis': patientDischargeEpicrisis.id}
                    ) }}">
                     <span class="statement__edit">{{ template.items.show.content.addDischargeEpicrises }}</span>
                 </a>
