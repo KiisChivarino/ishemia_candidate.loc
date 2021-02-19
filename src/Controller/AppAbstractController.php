@@ -523,4 +523,30 @@ abstract class AppAbstractController extends AbstractController
         $this->addFlash('success', $this->translator->trans('app_controller.success.success_delete'));
         return $this->redirectToRoute($this->templateService->getRoute('list'));
     }
+
+    /**
+     * Render form before submit
+     * @param string $formName
+     * @param $entity
+     * @param $form
+     * @return Response
+     * @throws Exception
+     */
+    protected function renderForm(string $formName, $entity, $form): Response
+    {
+        return $this->render(
+            $this->templateService->getTemplateFullName(
+                $formName,
+                $this->getParameter('kernel.project_dir')),
+            [
+                'entity' => $entity,
+                'form' => $form->createView(),
+                'filters' =>
+                    $this->templateService
+                        ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                        ->getFiltersViews(),
+            ]
+        );
+    }
+
 }
