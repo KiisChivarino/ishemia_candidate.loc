@@ -297,9 +297,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
         $this->templateService->setRedirectRoute(
             'edit_initial_examination_data',
             [
-                'id' => $patientAppointmentRepository->getFirstAppointment(
-                    $medicalHistoryRepository->getCurrentMedicalHistory($patient)
-                )->getId()
+                'id' => $patient->getId(),
             ]
         );
         $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
