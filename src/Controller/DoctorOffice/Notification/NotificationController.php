@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller\DoctorOffice;
+namespace App\Controller\DoctorOffice\Notification;
 
+use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Notification;
 use App\Entity\Patient;
 use App\Services\ControllerGetters\FilterLabels;
