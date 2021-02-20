@@ -2,14 +2,10 @@
 
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
-use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\Admin\PatientTestingResultTemplate;
-use App\Services\TemplateBuilders\Admin\PatientTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
 use App\Services\TemplateBuilders\Admin\PatientAppointmentTemplate;
 use App\Services\TemplateBuilders\Admin\PatientTemplate;
-use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -53,27 +49,6 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'diseaseHistory' => 'Анамнез болезни',
     ];
 
-    /** @var string[] Common form and show content for medical history templates */
-    protected const FORM_SHOW_CONTENT = [
-        'dateBegin' => 'Дата начала лечения',
-        'dateEnd' => 'Дата окончания лечения',
-    ];
-
-    /** @var string[] Common form content for edit templates */
-    protected const EDIT_CONTENT = [
-        'personal_h2' => 'Редактирование персональных данных',
-        'personal_title' => 'Редактирование персональных данных',
-        'anamnestic_h2' => 'Редактирование клинического диагноза',
-        'anamnestic_title' => 'Редактирование клинического диагноза',
-        'objective_h2' => 'Редактирование первичного осмотра пациента',
-        'objective_title' => 'Редактирование первичного осмотра пациента',
-        'discharge_epicrisis' => 'Выписные эпикризы',
-    ];
-
-    protected const NEW_CONTENT = [
-        'discharge_epicrisis' => 'Добавление выписных эпикризов',
-    ];
-
     /** @var string[] Common ENTITY_CONTENT */
     public const ENTITY_CONTENT = [
         'entity' => \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
@@ -83,11 +58,6 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
     protected const COMMON_CONTENT = [
         'text' => 'Текст клинического диагноза',
         'MKBCode' => 'Код клинического диагноза',
-    ];
-
-    /** @var string[] Common FORM_CONTENT */
-    protected const FORM_CONTENT = [
-        'MKBCodePlaceholder' => 'Выберите код МКБ',
     ];
 
     /**
@@ -100,54 +70,16 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::__construct($routeCollection, $className);
         $this->addContent(
-            self::LIST_CONTENT,
-            self::NEW_CONTENT,
+            null,
+            null,
             self::SHOW_CONTENT,
-            self::EDIT_CONTENT,
-            self::FORM_CONTENT,
-            self::FORM_SHOW_CONTENT,
-            self::COMMON_CONTENT,
-            self::FILTER_CONTENT,
+            null,
+            null,
+            null,
+            null,
+            null,
             self::ENTITY_CONTENT
         );
-    }
-
-    public function new(?FilterService $filterService = null): AppTemplateBuilder
-    {
-        parent::new($filterService);
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath());
-        return $this;
-    }
-
-    /**
-     * @param object|null $entity
-     *
-     * @return AppTemplateBuilder
-     */
-    public function edit(?object $entity = null): AppTemplateBuilder
-    {
-        parent::edit();
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath())
-            ->addContentArray(
-                array_merge(
-                    PatientAppointmentTemplate::COMMON_CONTENT,
-                    PatientAppointmentTemplate::FORM_SHOW_CONTENT,
-                    PatientAppointmentTemplate::FORM_CONTENT,
-                    \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::FORM_SHOW_CONTENT,
-                    \App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate::COMMON_CONTENT,
-                    AuthUserTemplate::COMMON_CONTENT,
-                    AuthUserTemplate::FORM_CONTENT,
-                    AuthUserTemplate::FORM_SHOW_CONTENT,
-                    PatientTemplate::COMMON_CONTENT,
-                    PatientTemplate::FORM_SHOW_CONTENT,
-                    PatientTemplate::FORM_CONTENT,
-                    PatientTestingTemplate::COMMON_CONTENT,
-                    PatientTestingResultTemplate::COMMON_CONTENT
-                )
-            );
-        return $this;
     }
 
     /**

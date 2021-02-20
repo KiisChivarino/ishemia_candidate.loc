@@ -1,0 +1,104 @@
+<div class="statement acc">
+    <h2 class="title accordion">{{ template.items.show.content.objectiveData }}</h2>
+    <div class="statement__wrapper panel">
+        <div class="statement__head">
+            <h3 class="subtitle">{{ template.items.show.content.objectiveData }}</h3>
+            <a class="back-page"
+               href="{{ path('edit_initial_examination_data', {'id': medicalHistory.patient.id}) }}">
+                <span class="statement__edit">{{ template.items.show.content.addObjectiveData }}</span>
+            </a>
+        </div>
+        <div class="statement__content">
+            <div class="statement__info">
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.complaints }}</p>
+                    {% if firstAppointment.complaints is empty %}
+                        <p>{{ template.items.show.content.complaintsNotFound }}</p>
+                    {% endif %}
+                    {% for complaint in firstAppointment.complaints %}
+                        <p>{{ complaint.name }}</p>
+                    {% endfor %}
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.complaintsComment }}</p>
+                    <p>
+                        {% if firstAppointment.complaintsComment %}
+                            {{ firstAppointment.complaintsComment|raw }}
+                        {% else %}
+                            {{ template.items.show.content.complaintsCommentNotFound }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.recommendation }}</p>
+                    <p>
+                        {% if firstAppointment.recommendation %}
+                            {{ firstAppointment.recommendation | raw }}
+                        {% else %}
+                            {{ template.items.show.content.recommendationNotFound }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.appointmentType }}</p>
+                    <p>
+                        {% if firstAppointment.appointmentType %}
+                            {{ firstAppointment.appointmentType.name }}
+                        {% else %}
+                            {{ template.items.show.content.appointmentTypeNotFound }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.appointmentTime }}</p>
+                    <p>{{ firstAppointment.appointmentTime ? firstAppointment.appointmentTime|date('d.m.Y H:i') : '' }}</p>
+                </div>
+            </div>
+            <div class="statement__info">
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.objectiveStatus }}</p>
+                    <p>
+                        {% if firstAppointment.objectiveStatus %}
+                            {{ firstAppointment.objectiveStatus.text | raw }}
+                        {% else %}
+                            {{ template.items.show.content.objectiveStatusNotFound }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="statement__info">
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.lifeHistory }}</p>
+                    <p>
+                        {% if medicalHistory.lifeHistory %}
+                            {{ medicalHistory.lifeHistory | raw }}
+                        {% else %}
+                            {{ template.items.show.content.lifeHistoryNotFound }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.diseaseHistory }}</p>
+                    <p>
+                        {% if medicalHistory.diseaseHistory %}
+                            {{ medicalHistory.diseaseHistory | raw }}
+                        {% else %}
+                            {{ template.items.show.content.diseaseHistoryNotFound }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.therapy }}</p>
+                    <p>
+                        {% if firstAppointment.therapy %}
+                            {{ firstAppointment.therapy | raw }}
+                        {% else %}
+                            {{ template.items.show.content.therapyNotFound }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

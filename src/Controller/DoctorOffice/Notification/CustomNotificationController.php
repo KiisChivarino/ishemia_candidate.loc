@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller\DoctorOffice;
+namespace App\Controller\DoctorOffice\Notification;
 
+use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Notification;
 use App\Entity\Patient;
 use App\Form\Doctor\CustomNotificationType;
@@ -31,7 +32,7 @@ class CustomNotificationController extends DoctorOfficeAbstractController
     /** @var string */
     private const EDIT_PERSONAL_DATA_TEMPLATE_NAME = 'create_notification';
 
-    /** @var string */
+    /** @var string Путь к папке твиг шаблонов */
     const TEMPLATE_PATH = 'doctorOffice/notification/';
 
     /**

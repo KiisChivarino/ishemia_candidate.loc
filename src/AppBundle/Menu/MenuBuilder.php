@@ -3,6 +3,7 @@
 namespace App\AppBundle\Menu;
 
 use App\Entity\Patient;
+use App\Entity\PatientSMS;
 use App\Entity\Prescription;
 use App\Entity\Staff;
 use App\Repository\PatientTestingCounterRepository;
@@ -34,6 +35,9 @@ class MenuBuilder
      * @var EntityManagerInterface
      */
     private $entityManager;
+
+    /** @var string Параметр запроса */
+    const PATIENT_QUERY_PARAMETER = 'id';
 
     /**
      * @param FactoryInterface $factory
@@ -428,12 +432,16 @@ class MenuBuilder
                 'route' => 'adding_patient_by_doctor'
             ]
         );
+        $patientId = $this->getEntityId(self::PATIENT_QUERY_PARAMETER);
+        if ($this->isMenuForEntity(Patient::class, 'id')) {
         $menu->addChild(
-            'logout', [
-                'label' => 'Выйти',
-                'route' => 'logout_from_app'
+            'create_doctor_notification', [
+                'label' => 'Сообщение пациенту',
+                'route' => 'doctor_create_notification',
+                'routeParameters' => ['id' => $patientId]
             ]
         );
+        }
         return $menu;
     }
 
@@ -540,13 +548,23 @@ class MenuBuilder
             ]
         );
         if ($this->isMenuForEntity(Patient::class, 'id')) {
-            $patientId = $this->getEntityId('id');
+            $patientId = $this->getEntityId(self::PATIENT_QUERY_PARAMETER);
             $noProcessedTestingsCounter = $patientTestingCounterRepository
                 ->getNoProcessedTestingsCount($patientId);
             $plannedTestingsCounter = $patientTestingCounterRepository
                 ->getPlannedTestingsCount($patientId);
             $overdueTestingsCounter = $patientTestingCounterRepository
                 ->getOverdueTestingsCount($patientId);
+            $menu->addChild(
+                'patient', [
+                    'label' => '<strong>' . (new AuthUserInfoService())->getFIO(
+                            $this->entityManager->getRepository(Patient::class)->find($patientId)->getAuthUser(),
+                            true
+                        ) . '</strong>',
+                    'route' => 'doctor_medical_history',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
             $menu->addChild(
                 'patientTestings', [
                     'label' => $this->getLabelWithNotificationNumber(
@@ -599,6 +617,26 @@ class MenuBuilder
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
+            $menu->addChild(
+                'notifications_list', [
+                    'label' => 'Уведомления пациенту',
+                    'route' => 'notifications_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
+            $patientSmsCounter = $this->entityManager->getRepository(PatientSMS::class)
+                ->getPatientSMSMenu($patientId);
+            $menu->addChild(
+                'patient_sms_list', [
+                    'label' => $this->getLabelWithNotificationNumber(
+                        'Сообщения от пациента',
+                        $patientSmsCounter,
+                        'patientSMSCount'
+                    ),
+                    'route' => 'received_sms_from_patient_list',
+                    'routeParameters' => ['id' => $patientId]
+                ]
+            );
         }
         $this->activateStoringSelectedMenuItem($menu, $requestStack);
         if ((new AuthUserInfoService())->isDoctorConsultant($this->security->getUser())) {
@@ -615,12 +653,13 @@ class MenuBuilder
     /**
      * @param string $label
      * @param int $number
+     * @param string|null $customClasses
      * @return string
      */
-    private function getLabelWithNotificationNumber(string $label, int $number): string
+    private function getLabelWithNotificationNumber(string $label, int $number, string $customClasses = ""): string
     {
         return $number
-            ? $label . '<div class="notificationNumber">' . $number . '</div>'
+            ? $label . '<div class="notificationNumber '.$customClasses.'">' . $number . '</div>'
             : $label;
     }
 
@@ -647,7 +686,11 @@ class MenuBuilder
      */
     private function getEntityId(string $GETParameterKey): ?int
     {
-        return $this->container->get('request_stack')->getCurrentRequest()->get($GETParameterKey);
+        $entityId = $this->container->get('request_stack')->getCurrentRequest()->get($GETParameterKey);
+        if (is_object($entityId)) {
+            return $entityId->getId();
+        }
+        return $entityId;
     }
 
     /**

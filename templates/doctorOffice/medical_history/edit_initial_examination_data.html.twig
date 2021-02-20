@@ -23,16 +23,16 @@
                         <span class="label">{{ form_label(child) }}</span>
                         {% if child.vars.name == 'objectiveStatus' %}
                             <a href="{{ path(
-                                'doctor_edit_objective_data_objective_status_using_constructor',
-                                { 'id': entity.id }
+                                'doctor_edit_initial_examination_data_objective_status_using_constructor',
+                                { 'id': entity.medicalHistory.patient.id }
                             ) }}"
                                class="form-control"
                             >
                                 Собрать Объективный статус
                             </a>
                             <a href="{{ path(
-                                'doctor_edit_objective_data_objective_status_by_template',
-                                { 'id': entity.id }
+                                'doctor_edit_initial_examination_data_objective_status_by_template',
+                                { 'id': entity.medicalHistory.patient.id }
                             ) }}"
                                class="form-control">
                                 Выбрать из шаблона Объективный статус
@@ -47,12 +47,12 @@
                     <li>
                         <span class="label">{{ form_label(child) }}</span>
                             <a href="{{ path(
-                                'doctor_edit_anamnestic_data_anamnesis_of_life_using_constructor',
+                                'doctor_edit_initial_examination_data_anamnesis_of_life_using_constructor',
                                 { 'id': entity.medicalHistory.patient.id}
                             ) }}"
                                class="form-control">Собрать Анамнез жизни</a>
                             <a href="{{ path(
-                                'doctor_edit_anamnestic_data_anamnesis_of_life_by_template',
+                                'doctor_edit_initial_examination_data_anamnesis_of_life_by_template',
                                 { 'id': entity.medicalHistory.patient.id}
                             ) }}"
                                class="form-control"
