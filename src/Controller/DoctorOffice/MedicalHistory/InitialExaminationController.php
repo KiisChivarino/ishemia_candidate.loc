@@ -182,7 +182,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
         $this->templateService->setRedirectRoute(
             self::EDIT_OBJECTIVE_DATA_REDIRECT_ROUTE,
             [
-                'id' => $firstAppointment->getId()
+                'id' => $patient->getId()
             ]
         );
         return $this->responseEdit(
