@@ -442,12 +442,6 @@ class MenuBuilder
             ]
         );
         }
-        $menu->addChild(
-            'logout', [
-                'label' => 'Выйти',
-                'route' => 'logout_from_app'
-            ]
-        );
         return $menu;
     }
 

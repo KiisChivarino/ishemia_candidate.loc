@@ -17,13 +17,18 @@
             {{ knp_menu_render('doctorOfficeHeader') }}
             <div class="main-nav__search js-main-search">
                 <label>
-                    <input type="text" name="search" placeholder="Поиск">
+                    <input type="text" class="searchBox" name="search" placeholder="Поиск">
                 </label>
             </div>
-            <div class="main-nav__avatar avatar">
-                <div class="avatar__name"><span class="avatar__title">{{ fio(app.user, true) }}</span><span
-                            class="avatar__subtitle">{{ roleTitle(app.user) }}</span></div>
-                <div class="avatar__picture"><img src="" alt=""></div>
+            <div class="dropdown">
+                <div class="main-nav__avatar avatar ">
+                    <div class="avatar__name"><span class="avatar__title">{{ fio(app.user, true) }}</span><span
+                                class="avatar__subtitle">{{ roleTitle(app.user) }}</span></div>
+                    <div class="avatar__picture"><img src="" alt=""></div>
+                </div>
+                <div class="dropdown-content">
+                    <a href="{{ path('app_logout') }}">Выйти</a>
+                </div>
             </div>
         </nav>
     </header>
