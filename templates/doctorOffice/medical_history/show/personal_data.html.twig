@@ -1,0 +1,89 @@
+<div class="statement acc">
+    <h2 class="title accordion">{{ template.items.show.content.personalData }}</h2>
+    <div class="statement__wrapper panel">
+        <div class="statement__head">
+            <h3 class="subtitle">{{ template.items.show.content.personalData }}</h3>
+            <a class="back-page"
+               href="{{ path('doctor_edit_personal_data', {'id': entity.id}) }}">
+                <span class="statement__edit">{{ template.items.show.content.addPersonalData }}</span>
+            </a>
+        </div>
+        <div class="statement__content">
+            <div class="statement__info">
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.fio }}</p>
+                    <p>{{ fio(entity.AuthUser) }}</p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.age }}</p>
+                    <p>{{ age }}</p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.heartAttackDate }}</p>
+                    <p>{{ entity.heartAttackDate ? entity.heartAttackDate|date('d.m.Y') : '' }}</p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.address }}</p>
+                    <p>{{ entity.address }}</p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.insuranceNumber }}</p>
+                    <p>{{ entity.insuranceNumber }}</p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.snils }}</p>
+                    <p>{{ entity.snils }}</p>
+                </div>
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.phone }}</p>
+                    <p>{{ phone(entity.AuthUser) }}</p>
+                </div>
+                {% if(entity.AuthUser.email) %}
+                    <div class="statement__info-block">
+                        <p>{{ template.items.show.content.email }}</p>
+                        <p>{{ entity.AuthUser.email }}</p>
+                    </div>
+                {% endif %}
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.passport }}</p>
+                    <p>{{ entity.passport }}</p>
+                    {% if (entity.passportIssuingAuthority) %}
+                        <p>{{ entity.passportIssuingAuthority }} {{ entity.passportIssueDate|date('H:i:s') }} {{ entity.passportIssuingAuthorityCode }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statement__info">
+                <div class="statement__info-block">
+                    <ul>
+                        <li>
+                            <p>{{ template.items.show.content.weight }}</p>
+                            <p>{{ entity.weight }} кг</p>
+                        </li>
+                        <li>
+                            <p>{{ template.items.show.content.height }}</p>
+                            <p>{{ entity.height }} см</p>
+                        </li>
+                        <li><p>{{ template.items.show.content.imt }}</p>
+                            <p>{{ bodyMassIndex(entity) }}%</p>
+                        </li>
+                    </ul>
+                </div>
+                {% if (entity.smsInforming or entity.emailInforming) %}
+                    <div class="statement__info-block">
+                        <p>Информирование: </p>
+                        {% if(entity.smsInforming) %}
+                            <p>{{ template.items.show.content.bySms }}</p>
+                        {% endif %}
+                        {% if(entity.emailInforming) %}
+                            <p>{{ template.items.show.content.byEmail }}</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class="statement__info-block">
+                    <p>{{ template.items.show.content.hospital }}</p>
+                    <p>{{ entity.hospital.name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

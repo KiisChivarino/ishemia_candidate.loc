@@ -1,9 +1,0 @@
-{% extends 'doctorOffice/index.html.twig' %}
-{% block title %}{{ template.items.edit.content.objective_title }}{% endblock %}
-{% block content %}
-    <h2>Конструктор объективный статус</h2>
-    {% include (template.templatePath~'content_wrapper_top.html.twig') %}
-    <div class="adm-users-edit">
-        {{ include(template.items.form.path~'_form.html.twig') }}
-    </div>
-{% endblock %}

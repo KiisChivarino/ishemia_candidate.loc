@@ -23,11 +23,18 @@ class CreateNewPatientTemplate extends DoctorOfficeTemplateBuilder
     ];
     public const FORM_CONTENT = [
         'inputMainDisease' => 'Свое название основного заболевания',
+        'MKBCodePlaceholder' => 'Выберите код МКБ',
     ];
 
     /** @var string[] Common ENTITY_CONTENT */
     public const ENTITY_CONTENT = [
         'entity' => PatientTemplate::ENTITY_CONTENT['entity'],
+    ];
+
+    /** @var string[] Common COMMON_CONTENT */
+    protected const COMMON_CONTENT = [
+        'text' => 'Текст клинического диагноза',
+        'MKBCode' => 'Код клинического диагноза',
     ];
 
     /**

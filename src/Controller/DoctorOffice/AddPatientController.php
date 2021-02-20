@@ -2,8 +2,10 @@
 
 namespace App\Controller\DoctorOffice;
 
+use App\Entity\ClinicalDiagnosis;
 use App\Form\Admin\AuthUser\AuthUserRequiredType;
-use App\Form\Admin\MedicalHistory\MainDiseaseType;
+use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
+use App\Form\Admin\Patient\PatientMKBCodeType;
 use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Repository\StaffRepository;
@@ -97,16 +99,20 @@ class AddPatientController extends DoctorOfficeAbstractController
             $isDoctorHospital = true;
         }
 
-        $medicalHistory = $medicalHistoryCreatorService->createMedicalHistory();
+        $clinicalDiagnosis = new ClinicalDiagnosis();
+        $medicalHistory = $medicalHistoryCreatorService->createMedicalHistory()->setClinicalDiagnosis($clinicalDiagnosis);
         $firstPatientAppointment = $patientAppointmentCreatorService->createPatientAppointment($medicalHistory);
+        $clinicalDiagnosis->setEnabled(true);
         return $this->responseNewMultiForm(
             $request,
             $patient,
             [
                 new FormData($patientAuthUser, AuthUserRequiredType::class),
                 new FormData($patient, PatientRequiredType::class, [self::IS_DOCTOR_HOSPITAL => $isDoctorHospital ?? null]),
-                new FormData($medicalHistory, MainDiseaseType::class),
+                new FormData($clinicalDiagnosis, PatientClinicalDiagnosisTextType::class),
+                new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
                 new FormData($firstPatientAppointment, AppointmentTypeType::class),
+
             ],
             function (EntityActions $actions)
             use (
@@ -116,7 +122,8 @@ class AddPatientController extends DoctorOfficeAbstractController
                 $firstPatientAppointment,
                 $staff,
                 $patientCreator,
-                $authUserCreatorService
+                $authUserCreatorService,
+                $clinicalDiagnosis
             ) {
                 $em = $actions->getEntityManager();
                 $em->getConnection()->beginTransaction();
@@ -125,6 +132,7 @@ class AddPatientController extends DoctorOfficeAbstractController
                     $em->flush();
                     $patientCreator
                         ->persistNewPatient($patient, $patientAuthUser, $medicalHistory, $firstPatientAppointment, $staff);
+                    $em->persist($clinicalDiagnosis);
                     $em->flush();
                     $em->getConnection()->commit();
                 } catch (Exception $e) {

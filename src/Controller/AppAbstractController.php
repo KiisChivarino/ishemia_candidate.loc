@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\Template\TemplateService;
@@ -60,7 +59,7 @@ abstract class AppAbstractController extends AbstractController
     protected const RESPONSE_FORM_TYPE_EDIT = 'edit';
 
     /** @var TranslatorInterface */
-    private $translator;
+    protected $translator;
 
     public function __construct(TranslatorInterface $translator)
     {
@@ -100,7 +99,7 @@ abstract class AppAbstractController extends AbstractController
      * Отображает шаблон вывода списка элементов с использованием datatable
      *
      * @param Request $request
-     * @param AdminDatatableService $dataTableService
+     * @param $dataTableService
      * @param FilterLabels|null $filterLabels
      * @param array|null $options
      * @param Closure|null $listActions
@@ -108,7 +107,7 @@ abstract class AppAbstractController extends AbstractController
      */
     public function responseList(
         Request $request,
-        AdminDatatableService $dataTableService,
+        $dataTableService,
         ?FilterLabels $filterLabels = null,
         ?array $options = [],
         ?Closure $listActions = null
@@ -524,4 +523,30 @@ abstract class AppAbstractController extends AbstractController
         $this->addFlash('success', $this->translator->trans('app_controller.success.success_delete'));
         return $this->redirectToRoute($this->templateService->getRoute('list'));
     }
+
+    /**
+     * Render form before submit
+     * @param string $formName
+     * @param $entity
+     * @param $form
+     * @return Response
+     * @throws Exception
+     */
+    protected function renderForm(string $formName, $entity, $form): Response
+    {
+        return $this->render(
+            $this->templateService->getTemplateFullName(
+                $formName,
+                $this->getParameter('kernel.project_dir')),
+            [
+                'entity' => $entity,
+                'form' => $form->createView(),
+                'filters' =>
+                    $this->templateService
+                        ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                        ->getFiltersViews(),
+            ]
+        );
+    }
+
 }

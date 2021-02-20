@@ -38,7 +38,7 @@ class PatientTesting
     private $analysisDate;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Статус наличия результатов", "default"=false})
+     * @ORM\Column(type="boolean", options={"comment"="Статус наличия результатов анализов", "default"=false})
      */
     private $hasResult = false;
 
@@ -403,9 +403,9 @@ class PatientTesting
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getHasResult(): ?bool
+    public function getHasResult(): bool
     {
         return $this->hasResult;
     }
@@ -417,7 +417,6 @@ class PatientTesting
     public function setHasResult(bool $hasResult): self
     {
         $this->hasResult = $hasResult;
-
         return $this;
     }
 }
