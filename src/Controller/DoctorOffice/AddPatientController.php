@@ -110,8 +110,8 @@ class AddPatientController extends DoctorOfficeAbstractController
                 new FormData($patientAuthUser, AuthUserRequiredType::class),
                 new FormData($patient, PatientRequiredType::class, [self::IS_DOCTOR_HOSPITAL => $isDoctorHospital ?? null]),
                 new FormData($clinicalDiagnosis, PatientClinicalDiagnosisTextType::class),
-                new FormData($firstPatientAppointment, AppointmentTypeType::class),
                 new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
+                new FormData($firstPatientAppointment, AppointmentTypeType::class),
 
             ],
             function (EntityActions $actions)
