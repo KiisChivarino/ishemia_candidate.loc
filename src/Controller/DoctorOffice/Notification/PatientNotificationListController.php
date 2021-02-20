@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller\DoctorOffice;
+namespace App\Controller\DoctorOffice\Notification;
 
+use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientNotificationListDataTableService;
@@ -25,6 +26,7 @@ use Twig\Environment;
  */
 class PatientNotificationListController extends DoctorOfficeAbstractController
 {
+    /** @var string Путь к папке twig шаблонов */
     const TEMPLATE_PATH = 'doctorOffice/notifications_list/';
 
     /**

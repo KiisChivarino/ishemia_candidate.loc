@@ -432,7 +432,7 @@ class MenuBuilder
         $patientId = $this->getEntityId('id');
         if ($this->isMenuForEntity(Patient::class, 'id')) {
         $menu->addChild(
-            'doctor_create_notification', [
+            'create_doctor_notification', [
                 'label' => 'Сообщение пациенту',
                 'route' => 'doctor_create_notification',
                 'routeParameters' => ['id' => $patientId]
@@ -567,7 +567,7 @@ class MenuBuilder
                     'route' => 'doctor_medical_history',
                     'routeParameters' => ['id' => $patientId]
                 ]
-            )->setAttributes(['class' => 'jbffasjfasjfba']);
+            );
             $menu->addChild(
                 'patientTestings', [
                     'label' => $this->getLabelWithNotificationNumber(
@@ -622,7 +622,7 @@ class MenuBuilder
             );
             $menu->addChild(
                 'notifications_list', [
-                    'label' => 'Уведомления пациента',
+                    'label' => 'Уведомления пациенту',
                     'route' => 'notifications_list',
                     'routeParameters' => ['id' => $patientId]
                 ]

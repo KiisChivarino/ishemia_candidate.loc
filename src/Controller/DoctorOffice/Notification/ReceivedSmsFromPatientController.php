@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Controller\DoctorOffice;
+namespace App\Controller\DoctorOffice\Notification;
 
+use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
-use App\Form\Admin\PatientSMSType;
-use App\Repository\PatientSMSRepository;
+use App\Entity\PatientSMS;
 use App\Services\DataTable\DoctorOffice\ReceivedSmsFromPatientDataTableService;
-use App\Services\FilterService\FilterService;
 use App\Services\LoggerService\LogService;
 use App\Services\TemplateBuilders\DoctorOffice\ReceivedSmsFromPatientTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -27,7 +26,9 @@ use Twig\Environment;
  */
 class ReceivedSmsFromPatientController extends DoctorOfficeAbstractController
 {
+    /** @var string Путь к twig шаблонам */
     const TEMPLATE_PATH = 'doctorOffice/received_sms_from_patient/';
+
     /**
      * @var LogService
      */
@@ -41,12 +42,18 @@ class ReceivedSmsFromPatientController extends DoctorOfficeAbstractController
      * @param TranslatorInterface $translator
      * @param LogService $logService
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator, LogService $logService)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        LogService $logService
+    )
     {
         parent::__construct($translator);
         $this->templateService = new ReceivedSmsFromPatientTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
         $this->logger = $logService;
+        $this->translator = $translator;
     }
 
     /**
@@ -56,14 +63,12 @@ class ReceivedSmsFromPatientController extends DoctorOfficeAbstractController
      * @param Request $request
      * @param Patient $patient
      * @param ReceivedSmsFromPatientDataTableService $dataTableService
-     * @param FilterService $filterService
      * @return Response
      */
     public function list(
         Request $request,
         Patient $patient,
-        ReceivedSmsFromPatientDataTableService $dataTableService,
-        FilterService $filterService
+        ReceivedSmsFromPatientDataTableService $dataTableService
     ): Response
     {
         return $this->responseList(
@@ -75,35 +80,14 @@ class ReceivedSmsFromPatientController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Edit sms
-     * @Route("/patient/{id}/received_sms_from_patient/edit", name="received_sms_from_patient_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
-     * @param Patient $patient
-     * @param Request $request
-     * @param PatientSMSRepository $patientSMSRepository
-     * @return Response
-     * @throws \Exception
-     */
-    public function edit(Patient $patient, Request $request, PatientSMSRepository $patientSMSRepository): Response
-    {
-        $patientSMS= $patientSMSRepository->find($request->query->get('patientSmsId'));
-        $this->templateService->setRedirectRoute(
-            'received_sms_from_patient_list',
-            ['id' => $patient->getId()]
-        );
-        return $this->responseEdit($request, $patientSMS, PatientSMSType::class);
-    }
-
-    /**
-     * Edit sms
-     * @Route("/process_sms/{id}/", name="process_sms_api", methods={"GET"}, requirements={"patientSmsId"="\d+"})
-     * @param $id
-     * @param PatientSMSRepository $patientSMSRepository
+     * Process sms vie ajax
+     * @Route("/process_sms/{patientSMS}/", name="process_sms_api", methods={"GET"}, requirements={"patientSMS"="\d+"})
+     * @param PatientSMS $patientSMS
      * @return Response
      */
-    public function processSMS($id, PatientSMSRepository $patientSMSRepository): Response
+    public function processSMS(PatientSMS $patientSMS): Response
     {
-        $patientSMS = $patientSMSRepository->find($id);
-        if(is_null($patientSMS)) {
+        if (!is_object($patientSMS)) {
             return new JsonResponse(['code' => 400]);
         }
         if ($patientSMS->getIsProcessed()) {
@@ -113,7 +97,15 @@ class ReceivedSmsFromPatientController extends DoctorOfficeAbstractController
         $patientSMS->setIsProcessed(true);
         $this->logger
             ->setUser($this->getUser())
-            ->setDescription('Запись - СМС пациента id: '. $patientSMS->getId() .' обновлена.')
+            ->setDescription(
+                $this->translator->trans(
+                    'log.update.entity',
+                    [
+                        '%entity%' => 'СМС пациента',
+                        '%id%' => $patientSMS->getId(),
+                    ]
+                )
+            )
             ->logUpdateEvent();
         $em->flush();
         return new JsonResponse(['code' => 200]);

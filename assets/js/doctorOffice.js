@@ -111,8 +111,9 @@ function changeMenuPatientSmsCount() {
 }
 // Подтверждение СМС пациента
 $(document).on("click", ".processPatientSMS", function(){
-    // Формируем ссылку для апи обработки сообщений пвциента на основе атрибута data-id в таблице пацента
-    var request = $(this).attr('data-href');
+    const dt = $("#dt");
+    // Формируем ссылку для api обработки сообщений пациента на основе атрибута data-id в таблице пациента
+    let request = $(this).attr('data-href');
     // Свал для подтверждения врачом, что он уверен, что хочет обработаь сообщение ппациента
     swal.fire({
         text: 'Подвердите обработку сообщения от пациента: ' + $(this).attr('data-name'),
@@ -145,13 +146,13 @@ $(document).on("click", ".processPatientSMS", function(){
             case 200:
                 swal.fire('Успешно!', 'Уведомление пацеинта: ' + $(this).attr('data-name') + ' помечано прочитанным!', 'success')
                 // Обновляем таблицу
-                $("#dt").DataTable().ajax.reload();
+                dt.DataTable().ajax.reload();
                 // Уменьшаем на 1 количество уведомлений в меню
                 changeMenuPatientSmsCount()
                 break;
             case 300:
-                swal.fire('Ошибочка вышла!', 'Уведомление пацеинта: ' + $(this).attr('data-name') + ' уже подтвердил кто-то другой!', 'warning')
-                $("#dt").DataTable().ajax.reload();
+                swal.fire('Ошибка!', 'Уведомление пацеинта: ' + $(this).attr('data-name') + ' уже подтвердил кто-то другой!', 'warning')
+                dt.DataTable().ajax.reload();
                 changeMenuPatientSmsCount()
                 break;
             default:
@@ -160,7 +161,7 @@ $(document).on("click", ".processPatientSMS", function(){
                     title: `Упс!`,
                     text: 'Что-то пошло не так... Попробуйте еще раз.',
                 })
-                $("#dt").DataTable().ajax.reload();
+                dt.DataTable().ajax.reload();
                 break;
         }
     })

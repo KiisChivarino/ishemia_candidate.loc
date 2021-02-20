@@ -59,7 +59,7 @@ abstract class AppAbstractController extends AbstractController
     protected const RESPONSE_FORM_TYPE_EDIT = 'edit';
 
     /** @var TranslatorInterface */
-    private $translator;
+    protected $translator;
 
     public function __construct(TranslatorInterface $translator)
     {
