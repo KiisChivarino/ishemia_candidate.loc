@@ -175,7 +175,6 @@ abstract class AppAbstractController extends AbstractController
     {
         $this->templateService->show($entity);
         $parameters['entity'] = $entity;
-//        $this->addFlash('success', $this->translator->trans('app_controller.success.success_post'));
         return $this->render($templatePath . 'show.html.twig', $parameters);
     }
 
