@@ -4,7 +4,7 @@
         <div class="statement__head">
             <h3 class="subtitle">{{ template.items.show.content.objectiveData }}</h3>
             <a class="back-page"
-               href="{{ path('edit_initial_examination_data', {'id': firstAppointment.id}) }}">
+               href="{{ path('edit_initial_examination_data', {'id': medicalHistory.patient.id}) }}">
                 <span class="statement__edit">{{ template.items.show.content.addObjectiveData }}</span>
             </a>
         </div>
