@@ -50,7 +50,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.recommendation }}</span>
-        <p>{{ entity.recommendation }}</p>
+        <p>{{ entity.recommendation|raw }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complaints }}</span>
@@ -64,7 +64,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complaintsComment }}</span>
-        <p>{{ entity.complaintsComment }}</p>
+        <p>{{ entity.complaintsComment|raw }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.objectiveStatus }}</span>
@@ -72,6 +72,6 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.therapy }}</span>
-        <p>{{ entity.therapy }}</p>
+        <p>{{ entity.therapy|raw }}</p>
     </li>
 {% endblock %}
