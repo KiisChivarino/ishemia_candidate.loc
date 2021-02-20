@@ -2,7 +2,7 @@
 {% block content %}
     <div class="adm-users-edit">
         <h2>{{ template.items.new.content.h1 }}</h2>
-        {{ include('custom-flashmessages-warning-only.html.twig') }}
+        {{ include('flashmessages.html.twig') }}
         {% if template.items.filter.isEnabled %}
             {{ include(template.items.filter.path~'_filter_form.html.twig') }}
         {% endif %}
