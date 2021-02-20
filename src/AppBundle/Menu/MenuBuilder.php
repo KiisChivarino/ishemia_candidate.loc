@@ -36,6 +36,9 @@ class MenuBuilder
      */
     private $entityManager;
 
+    /** @var string Параметр запроса */
+    const PATIENT_QUERY_PARAMETER = 'id';
+
     /**
      * @param FactoryInterface $factory
      * @param ContainerInterface $container
@@ -429,7 +432,7 @@ class MenuBuilder
                 'route' => 'adding_patient_by_doctor'
             ]
         );
-        $patientId = $this->getEntityId('id');
+        $patientId = $this->getEntityId(self::PATIENT_QUERY_PARAMETER);
         if ($this->isMenuForEntity(Patient::class, 'id')) {
         $menu->addChild(
             'create_doctor_notification', [
@@ -551,7 +554,7 @@ class MenuBuilder
             ]
         );
         if ($this->isMenuForEntity(Patient::class, 'id')) {
-            $patientId = $this->getEntityId('id');
+            $patientId = $this->getEntityId(self::PATIENT_QUERY_PARAMETER);
             $noProcessedTestingsCounter = $patientTestingCounterRepository
                 ->getNoProcessedTestingsCount($patientId);
             $plannedTestingsCounter = $patientTestingCounterRepository

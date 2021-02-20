@@ -117,7 +117,7 @@ class ReceivedSmsFromPatientDataTableService extends AdminDatatableService
                     'render' => function (string $data, PatientSMS $patientSMS) {
                         return !$patientSMS->getIsProcessed() ?
                             '<button 
-                            data-href="'. $this->router->generate('process_sms_api', ['patientSMS' => $patientSMS->getId()]) . '" 
+                            data-href="'. $this->router->generate('process_sms_api', ['patientSmsId' => $patientSMS->getId()]) . '" 
                             data-name="'.(new AuthUserInfoService())
                                 ->getFIO($patientSMS->getPatient()->getAuthUser(), true).'" 
                             class="button main-button processPatientSMS">Прочитано</button>' : "";

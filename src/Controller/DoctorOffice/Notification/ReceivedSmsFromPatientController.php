@@ -4,7 +4,7 @@ namespace App\Controller\DoctorOffice\Notification;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
-use App\Entity\PatientSMS;
+use App\Repository\PatientSMSRepository;
 use App\Services\DataTable\DoctorOffice\ReceivedSmsFromPatientDataTableService;
 use App\Services\LoggerService\LogService;
 use App\Services\TemplateBuilders\DoctorOffice\ReceivedSmsFromPatientTemplate;
@@ -81,13 +81,15 @@ class ReceivedSmsFromPatientController extends DoctorOfficeAbstractController
 
     /**
      * Process sms vie ajax
-     * @Route("/process_sms/{patientSMS}/", name="process_sms_api", methods={"GET"}, requirements={"patientSMS"="\d+"})
-     * @param PatientSMS $patientSMS
+     * @Route("/process_sms/{patientSmsId}/", name="process_sms_api", methods={"GET"})
+     * @param $patientSmsId
+     * @param PatientSMSRepository $patientSMSRepository
      * @return Response
      */
-    public function processSMS(PatientSMS $patientSMS): Response
+    public function processSMS($patientSmsId, PatientSMSRepository $patientSMSRepository): Response
     {
-        if (!is_object($patientSMS)) {
+        $patientSMS = $patientSMSRepository->find((int) $patientSmsId);
+        if (is_null($patientSMS)) {
             return new JsonResponse(['code' => 400]);
         }
         if ($patientSMS->getIsProcessed()) {

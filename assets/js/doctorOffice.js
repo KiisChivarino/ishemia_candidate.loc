@@ -111,7 +111,7 @@ function changeMenuPatientSmsCount() {
 }
 // Подтверждение СМС пациента
 $(document).on("click", ".processPatientSMS", function(){
-    const dt = $("#dt");
+    let dtSelector = "#dt";
     // Формируем ссылку для api обработки сообщений пациента на основе атрибута data-id в таблице пациента
     let request = $(this).attr('data-href');
     // Свал для подтверждения врачом, что он уверен, что хочет обработаь сообщение ппациента
@@ -134,9 +134,12 @@ $(document).on("click", ".processPatientSMS", function(){
                     return response.json()
                 })
                 .catch(error => {
-                    swal.showValidationMessage(
-                        `Упс! Что-то пошло не так...`
-                    )
+                    swal.fire({
+                        icon: 'error',
+                        title: `Упс!`,
+                        text: 'Что-то пошло не так... Попробуйте еще раз.',
+                    })
+                    $(dtSelector).DataTable().ajax.reload();
                 })
         },
         allowOutsideClick: () => !swal.isLoading()
@@ -146,13 +149,13 @@ $(document).on("click", ".processPatientSMS", function(){
             case 200:
                 swal.fire('Успешно!', 'Уведомление пацеинта: ' + $(this).attr('data-name') + ' помечано прочитанным!', 'success')
                 // Обновляем таблицу
-                dt.DataTable().ajax.reload();
+                $(dtSelector).DataTable().ajax.reload();
                 // Уменьшаем на 1 количество уведомлений в меню
                 changeMenuPatientSmsCount()
                 break;
             case 300:
                 swal.fire('Ошибка!', 'Уведомление пацеинта: ' + $(this).attr('data-name') + ' уже подтвердил кто-то другой!', 'warning')
-                dt.DataTable().ajax.reload();
+                $(dtSelector).DataTable().ajax.reload();
                 changeMenuPatientSmsCount()
                 break;
             default:
@@ -161,7 +164,7 @@ $(document).on("click", ".processPatientSMS", function(){
                     title: `Упс!`,
                     text: 'Что-то пошло не так... Попробуйте еще раз.',
                 })
-                dt.DataTable().ajax.reload();
+                $(dtSelector).DataTable().ajax.reload();
                 break;
         }
     })
