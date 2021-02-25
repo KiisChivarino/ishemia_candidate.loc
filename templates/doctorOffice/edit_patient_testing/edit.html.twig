@@ -10,13 +10,18 @@
                 {% if template.items.list.isEnabled %}
                     <a
                             class="back-page"
-                            href="{{ path('doctor_medical_history', {id: entity.medicalHistory.patient.id}) }}"
+                            href="{{
+                            path('doctor_medical_history',
+                                {id: entity.medicalHistory.patient.id})
+                            }}"
                     >История болезни</a>
                 {% endif %}
             </li>
         </ul>
     </div>
     <div class="adm-users-edit">
-        {{ include( template.items.form.path~'_form_patient_testing.html.twig') }}
+        {{ include(
+            constant('App\\Controller\\DoctorOffice\\EditPatientTestingController::TEMPLATE_PATH')
+            ~'_form_patient_testing.html.twig') }}
     </div>
 {% endblock %}

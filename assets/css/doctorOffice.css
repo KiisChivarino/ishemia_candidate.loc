@@ -47,3 +47,62 @@
     align-self: center;
     height: 20px;
 }
+/* Убирает баг в кабинете врача, чтобы меню не отодвигалась на полстраницы */
+.sidebar__sublist {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+/* Делает линки в саблисте жирными */
+.sublist > a {
+    font-weight: bold;
+}
+
+.dropdown {
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    margin-left: 40px;
+    margin-top: 17px;
+    display: none;
+    background-color: #1962ad;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 15px 20px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #256ab1
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+.searchBox {
+    width: 140px;
+    cursor: pointer;
+}
+
+.searchBox:focus {
+    width: 100%;
+    cursor: text;
+    outline: none;
+}
+
+@media only screen and (max-width: 1245px) {
+    .avatar__subtitle {
+        display: none;
+    }
+}
+

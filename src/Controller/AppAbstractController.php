@@ -8,7 +8,6 @@ use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\EntityActions\EntityActionsInterface;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\MultiFormService;
@@ -83,12 +82,12 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function renderTableActions(): Closure
     {
-        return function ($value) {
+        return function ($value, $options) {
             return $this->render(
                 $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
                 [
-                    'rowId' => $value,
-                    'template' => $this->templateService
+                    'template' => $this->templateService,
+                    'parameters' => array_merge(['id' => $value], is_array($options) ? $options : [])
                 ]
             )->getContent();
         };
@@ -109,7 +108,7 @@ abstract class AppAbstractController extends AbstractController
      * Отображает шаблон вывода списка элементов с использованием datatable
      *
      * @param Request $request
-     * @param AdminDatatableService $dataTableService
+     * @param $dataTableService
      * @param FilterLabels|null $filterLabels
      * @param array|null $options
      * @param Closure|null $listActions
@@ -118,7 +117,7 @@ abstract class AppAbstractController extends AbstractController
      */
     public function responseList(
         Request $request,
-        AdminDatatableService $dataTableService,
+        $dataTableService,
         ?FilterLabels $filterLabels = null,
         ?array $options = [],
         ?Closure $listActions = null
@@ -362,7 +361,7 @@ abstract class AppAbstractController extends AbstractController
      * @param $entity
      * @return Response|void
      */
-    protected function flush($form, $formTemplateName, $entity)
+    protected function flush($form, $formTemplateName, $entity): Response
     {
         try {
             $this->getDoctrine()->getManager()->flush();

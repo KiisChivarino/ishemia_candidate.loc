@@ -37,6 +37,16 @@
         </div>
         {{ form_widget(form.patientTestingNotRequired.analysisDate) }}
     </li>
+    {% if form.patientTestingNotRequired.resultData %}
+    <li>
+        <span class="title">{{ form_label(form.patientTestingNotRequired.resultData) }}</span>
+        <small>{{ form_help(form) }}</small>
+        <div class="form-error">
+            {{ form_errors(form) }}
+        </div>
+        {{ form_widget(form.patientTestingNotRequired.resultData) }}
+    </li>
+    {% endif %}
     {% do form.patientTestingNotRequired.setRendered %}
 </ul>
 <div class="table-wrapper table-history">

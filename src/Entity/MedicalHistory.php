@@ -7,7 +7,6 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinTable;
 
 /**
  * @ORM\Entity(repositoryClass=MedicalHistoryRepository::class)
@@ -37,33 +36,6 @@ class MedicalHistory
      * @ORM\Column(type="date", nullable=true, options={"comment"="Дата закрытия"})
      */
     private $dateEnd;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Diagnosis::class)
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $mainDisease;
-
-    /**
-     * Фоновые заболевания
-     * @ORM\ManyToMany(targetEntity=Diagnosis::class)
-     * @JoinTable(name="background_diseases")
-     */
-    private $backgroundDiseases;
-
-    /**
-     * Осложнения основного заболевания
-     * @ORM\ManyToMany(targetEntity=Diagnosis::class)
-     * @JoinTable(name="complications")
-     */
-    private $complications;
-
-    /**
-     * Сопутствующие заболевания
-     * @ORM\ManyToMany(targetEntity=Diagnosis::class)
-     * @JoinTable(name="concomitant_diseases")
-     */
-    private $concomitantDiseases;
 
     /**
      * @ORM\Column(type="text", nullable=true, options={"comment"="Анамнез болезни"})
@@ -107,11 +79,6 @@ class MedicalHistory
     private $patientDischargeEpicrisis;
 
     /**
-     * @ORM\Column(type="text", options={"comment"="Клинический диагноз"})
-     */
-    private $clinicalDiagnosis;
-
-    /**
      * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalHistory", orphanRemoval=true,cascade={"persist"})
      */
     private $patientNotifications;
@@ -122,6 +89,11 @@ class MedicalHistory
     private $patientMedicines;
 
     /**
+     * @ORM\ManyToOne(targetEntity=ClinicalDiagnosis::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $clinicalDiagnosis;
+    /**
      * MedicalHistory constructor.
      */
     public function __construct()
@@ -130,9 +102,6 @@ class MedicalHistory
         $this->prescriptions = new ArrayCollection();
         $this->patientTestings = new ArrayCollection();
         $this->patientAppointments = new ArrayCollection();
-        $this->backgroundDiseases = new ArrayCollection();
-        $this->complications = new ArrayCollection();
-        $this->concomitantDiseases = new ArrayCollection();
         $this->patientMedicines = new ArrayCollection();
         $this->patientNotifications = new ArrayCollection();
     }
@@ -379,127 +348,6 @@ class MedicalHistory
     }
 
     /**
-     * @return Diagnosis|null
-     */
-    public function getMainDisease(): ?Diagnosis
-    {
-        return $this->mainDisease;
-    }
-
-    /**
-     * @param Diagnosis|null $MainDisease
-     *
-     * @return $this
-     */
-    public function setMainDisease(?Diagnosis $MainDisease): self
-    {
-        $this->mainDisease = $MainDisease;
-        return $this;
-    }
-
-    /**
-     * @return Collection|Diagnosis[]
-     */
-    public function getBackgroundDiseases(): Collection
-    {
-        return $this->backgroundDiseases;
-    }
-
-    /**
-     * @param Diagnosis $backgroundDisease
-     *
-     * @return $this
-     */
-    public function addBackgroundDisease(Diagnosis $backgroundDisease): self
-    {
-        if (!$this->backgroundDiseases->contains($backgroundDisease)) {
-            $this->backgroundDiseases[] = $backgroundDisease;
-        }
-        return $this;
-    }
-
-    /**
-     * @param Diagnosis $backgroundDisease
-     *
-     * @return $this
-     */
-    public function removeBackgroundDisease(Diagnosis $backgroundDisease): self
-    {
-        if ($this->backgroundDiseases->contains($backgroundDisease)) {
-            $this->backgroundDiseases->removeElement($backgroundDisease);
-        }
-        return $this;
-    }
-
-    /**
-     * @return Collection|Diagnosis[]
-     */
-    public function getComplications(): Collection
-    {
-        return $this->complications;
-    }
-
-    /**
-     * @param Diagnosis $complication
-     *
-     * @return $this
-     */
-    public function addComplication(Diagnosis $complication): self
-    {
-        if (!$this->complications->contains($complication)) {
-            $this->complications[] = $complication;
-        }
-        return $this;
-    }
-
-    /**
-     * @param Diagnosis $complication
-     *
-     * @return $this
-     */
-    public function removeComplication(Diagnosis $complication): self
-    {
-        if ($this->complications->contains($complication)) {
-            $this->complications->removeElement($complication);
-        }
-        return $this;
-    }
-
-    /**
-     * @return Collection|Diagnosis[]
-     */
-    public function getConcomitantDiseases(): Collection
-    {
-        return $this->concomitantDiseases;
-    }
-
-    /**
-     * @param Diagnosis $concomitantDisease
-     *
-     * @return $this
-     */
-    public function addConcomitantDisease(Diagnosis $concomitantDisease): self
-    {
-        if (!$this->concomitantDiseases->contains($concomitantDisease)) {
-            $this->concomitantDiseases[] = $concomitantDisease;
-        }
-        return $this;
-    }
-
-    /**
-     * @param Diagnosis $concomitantDisease
-     *
-     * @return $this
-     */
-    public function removeConcomitantDisease(Diagnosis $concomitantDisease): self
-    {
-        if ($this->concomitantDiseases->contains($concomitantDisease)) {
-            $this->concomitantDiseases->removeElement($concomitantDisease);
-        }
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getDiseaseHistory(): ?string
@@ -560,24 +408,6 @@ class MedicalHistory
     }
 
     /**
-     * @return string|null
-     */
-    public function getClinicalDiagnosis(): ?string
-    {
-        return $this->clinicalDiagnosis;
-    }
-
-    /**
-     * @param string $clinicalDiagnosis
-     * @return $this
-     */
-    public function setClinicalDiagnosis(string $clinicalDiagnosis): self
-    {
-        $this->clinicalDiagnosis = $clinicalDiagnosis;
-        return $this;
-    }
-
-    /**
      * @return Collection|PatientNotification[]
      */
     public function getPatientNotifications(): Collection
@@ -611,7 +441,6 @@ class MedicalHistory
                 $patientNotification->setMedicalHistory(null);
             }
         }
-
         return $this;
     }
 
@@ -648,6 +477,24 @@ class MedicalHistory
                 $patientMedicine->setMedicalHistory(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return ClinicalDiagnosis
+     */
+    public function getClinicalDiagnosis(): ClinicalDiagnosis
+    {
+        return $this->clinicalDiagnosis;
+    }
+
+    /**
+     * @param ClinicalDiagnosis|null $clinicalDiagnosis
+     * @return $this
+     */
+    public function setClinicalDiagnosis(?ClinicalDiagnosis $clinicalDiagnosis): self
+    {
+        $this->clinicalDiagnosis = $clinicalDiagnosis;
         return $this;
     }
 }

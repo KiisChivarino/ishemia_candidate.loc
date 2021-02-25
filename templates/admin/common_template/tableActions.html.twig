@@ -2,21 +2,21 @@
     <div class="table-wrapper__operation-icons">
         {% if template.items.show.isEnabled %}
             <span>
-                <a href="{{ path(template.routes.show, {'id': rowId}) }}"><img
+                <a href="{{ path(template.routes.show, parameters) }}"><img
                             src="{{ asset('build/images/operation-icon-1.svg') }}" alt=""></a>
             </span>
         {% endif %}
         {% if template.items.edit.isEnabled %}
             <span>
-                <a href="{{ path(template.routes.edit, {'id': rowId}) }}"><img
+                <a href="{{ path(template.routes.edit, parameters) }}"><img
                             src="{{ asset('build/images/operation-icon-2.svg') }}" alt=""></a>
             </span>
         {% endif %}
         {% if template.items.delete.isEnabled %}
-            <form method="post" action="{{ path(template.routes.delete, {'id': rowId}) }}" style="display: inline;"
+            <form method="post" action="{{ path(template.routes.delete, parameters) }}" style="display: inline;"
                   onsubmit="return confirm('{{ template.items.tableActions.content.deleteConfirm }}');">
                 <input type="hidden" name="_method" value="DELETE">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rowId) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parameters.id) }}">
                 <button type="submit" class="btn btn-danger btn-flat"
                         style="border: none; outline: none; background-color: inherit; margin: 0; padding: 0;"><img
                             src="{{ asset('build/images/operation-icon-3.svg') }}" alt=""></button>

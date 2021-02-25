@@ -23,4 +23,20 @@ class PatientSMSRepository extends AppRepository
     {
         parent::__construct($registry, PatientSMS::class);
     }
+
+    /**
+     * Gets overdue testings
+     * @param $patientId
+     * @return int|mixed|string
+     */
+    public function getPatientSMSMenu($patientId)
+    {
+        return sizeof($this->createQueryBuilder('pS')
+            ->leftJoin('pS.patient', 'p')
+            ->andWhere('p.id = :patientId')
+            ->andWhere('pS.isProcessed = false')
+            ->setParameter('patientId', $patientId)
+            ->getQuery()
+            ->getResult());
+    }
 }

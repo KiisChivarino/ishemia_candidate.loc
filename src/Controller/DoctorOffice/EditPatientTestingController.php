@@ -14,6 +14,7 @@ use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\EditPatientTestingTemplate;
 use Exception;
 use ReflectionException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,8 +22,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+
 /**
  * Class EditPatientTestingController
+ * @Route("/doctor_office")
+ * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice
  */
 class EditPatientTestingController extends DoctorOfficeAbstractController
@@ -48,13 +52,14 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Edit patient testing for first data of new medicalHistory
      * @Route(
-     *     "/{id}/edit_patient_testing",
+     *     "patient/{patient}/patient_testing/{patientTesting}/edit",
      *     name="doctor_edit_patient_testing",
      *     methods={"GET","POST"},
-     *     requirements={"id"="\d+"}
+     *     requirements={"patient"="\d+", "patientTesting"="\d+"}
      *     )
-     * @param Request $request \
+     * @param Request $request
      * @param PatientTesting $patientTesting
      * @param FileService $fileService
      * @param PatientTestingResultRepository $patientTestingResultRepository

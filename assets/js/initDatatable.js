@@ -22,6 +22,13 @@ function initCustomDataTables(datatableElement) {
                     cell.innerHTML = settings._iDisplayStart + i + 1;
                 });
                 $('.pagination a').addClass('item');
-            }
+            },
+        }).then(function (dt) {
+            dt.on('draw', function () {
+                    // Выделение красным строки пациента с анализами, вышедшими за пределы нормальных значений
+                    $('.redRow').each(function () {
+                        $(this).closest().attr('class', 'zapredel')
+                    });
+                });
         });
 }
