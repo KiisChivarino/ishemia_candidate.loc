@@ -43,8 +43,8 @@ $(document).ready(function () {
     });
 
     //view hospitals for ROLE_DOCTOR_HOSPITAL
-    let hospitals = $('#form_staff_hospital');
-    let roles = $('#form_onlyRole_roles');
+    let hospitals = $('[data-hospital]');
+    let roles = $('[data-form_staf_role_id]');
     if (roles.val() === 'ROLE_DOCTOR_HOSPITAL') {
         hospitals.attr('required', true);
     } else {

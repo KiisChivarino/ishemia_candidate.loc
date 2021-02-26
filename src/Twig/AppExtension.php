@@ -15,6 +15,7 @@ use App\Services\InfoService\PatientInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\InfoService\PlanTestingInfoService;
 use App\Services\InfoService\PrescriptionTestingInfoService;
+use App\Services\MultiFormService\MultiFormService;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -126,7 +127,13 @@ class AppExtension extends AbstractExtension
                      $this,
                      'globals'
                  ]
-             )
+             ),
+            new TwigFunction(
+                'roleName', [
+                    $this,
+                    'getRoleName'
+                ]
+            )
         ];
     }
 
@@ -260,5 +267,14 @@ class AppExtension extends AbstractExtension
             'default_time_formats' => $this->defaultTimeFormats,
             'project_info' => $this->projectInfo
         ];
+    }
+
+    /**
+     * @param string $formClassName
+     * @return string|string[]
+     * @throws \ReflectionException
+     */
+    public function getRoleName(string $formClassName): string{
+        return MultiFormService::getFormName($formClassName);
     }
 }

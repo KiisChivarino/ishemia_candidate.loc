@@ -12,21 +12,23 @@
             </li>
         {% endif %}
     {% else %}
+        {% set roleItemName = roleName('App\\Form\\Admin\\Staff\\StaffRoleType') %}
         {% for itemName, item in form %}
-            {% if itemName == 'onlyRole' and form.onlyRole.roles is defined %}
+            {% if itemName == roleItemName and form[roleItemName].roles is defined %}
                 <li>
                     <label class="required"
-                           for="{{ form.onlyRole.roles.vars.id }}">
-                        {{ form.onlyRole.roles.vars.label ?
-                        form.onlyRole.roles.vars.label :
-                        form.onlyRole.roles.vars.name|capitalize }}
+                           for="{{ form[roleItemName].roles.vars.id }}">
+                        {{ form[roleItemName].roles.vars.label ?
+                        form[roleItemName].roles.vars.label :
+                        form[roleItemName].roles.vars.name|capitalize }}
                     </label>
                     <select
-                            id="{{ form.onlyRole.roles.vars.id }}"
-                            name="{{ form.onlyRole.roles.vars.full_name }}"
+                            id="{{ form[roleItemName].roles.vars.id }}"
+                            name="{{ form[roleItemName].roles.vars.full_name }}"
+                            data-form_staf_role_id = "{{ form[roleItemName].roles.vars.id }}"
                             class="form-control"
                     >
-                        {% for choice in form.onlyRole.roles.vars.choices %}
+                        {% for choice in form[roleItemName].roles.vars.choices %}
                             <option
                                     value="{{ choice.value }}"
                                     {{ choice.value == entity.AuthUser.roles[0] ? 'selected="selected"' : '' }}>
@@ -35,7 +37,7 @@
                         {% endfor %}
                     </select>
                 </li>
-                {% do form.onlyRole.setRendered %}
+                {% do form[roleItemName].setRendered %}
             {% else %}
                 {{ _self.recursiveForm(item) }}
             {% endif %}
