@@ -52,6 +52,7 @@ class AuthUserController extends AdminAbstractController
         TranslatorInterface $translator
     )
     {
+        parent::__construct($translator);
         $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new AuthUserTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
