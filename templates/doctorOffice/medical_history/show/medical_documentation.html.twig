@@ -49,19 +49,11 @@
                 </a>
             </div>
 
-            {% if testing.patientTestingFiles is empty and enabledTestingResults(testing) is empty %}
+            {% if testing.patientTestingFiles is empty
+                and isEmptyPatientTestingResults(testing)
+                and testing.resultData is empty %}
                 <p>Результаты обследования не внесены!</p>
             {% endif %}
-
-            {% set break = false %}
-            {% for result in (enabledTestingResults(testing)) %}
-                {% if not break %}
-                    {% if result.result is empty and testing.resultData is empty %}
-                        <p>Результаты обследования не внесены!</p>
-                        {% set break = true %}
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
 
             <div class="statement__content">
                 <div class="statement__info">
