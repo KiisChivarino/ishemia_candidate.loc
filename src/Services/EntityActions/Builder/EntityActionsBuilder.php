@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services\EntityActions;
+namespace App\Services\EntityActions\Builder;
 
-class EntityActionsBuilder
+use App\Services\EntityActions\EntityActionsInterface;
+
+abstract class EntityActionsBuilder
 {
     /**
      * @var EntityActionsInterface $entityActionsService
@@ -23,17 +25,14 @@ class EntityActionsBuilder
 
     /**
      * EntityActionsBuilder constructor.
-     * @param EntityActionsInterface $entityActionsService
      * @param array $beforeOptions
      * @param array $afterOptions
      */
     public function __construct(
-        EntityActionsInterface $entityActionsService,
         array $beforeOptions = [],
         array $afterOptions = []
     )
     {
-        $this->entityActionsService = $entityActionsService;
         $this->afterOptions = $afterOptions;
         $this->beforeOptions = $beforeOptions;
     }

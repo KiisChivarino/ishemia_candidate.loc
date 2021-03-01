@@ -47,7 +47,9 @@ class MultiFormService
         /** @var FormData $formData */
         foreach ($formDataArray as $formData) {
             if ($formData->getIsAddFormData()) {
-                $builderDataArray[self::getFormName($formData->getFormClassName(), $formData->getFormPostfix())] = $formData->getEntity();
+                $builderDataArray[
+                    self::getFormName($formData->getFormClassName(), $formData->getFormPostfix())
+                ] = $formData->getEntity();
             }
         }
         return $builderDataArray;
@@ -57,9 +59,9 @@ class MultiFormService
      * Add custom array of form options to even FormData object in array
      * @param array $formDataArray
      * @param array $mergeOptionsArray
-     * @return array
+     * @return MultiFormService
      */
-    public function mergeFormDataOptions(array $formDataArray, array $mergeOptionsArray): array
+    public function mergeFormDataOptions(array $formDataArray, array $mergeOptionsArray): self
     {
         /** @var FormData $formData */
         foreach ($formDataArray as $formData) {
@@ -70,7 +72,7 @@ class MultiFormService
                 )
             );
         }
-        return $formDataArray;
+        return $this;
     }
 
     /** Returns form name by class name
@@ -88,6 +90,7 @@ class MultiFormService
     }
 
     /**
+     * Adds custom string after form name
      * @param string $formName
      * @param int|null $postfix
      * @return string
