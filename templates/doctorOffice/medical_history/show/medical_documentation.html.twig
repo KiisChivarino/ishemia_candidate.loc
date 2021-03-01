@@ -77,7 +77,7 @@
                         {% if testing.resultData is not empty %}
                             <div class="statement__info-block">
                                 <p>{{ template.items.show.content.resultData }}</p>
-                                <p>{{ testing.resultData }}</p>
+                                <p>{{ testing.resultData |raw }}</p>
                             </div>
                         {% endif %}
 
