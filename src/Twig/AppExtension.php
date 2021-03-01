@@ -126,7 +126,7 @@ class AppExtension extends AbstractExtension
                      $this,
                      'globals'
                  ]
-             )
+             ),
         ];
     }
 
