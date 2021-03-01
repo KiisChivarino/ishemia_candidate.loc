@@ -48,13 +48,11 @@
                     <span class="statement__edit">{{ template.items.show.content.addPatientTestingResults }}</span>
                 </a>
             </div>
-
             {% if testing.patientTestingFiles is empty
                 and isEmptyPatientTestingResults(testing)
                 and testing.resultData is empty %}
                 <p>Результаты обследования не внесены!</p>
             {% endif %}
-
             <div class="statement__content">
                 <div class="statement__info">
                     <div class="statement__info-block">
@@ -73,14 +71,12 @@
                                 </a>
                             {% endfor %}
                         </p>
-
                         {% if testing.resultData is not empty %}
                             <div class="statement__info-block">
                                 <p>{{ template.items.show.content.resultData }}</p>
                                 <p>{{ testing.resultData |raw }}</p>
                             </div>
                         {% endif %}
-
                         {% if patientTestingResults is defined and enabledTestingResults(testing) is not empty %}
                             <div class="table-wrapper table-history">
                                 <table>
