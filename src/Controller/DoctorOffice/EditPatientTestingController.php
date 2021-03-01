@@ -54,7 +54,7 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
     /**
      * Edit patient testing for first data of new medicalHistory
      * @Route(
-     *     "patient/{patient}/patient_testing/{patientTesting}/edit",
+     *     "/patient/{patient}/patient_testing/{patientTesting}/edit",
      *     name="doctor_edit_patient_testing",
      *     methods={"GET","POST"},
      *     requirements={"patient"="\d+", "patientTesting"="\d+"}
