@@ -3,6 +3,7 @@
 namespace App\Services\EntityActions\Creator;
 
 use App\Services\EntityActions\AbstractEntityActionsService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
@@ -11,16 +12,29 @@ use Exception;
  */
 abstract class AbstractCreatorService extends AbstractEntityActionsService
 {
+    /** @var string */
+    protected $entityClass;
+
+    /**
+     * AbstractCreatorService constructor.
+     * @param EntityManagerInterface $entityManager
+     * @param string $entityClass
+     * @throws Exception
+     */
+    public function __construct(EntityManagerInterface $entityManager, string $entityClass)
+    {
+        parent::__construct($entityManager);
+        $this->setEntityClass($entityClass);
+    }
 
     /**
      * Actions with entity before submitting and validating form
      * @param array $options
-     * @param null $entity
      * @throws Exception
      */
-    public function before(array $options = [], $entity = null): void
+    public function before(array $options = []): void
     {
-        parent::before($options, $entity);
+        parent::before();
         $this->create();
     }
 
@@ -33,6 +47,20 @@ abstract class AbstractCreatorService extends AbstractEntityActionsService
         $this->setEntity(new $this->entityClass);
         if (method_exists($this->entity, 'setEnabled')) {
             $this->entity->setEnabled(true);
+        }
+    }
+
+    /**
+     * Sets entity class for creator service
+     * @param string $entityClass
+     * @throws Exception
+     */
+    protected function setEntityClass(string $entityClass): void
+    {
+        if (class_exists($entityClass)) {
+            $this->entityClass = $entityClass;
+        } else {
+            throw new Exception('Class ' . $entityClass . ' does not exists!');
         }
     }
 }
