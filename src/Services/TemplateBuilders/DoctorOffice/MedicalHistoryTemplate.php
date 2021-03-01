@@ -47,6 +47,8 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
         'firstTestings' => 'Обследования',
         'addDischargeEpicrises' => 'Добавить выписные эпикризы',
         'diseaseHistory' => 'Анамнез болезни',
+        'resultData' => 'Данные результатов обследования',
+        'files' => 'Файлы',
     ];
 
     /** @var string[] Common ENTITY_CONTENT */
