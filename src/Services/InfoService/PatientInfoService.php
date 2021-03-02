@@ -17,7 +17,7 @@ class PatientInfoService
     static public function getBodyMassIndex(Patient $patient)
     {
         $heightSquare = ($patient->getHeight() / 100) * ($patient->getHeight() / 100);
-        return $heightSquare ? round($patient->getWeight() / $heightSquare, 2) : 'Нет данных';
+        return $heightSquare ? round($patient->getWeight() / $heightSquare, 2) . '%': 'Нет данных';
     }
 
     /**
