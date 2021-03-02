@@ -71,11 +71,11 @@ class PatientTestingDataTableService extends AdminDatatableService
                 'analysisDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisDate'),
                     'format' => 'd.m.Y',
-                    'searchable' => false
+                    'searchable' => false,
                 ]
             )
             ->add(
-                'processed', BoolColumn::class, [
+                'isProcessedByStaff', BoolColumn::class, [
                     'label' => $listTemplateItem->getContentValue('processed'),
                     'trueValue' => 'да',
                     'falseValue' => 'нет',
