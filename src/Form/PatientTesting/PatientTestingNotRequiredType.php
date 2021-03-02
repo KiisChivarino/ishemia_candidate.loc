@@ -46,6 +46,7 @@ class PatientTestingNotRequiredType extends AbstractType
                 'resultData', TextareaType::class, [
                     'label' => $templateItem->getContentValue('resultData'),
                     'required' => false,
+                    'attr' => ['class' => 'tinymce'],
                 ]
             )
             ->add(

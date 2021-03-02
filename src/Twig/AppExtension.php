@@ -50,11 +50,10 @@ class AppExtension extends AbstractExtension
      * @param EntityManagerInterface $entityManager
      * @param $projectInfo
      * @param $defaultTimeFormats
-     * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
      */
     public function __construct(
-        EntityManagerInterface $entityManager, 
-        $projectInfo, 
+        EntityManagerInterface $entityManager,
+        $projectInfo,
         $defaultTimeFormats,
         PrescriptionAppointmentRepository $prescriptionAppointmentRepository
     )

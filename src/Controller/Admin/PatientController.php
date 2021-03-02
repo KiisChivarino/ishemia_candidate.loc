@@ -123,9 +123,9 @@ class PatientController extends AdminAbstractController
                 new FormData($patient, PatientRequiredType::class),
                 new FormData($patient, PatientOptionalType::class),
                 new FormData($clinicalDiagnosis, PatientClinicalDiagnosisTextType::class),
+                new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
                 new FormData($patientAppointment, StaffType::class),
                 new FormData($patientAppointment, AppointmentTypeType::class),
-                new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
             ],
             function (EntityActions $actions)
             use (
