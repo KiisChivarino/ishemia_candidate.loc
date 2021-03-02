@@ -25,7 +25,9 @@
                     <select
                             id="{{ form[roleItemName].roles.vars.id }}"
                             name="{{ form[roleItemName].roles.vars.full_name }}"
-                            data-form_staf_role_id = "{{ form[roleItemName].roles.vars.id }}"
+                            {% for attrKey, attrValue in form[roleItemName].roles.vars.attr %}
+                                {{ attrKey }}="{{ attrValue }}"
+                            {% endfor %}
                             class="form-control"
                     >
                         {% for choice in form[roleItemName].roles.vars.choices %}
