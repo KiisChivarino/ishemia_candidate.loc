@@ -7,6 +7,7 @@ use App\Form\Admin\Prescription\PrescriptionEditType;
 use App\Form\Admin\PrescriptionType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
+use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\EntityActions\Editor\PrescriptionEditorService;
 use App\Services\FilterService\FilterService;
@@ -46,20 +47,17 @@ class PrescriptionController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param PrescriptionCreatorService $prescriptionCreatorService
      * @param PrescriptionEditorService $prescriptionEditorService
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
         TranslatorInterface $translator,
-        PrescriptionCreatorService $prescriptionCreatorService,
         PrescriptionEditorService $prescriptionEditorService
     )
     {
         parent::__construct($translator);
         $this->templateService = new PrescriptionTemplate($router->getRouteCollection(), get_class($this));
-        $this->creatorService = $prescriptionCreatorService;
         $this->editorService = $prescriptionEditorService;
         $this->setTemplateTwigGlobal($twig);
     }
@@ -105,12 +103,19 @@ class PrescriptionController extends AdminAbstractController
         Request $request
     ): Response
     {
+        $prescriptionCreatorService = new PrescriptionCreatorService($this->getDoctrine()->getManager());
         return $this->responseNewWithActions(
             $request,
-            PrescriptionType::class,
-            [
-                'medicalHistory' => $this->getMedicalHistoryByParameter($request),
-            ]
+            new CreatorEntityActionsBuilder(
+                $prescriptionCreatorService,
+                [
+                    PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $this->getMedicalHistoryByParameter($request),
+                ],
+                [
+                    PrescriptionCreatorService::STAFF_OPTION =>$prescriptionCreatorService->getEntity()->getStaff(),
+                ]
+            ),
+            new FormData($prescriptionCreatorService->getEntity(), PrescriptionType::class)
         );
     }
 

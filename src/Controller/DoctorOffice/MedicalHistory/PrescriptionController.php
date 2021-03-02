@@ -54,19 +54,18 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @Route("patient/{patient}/prescription/new", name="adding_prescriprion_by_doctor", methods={"GET","POST"})
      *
      * @param Patient $patient
-     * @param PrescriptionCreatorService $prescriptionCreatorService
      * @return Response
      * @throws Exception
      */
     public function new(
-        Patient $patient,
-        PrescriptionCreatorService $prescriptionCreatorService
+        Patient $patient
     ): Response
     {
         $this->templateService->new();
         $entityManager = $this->getDoctrine()->getManager();
         $staff = $this->getStaff($patient);
         $medicalHistory = $entityManager->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
+        $prescriptionCreatorService = new PrescriptionCreatorService($entityManager);
         $prescriptionCreatorService->execute(
             [
                 PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
@@ -88,7 +87,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @Route("patient/{patient}/prescription/{prescription}/show", name="add_prescription_show", methods={"GET", "POST"}, requirements={"patient"="\d+"})
      * @param Patient $patient
      * @param Prescription $prescription
-     * @param PrescriptionTesting $prescriptionTesting
      * @param Request $request
      * @param PrescriptionTestingDataTableService $prescriptionTestingDataTableService
      * @return Response

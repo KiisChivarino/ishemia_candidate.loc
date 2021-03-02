@@ -6,6 +6,7 @@ use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
 use App\Entity\Staff;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
@@ -19,6 +20,16 @@ class PrescriptionCreatorService extends AbstractCreatorService
 
     /** @var string Medical option of entity action */
     const MEDICAL_HISTORY_OPTION = 'medicalHistory';
+
+    /**
+     * PrescriptionCreatorService constructor.
+     * @param EntityManagerInterface $entityManager
+     * @throws Exception
+     */
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        parent::__construct($entityManager, Prescription::class);
+    }
 
     /**
      * Actions with entity before submiting form
@@ -54,7 +65,6 @@ class PrescriptionCreatorService extends AbstractCreatorService
      */
     protected function configureOptions(): void
     {
-        $this->setEntityClass(Prescription::class);
         $this->addOptionCheck(MedicalHistory::class, self::MEDICAL_HISTORY_OPTION);
         $this->addOptionCheck(Staff::class, self::STAFF_OPTION);
     }
