@@ -32,9 +32,6 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
      */
     protected $entity;
 
-    /** @var string */
-    protected $entityClass;
-
     /**
      * @var array custom variables for actions with entity like [variableName=>variableValue]
      */
@@ -74,12 +71,11 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
 
     /**
      * @param array $options
-     * @param null $entity
      * @throws Exception
      */
-    public function execute(array $options = [], $entity = null)
+    public function execute(array $options = []): void
     {
-        $this->before($options, $entity);
+        $this->before($options);
         $this->after($options);
     }
 
@@ -139,10 +135,9 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
 
     /**
      * @param array $options
-     * @param null $entity
      * @throws Exception
      */
-    public function before(array $options = [], $entity = null): void
+    public function before(array $options = []): void
     {
         $this->configureOptions();
         $this->setOptions($options);
@@ -160,17 +155,4 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
      * Set entity class and set options: name of option and type of option
      */
     abstract protected function configureOptions(): void;
-
-    /**
-     * @param string $entityClass
-     * @throws Exception
-     */
-    protected function setEntityClass(string $entityClass): void
-    {
-        if (class_exists($entityClass)) {
-            $this->entityClass = $entityClass;
-        } else {
-            throw new Exception('Class ' . $entityClass . ' does not exists!');
-        }
-    }
 }
