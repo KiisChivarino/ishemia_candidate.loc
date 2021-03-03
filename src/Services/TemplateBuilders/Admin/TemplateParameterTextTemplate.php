@@ -23,14 +23,8 @@ class TemplateParameterTextTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for staff templates */
     protected const COMMON_CONTENT = [
-        'fullName' => 'Полное название',
         'text' => 'Текст',
         'templateParameter' => 'Параметр шаблона'
-    ];
-
-    /** @var string[] Common form content for staff templates */
-    protected const FORM_CONTENT = [
-        'hospitalPlaceholder' => 'Выберите больницу',
     ];
 
     /** @var string[] Common list content for staff templates */

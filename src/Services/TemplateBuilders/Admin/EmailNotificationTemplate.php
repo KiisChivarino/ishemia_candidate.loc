@@ -17,29 +17,13 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class EmailNotificationTemplate extends AdminTemplateBuilder
 {
-    /** @var string[] Common content for staff templates */
-    protected const COMMON_CONTENT = [
-        'fullName' => 'Полное название',
-        'userString' => 'Пользователь',
-        'notification' => 'Уведомление',
-        'emailTo' => 'Получатель',
-        'createdAt' => 'Дата и время создания'
-    ];
-
-    /** @var string[] Common form content for staff templates */
-    protected const FORM_CONTENT = [
-        'hospitalPlaceholder' => 'Выберите больницу',
-    ];
-
     /** @var string[] Common list content for staff templates */
     protected const LIST_CONTENT = [
         'h1' => 'Список уведомлений e-mail',
         'title' => 'E-mail уведомления',
-    ];
-
-    /** @var string[] Common show content for staff templates */
-    protected const SHOW_CONTENT = [
-        'emailNotifications' => 'E-mail уведомления',
+        'notification' => 'Уведомление',
+        'emailTo' => 'Получатель',
+        'createdAt' => 'Дата и время создания'
     ];
 
     /** @var string[] Common ENTITY CONTENT */
