@@ -17,11 +17,6 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class TemplateTypeTemplate extends AdminTemplateBuilder
 {
-    /** @var string[] Common content for staff templates */
-    protected const COMMON_CONTENT = [
-        'fullName' => 'Полное название'
-    ];
-
     /** @var string[] Common form content for staff templates */
     protected const FORM_CONTENT = [
         'hospitalPlaceholder' => 'Выберите больницу',
@@ -33,11 +28,6 @@ class TemplateTypeTemplate extends AdminTemplateBuilder
         'title' => 'Типы шаблонов',
     ];
 
-    /** @var string[] Common new content for staff templates */
-    protected const NEW_CONTENT = [
-        'h1' => 'Новый тип шаблона',
-        'title' => 'Новый тип шаблона',
-    ];
     /** @var string[] Common show content for staff templates */
     protected const SHOW_CONTENT = [
         'templateParametersLink' => 'Параметры шаблонов',

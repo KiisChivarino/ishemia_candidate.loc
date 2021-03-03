@@ -29,42 +29,23 @@ class NotificationTemplate extends AdminTemplateBuilder
         'staff' => 'Отправивший врач',
         'notificationTime' => 'Дата и время отправки',
         'text' => 'Текст',
-        'patient' => 'Пациент',
-        'authUserSender' => 'Отправитель',
-        'smsNotification' => 'SMS уведомление',
         'notificationReceiverType' => 'Тип получателя',
         'receiver' => 'Получатель',
         'medicalHistory' => 'История болезни',
         'medicalRecord' => 'Запись в истории болезни',
-        'channelType' => 'Канал передачи',
-    ];
-    /** @var string[] Common FORM_SHOW_CONTENT */
-    public const FORM_SHOW_CONTENT = [
-        'text' => 'Текст уведомления',
     ];
 
     /** @var string[] Common LIST_CONTENT */
     public const LIST_CONTENT = [
-        'h1' => 'Уведомления',
+        'h1' => 'Список уведомлений',
         'title' => 'Список уведомлений',
     ];
 
-    /** @var string[] Common NEW_CONTENT */
-    public const NEW_CONTENT = [
-        'h1' => 'Добавление уведомления',
-        'title' => 'Добавление уведомления',
-    ];
-
-    /** @var string[] Common SHOW_CONTENT */
     public const SHOW_CONTENT = [
-        'h1' => 'Просмотр уведомления',
-        'title' => 'Просмотр уведомления',
-    ];
-
-    /** @var string[] Common EDIT_CONTENT */
-    public const EDIT_CONTENT = [
-        'h1' => 'Редактирование уведомления',
-        'title' => 'Редактирование уведомления',
+        'patient' => 'Пациент',
+        'authUserSender' => 'Отправитель',
+        'smsNotification' => 'SMS уведомление',
+        'channelType' => 'Канал передачи',
     ];
 
     public const FILTER_CONTENT = [
@@ -135,20 +116,6 @@ class NotificationTemplate extends AdminTemplateBuilder
                     ),
                 ]
             );
-        return $this;
-    }
-    /**
-     * Builds edit template settings of Patient controller
-     *
-     * @param object|null $entity
-     *
-     * @return $this|AdminTemplateBuilder
-     */
-    public function edit(?object $entity = null): AppTemplateBuilder
-    {
-        parent::edit();
-        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
-            ->setIsEnabled(false);
         return $this;
     }
 
