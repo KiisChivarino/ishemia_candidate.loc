@@ -71,7 +71,7 @@ class PatientTestingDataTableService extends AdminDatatableService
                 'analysisDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisDate'),
                     'format' => 'd.m.Y',
-                    'searchable' => false
+                    'searchable' => false,
                 ]
             )
             ->add(

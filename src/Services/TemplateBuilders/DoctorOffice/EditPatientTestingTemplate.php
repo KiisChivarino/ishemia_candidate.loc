@@ -35,7 +35,7 @@ class EditPatientTestingTemplate extends DoctorOfficeTemplateBuilder
         'analysis' => PatientTestingResultTemplate::COMMON_CONTENT['analysis'],
         'analysisRate' => PatientTestingResultTemplate::COMMON_CONTENT['analysisRate'],
         'result' => PatientTestingResultTemplate::COMMON_CONTENT['result'],
-        'resultData' => 'Данные результатов обследования',
+        'resultData' => PatientTestingTemplate::FORM_SHOW_CONTENT['resultData'],
     ];
 
     /** @var string[] Common ENTITY_CONTENT */

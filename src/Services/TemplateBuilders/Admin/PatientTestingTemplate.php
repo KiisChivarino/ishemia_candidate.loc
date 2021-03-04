@@ -74,6 +74,11 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'entity' => 'Анализ пациента',
     ];
 
+    /** @var string[] Common FORM_SHOW_CONTENT */
+    public const FORM_SHOW_CONTENT = [
+        'resultData' => 'Данные результатов обследования',
+    ];
+
     /**
      * PatientTestingTemplate constructor.
      *

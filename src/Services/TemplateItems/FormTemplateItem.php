@@ -17,6 +17,7 @@ class FormTemplateItem extends TemplateItem
 
     /** @var string[] Common content of form template item */
     protected const DEFAULT_CONTENT = [
+        'resultData' => 'Данные результатов обследования',
         'formButtonLabel' => 'Сохранить',
     ];
 
