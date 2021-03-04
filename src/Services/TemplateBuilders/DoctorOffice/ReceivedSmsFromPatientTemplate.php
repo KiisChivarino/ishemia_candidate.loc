@@ -24,7 +24,6 @@ class ReceivedSmsFromPatientTemplate extends DoctorOfficeTemplateBuilder
         'patient' => 'Пациент',
         'phone' => 'Номер телефона',
         'text' => 'Сообщение',
-        'created_at' => 'Дата и время создания',
         'isProcessed' => 'Обработано',
     ];
 
