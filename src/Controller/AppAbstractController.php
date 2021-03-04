@@ -321,23 +321,11 @@ abstract class AppAbstractController extends AbstractController
         $this->templateService->delete();
         $entityName = $this->templateService->getItem('delete')->getContentValue('entity');
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
             try {
-                /** @noinspection PhpParamsInspection */
-                (new LogService($entityManager))
-                    ->setUser($this->getUser())
-                    ->setDescription(
-                        $this->translator->trans(
-                            'log.delete.entity',
-                            [
-                                '%entity%' => $entityName,
-                                '%id%' => $entity->getId(),
-                            ]
-                        )
-                    )
-                    ->logDeleteEvent();
+                $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->remove($entity);
                 $entityManager->flush();
+                $this->setLogDelete($entityName, $entity);
             } catch (DBALException $e) {
                 if ($e->getPrevious()->getCode() == self::FOREIGN_KEY_ERROR) {
                     $this->addFlash(
@@ -422,7 +410,7 @@ abstract class AppAbstractController extends AbstractController
     )
     {
         /** @var TemplateService $template */
-        $template = $this->templateService->new($filterLabels->getFilterService());
+        $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
         $formData->setFormOptions(array_merge(
                 $formData->getFormOptions(),
                 $filterLabels ? $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray()) : [],
@@ -727,7 +715,7 @@ abstract class AppAbstractController extends AbstractController
      * @param $entity
      * @throws Exception
      */
-    protected function setFormLog(string $type, $entity)
+    protected function setFormLog(string $type, $entity): void
     {
         switch ($type) {
             case 'new':
@@ -740,11 +728,11 @@ abstract class AppAbstractController extends AbstractController
     }
 
     /**
-     * Set log of update object
+     * Set log of update entity object
      * @param $entity
      * @throws Exception
      */
-    protected function setLogUpdate($entity)
+    protected function setLogUpdate($entity): void
     {
         (new LogService($this->getDoctrine()->getManager()))
             ->setUser($this->getUser())
@@ -760,6 +748,29 @@ abstract class AppAbstractController extends AbstractController
                 )
             )
             ->logUpdateEvent();
+    }
+
+    /**
+     * Set log of delete entity object
+     * @param string $entityName
+     * @param $entity
+     */
+    protected function setLogDelete(string $entityName, $entity): void {
+        $entityManager = $this->getDoctrine()->getManager();
+        /** @noinspection PhpParamsInspection */
+        (new LogService($entityManager))
+            ->setUser($this->getUser())
+            ->setDescription(
+                $this->translator->trans(
+                    'log.delete.entity',
+                    [
+                        '%entity%' => $entityName,
+                        '%id%' => $entity->getId(),
+                    ]
+                )
+            )
+            ->logDeleteEvent();
+        $entityManager->flush();
     }
 
     /**
