@@ -23,7 +23,6 @@ class WebNotificationTemplate extends AdminTemplateBuilder
         'title' => 'E-mail уведомления',
         'notification' => 'Уведомление',
         'receiver' => 'Получатель',
-        'createdAt' => 'Дата и время создания',
         'isRead' => 'Просмотрено'
     ];
 
