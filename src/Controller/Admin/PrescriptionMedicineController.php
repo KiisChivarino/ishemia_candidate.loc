@@ -7,7 +7,6 @@ use App\Form\Admin\PrescriptionMedicineType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionMedicineDataTableService;
 use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
-use App\Services\EntityActions\Editor\PrescriptionMedicineEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
@@ -41,14 +40,12 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
      * @param PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
-     * @param PrescriptionMedicineEditorService $prescriptionMedicineEditorService
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
         TranslatorInterface $translator,
-        PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService,
-        PrescriptionMedicineEditorService $prescriptionMedicineEditorService
+        PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
 
     )
     {
@@ -56,7 +53,6 @@ class PrescriptionMedicineController extends AdminAbstractController
         $this->templateService = new PrescriptionMedicineTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
         $this->creatorService = $prescriptionMedicineCreatorService;
-        $this->editorService = $prescriptionMedicineEditorService;
     }
 
     /**

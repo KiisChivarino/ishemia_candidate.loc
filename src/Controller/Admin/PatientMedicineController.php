@@ -6,7 +6,6 @@ use App\Entity\PatientMedicine;
 use App\Form\PatientMedicineType;
 use App\Services\DataTable\Admin\PatientMedicineDataTableService;
 use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
-use App\Services\EntityActions\Editor\PatientMedicineEditorService;
 use App\Services\TemplateBuilders\Admin\PatientMedicineTemplate;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,20 +31,17 @@ class PatientMedicineController extends AdminAbstractController
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
-     * @param PatientMedicineEditorService $patientMedicineEditorService
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
         TranslatorInterface $translator,
-        PatientMedicineCreatorService $patientMedicineCreatorService,
-        PatientMedicineEditorService $patientMedicineEditorService
+        PatientMedicineCreatorService $patientMedicineCreatorService
     )
     {
         parent::__construct($translator);
         $this->templateService = new PatientMedicineTemplate($router->getRouteCollection(), get_class($this));
         $this->creatorService = $patientMedicineCreatorService;
-        $this->editorService = $patientMedicineEditorService;
         $this->setTemplateTwigGlobal($twig);
     }
 
