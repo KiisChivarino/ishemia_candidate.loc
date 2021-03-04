@@ -33,7 +33,7 @@ class PrescriptionMedicineCreatorService extends AbstractCreatorService
         string $prescriptionOption
     )
     {
-        parent::__construct($entityManager);
+        parent::__construct($entityManager, PrescriptionMedicine::class);
         $this->STAFF_OPTION = $staffOption;
         $this->PRESCRITION_OPTION = $prescriptionOption;
     }
@@ -59,7 +59,6 @@ class PrescriptionMedicineCreatorService extends AbstractCreatorService
      */
     protected function configureOptions(): void
     {
-        $this->setEntityClass(PrescriptionMedicine::class);
         $this->addOptionCheck(Prescription::class, $this->PRESCRITION_OPTION);
         $this->addOptionCheck(Staff::class, $this->STAFF_OPTION);
     }

@@ -16,7 +16,6 @@ use App\Services\InfoService\MedicalRecordInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
 use Exception;
-use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -164,7 +163,6 @@ class PrescriptionController extends AdminAbstractController
      * @param Prescription $prescription
      *
      * @return Response
-     * @throws ReflectionException
      * @throws Exception
      */
     public function edit(
