@@ -9,7 +9,6 @@ use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
-use App\Services\EntityActions\Editor\PrescriptionEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\MedicalHistoryInfoService;
@@ -47,18 +46,15 @@ class PrescriptionController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param PrescriptionEditorService $prescriptionEditorService
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
-        TranslatorInterface $translator,
-        PrescriptionEditorService $prescriptionEditorService
+        TranslatorInterface $translator
     )
     {
         parent::__construct($translator);
         $this->templateService = new PrescriptionTemplate($router->getRouteCollection(), get_class($this));
-        $this->editorService = $prescriptionEditorService;
         $this->setTemplateTwigGlobal($twig);
     }
 

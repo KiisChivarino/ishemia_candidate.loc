@@ -3,7 +3,6 @@
 namespace App\Services\EntityActions\Editor;
 
 use App\Entity\Prescription;
-use App\Services\ControllerGetters\EntityActions;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
