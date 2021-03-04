@@ -23,7 +23,6 @@ class EmailNotificationTemplate extends AdminTemplateBuilder
         'title' => 'E-mail уведомления',
         'notification' => 'Уведомление',
         'emailTo' => 'Получатель',
-        'createdAt' => 'Дата и время создания'
     ];
 
     /** @var string[] Common ENTITY CONTENT */
