@@ -21,9 +21,6 @@ class PatientAppointmentCreatorService
     /** @var EntityManagerInterface $entityManager */
     private $entityManager;
 
-    /** @var MedicalRecordCreatorService $medicalRecordCreator */
-    private $medicalRecordCreator;
-
     /** @var PrescriptionCreatorService $prescriptionCreator */
     private $prescriptionCreator;
 
@@ -33,18 +30,15 @@ class PatientAppointmentCreatorService
     /**
      * PatientAppointmentCreatorService constructor.
      * @param EntityManagerInterface $entityManager
-     * @param MedicalRecordCreatorService $medicalRecordCreator
      * @param PrescriptionCreatorService $prescriptionCreator
      * @param PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        MedicalRecordCreatorService $medicalRecordCreator,
         PrescriptionCreatorService $prescriptionCreator,
         PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator
     ){
         $this->entityManager = $entityManager;
-        $this->medicalRecordCreator = $medicalRecordCreator;
         $this->prescriptionCreator = $prescriptionCreator;
         $this->prescriptionAppointmentCreator = $prescriptionAppointmentCreator;
     }

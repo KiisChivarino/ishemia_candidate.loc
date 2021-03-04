@@ -4,7 +4,6 @@ namespace App\Services\EntityActions\Editor;
 
 use App\Entity\Prescription;
 use App\Services\ControllerGetters\EntityActions;
-use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,26 +14,19 @@ use Exception;
  */
 class PrescriptionEditorService extends AbstractEditorService
 {
-    /** @var MedicalRecordCreatorService $medicalRecordCreatorService */
-    private $medicalRecordCreatorService;
 
     /**
      * PrescriptionEditorService constructor.
-     * @param MedicalRecordCreatorService $medicalRecordCreatorService
      * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(
-        MedicalRecordCreatorService $medicalRecordCreatorService,
-        EntityManagerInterface $entityManager)
-    {
-        parent::__construct($entityManager);
-        $this->medicalRecordCreatorService = $medicalRecordCreatorService;
-    }
-
-    /**
-     * @param EntityActions $entityActions
      * @throws Exception
      */
+    public function __construct(
+        EntityManagerInterface $entityManager, $entity)
+    {
+        parent::__construct($entityManager, $entity);
+    }
+
+
     protected function prepare(): void
     {
         /** @var Prescription $prescription */
@@ -51,6 +43,5 @@ class PrescriptionEditorService extends AbstractEditorService
 
     protected function configureOptions(): void
     {
-        $this->setEntityClass(Prescription::class);
     }
 }

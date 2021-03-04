@@ -24,10 +24,11 @@ class MedicalRecordCreatorService extends AbstractCreatorService
      * MedicalRecordCreatorService constructor.
      * @param MedicalRecordRepository $medicalRecordRepository
      * @param EntityManagerInterface $entityManager
+     * @throws Exception
      */
     public function __construct(MedicalRecordRepository $medicalRecordRepository, EntityManagerInterface $entityManager)
     {
-        parent::__construct($entityManager);
+        parent::__construct($entityManager, MedicalRecord::class);
         $this->medicalRecordRepository = $medicalRecordRepository;
     }
 
@@ -54,7 +55,6 @@ class MedicalRecordCreatorService extends AbstractCreatorService
      */
     protected function configureOptions():void
     {
-        $this->setEntityClass(MedicalRecord::class);
         $this->addOptionCheck(MedicalHistory::class, 'medicalHistory');
     }
 }
