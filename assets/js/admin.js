@@ -1,7 +1,6 @@
 import './app';
 
 require('jquery-mask-plugin');
-require('datatables');
 
 import './select2';
 import './tabs';
@@ -10,9 +9,7 @@ import './mask';
 import './hospitalByCity';
 import './fileUpload';
 import './menu';
-
-
-
+import './datatables/initDefaultDatatables';
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
 require('../images/operation-icon-3.svg');

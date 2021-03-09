@@ -21,6 +21,7 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
 {
     /** @var string Name of rout to patient medical history in doctor office */
     public const DOCTOR_MEDICAL_HISTORY_ROUTE = 'doctor_medical_history';
+
     /** @var string Id parameter of medical history view route in doctor office */
     public const DOCTOR_MEDICAL_HISTORY_ROUTE_ID_PARAMETER = 'id';
 
@@ -41,7 +42,7 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
      * @param Patient $patient
      * @return void|RedirectResponse
      */
-    protected function flushToMedicalHistory(Patient $patient)
+    protected function flushToMedicalHistory(Patient $patient): RedirectResponse
     {
         try {
             $this->getDoctrine()->getManager()->flush();

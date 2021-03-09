@@ -1,10 +1,9 @@
-require('datatables');
 import './select2';
 import './select2entity';
 import '../css/select2.min.css'
 import './hospitalByCity';
 import '../css/doctorOffice.css';
-import './initDatatable';
+import './datatables/initDefaultDatatables';
 import './fileUpload';
 import './app';
 import './mask';
@@ -97,20 +96,21 @@ $(document).ready(function () {
     $('.remove-parameter').on('click', function () {
         $(this).parent().parent().remove()
     })
-
 });
 
 // Функция уменьшающая количество уведомлений в меню на 1 для СМС пациента
 function changeMenuPatientSmsCount() {
-     var currentMessagesCount = parseInt($('.patientSMSCount').html());
-     if (currentMessagesCount > 1) {
-         $('.patientSMSCount').html(currentMessagesCount - 1);
-     } else if (currentMessagesCount === 1) {
-         $('.patientSMSCount').hide()
-     }
+    let patientSMSCountEl = $('.patientSMSCount');
+    let currentMessagesCount = parseInt($('.patientSMSCount').html());
+    if (currentMessagesCount > 1) {
+        patientSMSCountEl.html(currentMessagesCount - 1);
+    } else if (currentMessagesCount === 1) {
+        patientSMSCountEl.hide()
+    }
 }
+
 // Подтверждение СМС пациента
-$(document).on("click", ".processPatientSMS", function(){
+$(document).on("click", ".processPatientSMS", function () {
     let dtSelector = "#dt";
     // Формируем ссылку для api обработки сообщений пациента на основе атрибута data-id в таблице пациента
     let request = $(this).attr('data-href');
@@ -169,6 +169,5 @@ $(document).on("click", ".processPatientSMS", function(){
         }
     })
 });
-
 
 
