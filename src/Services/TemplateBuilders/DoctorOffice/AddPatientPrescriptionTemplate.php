@@ -4,9 +4,11 @@ namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
+use App\Services\TemplateBuilders\Admin\PrescriptionAppointmentTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
@@ -32,6 +34,8 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
         'plannedDate' => PrescriptionTestingTemplate::COMMON_CONTENT['plannedDate'],
         'operations' => ListTemplateItem::DEFAULT_CONTENT['operations'],
         'loadTableData' => ListTemplateItem::DEFAULT_CONTENT['loadTableData'],
+        'plannedDateTime' => PrescriptionAppointmentTemplate::COMMON_CONTENT['plannedDateTime'],
+        'appointmentType' => PatientAppointmentTemplate::COMMON_CONTENT['appointmentType'],
     ];
 
 
@@ -67,6 +71,7 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::show($entity);
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setIsEnabled(false);
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
         return $this;
     }
 }

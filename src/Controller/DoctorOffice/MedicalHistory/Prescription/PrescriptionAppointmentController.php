@@ -96,7 +96,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
 
     /**
      * New prescription appointment
-     * @Route("doctor_office/patient/{id}/prescription/{prescription}/appointment/new/", name="adding_reception_by_doctor", methods={"GET","POST"})
+     * @Route("doctor_office/patient/{patient}/prescription/{prescription}/appointment/new/", name="adding_reception_by_doctor", methods={"GET","POST"})
      * @param Request $request
      * @param Prescription $prescription
      * @param Patient $patient
@@ -137,16 +137,14 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                         ->setEnabled(true)
                         ->setPrescriptionAppointment($prescriptionAppointment)
                         ->setIsFirst(false)
-                        ->setIsByPlan(false)
-                    ;
+                        ->setIsByPlan(false);
                     $prescriptionAppointment
                         ->setPrescription($prescription)
                         ->setPatientAppointment($patientAppointment)
                         ->setStaff($this->getStaff($patient))
                         ->setEnabled(true)
                         ->setInclusionTime(new DateTime())
-                        ->setConfirmedByStaff(true)
-                    ;
+                        ->setConfirmedByStaff(true);
                     $entityActions->getEntityManager()->persist($patientAppointment);
                 } else{
                     $this->addFlash(

@@ -1,0 +1,16 @@
+<div id={{ tableId }}>
+    <div class="table-wrapper table-pacients">
+        <div class="box-body table-responsive">
+            <div
+                    data-datatable
+                    class="dataTables_wrapdper form-inline dt-bootstrap"
+                    data-table_settings='{{ datatable_settings(table) }}'
+            >
+                <span class="label label-info">
+                    <i class="fa fa-sync-alt fa-spin fa-1x fa-fw"></i>
+                    {{ template.items.show.content.loadTableData }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

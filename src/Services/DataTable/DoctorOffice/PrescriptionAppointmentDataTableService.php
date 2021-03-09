@@ -2,9 +2,8 @@
 
 namespace App\Services\DataTable\DoctorOffice;
 
-use App\Entity\AnalysisGroup;
 use App\Entity\Prescription;
-use App\Entity\PrescriptionTesting;
+use App\Entity\PrescriptionAppointment;
 use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Closure;
@@ -16,16 +15,16 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 
 /**
- * Class PrescriptionTestingDataTableService
+ * Class PrescriptionAppointmentDataTableService
+ * settings for display only one prescription for an appointment in doctor office
  * @package App\Services\DataTable\DoctorOffice
  */
-class PrescriptionTestingDataTableService extends AdminDatatableService
+class PrescriptionAppointmentDataTableService extends AdminDatatableService
 {
-    /** @var string */
-    public const DATATABLE_NAME = 'PrescriptionTestingDataTable';
+    /** @var string class of main entity */
+    public const ENTITY_CLASS = PrescriptionAppointment::class;
 
-    /** @var string Class name of main table entity PrescriptionTesting */
-    public const ENTITY_CLASS = PrescriptionTesting::class;
+    public const DATATABLE_NAME = 'PrescritionAppointmentDataTable';
 
     /**
      * @param Closure $renderOperationsFunction
@@ -44,22 +43,17 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
         $this->dataTable
             ->setName(self::DATATABLE_NAME)
             ->add(
-                'analysisGroup', TextColumn::class, [
-                    'label' => $showTemplateItem->getContentValue('analysisGroup'),
-                    'render' => function (string $data, PrescriptionTesting $prescriptionTesting) {
-                        /** @var AnalysisGroup $analysisGroup */
-                        $analysisGroup = $prescriptionTesting->getPatientTesting()->getAnalysisGroup();
-                        return $analysisGroup->getName();
-                    },
-                ]
-            )
-            ->add(
-                'plannedDate', DateTimeColumn::class, [
-                    'label' => $showTemplateItem->getContentValue('plannedDate'),
-                    'format' => 'd.m.Y H:m',
+                'plannedDateTime', DateTimeColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('plannedDateTime'),
+                    'format' => 'd.m.Y',
                     'searchable' => false
                 ]
-            );
+            )
+            ->add('appointmentType', TextColumn::class, [
+                'label' => $showTemplateItem->getContentValue('appointmentType'),
+                'field' => 'pta.appointmentType.name',
+                'searchable' => true
+            ]);
         $this->addOperations($renderOperationsFunction, $showTemplateItem);
         return $this->dataTable
             ->createAdapter(
@@ -67,12 +61,12 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                     'entity' => self::ENTITY_CLASS,
                     'query' => function (QueryBuilder $builder) use ($prescription) {
                         $builder
-                            ->select('pt')
-                            ->from(self::ENTITY_CLASS, 'pt')
-                            ->join('pt.patientTesting', 'ptt');
+                            ->select('pa')
+                            ->from(self::ENTITY_CLASS, 'pa')
+                            ->join('pa.patientAppointment', 'pta');
                         if ($prescription) {
                             $builder
-                                ->andWhere('pt.prescription = :prescription')
+                                ->andWhere('pa.prescription = :prescription')
                                 ->setParameter('prescription', $prescription);
                         }
                     },

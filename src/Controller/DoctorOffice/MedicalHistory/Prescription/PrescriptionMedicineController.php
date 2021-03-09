@@ -59,6 +59,10 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
+     * @param string $staffOption
+     * @param string $prescriptionOption
+     * @param string $medicalHistoryOption
+     * @param string $prescriptionMedicine
      */
     public function __construct(
         Environment $twig,
@@ -83,7 +87,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
 
     /**
      * New medicine prescription
-     * @Route("/patient/{id}/prescription/{prescription}/patient_medicine/new", name="prescription_patient_medicine_new", methods={"GET","POST"})
+     * @Route("/patient/{patient}/prescription/{prescription}/patient_medicine/new", name="prescription_patient_medicine_new", methods={"GET","POST"})
      * @param Request $request
      * @param Prescription $prescription
      * @param PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService

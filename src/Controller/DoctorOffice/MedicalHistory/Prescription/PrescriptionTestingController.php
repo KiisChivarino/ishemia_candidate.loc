@@ -52,7 +52,10 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
 
     /**
      * New prescription
-     * @Route("/patient/{patient}/prescription/{prescription}/patient_testing/new", name="adding_survey_by_doctor", methods={"GET","POST"})
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/patient_testing/new",
+     *     name="adding_testing_by_doctor", methods={"GET","POST"}
+     *     )
      * @param Request $request
      * @param Patient $patient
      * @param Prescription $prescription
@@ -89,16 +92,13 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
                     ->setEnabled(true)
                     ->setAnalysisDate(null)
                     ->setIsFirst(false)
-                    ->setIsByPlan(false)
-                ;
+                    ->setIsByPlan(false);
                 $prescriptionTesting
                     ->setStaff($this->getStaff($patient))
                     ->setEnabled(true)
                     ->setInclusionTime(new DateTime())
                     ->setPrescription($prescription)
-                    ->setPatientTesting($patientTesting)
-                ;
-
+                    ->setPatientTesting($patientTesting);
                 $entityActions->getEntityManager()->persist($prescriptionTesting);
             }
         );

@@ -23,7 +23,7 @@ class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
 {
 
     /** @var string[] Common content for District templates */
-    protected const COMMON_CONTENT = [
+    public const COMMON_CONTENT = [
         'prescription' => 'Назначение',
         'patientAppointment' => 'Прием',
         'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
