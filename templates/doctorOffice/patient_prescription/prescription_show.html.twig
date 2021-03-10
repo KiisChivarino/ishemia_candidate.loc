@@ -70,6 +70,18 @@
             'data_name': dataName
         }
     ) }}
+
+<div class="buttons">
+    <button class="button main-button"
+            onclick="location.href='{{ path(
+                'doctor_medical_history',
+                {
+                    'id': patient.id,
+                }
+            ) }}';">
+        Выйти
+    </button>
+</div>
 {% endblock %}
 
 {% block javascripts %}
