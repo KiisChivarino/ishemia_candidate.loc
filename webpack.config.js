@@ -25,13 +25,11 @@ Encore
      */
     .addEntry('app', './assets/js/app.js')
     .addEntry('admin', './assets/js/admin.js')
-    // .addEntry('initDatatable', './assets/js/datatables/initDatatable.js')
     .addEntry('doctorOffice', './assets/js/doctorOffice.js')
     .addEntry('security', './assets/js/security.js')
     .addEntry('patientOffice', './assets/js/patientOffice.js')
     .addEntry('select2entity', './assets/js/select2entity.js')
-    // .addEntry('datatables', './assets/js/datatables/datatables.js')
-    // .addEntry('initDefaultDatatables', './assets/js/datatables/initDefaultDatatables.js')
+    .addEntry('initPrescriptionDatatables', './assets/js/datatables/initPrescriptionDatatables.js')
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 

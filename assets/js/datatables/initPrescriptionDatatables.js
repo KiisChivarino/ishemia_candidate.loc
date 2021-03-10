@@ -1,4 +1,3 @@
-// import './initDatatable';
 const {initCustomDataTables} = require("./initDatatable");
 $(document).ready(function () {
     //initializes all datatables on the page
