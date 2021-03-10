@@ -42,7 +42,7 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
      * @param Patient $patient
      * @return void|RedirectResponse
      */
-    protected function flushToMedicalHistory(Patient $patient): RedirectResponse
+    protected function flushToMedicalHistory(Patient $patient)
     {
         try {
             $this->getDoctrine()->getManager()->flush();
