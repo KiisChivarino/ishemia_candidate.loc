@@ -30,7 +30,7 @@ class MedicalRecordRepository extends AppRepository
     }
 
     /**
-     * Find or create medical record for current date
+     * Find medical record for current date
      *
      * @param MedicalHistory $medicalHistory
      *
