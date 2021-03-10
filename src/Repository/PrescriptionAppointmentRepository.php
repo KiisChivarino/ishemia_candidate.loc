@@ -35,10 +35,11 @@ class PrescriptionAppointmentRepository extends AppRepository
      */
     public function getEnabledAppointmentsCount(Prescription $prescription): int
     {
-        return $this->createQueryBuilder('u')
-            ->select('count(u.id)')
-            ->where('u.enabled = :name')
-            ->setParameter('name', 'true')
+        return $this->createQueryBuilder('pa')
+            ->select('count(pa.id)')
+            ->where('pa.enabled = true')
+            ->andWhere('pa.prescription = :prescription')
+            ->setParameter('prescription', $prescription)
             ->getQuery()
             ->getSingleScalarResult();
     }
