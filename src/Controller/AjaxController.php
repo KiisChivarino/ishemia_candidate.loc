@@ -47,6 +47,27 @@ class AjaxController extends AbstractController
     }
 
     /**
+     * Find diagnoses MKBCode
+     * @Route("/find_diagnosis_mkbcode_ajax", name="find_diagnosis_mkbcode_ajax", methods={"GET"})
+     *
+     * @param Request $request
+     *
+     * @param DiagnosisRepository $diagnosisRepository
+     * @return false|string
+     */
+    public function findMKBCodeAjax(
+        Request $request,
+        DiagnosisRepository $diagnosisRepository
+    )
+    {
+        return $this->responseAjaxMRBCodeResult(
+            $diagnosisRepository->findDiagnoses(
+                $request->query->get(self::JSON_PARAMETER_KEY)
+            )
+        );
+    }
+
+    /**
      * Return complaints using ajax
      * @Route("/find_complaint_ajax", name="find_complaint_ajax", methods={"GET"})
      * @param Request $request
@@ -114,6 +135,29 @@ class AjaxController extends AbstractController
             $analysisGroupRepository->findAnalysisGroups(
                 $request->query->get(self::JSON_PARAMETER_KEY)
             )
+        );
+    }
+
+    /**
+     * Returns result array for ajax
+     *
+     * @param $entities
+     * @param null $textFieldName
+     *
+     * @return JsonResponse
+     */
+    private function responseAjaxMRBCodeResult($entities, $textFieldName = null): JsonResponse
+    {
+        $textMethodName = 'get' . ucfirst($textFieldName);
+        $resultArray = [];
+        foreach ($entities as $entity) {
+            $resultArray[] = [
+                'id' => $entity->getId(),
+                'text' => $textFieldName ? $entity->$textMethodName() : $entity->getCode(),
+            ];
+        }
+        return new JsonResponse(
+            $resultArray
         );
     }
 
