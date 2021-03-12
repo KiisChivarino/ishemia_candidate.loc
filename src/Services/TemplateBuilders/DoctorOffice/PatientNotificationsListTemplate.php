@@ -10,7 +10,6 @@ use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
-use App\Services\TemplateItems\ListTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -64,6 +63,10 @@ class PatientNotificationsListTemplate extends DoctorOfficeTemplateBuilder
     protected const SHOW_CONTENT = [
         'h1' => 'Просмотр записи',
         'title' => 'Просмотр записи',
+        'authUserSender' => 'Отправитель',
+        'text' => 'Текст',
+        'notificationReceiverType' => 'Тип получателя',
+        'channelType' => 'Канал передачи',
     ];
 
     /** @var string[] Common EDIT_CONTENT */

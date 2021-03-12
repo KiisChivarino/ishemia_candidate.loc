@@ -104,24 +104,36 @@ class PatientNotificationListDataTableService extends DoctorOfficeDatatableServi
                             ]
                         );
                         $channels = "";
+                        /** @var Notification $notification */
                         foreach ($notifications as $notification) {
                             if ($notification->getWebNotification()) {
-                                $channels .= $notification ? $this->getLink(
+                                $channels .= $notification ? $this->getLinkMultiParam(
                                         "web",
-                                        $notification->getId(),
-                                        'doctor_office_notification_show'
+                                        [
+                                            'notification' => $notification->getWebNotification()->getNotification()->getId(),
+                                            'patient' => $notification->getWebNotification()->getNotification()->getPatientNotification()->getPatient()->getId(),
+                                        ],
+                                        'doctor_office_patient_notification_show'
                                     ) . "<br>" : '';
-                            } elseif ($notification->getEmailNotification()) {
-                                $channels .= $notification ? $this->getLink(
+                            }
+                            elseif ($notification->getEmailNotification()) {
+                                $channels .= $notification ? $this->getLinkMultiParam(
                                         "email",
-                                        $notification->getId(),
-                                        'doctor_office_notification_show'
+                                        [
+                                            'notification' => $notification->getEmailNotification()->getNotification()->getId(),
+                                            'patient' => $notification->getEmailNotification()->getNotification()->getPatientNotification()->getPatient()->getId(),
+                                        ],
+                                        'doctor_office_patient_notification_show'
                                     ) . "<br>" : '';
-                            } elseif ($notification->getSmsNotification()) {
-                                $channels .= $notification ? $this->getLink(
+                            }
+                            elseif ($notification->getSmsNotification()) {
+                                $channels .= $notification ? $this->getLinkMultiParam(
                                         "sms",
-                                        $notification->getId(),
-                                        'doctor_office_notification_show'
+                                        [
+                                            'notification' => $notification->getSmsNotification()->getNotification()->getId(),
+                                            'patient' => $notification->getSmsNotification()->getNotification()->getPatientNotification()->getPatient()->getId(),
+                                        ],
+                                        'doctor_office_patient_notification_show'
                                     ) . "<br>" : '';
                             }
                         }
