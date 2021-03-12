@@ -3,6 +3,7 @@
 namespace App\Services\EntityActions\Creator;
 
 use App\Services\EntityActions\AbstractEntityActionsService;
+use App\Services\EntityActions\EntityActionsInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -12,9 +13,6 @@ use Exception;
  */
 abstract class AbstractCreatorService extends AbstractEntityActionsService
 {
-    /** @var string */
-    protected $entityClass;
-
     /**
      * AbstractCreatorService constructor.
      * @param EntityManagerInterface $entityManager
@@ -25,18 +23,20 @@ abstract class AbstractCreatorService extends AbstractEntityActionsService
     {
         parent::__construct($entityManager);
         $this->setEntityClass($entityClass);
-        $this->create();
     }
 
-//    /**
-//     * Actions with entity before submitting and validating form
-//     * @param array $options
-//     * @throws Exception
-//     */
-//    public function before(array $options = []): void
-//    {
-//        parent::before();
-//    }
+    /**
+     * Actions with entity before submitting and validating form
+     * @param array $options
+     * @return EntityActionsInterface
+     * @throws Exception
+     */
+    public function before(array $options = []): EntityActionsInterface
+    {
+        parent::before($options);
+        $this->create();
+        return $this;
+    }
 
     /**
      * Creates entity end sets as property of entity actions service

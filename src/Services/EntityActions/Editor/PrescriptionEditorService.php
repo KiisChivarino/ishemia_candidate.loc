@@ -2,45 +2,48 @@
 
 namespace App\Services\EntityActions\Editor;
 
+use App\Entity\MedicalRecord;
 use App\Entity\Prescription;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
  * Class PrescriptionEditorService
+ * edits prescription
  * @package App\Services\EntityActions\Editor
  */
 class PrescriptionEditorService extends AbstractEditorService
 {
-
+    /** @var string Name of option: entity MedicalRecord */
+    public const MEDICAL_RECORD_OPTION_NAME = 'medicalRecord';
     /**
-     * PrescriptionEditorService constructor.
-     * @param EntityManagerInterface $entityManager
+     * Actions with editing prescription before persist
      * @throws Exception
      */
-    public function __construct(
-        EntityManagerInterface $entityManager, $entity)
-    {
-        parent::__construct($entityManager, $entity);
-    }
-
-
     protected function prepare(): void
     {
         /** @var Prescription $prescription */
         $prescription = $this->getEntity();
-        if($prescription->getIsCompleted() && !$prescription->getCompletedTime()){
-            $this->medicalRecordCreatorService->execute(
-                [
-                    'medicalHistory' => $prescription->getMedicalHistory(),
-                ]
-            );
+        if ($prescription->getIsCompleted() && !$prescription->getCompletedTime()) {
+            $prescription->setMedicalRecord($this->options[self::MEDICAL_RECORD_OPTION_NAME]);
             $prescription->setCompletedTime(new DateTime());
         }
     }
 
+    /**
+     * Sets completed status for prescription
+     */
+    public function completePrescription(): self
+    {
+        $this->getEntity()->setIsCompleted(true);
+        return $this;
+    }
+
+    /**
+     * Registers options
+     */
     protected function configureOptions(): void
     {
+        $this->addOptionCheck(MedicalRecord::class, self::MEDICAL_RECORD_OPTION_NAME);
     }
 }

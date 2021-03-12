@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -28,19 +26,12 @@ class PrescriptionAppointmentRepository extends AppRepository
     }
 
     /**
+     * Returns count of appointments
      * @param Prescription $prescription
      * @return int
-     * @throws NoResultException
-     * @throws NonUniqueResultException
      */
-    public function getEnabledAppointmentsCount(Prescription $prescription): int
+    public function countPrescriptionAppointmentsByPrescription(Prescription $prescription): int
     {
-        return $this->createQueryBuilder('pa')
-            ->select('count(pa.id)')
-            ->where('pa.enabled = true')
-            ->andWhere('pa.prescription = :prescription')
-            ->setParameter('prescription', $prescription)
-            ->getQuery()
-            ->getSingleScalarResult();
+        return $this->count(['prescription' => $prescription, 'enabled' => true]);
     }
 }

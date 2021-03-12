@@ -4,42 +4,41 @@ namespace App\Services\EntityActions\Creator;
 
 use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
-use App\Repository\MedicalRecordRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
  * Class MedicalRecordCreatorService
+ * Receives today's medical record or creates new one if it is not exists
+ *
  * @package App\Services\EntityActions\Creator
  */
 class MedicalRecordCreatorService extends AbstractCreatorService
 {
-    /**
-     * @var MedicalRecordRepository
-     */
-    private $medicalRecordRepository;
+    /** @var string Name of option: MedicalHistory entity */
+    public const MEDICAL_HISTORY_OPTION_NAME = 'medicalHistory';
 
     /**
      * MedicalRecordCreatorService constructor.
-     * @param MedicalRecordRepository $medicalRecordRepository
      * @param EntityManagerInterface $entityManager
      * @throws Exception
      */
-    public function __construct(MedicalRecordRepository $medicalRecordRepository, EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         parent::__construct($entityManager, MedicalRecord::class);
-        $this->medicalRecordRepository = $medicalRecordRepository;
     }
 
     /**
+     * Creates new medical record or sets medical record with the current date if it exists
      * @throws Exception
      */
     public function create(): void
     {
         $medicalRecord = null;
-        $medicalHistory = $this->options['medicalHistory'];
-        $medicalRecord = $this->medicalRecordRepository->getMedicalRecord($medicalHistory);
+        $medicalHistory = $this->options[self::MEDICAL_HISTORY_OPTION_NAME];
+        $medicalRecord = $this->entityManager->getRepository(MedicalRecord::class)
+            ->getMedicalRecord($medicalHistory);
         if ($medicalRecord === null) {
             parent::create();
             $this->getEntity()
@@ -53,8 +52,8 @@ class MedicalRecordCreatorService extends AbstractCreatorService
     /**
      * @throws Exception
      */
-    protected function configureOptions():void
+    protected function configureOptions(): void
     {
-        $this->addOptionCheck(MedicalHistory::class, 'medicalHistory');
+        $this->addOptionCheck(MedicalHistory::class, self::MEDICAL_HISTORY_OPTION_NAME);
     }
 }

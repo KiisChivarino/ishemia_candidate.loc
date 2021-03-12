@@ -71,17 +71,29 @@
         }
     ) }}
 
-<div class="buttons">
-    <button class="button main-button"
-            onclick="location.href='{{ path(
-                'doctor_medical_history',
-                {
-                    'id': patient.id,
-                }
-            ) }}';">
-        Выйти
-    </button>
-</div>
+    <div class="buttons">
+        <button class="button main-button"
+                onclick="location.href='{{ path(
+                    'doctor_medical_history',
+                    {
+                        'id': patient.id,
+                    }
+                ) }}';">
+            Выйти
+        </button>
+        {% if(countPrescriptionChildren(prescription)>0) %}
+            <button class="button main-button"
+                    onclick="location.href='{{ path(
+                        'complete_prescription',
+                        {
+                            'patient': patient.id,
+                            'prescription' : prescription.id
+                        }
+                    ) }}';">
+                Завершить назначение
+            </button>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}

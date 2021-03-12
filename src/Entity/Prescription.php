@@ -196,7 +196,11 @@ class Prescription
      */
     public function getPrescriptionMedicines(): Collection
     {
-        return $this->prescriptionMedicines;
+        return $this->prescriptionMedicines->filter(
+            function (PrescriptionMedicine $prescriptionMedicine) {
+                return $prescriptionMedicine->getEnabled();
+            }
+        );
     }
 
     /**
@@ -292,7 +296,11 @@ class Prescription
      */
     public function getPrescriptionTestings(): Collection
     {
-        return $this->prescriptionTestings;
+        return $this->prescriptionTestings->filter(
+            function (PrescriptionTesting $prescriptionTesting) {
+                return $prescriptionTesting->getEnabled();
+            }
+        );
     }
 
     /**
@@ -351,7 +359,11 @@ class Prescription
      */
     public function getPrescriptionAppointments(): Collection
     {
-        return $this->prescriptionAppointments;
+        return $this->prescriptionAppointments->filter(
+            function (PrescriptionAppointment $prescriptionMedicine) {
+                return $prescriptionMedicine->getEnabled();
+            }
+        );
     }
 
     public function addPrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self

@@ -6,8 +6,6 @@ use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
 use App\Repository\PrescriptionAppointmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 
 /**
  * Class PatientAppointmentInfoService
@@ -64,14 +62,12 @@ class PatientAppointmentInfoService
      * @param Prescription $prescription
      * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
      * @return bool
-     * @throws NoResultException
-     * @throws NonUniqueResultException
      */
     public static function isAppointmentNotExists(
         Prescription $prescription,
         PrescriptionAppointmentRepository $prescriptionAppointmentRepository
     ): bool
     {
-        return $prescriptionAppointmentRepository->getEnabledAppointmentsCount($prescription) == 0;
+        return $prescriptionAppointmentRepository->countPrescriptionAppointmentsByPrescription($prescription) == 0;
     }
 }

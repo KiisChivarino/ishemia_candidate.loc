@@ -11,6 +11,8 @@ use Exception;
  */
 abstract class AbstractEntityActionsService implements EntityActionsInterface
 {
+    /** @var string */
+    protected $entityClass;
 
     /**
      * @var EntityManagerInterface
@@ -71,24 +73,41 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
 
     /**
      * @param array $options
+     * @return AbstractEntityActionsService
      * @throws Exception
      */
-    public function execute(array $options = []): void
+    public function execute(array $options = []): EntityActionsInterface
     {
         $this->before($options);
         $this->after($options);
+        return $this;
+    }
+
+    /**
+     * @param array $options
+     * @return EntityActionsInterface
+     * @throws Exception
+     */
+    public function before(array $options = []): EntityActionsInterface
+    {
+        $this->configureOptions();
+        $this->setOptions($options);
+
+        return $this;
     }
 
     /**
      * Operations after submitting and validation form
      * @param array|null $options
+     * @return EntityActionsInterface
      * @throws Exception
      */
-    public function after(array $options = []): void
+    public function after(array $options = []): EntityActionsInterface
     {
         $this->setOptions($options);
         $this->prepare();
         $this->persist();
+        return $this;
     }
 
     /**
@@ -134,16 +153,6 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     }
 
     /**
-     * @param array $options
-     * @throws Exception
-     */
-    public function before(array $options = []): void
-    {
-        $this->configureOptions();
-        $this->setOptions($options);
-    }
-
-    /**
      * @return mixed
      */
     public function getEntity()
@@ -152,7 +161,7 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     }
 
     /**
-     * Set entity class and set options: name of option and type of option
+     * Registers options: name of option and type of option
      */
     abstract protected function configureOptions(): void;
 }

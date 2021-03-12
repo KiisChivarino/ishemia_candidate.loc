@@ -5,6 +5,11 @@ namespace App\Services\EntityActions\Builder;
 use App\Services\EntityActions\EntityActionsInterface;
 use Closure;
 
+/**
+ * Class EntityActionsBuilder
+ * for working with multiple objects of EntityActionsService
+ * @package App\Services\EntityActions\Builder
+ */
 abstract class EntityActionsBuilder
 {
     /**

@@ -5,6 +5,7 @@ namespace App\Services\EntityActions\Creator;
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
 use App\Entity\Staff;
+use App\Services\EntityActions\EntityActionsInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -35,13 +36,15 @@ class PrescriptionCreatorService extends AbstractCreatorService
      * Actions with entity before submiting form
      * @param array $options
      * @param null $entity
+     * @return EntityActionsInterface
      * @throws Exception
      */
-    public function before(array $options = [], $entity = null): void
+    public function before(array $options = [], $entity = null): EntityActionsInterface
     {
         /** Create prescription, set enabled=true */
         parent::before($options);
         $this->getEntity()->setMedicalHistory($this->options['medicalHistory']);
+        return $this;
     }
 
     /**

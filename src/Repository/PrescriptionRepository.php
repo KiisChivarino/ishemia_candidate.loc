@@ -105,4 +105,18 @@ class PrescriptionRepository extends AppRepository
             ->andWhere('mH.dateEnd IS NULL')
             ->andWhere('u.enabled = true');
     }
+
+    /**
+     * Get count of special prescription
+     * @param Prescription $prescription
+     * @return int
+     */
+    public function getSpecialPrescriptionsCount(Prescription $prescription): int
+    {
+        return $this->count(
+            [
+                'prescription' => $prescription, 'enabled' => true
+            ]
+        );
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
+use App\Controller\DoctorOffice\MedicalHistoryController;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\Prescription;
@@ -10,13 +11,17 @@ use App\Entity\PrescriptionTesting;
 use App\Services\DataTable\DataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionAppointmentDataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionTestingDataTableService;
+use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
+use App\Services\EntityActions\Editor\PrescriptionEditorService;
+use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Exception;
 use Omines\DataTablesBundle\DataTable;
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -72,16 +77,17 @@ class PrescriptionController extends DoctorOfficeAbstractController
     {
         $this->templateService->new();
         $entityManager = $this->getDoctrine()->getManager();
-        $staff = $this->getStaff($patient);
-        $medicalHistory = $entityManager->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient);
         $prescriptionCreatorService = new PrescriptionCreatorService($entityManager);
         $prescriptionCreatorService->execute(
             [
-                PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
-                PrescriptionCreatorService::STAFF_OPTION => $staff,
+                PrescriptionCreatorService::MEDICAL_HISTORY_OPTION =>
+                    $entityManager->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient),
+                PrescriptionCreatorService::STAFF_OPTION => $this->getStaff($patient),
             ]
         );
-        $this->flushToMedicalHistory($patient);
+        if (!$this->flush()) {
+            $this->redirectToMedicalHistory($patient);
+        }
         $this->setLogCreate($prescriptionCreatorService->getEntity());
         return $this->redirectToRoute(
             'add_prescription_show', [
@@ -97,7 +103,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
      *     "patient/{patient}/prescription/{prescription}/show",
      *     name="add_prescription_show",
      *     methods={"GET", "POST"},
-     *     requirements={"patient"="\d+"}
+     *     requirements={"patient"="\d+", "prescription"="\d+"}
      *     )
      * @param Patient $patient
      * @param Prescription $prescription
@@ -115,6 +121,14 @@ class PrescriptionController extends DoctorOfficeAbstractController
         PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService
     ): Response
     {
+        if ($prescription->getIsCompleted()) {
+            return $this->redirectToRoute(
+                MedicalHistoryController::DOCTOR_MEDICAL_HISTORY_ROUTE,
+                [
+                    'id' => $prescription->getMedicalHistory()->getPatient()->getId()
+                ]
+            );
+        }
         $this->templateService->show($patient);
         $prescriptionTestingTable = $this->generatePrescriptionTestingDataTable(
             $request,
@@ -122,9 +136,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
             $patient,
             $prescription
         );
-        if (
-        $prescriptionTestingTable->isCallback()
-        ) {
+        if ($prescriptionTestingTable->isCallback()) {
             return $prescriptionTestingTable->getResponse();
         }
         $prescriptionAppointmentTable = $this->generatePrescriptionAppointmentDataTable(
@@ -133,9 +145,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
             $patient,
             $prescription
         );
-        if (
-        $prescriptionAppointmentTable->isCallback()
-        ) {
+        if ($prescriptionAppointmentTable->isCallback()) {
             return $prescriptionAppointmentTable->getResponse();
         }
         return $this->render(
@@ -155,7 +165,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
      *     "patient/{patient}/prescription/{prescription}/prescription_testing/{prescriptionTesting}/delete",
      *     name="prescription_testing_delete",
      *     methods={"DELETE"},
-     *     requirements={"patient"="\d+"}
+     *     requirements={"patient"="\d+", "prescription"="\d+"}
      *     )
      *
      * @param Request $request
@@ -180,6 +190,39 @@ class PrescriptionController extends DoctorOfficeAbstractController
             ]
         );
         return $this->responseDelete($request, $prescriptionTesting);
+    }
+
+    /**
+     * Sets prescription completed and redirects to medical history page
+     * @Route(
+     *     "patient/{patient}/prescription/{prescription}/complete",
+     *     name="complete_prescription",
+     *     methods={"GET"},
+     *     requirements={"patient"="\d+", "prescription"="\d+"}
+     * )
+     * @param Prescription $prescription
+     * @return RedirectResponse
+     * @throws Exception
+     */
+    public function completePrescription(
+        Prescription $prescription
+    ): RedirectResponse
+    {
+        if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription) && !$prescription->getIsCompleted()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            (new PrescriptionEditorService($entityManager, $prescription))->before()->completePrescription()->after(
+                [
+                    PrescriptionEditorService::MEDICAL_RECORD_OPTION_NAME =>
+                        (new MedicalRecordCreatorService($entityManager))->execute(
+                        [
+                            MedicalRecordCreatorService::MEDICAL_HISTORY_OPTION_NAME => $prescription->getMedicalHistory(),
+                        ]
+                    )->getEntity()
+                ]
+            );
+            $entityManager->flush();
+        }
+        return $this->redirectToMedicalHistory($prescription->getMedicalHistory()->getPatient());
     }
 
     /**

@@ -3,8 +3,6 @@
 namespace App\Services\InfoService;
 
 use App\Entity\Prescription;
-use App\Entity\PrescriptionMedicine;
-use App\Entity\PrescriptionTesting;
 
 /**
  * Class PrescriptionInfoService
@@ -23,9 +21,9 @@ class PrescriptionInfoService
     static public function getPrescriptionTitle(Prescription $prescription): string
     {
         return
-            'Врач: '.
-            (new AuthUserInfoService())->getFIO($prescription->getStaff()->getAuthUser()).
-            ', История болезни: '.
+            'Врач: ' .
+            (new AuthUserInfoService())->getFIO($prescription->getStaff()->getAuthUser()) .
+            ', История болезни: ' .
             (new MedicalHistoryInfoService())->getMedicalHistoryTitle($prescription->getMedicalHistory());
     }
 
@@ -38,22 +36,19 @@ class PrescriptionInfoService
      */
     static public function countChildren(Prescription $prescription): int
     {
-        $prescriptionMedicines = count(
-            array_filter(
-                $prescription->getPrescriptionMedicines()->toArray(),
-                function (PrescriptionMedicine $prescriptionMedicine) {
-                    return $prescriptionMedicine->getEnabled();
-                }
-            )
-        );
-        $prescriptionTestings = count(
-            array_filter(
-                $prescription->getPrescriptionTestings()->toArray(),
-                function (PrescriptionTesting $prescriptionTesting) {
-                    return $prescriptionTesting->getEnabled();
-                }
-            )
-        );
-        return $prescriptionMedicines + $prescriptionTestings;
+        return
+            $prescription->getPrescriptionMedicines()->count() +
+            $prescription->getPrescriptionTestings()->count() +
+            $prescription->getPrescriptionAppointments()->count();
+    }
+
+    /**
+     * Check for exists special prescriptions
+     * @param Prescription $prescription
+     * @return bool
+     */
+    static public function isSpecialPrescriptionsExists(Prescription $prescription): bool
+    {
+        return self::countChildren($prescription) > 0;
     }
 }

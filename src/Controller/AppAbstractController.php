@@ -758,7 +758,8 @@ abstract class AppAbstractController extends AbstractController
      * @param string $entityName
      * @param $entity
      */
-    protected function setLogDelete(string $entityName, $entity): void {
+    protected function setLogDelete(string $entityName, $entity): void
+    {
         $entityManager = $this->getDoctrine()->getManager();
         /** @noinspection PhpParamsInspection */
         (new LogService($entityManager))
@@ -797,13 +798,23 @@ abstract class AppAbstractController extends AbstractController
         try {
             $this->getDoctrine()->getManager()->flush();
         } catch (DBALException $e) {
-            $this->addFlash('error', 'Не удалось сохранить запись!');
+            $this->addFlash(
+                'error',
+                $this->translator->trans('app_abstract_controller.error.dbal_exception')
+            );
             return false;
         } catch (Exception $e) {
-            $this->addFlash('error', 'Ошибка cохранения записи!');
+            $this->addFlash(
+                'error',
+                $this->translator->trans('app_abstract_controller.error.exception'));
             return false;
         }
-        $this->addFlash('success', 'Запись успешно сохранена!');
+        $this->addFlash(
+            'success',
+            $this->translator->trans(
+                'app_abstract_controller.success.add'
+            )
+        );
         return true;
     }
 
@@ -876,10 +887,10 @@ abstract class AppAbstractController extends AbstractController
 
     /**
      * Returns MedicalHistory entity by GET parameter
-     * @todo сделать нормальные роуты в админке и убрать этот дебильный метод!!!
      * @param Request $request
      * @return MedicalHistory|object|RedirectResponse
      * @throws Exception
+     * @todo сделать нормальные роуты в админке и убрать этот дебильный метод!!!
      */
     protected function getMedicalHistoryByParameter(Request $request): MedicalHistory
     {
@@ -892,10 +903,10 @@ abstract class AppAbstractController extends AbstractController
 
     /**
      * Returns Prescription entity by GET parameter
-     * @todo сделать нормальные роуты в админке и убрать этот дебильный метод!!!
      * @param Request $request
      * @return Prescription|object|RedirectResponse
      * @throws Exception
+     * @todo сделать нормальные роуты в админке и убрать этот дебильный метод!!!
      */
     protected function getPrescriptionByParameter(Request $request): Prescription
     {

@@ -17,10 +17,9 @@ use App\Services\InfoService\PatientAppointmentInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\InfoService\PlanTestingInfoService;
+use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\InfoService\PrescriptionTestingInfoService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -136,16 +135,22 @@ class AppExtension extends AbstractExtension
                     'isEmptyPatientTestingResults'
                 ]
             ),
-             new TwigFunction(
-                 'globals', [
-                     $this,
-                     'globals'
-                 ]
-             ),
+            new TwigFunction(
+                'globals', [
+                    $this,
+                    'globals'
+                ]
+            ),
             new TwigFunction(
                 'isAppointmentNotExists', [
                     $this,
                     'isAppointmentNotExists'
+                ]
+            ),
+            new TwigFunction(
+                'countPrescriptionChildren', [
+                    $this,
+                    'countPrescriptionChildren'
                 ]
             ),
         ];
@@ -287,8 +292,6 @@ class AppExtension extends AbstractExtension
      * Check for empty Appointment
      * @param Prescription $prescription
      * @return bool
-     * @throws NoResultException
-     * @throws NonUniqueResultException
      */
     public function isAppointmentNotExists(
         Prescription $prescription
@@ -298,5 +301,15 @@ class AppExtension extends AbstractExtension
             $prescription,
             $this->prescriptionAppointmentRepository
         );
+    }
+
+    /**
+     * Returns count of prescription children
+     * @param Prescription $prescription
+     * @return int
+     */
+    public function countPrescriptionChildren(Prescription $prescription): int
+    {
+        return PrescriptionInfoService::countChildren($prescription);
     }
 }
