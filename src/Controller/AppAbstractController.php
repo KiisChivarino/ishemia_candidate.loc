@@ -370,7 +370,7 @@ abstract class AppAbstractController extends AbstractController
         string $type = null
     )
     {
-        $renderForm = $this->renderForm($formName, $this->getRenderFormParameters($form));
+        $renderForm = $this->renderForm($formName, $this->getRenderFormParameters($form, ['entity' => $entity]));
         if (!$this->handleRequest($request, $form)) {
             return $renderForm;
         }

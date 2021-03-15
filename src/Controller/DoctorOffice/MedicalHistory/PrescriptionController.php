@@ -14,7 +14,11 @@ use App\Services\DataTable\DoctorOffice\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\EntityActions\Editor\PrescriptionEditorService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
+use App\Services\Notification\NotificationData;
+use App\Services\Notification\NotificationsServiceBuilder;
+use App\Services\Notification\NotifierService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Exception;
@@ -43,20 +47,36 @@ class PrescriptionController extends DoctorOfficeAbstractController
     const TEMPLATE_PATH = 'doctorOffice/patient_prescription/';
 
     /**
+     * @var NotifierService
+     */
+    private $notifier;
+
+    /**
+     * @var NotificationsServiceBuilder
+     */
+    private $notificationServiceBuilder;
+
+    /**
      * PatientPrescriptionController constructor.
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param NotifierService $notifier
+     * @param NotificationsServiceBuilder $notificationServiceBuilder
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        NotifierService $notifier,
+        NotificationsServiceBuilder $notificationServiceBuilder
     )
     {
         parent::__construct($translator);
         $this->templateService = new AddPatientPrescriptionTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
+        $this->notifier = $notifier;
+        $this->notificationServiceBuilder = $notificationServiceBuilder;
     }
 
     /**
@@ -214,13 +234,53 @@ class PrescriptionController extends DoctorOfficeAbstractController
                 [
                     PrescriptionEditorService::MEDICAL_RECORD_OPTION_NAME =>
                         (new MedicalRecordCreatorService($entityManager))->execute(
-                        [
-                            MedicalRecordCreatorService::MEDICAL_HISTORY_OPTION_NAME => $prescription->getMedicalHistory(),
-                        ]
-                    )->getEntity()
+                            [
+                                MedicalRecordCreatorService::MEDICAL_HISTORY_OPTION_NAME => $prescription->getMedicalHistory(),
+                            ]
+                        )->getEntity()
                 ]
             );
-            $entityManager->flush();
+            foreach ($prescription->getPrescriptionTestings() as $prescriptionTesting) {
+                $notificationServiceBuilder = $this->notificationServiceBuilder
+                    ->makeTestingAppointmentNotification(
+                        new NotificationData(
+                            $this->getDoctrine()->getManager(),
+                            $prescription->getMedicalHistory()->getPatient(),
+                            $prescription->getMedicalHistory(),
+                            $prescription->getMedicalRecord()
+                        ),
+                        $prescriptionTesting->getPatientTesting()->getAnalysisGroup()->getName(),
+                        $prescriptionTesting->getPlannedDate()->format('d.m.Y')
+                    );
+                $this->notifier->notifyPatient(
+                    $notificationServiceBuilder->getWebNotificationService(),
+                    $notificationServiceBuilder->getSMSNotificationService(),
+                    $notificationServiceBuilder->getEmailNotificationService()
+                );
+                $entityManager->flush();
+            }
+            foreach ($prescription->getPrescriptionAppointments() as $prescriptionAppointment){
+                $notificationServiceBuilder = $this->notificationServiceBuilder
+                    ->makeDoctorAppointmentNotification(
+                        new NotificationData(
+                            $this->getDoctrine()->getManager(),
+                            $prescription->getMedicalHistory()->getPatient(),
+                            $prescription->getMedicalHistory(),
+                            $prescription->getMedicalRecord()
+                        ),
+                        AuthUserInfoService::getFIO(
+                            $prescriptionAppointment->getPatientAppointment()->getStaff()->getAuthUser(),
+                            true
+                        ),
+                        $prescriptionAppointment->getPlannedDateTime()->format('d.m.Y i:s')
+                    );
+                $this->notifier->notifyPatient(
+                    $notificationServiceBuilder->getWebNotificationService(),
+                    $notificationServiceBuilder->getSMSNotificationService(),
+                    $notificationServiceBuilder->getEmailNotificationService()
+                );
+                $entityManager->flush();
+            }
         }
         return $this->redirectToMedicalHistory($prescription->getMedicalHistory()->getPatient());
     }
