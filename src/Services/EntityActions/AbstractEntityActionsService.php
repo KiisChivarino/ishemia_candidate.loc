@@ -154,6 +154,7 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     }
 
     /**
+     * Returns entity of service
      * @return mixed
      */
     public function getEntity()
