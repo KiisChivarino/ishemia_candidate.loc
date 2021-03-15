@@ -49,18 +49,4 @@ abstract class AbstractCreatorService extends AbstractEntityActionsService
             $this->entity->setEnabled(true);
         }
     }
-
-    /**
-     * Sets entity class for creator service
-     * @param string $entityClass
-     * @throws Exception
-     */
-    protected function setEntityClass(string $entityClass): void
-    {
-        if (class_exists($entityClass)) {
-            $this->entityClass = $entityClass;
-        } else {
-            throw new Exception('Class ' . $entityClass . ' does not exists!');
-        }
-    }
 }

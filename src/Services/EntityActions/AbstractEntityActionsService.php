@@ -3,6 +3,7 @@
 namespace App\Services\EntityActions;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Proxy;
 use Exception;
 
 /**
@@ -164,4 +165,34 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
      * Registers options: name of option and type of option
      */
     abstract protected function configureOptions(): void;
+
+    /**
+     * Sets entity class for creator service
+     * @param string $entityClass
+     * @throws Exception
+     */
+    protected function setEntityClass(string $entityClass): void
+    {
+        if ($this->isEntity($this->entityManager, $entityClass)) {
+            $this->entityClass = $entityClass;
+        } else {
+            throw new Exception('Class ' . $entityClass . ' does not exists!');
+        }
+    }
+
+    /**
+     * Check for class or object is entity
+     * @param EntityManagerInterface $em
+     * @param $class
+     * @return bool
+     */
+    function isEntity(EntityManagerInterface $em, $class) : bool
+    {
+        if (is_object($class)) {
+            $class = ($class instanceof Proxy)
+                ? get_parent_class($class)
+                : get_class($class);
+        }
+        return ! $em->getMetadataFactory()->isTransient($class);
+    }
 }

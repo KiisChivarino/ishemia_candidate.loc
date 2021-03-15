@@ -21,6 +21,7 @@ abstract class AbstractEditorService extends AbstractEntityActionsService
     public function __construct(EntityManagerInterface $entityManager, $entity)
     {
         parent::__construct($entityManager);
+        $this->setEntityClass(get_class($entity));
         $this->setEntity($entity);
     }
 }
