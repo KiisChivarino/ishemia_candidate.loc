@@ -20,7 +20,7 @@ class PatientAppointment
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", options={"comment"="Ключ приема пациента"})
+     * @ORM\Column(type="integer", options={"comment"="Ключ приема пациента"}, nullable=true)
      */
     private $id;
 
@@ -91,7 +91,7 @@ class PatientAppointment
 
     /**
      * @ORM\OneToOne(targetEntity=PrescriptionAppointment::class, mappedBy="patientAppointment", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $prescriptionAppointment;
 
@@ -120,9 +120,9 @@ class PatientAppointment
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
