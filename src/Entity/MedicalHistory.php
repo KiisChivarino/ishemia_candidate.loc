@@ -17,7 +17,7 @@ class MedicalHistory
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", options={"comment"="Ключ истории болезни"})
+     * @ORM\Column(type="integer", options={"comment"="Ключ истории болезни"}, nullable=false)
      */
     private $id;
 
@@ -28,7 +28,7 @@ class MedicalHistory
     private $patient;
 
     /**
-     * @ORM\Column(type="date", options={"comment"="Дата открытия"})
+     * @ORM\Column(type="date", options={"comment"="Дата открытия"}, nullable=false)
      */
     private $dateBegin;
 
@@ -49,37 +49,43 @@ class MedicalHistory
     private $lifeHistory;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
+     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true}, nullable=false)
      */
     private $enabled;
 
     /**
      * @ORM\OneToMany(targetEntity=MedicalRecord::class, mappedBy="medicalHistory", orphanRemoval=true)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $medicalRecords;
 
     /**
      * @ORM\OneToMany(targetEntity=Prescription::class, mappedBy="medicalHistory", orphanRemoval=true)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $prescriptions;
 
     /**
      * @ORM\OneToMany(targetEntity=PatientTesting::class, mappedBy="medicalHistory", orphanRemoval=true)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $patientTestings;
 
     /**
      * @ORM\OneToMany(targetEntity=PatientAppointment::class, mappedBy="medicalHistory", orphanRemoval=true,cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $patientAppointments;
 
     /**
      * @ORM\OneToOne(targetEntity=PatientDischargeEpicrisis::class, mappedBy="medicalHistory", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $patientDischargeEpicrisis;
 
     /**
      * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalHistory")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $patientNotifications;
 
@@ -102,36 +108,36 @@ class MedicalHistory
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @return Patient|null
+     * @return Patient
      */
-    public function getPatient(): ?Patient
+    public function getPatient(): Patient
     {
         return $this->patient;
     }
 
     /**
-     * @param Patient|null $patient
+     * @param Patient $patient
      *
      * @return $this
      */
-    public function setPatient(?Patient $patient): self
+    public function setPatient(Patient $patient): self
     {
         $this->patient = $patient;
         return $this;
     }
 
     /**
-     * @return DateTimeInterface|null
+     * @return DateTimeInterface
      */
-    public function getDateBegin(): ?DateTimeInterface
+    public function getDateBegin(): DateTimeInterface
     {
         return $this->dateBegin;
     }
@@ -167,9 +173,9 @@ class MedicalHistory
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getEnabled(): ?bool
+    public function getEnabled(): bool
     {
         return $this->enabled;
     }
@@ -186,9 +192,9 @@ class MedicalHistory
     }
 
     /**
-     * @return Collection|MedicalRecord[]
+     * @return Collection|MedicalRecord[]|null
      */
-    public function getMedicalRecords(): Collection
+    public function getMedicalRecords(): ?Collection
     {
         return $this->medicalRecords;
     }
@@ -225,9 +231,9 @@ class MedicalHistory
     }
 
     /**
-     * @return Collection|Prescription[]
+     * @return Collection|Prescription[]|null
      */
-    public function getPrescriptions(): Collection
+    public function getPrescriptions(): ?Collection
     {
         return $this->prescriptions;
     }
@@ -264,9 +270,9 @@ class MedicalHistory
     }
 
     /**
-     * @return Collection|PatientTesting[]
+     * @return Collection|PatientTesting[]|null
      */
-    public function getPatientTestings(): Collection
+    public function getPatientTestings(): ?Collection
     {
         return $this->patientTestings;
     }
@@ -303,9 +309,9 @@ class MedicalHistory
     }
 
     /**
-     * @return Collection|PatientAppointment[]
+     * @return Collection|PatientAppointment[]|null
      */
-    public function getPatientAppointments(): Collection
+    public function getPatientAppointments(): ?Collection
     {
         return $this->patientAppointments;
     }
@@ -370,11 +376,11 @@ class MedicalHistory
     }
 
     /**
-     * @param PatientDischargeEpicrisis $patientDischargeEpicrisis
+     * @param PatientDischargeEpicrisis|null $patientDischargeEpicrisis
      *
      * @return $this
      */
-    public function setPatientDischargeEpicrisis(PatientDischargeEpicrisis $patientDischargeEpicrisis): self
+    public function setPatientDischargeEpicrisis(?PatientDischargeEpicrisis $patientDischargeEpicrisis): self
     {
         $this->patientDischargeEpicrisis = $patientDischargeEpicrisis;
         // set the owning side of the relation if necessary
@@ -403,9 +409,9 @@ class MedicalHistory
     }
 
     /**
-     * @return Collection|PatientNotification[]
+     * @return Collection|PatientNotification[]|null
      */
-    public function getPatientNotifications(): Collection
+    public function getPatientNotifications(): ?Collection
     {
         return $this->patientNotifications;
     }
