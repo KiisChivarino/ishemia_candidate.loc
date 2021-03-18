@@ -20,7 +20,7 @@ class PatientAppointment
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", options={"comment"="Ключ приема пациента"}, nullable=true)
+     * @ORM\Column(type="integer", options={"comment"="Ключ приема пациента"}, nullable=false)
      */
     private $id;
 
