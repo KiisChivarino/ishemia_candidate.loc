@@ -370,18 +370,18 @@ class PatientAppointment
     }
 
     /**
-     * @return PrescriptionAppointment
+     * @return PrescriptionAppointment|null
      */
-    public function getPrescriptionAppointment(): PrescriptionAppointment
+    public function getPrescriptionAppointment(): ?PrescriptionAppointment
     {
         return $this->prescriptionAppointment;
     }
 
     /**
-     * @param PrescriptionAppointment $prescriptionAppointment
+     * @param PrescriptionAppointment|null $prescriptionAppointment
      * @return $this
      */
-    public function setPrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
+    public function setPrescriptionAppointment(?PrescriptionAppointment $prescriptionAppointment): self
     {
         $this->prescriptionAppointment = $prescriptionAppointment;
 

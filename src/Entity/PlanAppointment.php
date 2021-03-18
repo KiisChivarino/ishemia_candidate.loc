@@ -68,28 +68,28 @@ class PlanAppointment
     }
 
     /**
-     * @return TimeRange|null
+     * @return TimeRange
      */
-    public function getTimeRange(): ?TimeRange
+    public function getTimeRange(): TimeRange
     {
         return $this->timeRange;
     }
 
     /**
-     * @param TimeRange|null $timeRange
+     * @param TimeRange $timeRange
      *
      * @return $this
      */
-    public function setTimeRange(?TimeRange $timeRange): self
+    public function setTimeRange(TimeRange $timeRange): self
     {
         $this->timeRange = $timeRange;
         return $this;
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getTimeRangeCount(): ?int
+    public function getTimeRangeCount(): int
     {
         return $this->timeRangeCount;
     }
