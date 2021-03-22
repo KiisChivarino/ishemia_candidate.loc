@@ -450,10 +450,10 @@ class MedicalHistory
     }
 
     /**
-     * @param ClinicalDiagnosis|null $clinicalDiagnosis
+     * @param ClinicalDiagnosis $clinicalDiagnosis
      * @return $this
      */
-    public function setClinicalDiagnosis(?ClinicalDiagnosis $clinicalDiagnosis): self
+    public function setClinicalDiagnosis(ClinicalDiagnosis $clinicalDiagnosis): self
     {
         $this->clinicalDiagnosis = $clinicalDiagnosis;
         return $this;

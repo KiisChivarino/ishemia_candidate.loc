@@ -73,7 +73,9 @@ class MedicalHistoryController extends DoctorOfficeAbstractController
         if ($medicalHistory) {
             $firstAppointment = $patientAppointmentRepository->getFirstAppointment($medicalHistory);
             $firstTestings = $patientTestingRepository->getFirstTestings($medicalHistory);
-            $dischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis();
+            $dischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis()
+                ? $medicalHistory->getPatientDischargeEpicrisis()
+                : null;
         }
         return $this->responseShow(
             self::TEMPLATE_PATH,
