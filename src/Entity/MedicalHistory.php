@@ -55,25 +55,21 @@ class MedicalHistory
 
     /**
      * @ORM\OneToMany(targetEntity=MedicalRecord::class, mappedBy="medicalHistory", orphanRemoval=true)
-     * @ORM\JoinColumn(nullable=true)
      */
     private $medicalRecords;
 
     /**
      * @ORM\OneToMany(targetEntity=Prescription::class, mappedBy="medicalHistory", orphanRemoval=true)
-     * @ORM\JoinColumn(nullable=true)
      */
     private $prescriptions;
 
     /**
      * @ORM\OneToMany(targetEntity=PatientTesting::class, mappedBy="medicalHistory", orphanRemoval=true)
-     * @ORM\JoinColumn(nullable=true)
      */
     private $patientTestings;
 
     /**
      * @ORM\OneToMany(targetEntity=PatientAppointment::class, mappedBy="medicalHistory", orphanRemoval=true,cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
      */
     private $patientAppointments;
 
@@ -85,7 +81,6 @@ class MedicalHistory
 
     /**
      * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalHistory")
-     * @ORM\JoinColumn(nullable=true)
      */
     private $patientNotifications;
 
