@@ -31,6 +31,7 @@ Encore
     .addEntry('select2entity', './assets/js/select2entity.js')
     .addEntry('datatables', './assets/js/datatables.js')
     .addEntry('initDatatable', './assets/js/initDatatable.js')
+    .addEntry('viewHospitals', './assets/js/viewHospitals.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

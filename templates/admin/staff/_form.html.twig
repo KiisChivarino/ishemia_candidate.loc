@@ -52,4 +52,7 @@
 <div class="buttons">
     <button class="btn btn--mode">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
 </div>
+{% block javascripts %}
+    {{ encore_entry_script_tags('viewHospitals') }}
+{% endblock %}
 {{ form_end(form) }}
