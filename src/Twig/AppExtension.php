@@ -190,7 +190,9 @@ class AppExtension extends AbstractExtension
 
     /**
      * Returns patient testing title
+     *
      * @param PatientTesting $patientTesting
+     *
      * @return string
      */
     public function getPatientTestingTitle(PatientTesting $patientTesting): string
@@ -199,7 +201,10 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * Returns a string describing the unit of reference values
+     *
      * @param AnalysisRate $analysisRate
+     *
      * @return string
      */
     public function getAnalysisRate(AnalysisRate $analysisRate): string
@@ -208,7 +213,10 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * Returns enabled patient testing results by testing
+     *
      * @param PatientTesting $testing
+     *
      * @return array
      */
     public function getEnabledTestingResults(PatientTesting $testing): array
@@ -218,7 +226,9 @@ class AppExtension extends AbstractExtension
 
     /**
      * Returns info string of plan testing
+     *
      * @param PlanTesting $planTesting
+     *
      * @return string
      */
     public function getPlanTestingTitle(PlanTesting $planTesting): string
@@ -228,7 +238,9 @@ class AppExtension extends AbstractExtension
 
     /**
      * Get prescription testing info string
+     *
      * @param PrescriptionTesting $prescriptionTesting
+     *
      * @return string
      */
     public function getPrescriptionTestingTitle(PrescriptionTesting $prescriptionTesting): string
@@ -238,7 +250,9 @@ class AppExtension extends AbstractExtension
 
     /**
      * Get analysis rate info string
+     *
      * @param AnalysisRate $analysisRate
+     *
      * @return string
      */
     public function getAnalysisRateTitle(AnalysisRate $analysisRate): string
@@ -248,7 +262,9 @@ class AppExtension extends AbstractExtension
 
     /**
      * Check for empty all patient testing results
+     *
      * @param PatientTesting $patientTesting
+     *
      * @return bool
      */
     public function isEmptyPatientTestingResults(PatientTesting $patientTesting): bool
@@ -270,8 +286,12 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * Returns form name by class name
+     *
      * @param string $formClassName
+     *
      * @return string|string[]
+     *
      * @throws \ReflectionException
      */
     public function getRoleName(string $formClassName): string{
