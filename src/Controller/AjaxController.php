@@ -25,6 +25,7 @@ class AjaxController extends AbstractController
     public const JSON_PARAMETER_KEY = 'q';
 
     public const AJAX_INIT_CSS_CLASS = 'js-ajax-init';
+
     /**
      * Find diagnoses
      * @Route("/find_diagnosis_ajax", name="find_diagnosis_ajax", methods={"GET"})
@@ -60,10 +61,11 @@ class AjaxController extends AbstractController
         DiagnosisRepository $diagnosisRepository
     )
     {
-        return $this->responseAjaxMRBCodeResult(
+        return $this->responseAjaxResult(
             $diagnosisRepository->findDiagnoses(
                 $request->query->get(self::JSON_PARAMETER_KEY)
-            )
+            ),
+            "Code"
         );
     }
 
@@ -135,29 +137,6 @@ class AjaxController extends AbstractController
             $analysisGroupRepository->findAnalysisGroups(
                 $request->query->get(self::JSON_PARAMETER_KEY)
             )
-        );
-    }
-
-    /**
-     * Returns result array for ajax
-     *
-     * @param $entities
-     * @param null $textFieldName
-     *
-     * @return JsonResponse
-     */
-    private function responseAjaxMRBCodeResult($entities, $textFieldName = null): JsonResponse
-    {
-        $textMethodName = 'get' . ucfirst($textFieldName);
-        $resultArray = [];
-        foreach ($entities as $entity) {
-            $resultArray[] = [
-                'id' => $entity->getId(),
-                'text' => $textFieldName ? $entity->$textMethodName() : $entity->getCode(),
-            ];
-        }
-        return new JsonResponse(
-            $resultArray
         );
     }
 
