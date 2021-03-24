@@ -28,7 +28,7 @@ use Twig\Environment;
 class PatientNotificationListController extends DoctorOfficeAbstractController
 {
     /** @var string Путь к папке twig шаблонов */
-    const TEMPLATE_PATH = 'doctorOffice/notifications_list/';
+    const TEMPLATE_PATH = 'doctorOffice/notification/';
 
     /** @var string Путь к папке twig шаблонов с шабоном отображения уведомления пользователя */
     public const TEMPLATE_PATH_SHOW_PATIENT_NOTIFICATION = 'doctorOffice/notification/';
