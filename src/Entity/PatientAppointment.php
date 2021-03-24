@@ -381,7 +381,7 @@ class PatientAppointment
      * @param PrescriptionAppointment|null $prescriptionAppointment
      * @return $this
      */
-    public function setPrescriptionAppointment(?PrescriptionAppointment $prescriptionAppointment): self
+    public function setPrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
     {
         $this->prescriptionAppointment = $prescriptionAppointment;
 
