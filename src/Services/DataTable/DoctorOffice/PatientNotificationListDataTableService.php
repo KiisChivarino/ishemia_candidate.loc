@@ -118,12 +118,12 @@ class PatientNotificationListDataTableService extends DoctorOfficeDatatableServi
                                     ) . "<br>" : '';
                             }
                             elseif ($notification->getEmailNotification()) {
-                                $getEmailNotification = $notification->getEmailNotification()->getNotification();
+                                $emailNotification = $notification->getEmailNotification()->getNotification();
                                 $channels .= $notification ? $this->getLinkMultiParam(
                                         "email",
                                         [
-                                            'notification' => $getEmailNotification->getId(),
-                                            'patient' => $getEmailNotification->getPatientNotification()->getPatient()->getId(),
+                                            'notification' => $emailNotification->getId(),
+                                            'patient' => $emailNotification->getPatientNotification()->getPatient()->getId(),
                                         ],
                                         'doctor_office_patient_notification_show'
                                     ) . "<br>" : '';
