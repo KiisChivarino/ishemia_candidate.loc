@@ -25,9 +25,9 @@ class PatientAppointmentInfoService
                 $patientAppointment->getMedicalHistory()->getPatient()->getAuthUser(),
                 true
             );
-        $getStaff = $patientAppointment->getStaff();
-        $staffInfo = $getStaff
-            ? 'Врач: ' . AuthUserInfoService::getFIO($getStaff->getAuthUser(), true)
+        $staff = $patientAppointment->getStaff();
+        $staffInfo = $staff
+            ? 'Врач: ' . AuthUserInfoService::getFIO($staff->getAuthUser(), true)
             : '';
         $getPrescriptionAppointment = $patientAppointment->getPrescriptionAppointment();
         $plannedDateTimeString = $getPrescriptionAppointment
