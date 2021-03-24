@@ -129,9 +129,9 @@ class AppExtension extends AbstractExtension
                  ]
              ),
             new TwigFunction(
-                'roleName', [
+                'formName', [
                     $this,
-                    'getRoleName'
+                    'getFormName'
                 ]
             )
         ];
@@ -294,7 +294,7 @@ class AppExtension extends AbstractExtension
      *
      * @throws \ReflectionException
      */
-    public function getRoleName(string $formClassName): string{
+    public function getFormName(string $formClassName): string{
         return MultiFormService::getFormName($formClassName);
     }
 }

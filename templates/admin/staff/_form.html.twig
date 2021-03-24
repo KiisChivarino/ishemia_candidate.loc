@@ -12,7 +12,7 @@
             </li>
         {% endif %}
     {% else %}
-        {% set roleItemName = roleName('App\\Form\\Admin\\Staff\\StaffRoleType') %}
+        {% set roleItemName = formName('App\\Form\\Admin\\Staff\\StaffRoleType') %}
         {% for itemName, item in form %}
             {% if itemName == roleItemName and form[roleItemName].roles is defined %}
                 <li>
