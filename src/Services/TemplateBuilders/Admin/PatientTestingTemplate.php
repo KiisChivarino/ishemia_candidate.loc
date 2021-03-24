@@ -31,7 +31,8 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'analysisGroup' => 'Группа анализов',
         'analysisDate' => 'Проведено',
         'processed' => 'Обработано врачом',
-        'patientTestingFiles'=> 'Сканкопии результатов анализов'
+        'patientTestingFiles'=> 'Сканкопии результатов анализов',
+        'resultData' => 'Данные результатов обследования',
     ];
 
     /** @var string[] Common LIST_CONTENT */

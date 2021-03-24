@@ -140,7 +140,10 @@ class StaffController extends AdminAbstractController
                     throw $e;
                 }
                 return null;
-            }
+            },
+            null,
+            'newStaff'
+
         );
     }
 

@@ -6,4 +6,5 @@
 <div class="buttons">
     <button class="btn btn--mode">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
 </div>
+{% block javascripts %}{% endblock %}
 {{ form_end(form) }}
