@@ -84,15 +84,6 @@ class PatientNotificationListController extends DoctorOfficeAbstractController
      */
     public function show(Notification $notification, FilterService $filterService): Response
     {
-        return $this->responseShow(
-            self::TEMPLATE_PATH,
-            $notification,
-            [
-                'templateParameterFilterName' => $filterService->generateFilterName(
-                    'patient',
-                    Patient::class
-                )
-            ]
-        );
+        return $this->responseShow(self::TEMPLATE_PATH, $notification);
     }
 }
