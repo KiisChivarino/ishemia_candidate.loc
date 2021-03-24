@@ -107,12 +107,12 @@ class PatientNotificationListDataTableService extends DoctorOfficeDatatableServi
                         /** @var Notification $notification */
                         foreach ($notifications as $notification) {
                             if ($notification->getWebNotification()) {
-                                $getWebNotification = $notification->getWebNotification()->getNotification();
+                                $webNotification = $notification->getWebNotification()->getNotification();
                                 $channels .= $notification ? $this->getLinkMultiParam(
                                         "web",
                                         [
-                                            'notification' => $getWebNotification->getId(),
-                                            'patient' => $getWebNotification->getPatientNotification()->getPatient()->getId(),
+                                            'notification' => $webNotification->getId(),
+                                            'patient' => $webNotification->getPatientNotification()->getPatient()->getId(),
                                         ],
                                         'doctor_office_patient_notification_show'
                                     ) . "<br>" : '';
