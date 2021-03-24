@@ -25,21 +25,19 @@ class PatientAppointmentInfoService
                 $patientAppointment->getMedicalHistory()->getPatient()->getAuthUser(),
                 true
             );
-        $staffInfo = $patientAppointment->getStaff()
-            ? 'Врач: ' . AuthUserInfoService::getFIO($patientAppointment->getStaff()->getAuthUser(), true)
+        $getStaff = $patientAppointment->getStaff();
+        $staffInfo = $getStaff
+            ? 'Врач: ' . AuthUserInfoService::getFIO($getStaff->getAuthUser(), true)
             : '';
-        if ($patientAppointment->getPrescriptionAppointment()) {
-            $plannedDateTimeString = $patientAppointment->getPrescriptionAppointment()->getPlannedDateTime()
-                ->format(self::APPOINTMENT_TIME_FORMAT);
-        } else {
-            $plannedDateTimeString = '';
-        }
-        if ($patientAppointment->getAppointmentTime()) {
-            $appointmentTimeString = $patientAppointment->getAppointmentTime()
-                ->format(self::APPOINTMENT_TIME_FORMAT);
-        } else {
-            $appointmentTimeString = '';
-        }
+        $getPrescriptionAppointment = $patientAppointment->getPrescriptionAppointment();
+        $plannedDateTimeString = $getPrescriptionAppointment
+            ? $getPrescriptionAppointment->getPlannedDateTime()
+                ->format(self::APPOINTMENT_TIME_FORMAT)
+            : '';
+        $getAppointmentTime = $patientAppointment->getAppointmentTime();
+        $appointmentTimeString = $getAppointmentTime
+            ? $getAppointmentTime->format(self::APPOINTMENT_TIME_FORMAT)
+            : '';
         return
             is_null($patientAppointment->getAppointmentTime())
                 ?
