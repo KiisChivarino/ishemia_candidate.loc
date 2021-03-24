@@ -91,7 +91,7 @@ class PatientAppointment
 
     /**
      * @ORM\OneToOne(targetEntity=PrescriptionAppointment::class, mappedBy="patientAppointment", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $prescriptionAppointment;
 
@@ -370,15 +370,15 @@ class PatientAppointment
     }
 
     /**
-     * @return PrescriptionAppointment|null
+     * @return PrescriptionAppointment
      */
-    public function getPrescriptionAppointment(): ?PrescriptionAppointment
+    public function getPrescriptionAppointment(): PrescriptionAppointment
     {
         return $this->prescriptionAppointment;
     }
 
     /**
-     * @param PrescriptionAppointment|null $prescriptionAppointment
+     * @param PrescriptionAppointment $prescriptionAppointment
      * @return $this
      */
     public function setPrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
