@@ -17,15 +17,15 @@ class NotifierService
      * @var array
      * yaml:config/services/notifications/notification_receiver_types.yaml
      */
-    private $notificationReceiverTypes;
+    private $notificationReceiverTypeNames;
 
     /**
      * NotifierService constructor.
-     * @param array $notificationReceiverTypes
+     * @param array $notificationReceiverTypeNames
      */
-    public function __construct(array $notificationReceiverTypes)
+    public function __construct(array $notificationReceiverTypeNames)
     {
-        $this->notificationReceiverTypes = $notificationReceiverTypes;
+        $this->notificationReceiverTypeNames = $notificationReceiverTypeNames;
     }
 
     /**
@@ -41,17 +41,17 @@ class NotifierService
         EmailNotificationService $emailNotificationService
     ): void
     {
-        $webNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
+        $webNotificationService->setNotificationReceiverType($this->notificationReceiverTypeNames['patient'])->notify();
 
         if ($smsNotificationService->getNotificationData()->getPatientReceiver()->getSmsInforming()) {
-            $smsNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
+            $smsNotificationService->setNotificationReceiverType($this->notificationReceiverTypeNames['patient'])->notify();
         }
 
         if (
             $emailNotificationService->getNotificationData()->getPatientReceiver()->getEmailInforming()
             && !is_null($smsNotificationService->getNotificationData()->getPatientReceiver()->getAuthUser()->getEmail())
         ) {
-            $emailNotificationService->setNotificationReceiverType($this->notificationReceiverTypes['patient'])->notify();
+            $emailNotificationService->setNotificationReceiverType($this->notificationReceiverTypeNames['patient'])->notify();
         }
     }
 }

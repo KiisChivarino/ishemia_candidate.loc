@@ -26,23 +26,23 @@ class DataSowing
     private $channelTypes;
 
     /** @var array Константы типов получателей уведомлений */
-    private $notificationReceiverTypes;
+    private $notificationReceiverTypeNames;
 
     /**
      * DataSowing constructor.
      * @param EntityManagerInterface $entityManager
      * @param array $channelTypes
-     * @param array $notificationReceiverTypes
+     * @param array $notificationReceiverTypeNames
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         array $channelTypes,
-        array $notificationReceiverTypes
+        array $notificationReceiverTypeNames
     )
     {
         $this->entityManager = $entityManager;
         $this->channelTypes = $channelTypes;
-        $this->notificationReceiverTypes = $notificationReceiverTypes;
+        $this->notificationReceiverTypeNames = $notificationReceiverTypeNames;
     }
 
     /**
@@ -170,7 +170,7 @@ class DataSowing
     public function addReceiverTypes(): void
     {
         $i = 1;
-        foreach ($this->notificationReceiverTypes as $notificationReceiverType) {
+        foreach ($this->notificationReceiverTypeNames as $notificationReceiverType) {
             $this->addEntityFormYaml($i, $notificationReceiverType, new NotificationReceiverType());
             $i++;
         }

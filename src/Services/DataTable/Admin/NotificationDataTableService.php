@@ -71,7 +71,7 @@ class NotificationDataTableService extends AdminDatatableService
                     'render' => function (string $data, Notification $notification): string {
                         /** @var NotificationReceiverType $notificationReceiverType */
                         $notificationReceiverType = $notification->getNotificationReceiverType();
-                        return $notificationReceiverType ? $notificationReceiverType->getName() : '';
+                        return $notificationReceiverType ? $notificationReceiverType->getTitle() : '';
                     },
                 ]
             )
@@ -91,6 +91,7 @@ class NotificationDataTableService extends AdminDatatableService
                                     'patient_show'
                                 ) : '';
                             case 'staff':
+//                                TODO: добавить когда появится функционал отправки сообщения врачу
                             default:
                                 return '';
                         }
