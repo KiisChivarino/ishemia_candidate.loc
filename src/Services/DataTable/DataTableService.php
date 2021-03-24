@@ -137,4 +137,18 @@ abstract class DataTableService
     {
         return '<a href="' . $this->router->generate($route, ['id' => $id]) . '">' . $value . '</a>';
     }
+
+    /**
+     * Get link
+     *
+     * @param string $linkValue
+     * @param array $parameters
+     * @param string $route
+     *
+     * @return string
+     */
+    protected function getLinkMultiParam(string $linkValue, array $parameters, string $route): string
+    {
+        return '<a href="' . $this->router->generate($route, $parameters) . '">' . $linkValue . '</a>';
+    }
 }

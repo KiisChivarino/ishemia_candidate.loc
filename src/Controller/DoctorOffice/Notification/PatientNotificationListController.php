@@ -3,6 +3,7 @@
 namespace App\Controller\DoctorOffice\Notification;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
+use App\Entity\Notification;
 use App\Entity\Patient;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientNotificationListDataTableService;
@@ -27,7 +28,8 @@ use Twig\Environment;
 class PatientNotificationListController extends DoctorOfficeAbstractController
 {
     /** @var string Путь к папке twig шаблонов */
-    const TEMPLATE_PATH = 'doctorOffice/notifications_list/';
+    const TEMPLATE_PATH = 'doctorOffice/notification/';
+
 
     /**
      * PatientsListController constructor.
@@ -45,7 +47,7 @@ class PatientNotificationListController extends DoctorOfficeAbstractController
 
     /**
      * List of patient notifications
-     * @Route("/patient/{id}/notifications/", name="notifications_list", methods={"GET","POST"})
+     * @Route("/patient/{id}/notification/list", name="notifications_list", methods={"GET","POST"})
      *
      * @param Patient $patient
      * @param Request $request
@@ -70,5 +72,18 @@ class PatientNotificationListController extends DoctorOfficeAbstractController
             ),
             ['patient' => $patient]
         );
+    }
+
+    /**
+     * Notification info
+     * @Route("/patient/{patient}/notification/{notification}/show", name="doctor_office_patient_notification_show", methods={"GET", "POST"}, requirements={"id"="\d+"})
+     * @param Notification $notification
+     * @param FilterService $filterService
+     * @return Response
+     * @throws Exception
+     */
+    public function show(Notification $notification, FilterService $filterService): Response
+    {
+        return $this->responseShow(self::TEMPLATE_PATH, $notification);
     }
 }
