@@ -166,7 +166,10 @@ class PrescriptionAppointment
         return $this;
     }
 
-    public function getPatientAppointment(): ?PatientAppointment
+    /**
+     * @return PatientAppointment
+     */
+    public function getPatientAppointment(): PatientAppointment
     {
         return $this->patientAppointment;
     }

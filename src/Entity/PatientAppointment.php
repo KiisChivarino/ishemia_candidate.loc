@@ -20,7 +20,7 @@ class PatientAppointment
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", options={"comment"="Ключ приема пациента"})
+     * @ORM\Column(type="integer", options={"comment"="Ключ приема пациента"}, nullable=false)
      */
     private $id;
 
@@ -59,12 +59,12 @@ class PatientAppointment
     private $appointmentTime;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
+     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true}, nullable=false)
      */
     private $enabled;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Подтверждение пользователем", "default"=false})
+     * @ORM\Column(type="boolean", options={"comment"="Подтверждение пользователем", "default"=false}, nullable=false)
      */
     private $isConfirmed;
 
@@ -91,21 +91,23 @@ class PatientAppointment
 
     /**
      * @ORM\OneToOne(targetEntity=PrescriptionAppointment::class, mappedBy="patientAppointment", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $prescriptionAppointment;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Флаг первого приема при заведении истории болезни"})
+     * @ORM\Column(type="boolean", options={"comment"="Флаг первого приема при заведении истории болезни"}, nullable=false)
      */
     private $isFirst;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Флаг: прием по плану", "default"=false})
+     * @ORM\Column(type="boolean", options={"comment"="Флаг: прием по плану", "default"=false}, nullable=false)
      */
     private $isByPlan;
 
     /**
      * @ORM\ManyToOne(targetEntity=PlanAppointment::class)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $planAppointment;
 
@@ -118,9 +120,9 @@ class PatientAppointment
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -221,9 +223,9 @@ class PatientAppointment
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getEnabled(): ?bool
+    public function getEnabled(): bool
     {
         return $this->enabled;
     }
@@ -240,28 +242,28 @@ class PatientAppointment
     }
 
     /**
-     * @return MedicalHistory|null
+     * @return MedicalHistory
      */
-    public function getMedicalHistory(): ?MedicalHistory
+    public function getMedicalHistory(): MedicalHistory
     {
         return $this->medicalHistory;
     }
 
     /**
-     * @param MedicalHistory|null $medicalHistory
+     * @param MedicalHistory $medicalHistory
      *
      * @return $this
      */
-    public function setMedicalHistory(?MedicalHistory $medicalHistory): self
+    public function setMedicalHistory(MedicalHistory $medicalHistory): self
     {
         $this->medicalHistory = $medicalHistory;
         return $this;
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getIsConfirmed(): ?bool
+    public function getIsConfirmed(): bool
     {
         return $this->isConfirmed;
     }
@@ -367,11 +369,18 @@ class PatientAppointment
         return $this;
     }
 
-    public function getPrescriptionAppointment(): ?PrescriptionAppointment
+    /**
+     * @return PrescriptionAppointment
+     */
+    public function getPrescriptionAppointment(): PrescriptionAppointment
     {
         return $this->prescriptionAppointment;
     }
 
+    /**
+     * @param PrescriptionAppointment $prescriptionAppointment
+     * @return $this
+     */
     public function setPrescriptionAppointment(PrescriptionAppointment $prescriptionAppointment): self
     {
         $this->prescriptionAppointment = $prescriptionAppointment;
@@ -385,9 +394,9 @@ class PatientAppointment
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getIsFirst(): ?bool
+    public function getIsFirst(): bool
     {
         return $this->isFirst;
     }
@@ -403,9 +412,9 @@ class PatientAppointment
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getIsByPlan(): ?bool
+    public function getIsByPlan(): bool
     {
         return $this->isByPlan;
     }
@@ -437,5 +446,4 @@ class PatientAppointment
         $this->planAppointment = $planAppointment;
         return $this;
     }
-
 }
