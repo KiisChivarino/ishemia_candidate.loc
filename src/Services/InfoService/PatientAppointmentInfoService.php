@@ -34,9 +34,9 @@ class PatientAppointmentInfoService
             ? $prescriptionAppointment->getPlannedDateTime()
                 ->format(self::APPOINTMENT_TIME_FORMAT)
             : '';
-        $getAppointmentTime = $patientAppointment->getAppointmentTime();
-        $appointmentTimeString = $getAppointmentTime
-            ? $getAppointmentTime->format(self::APPOINTMENT_TIME_FORMAT)
+        $appointmentTime = $patientAppointment->getAppointmentTime();
+        $appointmentTimeString = $appointmentTime
+            ? $appointmentTime->format(self::APPOINTMENT_TIME_FORMAT)
             : '';
         return
             is_null($patientAppointment->getAppointmentTime())
