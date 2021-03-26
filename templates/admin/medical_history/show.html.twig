@@ -56,7 +56,11 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.MKBCode }}</span>
-        <p>{{ entity.clinicalDiagnosis.MKBCode.code }}</p>
+        <p>
+            {{ entity.clinicalDiagnosis.MKBCode
+            ? entity.clinicalDiagnosis.MKBCode.code
+            : template.items.show.content.empty }}
+        </p>
     </li>
     {% if not entity.patientDischargeEpicrisis is empty %}
         <li>

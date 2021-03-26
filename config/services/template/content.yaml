@@ -7,3 +7,4 @@ parameters:
   description: Описание
   name: Название
   title: Заголовок
+  empty: отсутствует
