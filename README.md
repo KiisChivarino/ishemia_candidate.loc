@@ -1,4 +1,4 @@
-#[Падает при создании новой записи в историю болезни](https://www.notion.so/400843d3a2ce4e40a5495a39a3a569bf?v=a3388d3507c64b088f0b1b2c107f4dcb&p=61eb50d1cfb5417bb74d32036bf1581f)
+# [Падает при создании новой записи в историю болезни](https://www.notion.so/400843d3a2ce4e40a5495a39a3a569bf?v=a3388d3507c64b088f0b1b2c107f4dcb&p=61eb50d1cfb5417bb74d32036bf1581f)
 
 Created: Mar 26, 2021 9:41 AM
 
