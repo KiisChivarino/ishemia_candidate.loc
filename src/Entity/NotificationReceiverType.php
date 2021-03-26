@@ -37,7 +37,7 @@ class NotificationReceiverType
     private $notificationTemplates;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255, nullable=false, options={"comment"="Заголовок типа получателя уведомления"})
      */
     private $title;
 
