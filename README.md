@@ -16,7 +16,7 @@
 
 ### Проблема
 
-![Фото ошибки](%D0%9E%D1%88%D0%B8%D0%B1%D0%BA%D0%B0%20%D0%BF%D1%80%D0%B8%20%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8%20%D0%BF%D0%B0%D1%86%D0%B8%D0%B5%D0%BD%D1%82%D0%B0%204751d68deb234e999186940acf92ef85/Untitled.png)
+![Фото ошибки](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/cf5a16bc-a584-4f7a-b2f1-7182f7bc4cdc/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210326%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210326T074016Z&X-Amz-Expires=86400&X-Amz-Signature=c20d4cc574abf0a43cf6916ed7e677fc9d5c1d5878e28a08d064f6193acc46c1&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
 
 ### Входные данные
 
