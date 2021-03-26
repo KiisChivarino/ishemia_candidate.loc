@@ -28,21 +28,27 @@ class DataSowing
     /** @var array Константы типов получателей уведомлений */
     private $notificationReceiverTypeNames;
 
+    /** @var array Константы названий получателей уведомлений */
+    private $notificationReceiverTypeTitles;
+
     /**
      * DataSowing constructor.
      * @param EntityManagerInterface $entityManager
      * @param array $channelTypes
      * @param array $notificationReceiverTypeNames
+     * @param array $notificationReceiverTypeTitles
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         array $channelTypes,
-        array $notificationReceiverTypeNames
+        array $notificationReceiverTypeNames,
+        array $notificationReceiverTypeTitles
     )
     {
         $this->entityManager = $entityManager;
         $this->channelTypes = $channelTypes;
         $this->notificationReceiverTypeNames = $notificationReceiverTypeNames;
+        $this->notificationReceiverTypeTitles = $notificationReceiverTypeTitles;
     }
 
     /**
@@ -140,7 +146,13 @@ class DataSowing
     {
         $i = 1;
         foreach ($this->channelTypes as $channelType) {
-            $this->addEntityFormYaml($i, $channelType, new ChannelType());
+            $this->addEntityFormYaml(
+                [
+                    'id' => $i,
+                    'name' => $channelType,
+                ],
+                new ChannelType()
+            );
             $i++;
         }
     }
@@ -148,17 +160,13 @@ class DataSowing
     /**
      * Добавляет новую сущность
      * Adds new entity
-     * @param int $i
-     * @param string $entityName
+     * @param array $insertData
      * @param object $entity
      */
-    public function addEntityFormYaml(int $i, string $entityName, object $entity): void
+    public function addEntityFormYaml(array $insertData, object $entity): void
     {
         $this->entityManager->getRepository(AuthUser::class)->setEntityData(
-            [
-                'id' => $i,
-                'name' => $entityName
-            ],
+            $insertData,
             $entity
         );
     }
@@ -170,8 +178,15 @@ class DataSowing
     public function addReceiverTypes(): void
     {
         $i = 1;
-        foreach ($this->notificationReceiverTypeNames as $notificationReceiverType) {
-            $this->addEntityFormYaml($i, $notificationReceiverType, new NotificationReceiverType());
+        $namesAndTitles = array_merge($this->notificationReceiverTypeNames, $this->notificationReceiverTypeTitles);
+        foreach ($namesAndTitles as $name => $title) {
+            $this->addEntityFormYaml(
+                [
+                    'id' => $i,
+                    'name' => $name,
+                    'title' => $title
+                ],
+                new NotificationReceiverType());
             $i++;
         }
     }
