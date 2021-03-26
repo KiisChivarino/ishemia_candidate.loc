@@ -1,14 +1,14 @@
-# [Ошибка при добавлении пациента](https://www.notion.so/c8d4f6b3bb98467bae848c2d605dbd3b)
+# Ошибка при просмотре записи истории болезни
 
-* Created: Mar 26, 2021 8:49 AM
+* Created: Mar 26, 2021 9:33 AM
 * Status: In Dev
 * Type: Bug 🐞
-* Аналитик: Максим Викторович
+* Аналитик: Всеволод Лапшин
 * Исполнитель: Максим Викторович
-* Подпроект: Кабинет пациента 🤒, Каибинет врача 👨‍⚕️
 * Приоритет: P1 🔥
 * Разработчик: Максим Викторович
 * Ревьювер: Максим Викторович
+* Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX_view_medical_history
 * Тестер: Igor' Nikiforov
 
 
@@ -16,15 +16,15 @@
 
 ### Проблема
 
-![Фото ошибки](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/cf5a16bc-a584-4f7a-b2f1-7182f7bc4cdc/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210326%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210326T074016Z&X-Amz-Expires=86400&X-Amz-Signature=c20d4cc574abf0a43cf6916ed7e677fc9d5c1d5878e28a08d064f6193acc46c1&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
+Ошибка при просмотре записи истории болезни
+URL: admin/medical_history/{id}
+
+[Фото ошибки](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1d04c520-6b1f-478a-9471-00feb8b2fb48/2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210326%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210326T081949Z&X-Amz-Expires=86400&X-Amz-Signature=ed6188d283826f2edfac53c192337fe4dee65fffb0987fd4bf598b835ab5c818&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%222.png%22)
 
 ### Входные данные
 
-Точки входа:
-
-- Добавление пациента в админке
-- Добавление пациента в кабинете врача
+Описание функционала.
 
 ### Выходные данные
 
-Успешное создание пациента
+Должно все работать
