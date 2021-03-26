@@ -44,7 +44,6 @@ class NotificationTemplate extends AdminTemplateBuilder
     public const SHOW_CONTENT = [
         'patient' => 'Пациент',
         'authUserSender' => 'Отправитель',
-        'smsNotification' => 'SMS уведомление',
         'channelType' => 'Канал передачи',
     ];
 

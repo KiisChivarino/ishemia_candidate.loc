@@ -1,4 +1,7 @@
 parameters:
-  notification_receiver_types:
+  notification_receiver_type_names:
     patient: patient
     staff: staff
+  notification_receiver_type_titles:
+    patient: пациент
+    staff: врач

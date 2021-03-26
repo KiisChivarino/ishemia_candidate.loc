@@ -32,7 +32,8 @@ services:
             $systemUserPhone: '%system_user_phone%'
             $defaultTimeFormats: '%default_time_formats%'
             $channelTypes: '%channel_types%'
-            $notificationReceiverTypes: '%notification_receiver_types%'
+            $notificationReceiverTypeNames: '%notification_receiver_type_names%'
+            $notificationReceiverTitles: '%notification_receiver_type_titles%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

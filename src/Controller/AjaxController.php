@@ -25,6 +25,7 @@ class AjaxController extends AbstractController
     public const JSON_PARAMETER_KEY = 'q';
 
     public const AJAX_INIT_CSS_CLASS = 'js-ajax-init';
+
     /**
      * Find diagnoses
      * @Route("/find_diagnosis_ajax", name="find_diagnosis_ajax", methods={"GET"})
@@ -43,6 +44,28 @@ class AjaxController extends AbstractController
             $diagnosisRepository->findDiagnoses(
                 $request->query->get(self::JSON_PARAMETER_KEY)
             )
+        );
+    }
+
+    /**
+     * Find diagnoses MKBCode
+     * @Route("/find_diagnosis_mkbcode_ajax", name="find_diagnosis_mkbcode_ajax", methods={"GET"})
+     *
+     * @param Request $request
+     *
+     * @param DiagnosisRepository $diagnosisRepository
+     * @return false|string
+     */
+    public function findMKBCodeAjax(
+        Request $request,
+        DiagnosisRepository $diagnosisRepository
+    )
+    {
+        return $this->responseAjaxResult(
+            $diagnosisRepository->findDiagnoses(
+                $request->query->get(self::JSON_PARAMETER_KEY)
+            ),
+            "Code"
         );
     }
 

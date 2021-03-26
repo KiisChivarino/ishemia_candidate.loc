@@ -9,8 +9,6 @@ use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
-use App\Services\TemplateItems\FormTemplateItem;
-use App\Services\TemplateItems\ListTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -54,16 +52,14 @@ class PatientNotificationsListTemplate extends DoctorOfficeTemplateBuilder
         'sent' => 'Отправлено'
     ];
 
-    /** @var string[] Common NEW_CONTENT */
-    protected const NEW_CONTENT = [
-        'h1' => 'Новая запись',
-        'title' => 'Новая запись',
-    ];
-
     /** @var string[] Common SHOW_CONTENT */
     protected const SHOW_CONTENT = [
         'h1' => 'Просмотр записи',
         'title' => 'Просмотр записи',
+        'authUserSender' => 'Отправитель',
+        'text' => 'Текст',
+        'notificationReceiverType' => 'Тип получателя',
+        'channelType' => 'Канал передачи',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
@@ -101,14 +97,6 @@ class PatientNotificationsListTemplate extends DoctorOfficeTemplateBuilder
             self::FILTER_CONTENT,
             self::ENTITY_CONTENT
         );
-    }
-
-    public function new(?FilterService $filterService = null): AppTemplateBuilder
-    {
-        parent::new($filterService);
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath());
-        return $this;
     }
 
     /**

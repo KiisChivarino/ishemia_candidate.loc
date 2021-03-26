@@ -37,6 +37,11 @@ class NotificationReceiverType
     private $notificationTemplates;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=false, options={"comment"="Заголовок типа получателя уведомления"})
+     */
+    private $title;
+
+    /**
      * NotificationReceiverType constructor.
      */
     public function __construct()
@@ -155,6 +160,25 @@ class NotificationReceiverType
                 $notificationTemplate->setNotificationReceiverType(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
 
         return $this;
     }

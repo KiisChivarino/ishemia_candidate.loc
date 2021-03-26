@@ -116,7 +116,6 @@ class PatientTestingResultController extends AdminAbstractController
             $patientTestingResult,
             [
                 new FormData($patientTestingResult, PatientTestingResultType::class, [
-                    'patientTesting' => $patientTestingResult->getPatientTesting(),
                     'analysis' => $patientTestingResult->getAnalysis()
                 ]),
                 new FormData($patientTestingResult, EnabledType::class)

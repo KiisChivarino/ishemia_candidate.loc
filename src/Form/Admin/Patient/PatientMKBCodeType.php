@@ -33,7 +33,7 @@ class PatientMKBCodeType extends AbstractType
                 'MKBCode', Select2EntityType::class, [
                     'label' => $templateItem->getContentValue('MKBCode'),
                     'method' => 'POST',
-                    'remote_route' => 'find_diagnosis_ajax',
+                    'remote_route' => 'find_diagnosis_mkbcode_ajax',
                     'class' => Diagnosis::class,
                     'primary_key' => 'id',
                     'text_property' => 'code',
