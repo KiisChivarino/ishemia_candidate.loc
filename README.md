@@ -14,7 +14,7 @@ Type: Bug 🐞
 
 Ревьювер: Максим Викторович
 
-Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX_view_medical_history
+Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-DropsWhenCreatingCaseHistory
 
 Тестер: Igor' Nikiforov
 
