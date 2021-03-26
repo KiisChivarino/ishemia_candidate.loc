@@ -98,7 +98,10 @@ class PrescriptionAppointmentController extends AdminAbstractController
             } else {
                 $patientAppointment = (new PatientAppointment())
                     ->setEnabled(true)
-                    ->setMedicalHistory($prescription->getMedicalHistory());
+                    ->setMedicalHistory($prescription->getMedicalHistory())
+                    ->setIsConfirmed(false)
+                    ->setIsFirst(false)
+                    ->setIsByPlan(false);
                 $prescriptionAppointment = (new PrescriptionAppointment())
                     ->setPrescription($prescription)
                     ->setEnabled(true)
@@ -109,7 +112,10 @@ class PrescriptionAppointmentController extends AdminAbstractController
                     $prescriptionAppointment,
                     [
                         new FormData($prescriptionAppointment, PrescriptionAppointmentType::class),
-                    ]
+                    ],
+                    function () use ($prescriptionAppointment) {
+                        $prescriptionAppointment->getPatientAppointment()->setStaff($prescriptionAppointment->getStaff());
+                    }
                 );
             }
         } else {
