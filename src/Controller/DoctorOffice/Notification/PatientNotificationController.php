@@ -19,13 +19,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
- * Class PatientNotificationListController
+ * Class PatientNotificationController
  * @route ("/doctor_office")
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  *
  * @package App\Controller\DoctorOffice
  */
-class PatientNotificationListController extends DoctorOfficeAbstractController
+class PatientNotificationController extends DoctorOfficeAbstractController
 {
     /** @var string Путь к папке twig шаблонов */
     const TEMPLATE_PATH = 'doctorOffice/notification/';
