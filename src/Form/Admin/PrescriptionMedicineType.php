@@ -3,7 +3,6 @@
 namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
-use App\Entity\Medicine;
 use App\Entity\PrescriptionMedicine;
 use App\Entity\ReceptionMethod;
 use App\Entity\Staff;
@@ -17,7 +16,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 /**
  * Class PrescriptionMedicineType
@@ -36,23 +34,6 @@ class PrescriptionMedicineType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add(
-                'medicine', Select2EntityType::class, [
-                    'label' => $templateItem->getContentValue('medicine'),
-                    'method' => 'POST',
-                    'multiple' => false,
-                    'remote_route' => 'find_medicine_ajax',
-                    'class' => Medicine::class,
-                    'primary_key' => 'id',
-                    'text_property' => 'name',
-                    'minimum_input_length' => 0,
-                    'page_limit' => 1,
-                    'allow_clear' => true,
-                    'delay' => 250,
-                    'language' => 'ru',
-                    'placeholder' => $templateItem->getContentValue('medicinePlaceholder'),
-                ]
-            )
             ->add(
                 'instruction', null, [
                     'label' => $templateItem->getContentValue('instruction'),
