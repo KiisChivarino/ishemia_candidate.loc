@@ -27,7 +27,7 @@ class PrescriptionMedicine
 
     /**
      * @ORM\ManyToOne(targetEntity=Medicine::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $medicine;
 
@@ -113,7 +113,7 @@ class PrescriptionMedicine
     /**
      * @return DateTimeInterface|null
      */
-    public function getInclusionTime(): ?\DateTimeInterface
+    public function getInclusionTime(): ?DateTimeInterface
     {
         return $this->inclusionTime;
     }
@@ -122,7 +122,7 @@ class PrescriptionMedicine
      * @param DateTimeInterface $inclusionTime
      * @return $this
      */
-    public function setInclusionTime(\DateTimeInterface $inclusionTime): self
+    public function setInclusionTime(DateTimeInterface $inclusionTime): self
     {
         $this->inclusionTime = $inclusionTime;
 
