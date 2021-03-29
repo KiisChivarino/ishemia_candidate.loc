@@ -73,12 +73,13 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function renderTableActions(): Closure
     {
-        return function ($value, $options) {
+        return function ($value, $options, $route = null) {
             return $this->render(
                 $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
                 [
                     'template' => $this->templateService,
-                    'parameters' => array_merge(['id' => $value], is_array($options) ? $options : [])
+                    'parameters' => array_merge(['id' => $value], is_array($options) ? $options : []),
+                    'route' => $route
                 ]
             )->getContent();
         };

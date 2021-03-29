@@ -48,11 +48,13 @@ abstract class DoctorOfficeDatatableService extends DataTableService
      * Generates table for patient testings
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
+     * @param string|null $route
      * @throws \Exception
      */
     protected function generateTableForPatientTestingsInDoctorOffice(
         Closure $renderOperationsFunction,
-        ListTemplateItem $listTemplateItem
+        ListTemplateItem $listTemplateItem,
+        string $route = null
     )
     {
         $this->addSerialNumber();
@@ -82,11 +84,12 @@ abstract class DoctorOfficeDatatableService extends DataTableService
             );
         $this->addOperationsWithParameters(
             $listTemplateItem,
-            function (string $data, PatientTesting $patientTesting) use ($renderOperationsFunction) {
+            function (string $data, PatientTesting $patientTesting) use ($renderOperationsFunction, $route) {
                 return
                     $renderOperationsFunction(
                         (string)$patientTesting->getMedicalHistory()->getPatient()->getId(),
-                        ['patientTesting' => $patientTesting->getId()]
+                        ['patientTesting' => $patientTesting->getId()],
+                        $route
                     );
             }
         );

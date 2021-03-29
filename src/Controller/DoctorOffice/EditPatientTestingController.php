@@ -52,9 +52,9 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Edit patient testing for first data of new medicalHistory
+     * Edit patient testing from all list
      * @Route(
-     *     "/patient/{patient}/patient_testing/{patientTesting}/edit",
+     *     "/patient/{id}/patient_testing/{patientTesting}/edit",
      *     name="doctor_edit_patient_testing",
      *     methods={"GET","POST"},
      *     requirements={"patient"="\d+", "patientTesting"="\d+"}
@@ -64,10 +64,129 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
      * @param FileService $fileService
      * @param PatientTestingResultRepository $patientTestingResultRepository
      * @return RedirectResponse|Response
-     * @throws ReflectionException
      * @throws Exception
      */
-    public function edit(
+    public function editFromAll(
+        Request $request,
+        PatientTesting $patientTesting,
+        FileService $fileService,
+        PatientTestingResultRepository $patientTestingResultRepository
+    )
+    {
+        return $this->edit($request, $patientTesting, $fileService, $patientTestingResultRepository);
+    }
+
+    /**
+     * Edit patient testing from processed
+     * @Route(
+     *     "/patient/{id}/patient_testing_not_processed/{patientTesting}/edit",
+     *     name="doctor_edit_patient_testing_from_not_processed",
+     *     methods={"GET","POST"},
+     *     requirements={"patient"="\d+", "patientTesting"="\d+"}
+     *     )
+     * @param Request $request
+     * @param PatientTesting $patientTesting
+     * @param FileService $fileService
+     * @param PatientTestingResultRepository $patientTestingResultRepository
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function editFromNotProcessed(
+        Request $request,
+        PatientTesting $patientTesting,
+        FileService $fileService,
+        PatientTestingResultRepository $patientTestingResultRepository
+    )
+    {
+        return $this->edit($request, $patientTesting, $fileService, $patientTestingResultRepository);
+    }
+
+    /**
+     * Edit patient testing from planned
+     * @Route(
+     *     "/patient/{id}/patient_testing_planned/{patientTesting}/edit",
+     *     name="doctor_edit_patient_testing_from_planned",
+     *     methods={"GET","POST"},
+     *     requirements={"patient"="\d+", "patientTesting"="\d+"}
+     *     )
+     * @param Request $request
+     * @param PatientTesting $patientTesting
+     * @param FileService $fileService
+     * @param PatientTestingResultRepository $patientTestingResultRepository
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function editFromPlanned(
+        Request $request,
+        PatientTesting $patientTesting,
+        FileService $fileService,
+        PatientTestingResultRepository $patientTestingResultRepository
+    )
+    {
+        return $this->edit($request, $patientTesting, $fileService, $patientTestingResultRepository);
+    }
+
+    /**
+     * Edit patient testing from overdue
+     * @Route(
+     *     "/patient/{id}/patient_testing_overdue/{patientTesting}/edit",
+     *     name="doctor_edit_patient_testing_from_overdue",
+     *     methods={"GET","POST"},
+     *     requirements={"patient"="\d+", "patientTesting"="\d+"}
+     *     )
+     * @param Request $request
+     * @param PatientTesting $patientTesting
+     * @param FileService $fileService
+     * @param PatientTestingResultRepository $patientTestingResultRepository
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function editFromOverdue(
+        Request $request,
+        PatientTesting $patientTesting,
+        FileService $fileService,
+        PatientTestingResultRepository $patientTestingResultRepository
+    )
+    {
+        return $this->edit($request, $patientTesting, $fileService, $patientTestingResultRepository);
+    }
+
+    /**
+     * Edit patient testing from history
+     * @Route(
+     *     "/patient/{id}/patient_testing_history/{patientTesting}/edit",
+     *     name="doctor_edit_patient_testing_from_history",
+     *     methods={"GET","POST"},
+     *     requirements={"patient"="\d+", "patientTesting"="\d+"}
+     *     )
+     * @param Request $request
+     * @param PatientTesting $patientTesting
+     * @param FileService $fileService
+     * @param PatientTestingResultRepository $patientTestingResultRepository
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function editFromHistory(
+        Request $request,
+        PatientTesting $patientTesting,
+        FileService $fileService,
+        PatientTestingResultRepository $patientTestingResultRepository
+    )
+    {
+        return $this->edit($request, $patientTesting, $fileService, $patientTestingResultRepository);
+    }
+
+
+    /**
+     * Edit patient testing
+     * @param Request $request
+     * @param PatientTesting $patientTesting
+     * @param FileService $fileService
+     * @param PatientTestingResultRepository $patientTestingResultRepository
+     * @return RedirectResponse|Response
+     * @throws ReflectionException
+     */
+    private function edit(
         Request $request,
         PatientTesting $patientTesting,
         FileService $fileService,
