@@ -39,7 +39,7 @@ class AuthUserDataTableService extends AdminDatatableService
                 'email', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('email'),
                     'data' => function ($value) {
-                        return $value->getEmail();
+                        return $value->getEmail() ? $value->getEmail() : 'отсутствует';
                     },
                 ]
             )
