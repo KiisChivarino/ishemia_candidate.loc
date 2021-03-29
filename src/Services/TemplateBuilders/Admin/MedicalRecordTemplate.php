@@ -10,6 +10,7 @@ use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\NewTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -130,6 +131,8 @@ class MedicalRecordTemplate extends AdminTemplateBuilder
                     ),
                 ]
             );
+        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
+            ->setIsEnabled(false);
         return $this;
     }
 }

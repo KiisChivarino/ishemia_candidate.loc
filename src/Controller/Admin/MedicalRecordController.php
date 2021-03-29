@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class MedicalRecordController
- * @Route("/medical/record")
+ * @Route("/medical_record")
  * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
