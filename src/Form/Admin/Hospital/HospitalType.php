@@ -68,7 +68,14 @@ class HospitalType extends AbstractType
                 ]
             )
             ->add('email', EmailType::class, ['label' => $templateItem->getContentValue('email')])
-            ->add('code', NumberType::class, ['label' => $templateItem->getContentValue('code')])
+            ->add('code', NumberType::class,
+                [
+                    'label' => $templateItem->getContentValue('code'),
+                    'attr' => [
+                        'maxlength' => 6
+                    ]
+                ]
+            )
             ->add(
                 'enabled', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('enabled'),
