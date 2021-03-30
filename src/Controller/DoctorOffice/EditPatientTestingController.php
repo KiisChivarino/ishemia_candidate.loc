@@ -107,7 +107,7 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
      *     "/patient/{id}/patient_testing_planned/{patientTesting}/edit",
      *     name="doctor_edit_patient_testing_from_planned",
      *     methods={"GET","POST"},
-     *     requirements={"patient"="\d+", "patientTesting"="\d+"}
+     *     requirements={"id"="\d+", "patientTesting"="\d+"}
      *     )
      * @param Request $request
      * @param PatientTesting $patientTesting
