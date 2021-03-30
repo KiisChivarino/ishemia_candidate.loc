@@ -7,6 +7,8 @@
                 <a href="{{ path('medical_history_show', {'id': entity.medicalHistory.id}) }}">
                     {{ medicalHistoryTitle }}
                 </a>
+            {% else %}
+                отсутствует
             {% endif %}
         </p>
     </li>
@@ -15,6 +17,8 @@
         <p>
             {% if entity.medicalRecord %}
                 <a href="{{ path('medical_record_show', {'id': entity.medicalRecord.id}) }}">{{ medicalRecordTitle }}</a>
+            {% else %}
+                отсутствует
             {% endif %}
         </p>
     </li>
@@ -23,6 +27,8 @@
         <p>
             {% if entity.staff %}
                 <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staff }}</a>
+            {% else %}
+                отсутствует
             {% endif %}
         </p>
     </li>
@@ -40,15 +46,21 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.description }}</span>
-        <p>{{ entity.description | raw }}</p>
+        <p>
+            {% if entity.description %}
+                {{ entity.description | raw }}
+            {% else %}
+                отсутствует
+            {% endif %}
+        </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.createdTime }}</span>
-        <p>{{ entity.createdTime ? entity.createdTime|date('Y-m-d H:i:s') : '' }}</p>
+        <p>{{ entity.createdTime ? entity.createdTime|date('Y-m-d H:i:s') : 'нет' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.completedTime }}</span>
-        <p>{{ entity.completedTime ? entity.completedTime|date('Y-m-d H:i:s') : '' }}</p>
+        <p>{{ entity.completedTime ? entity.completedTime|date('Y-m-d H:i:s') : 'нет' }}</p>
     </li>
 {% endblock %}
 {% block custom_actions %}

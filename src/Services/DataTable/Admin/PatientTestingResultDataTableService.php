@@ -50,7 +50,7 @@ class PatientTestingResultDataTableService extends AdminDatatableService
                             (new PatientTestingInfoService())->getPatientTestingInfoString($patientTesting),
                             $patientTesting->getId(),
                             'patient_testing_show'
-                        ) : '';
+                        ) : 'отсутствует';
                     },
                 ]
             )
@@ -63,7 +63,7 @@ class PatientTestingResultDataTableService extends AdminDatatableService
                         return
                             $analysis ?
                                 $this->getLink($analysis->getName(), $analysis->getId(), 'analysis_show')
-                                : '';
+                                : 'отсутствует';
                     },
                 ]
             )
@@ -77,12 +77,17 @@ class PatientTestingResultDataTableService extends AdminDatatableService
                             (new AnalysisRateInfoService())->getAnalysisRateInfoString($analysisRate),
                             $analysisRate->getId(),
                             'analysis_rate_show'
-                        ) : '';
+                        ) : 'отсутствует';
                     },
                 ]
             )
-            ->add(
-                'result', TextColumn::class, ['label' => $listTemplateItem->getContentValue('result'),]
+            ->add('result',TextColumn::class,
+                [
+                    'label' => $listTemplateItem->getContentValue('result'),
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) {
+                        return $patientTestingResult->getResult() ? $patientTestingResult->getResult() : 'отсутствует';
+                    },
+                ]
             );
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);

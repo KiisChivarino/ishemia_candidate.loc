@@ -18,6 +18,12 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.oktmoRegionId }}</span>
-        <p>{{ entity.oktmoRegionId }}</p>
+        <p>
+            {% if entity.oktmoRegionId %}
+                {{ entity.oktmoRegionId }}
+            {% else %}
+                отсутствует
+            {% endif %}
+        </p>
     </li>
 {% endblock %}

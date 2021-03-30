@@ -17,12 +17,14 @@
                 <a href="{{ path('prescription_testing_show', {'id': entity.prescriptionTesting.id}) }}">
                     {{ prescriptionTestingTitle(entity.prescriptionTesting) }}
                 </a>
+            {% else %}
+                отсутствует
             {% endif %}
         </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.analysisDate }}</span>
-        <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : '' }}</p>
+        <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : 'нет' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.processed }}</span>
@@ -33,17 +35,21 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.patientTestingFiles }}</span>
-        {% set filesDir = constant('App\\Services\\FileService\\FileService::FILES_DIR') %}
-        {% set uploadDir = constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') %}
-        {% for patientTestingFile in entity.patientTestingFiles %}
-            <a target="_blank"
-               href="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
-               class="fancybox"
-               title="{{ patientTestingFile.fileName }}">
-                <img src="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
-                     alt="{{ patientTestingFile.fileName }}"/>
-            </a>
-        {% endfor %}
+        {% if entity.patientTestingFiles | length > 0 %}
+            {% set filesDir = constant('App\\Services\\FileService\\FileService::FILES_DIR') %}
+            {% set uploadDir = constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') %}
+            {% for patientTestingFile in entity.patientTestingFiles %}
+                <a target="_blank"
+                   href="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
+                   class="fancybox"
+                   title="{{ patientTestingFile.fileName }}">
+                    <img src="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
+                         alt="{{ patientTestingFile.fileName }}"/>
+                </a>
+            {% endfor %}
+        {% else %}
+            <p>отсутствуют</p>
+        {% endif %}
     </li>
     <li>
         <span class="title">{{ template.items.show.content.isByPlan }}</span>
@@ -65,7 +71,11 @@
     <li>
         <span class="title">{{ template.items.show.content.resultData }}</span>
         <p>
+        {% if entity.resultData %}
             {{ entity.resultData }}
+        {% else %}
+            отсутствуют
+        {% endif %}
         </p>
     </li>
 {% endblock %}

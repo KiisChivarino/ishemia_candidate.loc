@@ -47,7 +47,7 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                             PrescriptionInfoService::getPrescriptionTitle($prescription),
                             $prescription->getId(),
                             'prescription_show'
-                        ) : '';
+                        ) : 'отсутствует';
                     }
                 ]
             )
@@ -61,7 +61,7 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                             PatientTestingInfoService::getPatientTestingInfoString($patientTesting),
                             $patientTesting->getId(),
                             'patient_testing_show'
-                        ) : '';
+                        ) : 'отсутствует';
                     },
                 ]
             )
@@ -75,15 +75,16 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                             AuthUserInfoService::getFIO($staff->getAuthUser()),
                             $staff->getId(),
                             'staff_show'
-                        ) : '';
+                        ) : 'отсутствует';
                     }
                 ]
             )
             ->add(
-                'plannedTime', DateTimeColumn::class, [
+                'plannedDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('plannedDate'),
                     'format' => 'd.m.Y H:m',
-                    'searchable' => false
+                    'searchable' => false,
+                    'nullValue' => 'нет'
                 ]
             );
         $this->addEnabled($listTemplateItem);

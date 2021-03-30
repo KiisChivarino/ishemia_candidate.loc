@@ -24,7 +24,7 @@
         <span class="title">{{ template.items.show.content.dateEnd }}</span>
         <p>
             {% if entity.dateEnd %}
-                {{ entity.dateEnd ? entity.dateEnd|date('Y-m-d') : '' }}
+                {{ entity.dateEnd ? entity.dateEnd|date('Y-m-d') : 'Лечение не завершено' }}
             {% else %}
                 Лечение не завершено
             {% endif %}

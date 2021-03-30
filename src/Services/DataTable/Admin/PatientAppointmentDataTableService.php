@@ -48,7 +48,7 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                             (new MedicalRecordInfoService())->getMedicalRecordTitle($medicalRecord),
                             $medicalRecord->getId(),
                             'medical_record_show'
-                        ) : '';
+                        ) : 'отсутствует';
                     },
                 ]
             )
@@ -62,7 +62,7 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                             (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true),
                             $staff->getId(),
                             'staff_show'
-                        ) : '';
+                        ) : 'отсутствует';
                     },
                 ]
             )
@@ -76,7 +76,7 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                             $appointmentType->getName(),
                             $appointmentType->getId(),
                             'appointment_type_show'
-                        ) : '';
+                        ) : 'отсутствует';
                     },
                 ]
             )
@@ -85,14 +85,16 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('plannedDateTime'),
                     'field' => 'pra.plannedDateTime',
                     'searchable' => false,
-                    'format' => 'd.m.Y H:i'
+                    'format' => 'd.m.Y H:i',
+                    'nullValue' => 'отсутствует'
                 ]
             )
             ->add(
                 'appointmentTime', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('appointmentTime'),
                     'searchable' => false,
-                    'format' => 'd.m.Y H:i'
+                    'format' => 'd.m.Y H:i',
+                    'nullValue' => 'отсутствует'
                 ]
             )
             ->add(

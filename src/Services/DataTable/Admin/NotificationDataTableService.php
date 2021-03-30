@@ -89,7 +89,7 @@ class NotificationDataTableService extends AdminDatatableService
                                     ),
                                     $patientNotification->getPatient()->getId(),
                                     'patient_show'
-                                ) : '';
+                                ) : 'отсутствует';
                             case 'staff':
 //                                TODO: добавить когда появится функционал отправки сообщения врачу
                             default:

@@ -43,7 +43,9 @@ class HospitalDataTableService extends AdminDatatableService
                     'render' => function (string $data, Hospital $hospital) {
                         /** @var Region $region */
                         $region = $hospital->getRegion();
-                        return $region ? $this->getLink($region->getName(), $region->getId(), 'region_show') : '';
+                        return $region
+                            ? $this->getLink($region->getName(), $region->getId(), 'region_show')
+                            : 'отсутствует';
                     },
                     'searchable' => false
                 ]
@@ -54,7 +56,9 @@ class HospitalDataTableService extends AdminDatatableService
                     'render' => function (string $data, Hospital $hospital) {
                         /** @var City $city */
                         $city = $hospital->getCity();
-                        return $city ? $this->getLink($city->getName(), $city->getId(), 'city_show') : '';
+                        return $city
+                            ? $this->getLink($city->getName(), $city->getId(), 'city_show')
+                            : 'отсутствует';
                     },
                     'searchable' => false
                 ]

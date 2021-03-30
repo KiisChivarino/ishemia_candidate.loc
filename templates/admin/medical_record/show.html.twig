@@ -12,23 +12,34 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.prescription }}</span>
-        {% for prescription in entity.prescriptions %}
-            <p>
-                <a href="{{ path('prescription_show', {'id': prescription.id}) }}">
-                    {{ prescription.staff.AuthUser.lastName~' '
-                    ~prescription.staff.AuthUser.firstName~' '
-                    ~prescription.staff.AuthUser.patronymicName~': '
-                    ~prescription.completedTime|date('Y-m-d') }}
-                </a>
-            </p>
-        {% endfor %}
+        {% if entity.prescriptions | length > 0 %}
+            {% for prescription in entity.prescriptions %}
+                <p>
+                    <a href="{{ path('prescription_show', {'id': prescription.id}) }}">
+                        {{ prescription.staff.AuthUser.lastName~' '
+                        ~prescription.staff.AuthUser.firstName~' '
+                        ~prescription.staff.AuthUser.patronymicName~': '
+                        ~prescription.completedTime|date('Y-m-d') }}
+                    </a>
+                </p>
+            {% endfor %}
+        {% else %}
+            <p>отсутствуют</p>
+        {% endif %}
+
     </li>
     <li>
         <span class="title">{{ template.items.show.content.recordDate }}</span>
-        <p>{{ entity.recordDate ? entity.recordDate|date('Y-m-d') : '' }}</p>
+        <p>{{ entity.recordDate ? entity.recordDate|date('Y-m-d') : 'отсутствует' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.comment }}</span>
-        <p>{{ entity.comment }}</p>
+        <p>
+            {% if entity.comment %}
+                {{ entity.comment }}
+            {% else %}
+                отсутствует
+            {% endif %}
+        </p>
     </li>
 {% endblock %}
