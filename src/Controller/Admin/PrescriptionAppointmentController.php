@@ -107,6 +107,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
                     ->setEnabled(true)
                     ->setPatientAppointment($patientAppointment)
                     ->setInclusionTime(new DateTime());
+                $patientAppointment->setPrescriptionAppointment($prescriptionAppointment);
                 return $this->responseNewMultiForm(
                     $request,
                     $prescriptionAppointment,

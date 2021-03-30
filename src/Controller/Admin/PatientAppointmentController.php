@@ -2,16 +2,12 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\MedicalHistory;
 use App\Entity\PatientAppointment;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\ConfirmedType;
 use App\Form\Admin\PatientAppointment\EnabledType;
 use App\Form\Admin\PatientAppointment\StaffType;
 use App\Form\Admin\PatientAppointmentType;
-use App\Repository\MedicalHistoryRepository;
-use App\Repository\MedicalRecordRepository;
-use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\Creator\PatientAppointmentCreatorService;
 use App\Services\DataTable\Admin\PatientAppointmentDataTableService;
@@ -87,52 +83,6 @@ class PatientAppointmentController extends AdminAbstractController
                     self::FILTER_LABELS['MEDICAL_HISTORY'],
                 ]
             )
-        );
-    }
-
-    /**
-     * New patient appointment
-     * @Route("/new", name="patient_appointment_new", methods={"GET","POST"})
-     *
-     * @param Request $request
-     *
-     * @param MedicalRecordRepository $medicalRecordRepository
-     * @param MedicalHistoryRepository $medicalHistoryRepository
-     * @return Response
-     * @throws Exception
-     */
-    public function new(
-        Request $request,
-        MedicalRecordRepository $medicalRecordRepository,
-        MedicalHistoryRepository $medicalHistoryRepository
-): Response
-    {
-        if ($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)) {
-            $medicalHistory = $medicalHistoryRepository
-                ->find($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY));
-        }
-        if (!isset($medicalHistory) || !is_a($medicalHistory, MedicalHistory::class)) {
-            $this->addFlash('warning', self::FLASH_ERROR_MEDICAL_HISTORY_NOT_FOUND);
-            return $this->redirectToRoute(self::FLASH_ERROR_REDIRECT_ROUTE);
-        }
-        $patientAppointment = (new PatientAppointment())
-            ->setMedicalHistory($medicalHistory)->setIsConfirmed(true);
-        return $this->responseNewMultiForm(
-            $request,
-            $patientAppointment,
-            [
-                new FormData($patientAppointment, PatientAppointmentType::class),
-                new FormData($patientAppointment, StaffType::class),
-                new FormData($patientAppointment, AppointmentTypeType::class),
-            ],
-            function (EntityActions $actions) use ($medicalHistory, $medicalRecordRepository) {
-                /** @var PatientAppointment $patientAppointment */
-                $patientAppointment = $actions->getEntity();
-                $patientAppointment->setMedicalRecord(
-                    $medicalRecordRepository->getMedicalRecord($medicalHistory)
-                );
-                $patientAppointment->setIsConfirmed(false);
-            }
         );
     }
 

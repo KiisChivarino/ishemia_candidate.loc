@@ -100,8 +100,7 @@ class PrescriptionController extends AdminAbstractController
      */
     public function new(
         Request $request,
-        MedicalHistoryRepository $medicalHistoryRepository,
-        PrescriptionRepository $prescriptionRepository
+        MedicalHistoryRepository $medicalHistoryRepository
     ): Response
     {
         $prescription = new Prescription();
@@ -109,13 +108,6 @@ class PrescriptionController extends AdminAbstractController
             /** @var MedicalHistory $medicalHistory */
             $medicalHistory = $medicalHistoryRepository
                 ->find($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY));
-            if ($prescriptionRepository->findNotCompletedPrescription($medicalHistory)) {
-                $this->addFlash(
-                    'warning',
-                    'Назначение не может быть добавлено: для данной истории болезни есть незавершенное назначение!'
-                );
-                return $this->redirectToRoute($this->templateService->getRoute('new'));
-            }
             $prescription->setMedicalHistory($medicalHistory);
         }
         return $this->responseNew(
