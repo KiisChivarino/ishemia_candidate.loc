@@ -213,7 +213,11 @@ class PatientTesting
      */
     public function getPatientTestingResults(): Collection
     {
-        return $this->patientTestingResults;
+        return $this->patientTestingResults->filter(
+            function(PatientTestingResult $patientTestingResult) {
+                return $patientTestingResult->getEnabled();
+            }
+        );
     }
 
     /**

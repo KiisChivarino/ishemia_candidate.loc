@@ -64,4 +64,20 @@ class PatientTestingInfoService
         }
         return true;
     }
+
+    /**
+     * Check for empty all patient testing analysis rate results
+     * @param PatientTesting $patientTesting
+     * @return bool
+     */
+    static public function isPatientTestingResultsExists(PatientTesting $patientTesting): bool
+    {
+        foreach ($patientTesting->getPatientTestingResults() as $result) {
+            if($result !== null){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
