@@ -46,29 +46,32 @@ class PatientTestingResultType extends AbstractType
                     'label' => $templateItem->getContentValue('result'),
                     'required' => false
                 ]
-            )
-            ->add(
-                'analysisRate', EntityType::class, [
-                    'class' => AnalysisRate::class,
-                    'label' => $templateItem->getContentValue('analysisRate'),
-                    'choice_label' => function ($analysisRate) {
-                        return (new AnalysisRateInfoService())->getAnalysisRateInfoString($analysisRate);
-                    },
-                    'query_builder' => function (AnalysisRateRepository $er) use ($analysis) {
-                        $qb = $er->createQueryBuilder('ar')
-                            ->where(
-                                'ar.enabled = true
-                                and ar.analysis= :analysis'
-                            )
-                            ->setParameter('analysis', $analysis);
-                        if ($analysis) {
-                            $qb->andWhere('ar.analysis= :analysis')
-                                ->setParameter('analysis', $analysis);
-                        }
-                        return $qb;
-                    },
-                ]
             );
+        if (AnalysisRateInfoService::isAnalysisRatesExistForPatientTestingResult($options['patientTestingResult'])) {
+            $builder
+                ->add(
+                    'analysisRate', EntityType::class, [
+                        'class' => AnalysisRate::class,
+                        'label' => $templateItem->getContentValue('analysisRate'),
+                        'choice_label' => function ($analysisRate) {
+                            return (new AnalysisRateInfoService())->getAnalysisRateInfoString($analysisRate);
+                        },
+                        'query_builder' => function (AnalysisRateRepository $er) use ($analysis) {
+                            $qb = $er->createQueryBuilder('ar')
+                                ->where(
+                                    'ar.enabled = true
+                                and ar.analysis= :analysis'
+                                )
+                                ->setParameter('analysis', $analysis);
+                            if ($analysis) {
+                                $qb->andWhere('ar.analysis= :analysis')
+                                    ->setParameter('analysis', $analysis);
+                            }
+                            return $qb;
+                        },
+                    ]
+                );
+        }
     }
 
     /**
@@ -78,7 +81,7 @@ class PatientTestingResultType extends AbstractType
     {
         $resolver
             ->setDefaults(['data_class' => PatientTestingResult::class,])
-            ->setDefined('analysis')
+            ->setDefined(['analysis', 'patientTestingResult'])
             ->setAllowedTypes('analysis', [Analysis::class, 'string', 'null'])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
