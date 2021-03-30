@@ -109,7 +109,10 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['ANALYSIS_GROUP'],]
             ),
-            ['patientId' => $patient->getId()],
+            [
+                'patientId' => $patient->getId(),
+                'route' => 'doctor_edit_patient_testing_from_history'
+            ],
             function () {
                 $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
                     ->setContent('title', 'История списка обследований');
@@ -144,7 +147,10 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['ANALYSIS_GROUP'],]
             ),
-            ['patientId' => $patient->getId()],
+            [
+                'patientId' => $patient->getId(),
+                'route' => 'doctor_edit_patient_testing_from_not_processed'
+            ],
             function () {
                 $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
                     ->setContent('title', 'Список необработанных обследований');
@@ -175,7 +181,10 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['ANALYSIS_GROUP'],]
             ),
-            ['patientId' => $patient->getId()],
+            [
+                'patientId' => $patient->getId(),
+                'route' => 'doctor_edit_patient_testing_from_overdue'
+            ],
             function () {
                 $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
                     ->setContent('title', 'Список просроченных обследований');
@@ -206,7 +215,10 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['ANALYSIS_GROUP'],]
             ),
-            ['patientId' => $patient->getId()],
+            [
+                'patientId' => $patient->getId(),
+                'route' => 'doctor_edit_patient_testing_from_planned'
+            ],
             function () {
                 $this->templateService->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
                     ->setContent('title', 'Список запланированных обследований');
