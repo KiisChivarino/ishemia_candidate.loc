@@ -1,6 +1,7 @@
 {{ form_start(form) }}
 {% import "recursive_form_macro.html.twig" as recursive_form_macro %}
 {% set filesForm = form.patientTestingNotRequired.patientTestingFiles %}
+{{ include('flashmessages.html.twig') }}
 <ul>
     <li>
         <div id="fileBox">
@@ -49,33 +50,39 @@
     {% endif %}
     {% do form.patientTestingNotRequired.setRendered %}
 </ul>
-<div class="table-wrapper table-history">
-    <table>
-        <thead>
-        <tr>
-            <th>{{ template.items.edit.content.analysis }}</th>
-            <th>{{ template.items.edit.content.result }}</th>
-            <th>{{ template.items.edit.content.analysisRate }}</th>
-        </tr>
-        </thead>
-        {% for patientTestingResultForm in form %}
-            {% if patientTestingResultForm.vars.name != 'patientTestingNotRequired' %}
-                <tr>
-                    {% for resultForm in patientTestingResultForm %}
-                        {% if(resultForm.vars.name == 'analysis') %}
-                            <td>{{ resultForm.vars.value }}</td>
-                            {% do resultForm.setRendered %}
-                        {% else %}
-                            <td>
-                                {{ form_widget(resultForm) }}
-                            </td>
-                        {% endif %}
-                    {% endfor %}
-                </tr>
-            {% endif %}
-        {% endfor %}
-    </table>
-</div>
+
+{% if(isPatientTestingResultsExists(entity))  %}
+    <div class="table-wrapper table-history">
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>{{ template.items.edit.content.analysis }}</th>
+                <th>{{ template.items.edit.content.result }}</th>
+                <th>{{ template.items.edit.content.analysisRate }}</th>
+            </tr>
+            </thead>
+
+            {% for patientTestingResultForm in form %}
+                {% if patientTestingResultForm.vars.name != 'patientTestingNotRequired' %}
+                    <tr>
+                        {% for resultForm in patientTestingResultForm %}
+                            {% if(resultForm.vars.name == 'analysis') %}
+                                <td>{{ resultForm.vars.value }}</td>
+                                {% do resultForm.setRendered %}
+                            {% else %}
+                                <td>
+                                    {{ form_widget(resultForm) }}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+{% endif %}
 <div class="buttons">
     <button class="btn btn--mode">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
 </div>

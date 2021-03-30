@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class PatientFileType
@@ -18,6 +19,16 @@ use Symfony\Component\Validator\Constraints\File;
  */
 class PatientTestingFileType extends AbstractType
 {
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -29,6 +40,7 @@ class PatientTestingFileType extends AbstractType
                 'file', FileType::class, [
                     'mapped' => false,
                     'required' => true,
+                    'translation_domain' => 'messages',
                     'constraints' => [
                         new File(
                             [
@@ -36,7 +48,9 @@ class PatientTestingFileType extends AbstractType
                                 'mimeTypes' => [
                                     'image/jpeg',
                                     'image/pjpeg',
+                                    'image/png',
                                 ],
+                                'mimeTypesMessage' => $this->translator->trans('form.error.mime_type_message_error'),
                             ]
                         )
                     ],

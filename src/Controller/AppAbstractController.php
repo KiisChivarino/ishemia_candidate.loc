@@ -295,6 +295,11 @@ abstract class AppAbstractController extends AbstractController
                     ]
             );
         }
+        if($form->isSubmitted() && !$form->isValid()){
+            foreach ($form->getErrors(true) as $value){
+                $this->addFlash('error', $value->getMessage());
+            }
+        }
         return $this->render(
             $this->templateService->getTemplateFullName(
                 $formName,

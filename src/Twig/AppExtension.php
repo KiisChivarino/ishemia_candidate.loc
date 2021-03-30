@@ -122,6 +122,12 @@ class AppExtension extends AbstractExtension
                     'isEmptyPatientTestingResults'
                 ]
             ),
+            new TwigFunction(
+                'isPatientTestingResultsExists', [
+                    $this,
+                    'isPatientTestingResultsExists'
+                ]
+            ),
              new TwigFunction(
                  'globals', [
                      $this,
@@ -270,6 +276,16 @@ class AppExtension extends AbstractExtension
     public function isEmptyPatientTestingResults(PatientTesting $patientTesting): bool
     {
         return PatientTestingInfoService::isEmptyPatientTestingResults($patientTesting);
+    }
+
+    /**
+     * Check for patient testing results exists
+     * @param PatientTesting $patientTesting
+     * @return bool
+     */
+    public function isPatientTestingResultsExists(PatientTesting $patientTesting): bool
+    {
+        return PatientTestingInfoService::isPatientTestingResultsExists($patientTesting);
     }
 
     /**

@@ -18,3 +18,6 @@ app_controller:
   success:
     success_post: Запись успешно сохранена!
     success_delete: Запись успешно удалена!
+form:
+  error:
+    mime_type_message_error: Изображение должно быть в формате «jpeg» или «png»
