@@ -2,7 +2,7 @@
 {% macro recursiveForm(form, entity) %}
     {% if form.children is empty %}
         {% if 'hidden' not in form.vars.block_prefixes %}
-            <li>
+            <li {% if 'checkbox' in form.vars.block_prefixes %}class="checks" {% endif %}>
                 <span>{{ form_label(form) }}</span>
                 {{ form_widget(form) }}
                 <small>{{ form_help(form) }}</small>

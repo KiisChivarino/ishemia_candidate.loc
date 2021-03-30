@@ -1,8 +1,10 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
+
     <li>
         <span class="title">{{ template.items.show.content.email }}</span>
-        <p>{{ entity.email }}</p>
+
+        <p>{{ entity.email ? entity.email : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.role }}</span>
@@ -26,6 +28,6 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.patronymicName }}</span>
-        <p>{{ entity.patronymicName }}</p>
+        <p>{{ entity.patronymicName ? entity.patronymicName : template.items.show.content.empty  }}</p>
     </li>
 {% endblock %}
