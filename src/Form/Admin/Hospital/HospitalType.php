@@ -13,6 +13,7 @@ use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,7 +39,15 @@ class HospitalType extends AbstractType
         $builder
             ->add('address', null, ['label' => $templateItem->getContentValue('address')])
             ->add('name', null, ['label' => $templateItem->getContentValue('name')])
-            ->add('phone', null, ['label' => $templateItem->getContentValue('phone')])
+            ->add(
+                'phone',
+                TelType::class,
+                [
+                    'label' => $templateItem->getContentValue('phone'),
+                    'attr' => ['class' => 'phone_us'],
+                    'help' => $templateItem->getContentValue('phoneHelp'),
+                ]
+            )
             ->add(
                 'description', null, [
                 'label' => $templateItem->getContentValue('description'),
