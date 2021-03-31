@@ -70,7 +70,7 @@ class PlanAppointment
     /**
      * @return TimeRange
      */
-    public function getTimeRange(): TimeRange
+    public function getTimeRange(): ?TimeRange
     {
         return $this->timeRange;
     }

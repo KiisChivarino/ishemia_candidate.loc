@@ -1,8 +1,8 @@
-# [Исправление страниц списка Пользователей и просмотра Пользователя](https://www.notion.so/f87ba03ae2194383b75257a7d40abae4)
+# [При добавлении нового приема по плану падает ошибка](https://www.notion.so/5ec22d6ea2b348ae9d57f4ac2274094a)
 
-Bitrix24: https://kvokka.bitrix24.ru/workgroups/group/211/tasks/task/view/5961/
+Bitrix24: https://kvokka.bitrix24.ru/workgroups/group/211/tasks/task/view/6003/
 
-Created: Mar 26, 2021 10:29 AM
+Created: Mar 26, 2021 11:01 AM
 
 Аналитик: Максим Викторович
 
@@ -16,7 +16,7 @@ Created: Mar 26, 2021 10:29 AM
 
 Ревьювер: Максим Викторович
 
-Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-pageSearchAndUserShow
+Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-planAppointmentNew
 
 Статус: To Review
 
@@ -28,14 +28,10 @@ Created: Mar 26, 2021 10:29 AM
 
 ### Проблема
 
-Добавить надпись отсутствует на странице просмотра данных о пользователе в поле Email
-URL: admin/auth_user/{id}
+При добавлении нового приема по плану падает ошибка
+URL: сейчас - /admin/plan_appointment/new
 
-Добавить надпись отсутствует на странице просмотра данных о пользователе в поле Отчество
-URL: admin/auth_user/{id}
-
-Поправить расположение checkbox Включено
-URL: admin/auth_user/{id}/edit
+![https://s3.us-west-2.amazonaws.com/secure.notion-static.com/26689587-e261-42ea-be56-55a8dff9dce8/14.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210330%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210330T122508Z&X-Amz-Expires=86400&X-Amz-Signature=7e12de026c21dcf234b63b26f6464bb04b51cd5143bcb193f40e6947099cf704&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%2214.png%22](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/26689587-e261-42ea-be56-55a8dff9dce8/14.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210330%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210330T122508Z&X-Amz-Expires=86400&X-Amz-Signature=7e12de026c21dcf234b63b26f6464bb04b51cd5143bcb193f40e6947099cf704&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%2214.png%22)
 
 ### Входные данные
 
