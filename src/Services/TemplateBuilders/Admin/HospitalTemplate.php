@@ -16,7 +16,6 @@ class HospitalTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'region' => 'Регион',
         'city' => 'Город',
-        'phoneHelp' => 'Введите телефон 10 цифр',
     ];
     /** @var string[] Common content for new,edit,show templates */
     protected const FORM_SHOW_CONTENT = [
@@ -26,7 +25,8 @@ class HospitalTemplate extends AdminTemplateBuilder
         'region' => 'Регион',
         'city' => 'Город',
         'code' => 'Код',
-        'email' => 'Email'
+        'email' => 'Email',
+        'phoneHelp' => 'Введите телефон 10 цифр',
     ];
 
     /** @var string[] Common LIST_CONTENT */
