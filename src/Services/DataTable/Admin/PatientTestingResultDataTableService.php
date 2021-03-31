@@ -77,7 +77,7 @@ class PatientTestingResultDataTableService extends AdminDatatableService
                             (new AnalysisRateInfoService())->getAnalysisRateInfoString($analysisRate),
                             $analysisRate->getId(),
                             'analysis_rate_show'
-                        ) : 'отсутствует';
+                        ) : 'отсутствуют';
                     },
                 ]
             )
