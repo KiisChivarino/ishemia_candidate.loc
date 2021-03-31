@@ -14,6 +14,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Services\InfoService\HospitalInfoService;
 
 /**
  * Class HospitalController
@@ -112,6 +113,12 @@ class HospitalController extends AdminAbstractController
      */
     public function delete(Request $request, Hospital $hospital): Response
     {
-        return $this->responseDelete($request, $hospital);
+        if (HospitalInfoService::isHospitalDeletable($hospital)) {
+            return $this->responseDelete($request, $hospital);
+        }
+        $this->addFlash('error', 'Больницу, к которой привязаны пациенты и/или врачи, удалить нельзя!');
+
+        return $this->redirectToRoute('hospital_list');
+
     }
 }

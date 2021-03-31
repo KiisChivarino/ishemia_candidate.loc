@@ -2,6 +2,8 @@
 
 namespace App\Services\TemplateBuilders\Admin;
 
+use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\AppTemplateBuilder;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -78,4 +80,16 @@ class HospitalTemplate extends AdminTemplateBuilder
             self::ENTITY_CONTENT
         );
     }
+
+    /**
+     * @param FilterService|null $filterService
+     * @return $this|AdminTemplateBuilder
+     */
+    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::list($filterService);
+        $this->setCommonTemplatePath($this->getTemplatePath());
+        return $this;
+    }
+
 }

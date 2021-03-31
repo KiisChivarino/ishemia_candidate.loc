@@ -19,6 +19,8 @@ use App\Services\MultiFormService\MultiFormService;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use App\Entity\Hospital;
+use App\Services\InfoService\HospitalInfoService;
 
 /**
  * Class AppExtension
@@ -139,7 +141,13 @@ class AppExtension extends AbstractExtension
                     $this,
                     'getFormName'
                 ]
-            )
+            ),
+            new TwigFunction(
+                'isHospitalDeletable', [
+                    $this,
+                    'isHospitalDeletable'
+                ]
+            ),
         ];
     }
 
@@ -313,4 +321,20 @@ class AppExtension extends AbstractExtension
     public function getFormName(string $formClassName): string{
         return MultiFormService::getFormName($formClassName);
     }
+
+    /**
+     * Checks if hospital is allowed to be deleted
+     * @param int $hospitalId
+     * @return bool
+     */
+    public function isHospitalDeletable(int $hospitalId): bool
+    {
+        /** @var Hospital $hospital */
+        $hospital = $this->entityManager->getRepository(Hospital::class)->find($hospitalId);
+        if(!is_null($hospital)) {
+            return (new HospitalInfoService())->isHospitalDeletable($hospital);
+        }
+        return false;
+    }
+
 }
