@@ -16,10 +16,12 @@ class InitialExaminationTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common form content for edit templates */
     protected const EDIT_CONTENT = [
-        'objective_h2' => 'Редактирование первичного осмотра пациента',
-        'objective_title' => 'Редактирование первичного осмотра пациента',
-        'anamnestic_h2' => 'Редактирование клинического диагноза',
-        'anamnestic_title' => 'Редактирование клинического диагноза',
+        'h1' => 'Первичный осмотр пациента',
+        'title' => 'Первичный осмотр пациента',
+        'anamnestic_h1' => 'Анамнез жизни',
+        'anamnestic_title' => 'Анамнез жизни',
+        'objective_h1' => 'Объективный статус',
+        'objective_title' => 'Объективный статус',
     ];
 
     /** @var string[] Common ENTITY_CONTENT */
