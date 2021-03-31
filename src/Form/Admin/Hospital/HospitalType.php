@@ -26,6 +26,9 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
  */
 class HospitalType extends AbstractType
 {
+    /** @var int Максимальная длина кода */
+    const MAX_CODE_LENGTH = 6;
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -68,7 +71,14 @@ class HospitalType extends AbstractType
                 ]
             )
             ->add('email', EmailType::class, ['label' => $templateItem->getContentValue('email')])
-            ->add('code', NumberType::class, ['label' => $templateItem->getContentValue('code')])
+            ->add('code', NumberType::class,
+                [
+                    'label' => $templateItem->getContentValue('code'),
+                    'attr' => [
+                        'maxlength' => self::MAX_CODE_LENGTH
+                    ]
+                ]
+            )
             ->add(
                 'enabled', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('enabled'),
