@@ -202,7 +202,7 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
                 $patientTestingResult,
                 PatientTestingResultType::class,
                 [
-                    'analysis' => $patientTestingResult->getAnalysis()
+                    'patientTestingResult' => $patientTestingResult
                 ],
                 true,
                 $key
