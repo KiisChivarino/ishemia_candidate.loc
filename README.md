@@ -1,12 +1,16 @@
-# [Не выводится список пацинтов в кабинете врача при city = null у пациента](https://www.notion.so/city-null-e07b8eb406b5400993bf80fcc8d5a499)
+# [Невозможно удалить прием пациента пока не удалены дочерние элементы](https://www.notion.so/95baaaf02d1940b0bce02b9bc82a765c)
 
-Created: Mar 30, 2021 5:20 PM
+Bitrix24: https://kvokka.bitrix24.ru/workgroups/group/211/tasks/task/view/5995/
 
-Аналитик: Anton A
+Created: Mar 26, 2021 10:57 AM
 
-Время последнего изменения: Mar 31, 2021 2:33 PM
+Аналитик: Всеволод Лапшин
+
+Время последнего изменения: Mar 31, 2021 5:58 PM
 
 Исполнитель: Anton A
+
+Отредактировано: Anton A
 
 Отредактировано: Anton A
 
@@ -18,7 +22,7 @@ Created: Mar 30, 2021 5:20 PM
 
 Ревьювер: Максим Викторович
 
-Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-patientListCityErrorInDoctorOffice
+Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-errorDelitePatientAppointment
 
 Статус: In Dev
 
@@ -30,8 +34,13 @@ Created: Mar 30, 2021 5:20 PM
 
 ### Проблема
 
-Если хоть у одного пациента на странице не будет заполнено поле city - будет ошибка
+Невозможно удалить прием пациента пока не удалены дочерние элементы
+URL: сейчас - /admin/patient_appointment/
 
-URL: [/doctor_office/patients](http://www.test1.loc/doctor_office/patients)
+### Входные данные
 
-![https://s3.us-west-2.amazonaws.com/secure.notion-static.com/8818570d-b4d6-4bf3-b905-183993a851e0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210331%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210331T113443Z&X-Amz-Expires=86400&X-Amz-Signature=6935d842a8f6583f7960acb449392e81c1824f4001456708949d9b091b905aab&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/8818570d-b4d6-4bf3-b905-183993a851e0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210331%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210331T113443Z&X-Amz-Expires=86400&X-Amz-Signature=6935d842a8f6583f7960acb449392e81c1824f4001456708949d9b091b905aab&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
+Описание функционала.
+
+### Выходные данные
+
+Описание результата.

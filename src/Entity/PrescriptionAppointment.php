@@ -27,7 +27,7 @@ class PrescriptionAppointment
 
     /**
      * @ORM\OneToOne(targetEntity=PatientAppointment::class, inversedBy="prescriptionAppointment", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $patientAppointment;
 
