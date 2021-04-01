@@ -3,7 +3,6 @@
 namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
-use App\Entity\Analysis;
 use App\Entity\AnalysisRate;
 use App\Entity\PatientTestingResult;
 use App\Repository\AnalysisRateRepository;
@@ -32,8 +31,9 @@ class PatientTestingResultType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Analysis $analysis */
-        $analysis = $options['analysis'] ?? null;
+        /** @var PatientTestingResult $patientTestingResult */
+        $patientTestingResult = $options['patientTestingResult'];
+        $analysis = $patientTestingResult->getAnalysis();
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
@@ -46,29 +46,32 @@ class PatientTestingResultType extends AbstractType
                     'label' => $templateItem->getContentValue('result'),
                     'required' => false
                 ]
-            )
-            ->add(
-                'analysisRate', EntityType::class, [
-                    'class' => AnalysisRate::class,
-                    'label' => $templateItem->getContentValue('analysisRate'),
-                    'choice_label' => function ($analysisRate) {
-                        return (new AnalysisRateInfoService())->getAnalysisRateInfoString($analysisRate);
-                    },
-                    'query_builder' => function (AnalysisRateRepository $er) use ($analysis) {
-                        $qb = $er->createQueryBuilder('ar')
-                            ->where(
-                                'ar.enabled = true
-                                and ar.analysis= :analysis'
-                            )
-                            ->setParameter('analysis', $analysis);
-                        if ($analysis) {
-                            $qb->andWhere('ar.analysis= :analysis')
-                                ->setParameter('analysis', $analysis);
-                        }
-                        return $qb;
-                    },
-                ]
             );
+        if (AnalysisRateInfoService::isAnalysisRatesExistForPatientTestingResult($patientTestingResult)) {
+            $builder
+                ->add(
+                    'analysisRate', EntityType::class, [
+                        'class' => AnalysisRate::class,
+                        'label' => $templateItem->getContentValue('analysisRate'),
+                        'choice_label' => function ($analysisRate) {
+                            return (new AnalysisRateInfoService())->getAnalysisRateInfoString($analysisRate);
+                        },
+                        'query_builder' => function (AnalysisRateRepository $er) use ($analysis) {
+                            $qb = $er->createQueryBuilder('ar')
+                                ->where(
+                                    'ar.enabled = true
+                                and ar.analysis= :analysis'
+                                )
+                                ->setParameter('analysis', $analysis);
+                            if ($analysis) {
+                                $qb->andWhere('ar.analysis= :analysis')
+                                    ->setParameter('analysis', $analysis);
+                            }
+                            return $qb;
+                        },
+                    ]
+                );
+        }
     }
 
     /**
@@ -78,8 +81,8 @@ class PatientTestingResultType extends AbstractType
     {
         $resolver
             ->setDefaults(['data_class' => PatientTestingResult::class,])
-            ->setDefined('analysis')
-            ->setAllowedTypes('analysis', [Analysis::class, 'string', 'null'])
+            ->setDefined(['patientTestingResult'])
+            ->setAllowedTypes('patientTestingResult', [PatientTestingResult::class])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

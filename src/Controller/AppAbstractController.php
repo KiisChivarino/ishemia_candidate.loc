@@ -73,15 +73,8 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function renderTableActions(): Closure
     {
-        return function ($value, $options, $route = null) {
-            return $this->render(
-                $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
-                [
-                    'template' => $this->templateService,
-                    'parameters' => array_merge(['id' => $value], is_array($options) ? $options : []),
-                    'route' => $route
-                ]
-            )->getContent();
+        return function (int $enityId, $rowEntity, $route = null, ?array $routeParameters = []) {
+            return $this->getTableActionsResponseContent($enityId, $rowEntity, $route, $routeParameters);
         };
     }
 
@@ -296,8 +289,8 @@ abstract class AppAbstractController extends AbstractController
                     ]
             );
         }
-        if($form->isSubmitted() && !$form->isValid()){
-            foreach ($form->getErrors(true) as $value){
+        if ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors(true) as $value) {
                 $this->addFlash('error', $value->getMessage());
             }
         }
@@ -555,4 +548,34 @@ abstract class AppAbstractController extends AbstractController
         );
     }
 
+    /**
+     * Gets the response content for table actions
+     * @param int $entityId
+     * @param $rowEntity
+     * @param string|null $route
+     * @param array|null $routeParameters
+     * @return false|string
+     */
+    protected function getTableActionsResponseContent(
+        int $entityId,
+        $rowEntity,
+        ?string $route,
+        ?array $routeParameters = []
+    )
+    {
+        return $this->render(
+            $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
+            [
+                'template' => $this->templateService,
+                'parameters' => array_merge(
+                    [
+                        'id' => $entityId,
+                        'rowEntity' => $rowEntity
+                    ],
+                    $routeParameters
+                ),
+                'route' => $route
+            ]
+        )->getContent();
+    }
 }

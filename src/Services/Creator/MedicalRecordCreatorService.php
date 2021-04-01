@@ -37,14 +37,11 @@ class MedicalRecordCreatorService
     /**
      * @param MedicalHistory $medicalHistory
      * @return MedicalRecord
+     * @throws Exception
      */
     public function createMedicalRecord(MedicalHistory $medicalHistory): MedicalRecord
     {
-        $medicalRecord = null;
-        try {
-            $medicalRecord = $this->medicalRecordRepository->getMedicalRecord($medicalHistory);
-        } catch (Exception $e) {
-        }
+        $medicalRecord = $this->medicalRecordRepository->getCurrentMedicalRecord($medicalHistory);
         if ($medicalRecord === null) {
             $medicalRecord = (new MedicalRecord())
                 ->setEnabled(true)

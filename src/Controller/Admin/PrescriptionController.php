@@ -12,6 +12,7 @@ use App\Repository\MedicalRecordRepository;
 use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
+use App\Services\Creator\MedicalRecordCreatorService;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
@@ -179,6 +180,7 @@ class PrescriptionController extends AdminAbstractController
         MedicalRecordRepository $medicalRecordRepository
     ): Response
     {
+
         return $this->responseEditMultiForm(
             $request,
             $prescription,
@@ -187,12 +189,21 @@ class PrescriptionController extends AdminAbstractController
                 new FormData($prescription, PrescriptionEditType::class),
             ],
             function (EntityActions $entityActions)
-            use ($prescription, $medicalRecordRepository)
-            {
-                $this->isCompletedActions(
-                    $entityActions,
-                    $medicalRecordRepository->getMedicalRecord($prescription->getMedicalHistory())
+            use ($medicalRecordRepository) {
+                /** @var Prescription $prescription */
+                $prescription = $entityActions->getEntity();
+                $medicalRecordCreatorService = new MedicalRecordCreatorService(
+                    $medicalRecordRepository,
+                    $entityActions->getEntityManager()
                 );
+                $medicalHistory = $prescription->getMedicalHistory();
+
+                $medicalRecord = $medicalRecordCreatorService->persistMedicalRecord($medicalHistory);
+                $this->isCompletedActions(
+                    $prescription,
+                    $medicalRecord
+                );
+
             }
         );
     }
@@ -215,13 +226,11 @@ class PrescriptionController extends AdminAbstractController
     /**
      * Actions if flag isCompleted checked
      *
-     * @param EntityActions $entityActions
+     * @param Prescription $prescription
      * @param MedicalRecord $medicalRecord
      */
-    private function isCompletedActions(EntityActions $entityActions, MedicalRecord $medicalRecord)
+    private function isCompletedActions(Prescription $prescription, MedicalRecord $medicalRecord)
     {
-        /** @var Prescription $prescription */
-        $prescription = $entityActions->getEntity();
         if ($prescription->getIsCompleted()) {
             $prescription->setCompletedTime(new DateTime());
             $prescription->setMedicalRecord($medicalRecord);

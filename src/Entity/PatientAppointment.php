@@ -107,7 +107,7 @@ class PatientAppointment
 
     /**
      * @ORM\ManyToOne(targetEntity=PlanAppointment::class)
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $planAppointment;
 
