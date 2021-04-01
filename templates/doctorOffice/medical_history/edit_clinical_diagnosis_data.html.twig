@@ -1,9 +1,9 @@
 {% extends 'doctorOffice/index.html.twig' %}
-{% block title %}{{ template.items.edit.content.anamnestic_title }}{% endblock %}
+{% block title %}{{ template.items.edit.content.title }}{% endblock %}
 {% block content %}
     <div class="content-wrapper__top">
         <ul>
-            <li><h1>{{ template.items.edit.content.anamnestic_h2 }}</h1></li>
+            <li><h1>{{ template.items.edit.content.h1 }}</h1></li>
             <li>
                 <a class="back-page" href="{{ path(
                     'doctor_medical_history',

@@ -17,8 +17,8 @@ class PersonalDataTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common form content for edit templates */
     protected const EDIT_CONTENT = [
-        'personal_h2' => 'Редактирование персональных данных',
-        'personal_title' => 'Редактирование персональных данных',
+        'h1' => 'Личные данные',
+        'title' => 'Личные данные',
     ];
 
     /** @var string[] Common ENTITY_CONTENT */

@@ -4,6 +4,9 @@
     <div class="content-wrapper__top">
         <ul>
             <li>
+                <h1>{{ template.items.edit.content.anamnestic_h1 }}</h1>
+            </li>
+            <li>
                 <a class="back-page" href="{{ path(
                     'edit_initial_examination_data',
                     {'id': entity.id}
@@ -11,7 +14,6 @@
             </li>
         </ul>
     </div>
-    <h2>{{ template.items.edit.content.anamnestic_h2 }}</h2>
     <div class="adm-users-edit">
         {{ include(template.items.form.path~'_form.html.twig') }}
     </div>
