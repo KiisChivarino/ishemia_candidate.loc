@@ -5,6 +5,8 @@
         <p>
             {% if entity.hospital %}
                 <a href="{{ path('hospital_show', {'id': entity.hospital.id}) }}">{{ entity.hospital.name }}</a>
+            {% else %}
+                {{ template.items.show.content.empty}}
             {% endif %}
         </p>
     </li>
@@ -22,11 +24,11 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.patronymicName }}</span>
-        <p>{{ entity.authUser.patronymicName }}</p>
+        <p>{{ entity.authUser.patronymicName ? entity.authUser.patronymicName : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.email }}</span>
-        <p>{{ entity.authUser.email }}</p>
+        <p>{{ entity.authUser.email ? entity.authUser.email : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.role }}</span>

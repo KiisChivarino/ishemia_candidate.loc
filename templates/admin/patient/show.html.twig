@@ -14,33 +14,35 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.patronymicName }}</span>
-        <p>{{ entity.authUser.patronymicName }}</p>
+        <p>{{ entity.authUser.patronymicName ? entity.authUser.patronymicName : template.items.show.content.empty}}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.email }}</span>
-        <p>{{ entity.authUser.email }}</p>
+        <p>{{ entity.authUser.email ? entity.authUser.email : template.items.show.content.empty}}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.snils }}</span>
-        <p>{{ entity.snils }}</p>
+        <p>{{ entity.snils ? entity.snils : template.items.show.content.empty}}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.insuranceNumber }}</span>
-        <p>{{ entity.insuranceNumber }}</p>
+        <p>{{ entity.insuranceNumber ? entity.insuranceNumber : template.items.show.content.empty}}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.dateBirth }}</span>
-        <p>{{ entity.dateBirth ? entity.dateBirth|date('Y-m-d') : '' }}</p>
+        <p>{{ entity.dateBirth ? entity.dateBirth|date('Y-m-d') : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.heartAttackDate }}</span>
-        <p>{{ entity.heartAttackDate ? entity.heartAttackDate|date('d.m.Y') : '' }}</p>
+        <p>{{ entity.heartAttackDate ? entity.heartAttackDate|date('d.m.Y') : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.district }}</span>
         <p>
             {% if entity.district %}
                 <a href="{{ path('district_show', {'id': entity.district.id}) }}">{{ entity.district.name }}</a>
+            {% else %}
+                {{ template.items.show.content.empty}}
             {% endif %}
         </p>
     </li>
@@ -49,6 +51,8 @@
         <p>
             {% if entity.city %}
                 <a href="{{ path('city_show', {'id': entity.city.id}) }}">{{ entity.city.name }}</a>
+            {% else %}
+                {{ template.items.show.content.empty}}
             {% endif %}
         </p>
     </li>
@@ -78,15 +82,15 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.passport }}</span>
-        <p>{{ entity.passport }}</p>
+        <p>{{ entity.passport ? entity.passport : template.items.show.content.empty}}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.weight }}</span>
-        <p>{{ entity.weight }}</p>
+        <p>{{ entity.weight ? entity.weight : template.items.show.content.empty}}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.height }}</span>
-        <p>{{ entity.height }}</p>
+        <p>{{ entity.height ? entity.height : template.items.show.content.empty}}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.bodyMassIndex }}</span>
