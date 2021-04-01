@@ -19,9 +19,6 @@ class HospitalInfoService
      */
     public static function isHospitalDeletable(Hospital $hospital): bool
     {
-        if (count($hospital->getPatients()) === 0 && count($hospital->getStaff()) === 0) {
-            return true;
-        }
-        return false;
+        return (count($hospital->getPatients()) + count($hospital->getStaff())) === 0;
     }
 }

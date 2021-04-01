@@ -29,6 +29,12 @@ class HospitalController extends AdminAbstractController
     //relative path to twig templates
     public const TEMPLATE_PATH = 'admin/hospital/';
 
+    /** @var string Название маршрута для редиректа в случае невозможности удаления сущности Hospital */
+    const REDIRECT_IF_IMPOSSIBLE_TO_DELETE = 'hospital_show';
+
+    /** @var string Ключ для редиректа в случае невозможности удаления сущности Hospital */
+    const REDIRECT_PARAMETER_KEY_IF_IMPOSSIBLE_TO_DELETE = 'id';
+
     /**
      * HospitalController constructor.
      *
@@ -116,9 +122,10 @@ class HospitalController extends AdminAbstractController
         if (HospitalInfoService::isHospitalDeletable($hospital)) {
             return $this->responseDelete($request, $hospital);
         }
-        $this->addFlash('error', 'Больницу, к которой привязаны пациенты и/или врачи, удалить нельзя!');
+        $this->addFlash('error', $this->translator->trans('hospital_controller.error.delete'));
 
-        return $this->redirectToRoute('hospital_list');
-
+        return $this->redirectToRoute(self::REDIRECT_IF_IMPOSSIBLE_TO_DELETE, [
+            self::REDIRECT_PARAMETER_KEY_IF_IMPOSSIBLE_TO_DELETE => $hospital->getId()
+        ]);
     }
 }
