@@ -139,7 +139,7 @@ class AppExtension extends AbstractExtension
                     $this,
                     'getFormName'
                 ]
-            )
+            ),
         ];
     }
 

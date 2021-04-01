@@ -6,6 +6,7 @@ use App\Entity\Hospital;
 use App\Form\Admin\Hospital\HospitalType;
 use App\Services\DataTable\Admin\HospitalDataTableService;
 use App\Services\TemplateBuilders\Admin\HospitalTemplate;
+use App\Services\TemplateItems\DeleteTemplateItem;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Services\InfoService\HospitalInfoService;
 
 /**
  * Class HospitalController
@@ -27,6 +29,12 @@ class HospitalController extends AdminAbstractController
 {
     //relative path to twig templates
     public const TEMPLATE_PATH = 'admin/hospital/';
+
+    /** @var string Название маршрута для редиректа в случае невозможности удаления сущности Hospital */
+    const REDIRECT_IF_IMPOSSIBLE_TO_DELETE = 'hospital_show';
+
+    /** @var string Ключ для редиректа в случае невозможности удаления сущности Hospital */
+    const REDIRECT_PARAMETER_KEY_IF_IMPOSSIBLE_TO_DELETE = 'id';
 
     /**
      * HospitalController constructor.
@@ -112,6 +120,32 @@ class HospitalController extends AdminAbstractController
      */
     public function delete(Request $request, Hospital $hospital): Response
     {
-        return $this->responseDelete($request, $hospital);
+        if (HospitalInfoService::isHospitalDeletable($hospital)) {
+            return $this->responseDelete($request, $hospital);
+        }
+        $this->addFlash('error', $this->translator->trans('hospital_controller.error.delete'));
+
+        return $this->redirectToRoute(self::REDIRECT_IF_IMPOSSIBLE_TO_DELETE, [
+            self::REDIRECT_PARAMETER_KEY_IF_IMPOSSIBLE_TO_DELETE => $hospital->getId()
+        ]);
+    }
+
+    /**
+     * Отображает действия с записью в таблице datatables для списка больниц
+     *
+     * @return Closure
+     */
+    protected function renderTableActions(): \Closure
+    {
+        return function (int $hospitalId, ?Hospital $hospital, $route = null) {
+            $deleteTemplateItem = $this->templateService
+                ->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME);
+            if (!is_null($hospital) && !HospitalInfoService::isHospitalDeletable($hospital)) {
+                $deleteTemplateItem->setIsEnabled(false);
+            }else{
+                $deleteTemplateItem->setIsEnabled(true);
+            }
+            return $this->getTableActionsResponseContent($hospitalId, $hospital, $route);
+        };
     }
 }
