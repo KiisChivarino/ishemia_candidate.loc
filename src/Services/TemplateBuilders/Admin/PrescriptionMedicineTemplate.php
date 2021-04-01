@@ -10,6 +10,7 @@ use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\NewTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -104,6 +105,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     public function list(?FilterService $filterService = null): AppTemplateBuilder
     {
         parent::list();
+        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->setFilters(
                 $filterService,

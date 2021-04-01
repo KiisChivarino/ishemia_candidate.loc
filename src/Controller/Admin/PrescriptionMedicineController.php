@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Form\Admin\PrescriptionMedicineType;
-use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionMedicineDataTableService;
@@ -78,23 +77,19 @@ class PrescriptionMedicineController extends AdminAbstractController
 
     /**
      * New medicine prescription
-     * @Route("/new", name="prescription_medicine_new", methods={"GET","POST"})
+     * @Route("/prescription/{prescription}/new", name="prescription_medicine_new", methods={"GET","POST"},
+     *      requirements={"prescription"="\d+"})
      *
      * @param Request $request
-     *
-     * @param PrescriptionRepository $prescriptionRepository
+     * @param Prescription $prescription
      * @return Response
      * @throws Exception
      */
-    public function new(Request $request, PrescriptionRepository $prescriptionRepository): Response
+    public function new(Request $request, Prescription $prescription): Response
     {
         $prescriptionMedicine = new PrescriptionMedicine();
-        if ($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)) {
-            /** @var Prescription $prescription */
-            $prescription = $prescriptionRepository
-                ->find($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY));
-            $prescriptionMedicine->setPrescription($prescription);
-        }
+        $prescriptionMedicine->setPrescription($prescription);
+
         return $this->responseNew(
             $request, $prescriptionMedicine, PrescriptionMedicineType::class, null, [],
             function (EntityActions $actions) {
