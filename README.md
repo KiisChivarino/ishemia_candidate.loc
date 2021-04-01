@@ -1,12 +1,10 @@
-# [Невозможно удалить прием пациента пока не удалены дочерние элементы](https://www.notion.so/95baaaf02d1940b0bce02b9bc82a765c)
+# [Добавить пояснения для отсутствующих полей](https://www.notion.so/d68d3b2f810d49fa90f9e0d587c4c94a)
 
-Bitrix24: https://kvokka.bitrix24.ru/workgroups/group/211/tasks/task/view/5995/
+Bitrix24: https://kvokka.bitrix24.ru/workgroups/group/211/tasks/task/view/5991/
 
-Created: Mar 26, 2021 10:57 AM
+Created: Mar 26, 2021 10:40 AM
 
-Аналитик: Всеволод Лапшин
-
-Время последнего изменения: Mar 31, 2021 5:58 PM
+Аналитик: Всеволод Лапшин, Максим Викторович
 
 Исполнитель: Anton A
 
@@ -22,8 +20,6 @@ Created: Mar 26, 2021 10:57 AM
 
 Ревьювер: Максим Викторович
 
-Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-errorDelitePatientAppointment
-
 Статус: In Dev
 
 Тестер: Всеволод Лапшин
@@ -34,13 +30,14 @@ Created: Mar 26, 2021 10:57 AM
 
 ### Проблема
 
-Невозможно удалить прием пациента пока не удалены дочерние элементы
-URL: сейчас - /admin/patient_appointment/
+В просмотре пациента для отсутствующих данных нет подписей "нет данных"
 
 ### Входные данные
 
-Описание функционала.
+admin/patient/{id}
+admin/staff
+admin/staff/{id}
 
 ### Выходные данные
 
-Описание результата.
+Для всех отсутствующих полей отображаются надписи "нет данных"

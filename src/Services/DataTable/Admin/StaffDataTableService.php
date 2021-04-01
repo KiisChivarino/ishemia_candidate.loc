@@ -43,13 +43,13 @@ class StaffDataTableService extends AdminDatatableService
             ->add(
                 'hospital', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('hospital'),
-                    'render' => function (string $data, Staff $staff) {
+                    'render' => function (string $data, Staff $staff) use ($listTemplateItem) {
                         /** @var Hospital $hospital */
                         $hospital = $staff->getHospital();
                         return
                             $hospital ?
                                 $this->getLink($hospital->getName(), $hospital->getId(), 'hospital_show')
-                                : '';
+                                : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
