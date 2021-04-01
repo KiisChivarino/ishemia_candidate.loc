@@ -25,9 +25,13 @@ class HospitalTemplate extends AdminTemplateBuilder
         'region' => 'Регион',
         'city' => 'Город',
         'code' => 'Код',
-        'email' => 'Email'
+        'email' => 'Email',
     ];
 
+    /** @var string[] Common content for new,edit, templates */
+    protected const FORM_CONTENT = [
+        'phoneHelp' => 'Введите телефон 10 цифр',
+    ];
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
         'h1' => 'Больницы',
