@@ -6,6 +6,7 @@ use App\Entity\Hospital;
 use App\Form\Admin\Hospital\HospitalType;
 use App\Services\DataTable\Admin\HospitalDataTableService;
 use App\Services\TemplateBuilders\Admin\HospitalTemplate;
+use App\Services\TemplateItems\DeleteTemplateItem;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -127,5 +128,24 @@ class HospitalController extends AdminAbstractController
         return $this->redirectToRoute(self::REDIRECT_IF_IMPOSSIBLE_TO_DELETE, [
             self::REDIRECT_PARAMETER_KEY_IF_IMPOSSIBLE_TO_DELETE => $hospital->getId()
         ]);
+    }
+
+    /**
+     * Отображает действия с записью в таблице datatables для списка больниц
+     *
+     * @return Closure
+     */
+    protected function renderTableActions(): \Closure
+    {
+        return function (int $hospitalId, ?Hospital $hospital, $route = null) {
+            $deleteTemplateItem = $this->templateService
+                ->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME);
+            if (!is_null($hospital) && !HospitalInfoService::isHospitalDeletable($hospital)) {
+                $deleteTemplateItem->setIsEnabled(false);
+            }else{
+                $deleteTemplateItem->setIsEnabled(true);
+            }
+            return $this->getTableActionsResponseContent($hospitalId, $hospital, $route);
+        };
     }
 }
