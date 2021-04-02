@@ -36,7 +36,8 @@ class NotificationDataTableService extends AdminDatatableService
         Closure $renderOperationsFunction,
         ListTemplateItem $listTemplateItem,
         array $filters
-    ): DataTable {
+    ): DataTable
+    {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
@@ -126,8 +127,7 @@ class NotificationDataTableService extends AdminDatatableService
                         ) : '-';
                     },
                 ]
-            )
-        ;
+            );
 
         /** @var Patient $patient */
         $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']])
@@ -141,8 +141,10 @@ class NotificationDataTableService extends AdminDatatableService
                             ->select('n')
                             ->from(Notification::class, 'n')
                             ->leftJoin('n.patientNotification', 'pN')
-                            ->addSelect('pN')
-                        ;
+                            ->leftJoin('n.notificationReceiverType', 'nRT')
+                            ->andWhere('nRT.name = :notificationReceiverType')
+                            ->setParameter('notificationReceiverType', 'patient')
+                            ->addSelect('pN');
                         if ($patient) {
                             $builder
                                 ->andWhere('pN.patient = :patient')

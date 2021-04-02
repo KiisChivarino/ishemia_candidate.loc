@@ -68,7 +68,11 @@ class PatientTestingListDataTableService extends DoctorOfficeDatatableService
         array $options
     ): DataTable
     {
-        $this->generateTableForPatientTestingsInDoctorOffice($renderOperationsFunction, $listTemplateItem);
+        $this->generateTableForPatientTestingsInDoctorOffice(
+            $renderOperationsFunction,
+            $listTemplateItem,
+            $options['route'] ?? null
+        );
         $analysisGroup = $filters[AppAbstractController::FILTER_LABELS['ANALYSIS_GROUP']];
         return $this->dataTable
             ->createAdapter(

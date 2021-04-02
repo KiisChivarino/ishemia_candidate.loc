@@ -77,7 +77,7 @@
                     constant('App\\Controller\\Admin\\PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY') %}
                 <ul class="sublist">
                     <li class="sublist__item">
-                        <a href="{{ path('prescription_medicine_new',{(prescriptionParameterKey) : entity.id}) }}"
+                        <a href="{{ path('prescription_medicine_new',{prescription: entity.id}) }}"
                         >{{ template.items.show.content.addPrescriptionMedicine }}
                         </a>
                     </li>

@@ -12,6 +12,7 @@ use App\Repository\MedicalRecordRepository;
 use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
+use App\Services\Creator\MedicalRecordCreatorService;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
@@ -100,8 +101,7 @@ class PrescriptionController extends AdminAbstractController
      */
     public function new(
         Request $request,
-        MedicalHistoryRepository $medicalHistoryRepository,
-        PrescriptionRepository $prescriptionRepository
+        MedicalHistoryRepository $medicalHistoryRepository
     ): Response
     {
         $prescription = new Prescription();
@@ -109,13 +109,6 @@ class PrescriptionController extends AdminAbstractController
             /** @var MedicalHistory $medicalHistory */
             $medicalHistory = $medicalHistoryRepository
                 ->find($request->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY));
-            if ($prescriptionRepository->findNotCompletedPrescription($medicalHistory)) {
-                $this->addFlash(
-                    'warning',
-                    'Назначение не может быть добавлено: для данной истории болезни есть незавершенное назначение!'
-                );
-                return $this->redirectToRoute($this->templateService->getRoute('new'));
-            }
             $prescription->setMedicalHistory($medicalHistory);
         }
         return $this->responseNew(
@@ -187,6 +180,7 @@ class PrescriptionController extends AdminAbstractController
         MedicalRecordRepository $medicalRecordRepository
     ): Response
     {
+
         return $this->responseEditMultiForm(
             $request,
             $prescription,
@@ -195,12 +189,21 @@ class PrescriptionController extends AdminAbstractController
                 new FormData($prescription, PrescriptionEditType::class),
             ],
             function (EntityActions $entityActions)
-            use ($prescription, $medicalRecordRepository)
-            {
-                $this->isCompletedActions(
-                    $entityActions,
-                    $medicalRecordRepository->getMedicalRecord($prescription->getMedicalHistory())
+            use ($medicalRecordRepository) {
+                /** @var Prescription $prescription */
+                $prescription = $entityActions->getEntity();
+                $medicalRecordCreatorService = new MedicalRecordCreatorService(
+                    $medicalRecordRepository,
+                    $entityActions->getEntityManager()
                 );
+                $medicalHistory = $prescription->getMedicalHistory();
+
+                $medicalRecord = $medicalRecordCreatorService->persistMedicalRecord($medicalHistory);
+                $this->isCompletedActions(
+                    $prescription,
+                    $medicalRecord
+                );
+
             }
         );
     }
@@ -223,13 +226,11 @@ class PrescriptionController extends AdminAbstractController
     /**
      * Actions if flag isCompleted checked
      *
-     * @param EntityActions $entityActions
+     * @param Prescription $prescription
      * @param MedicalRecord $medicalRecord
      */
-    private function isCompletedActions(EntityActions $entityActions, MedicalRecord $medicalRecord)
+    private function isCompletedActions(Prescription $prescription, MedicalRecord $medicalRecord)
     {
-        /** @var Prescription $prescription */
-        $prescription = $entityActions->getEntity();
         if ($prescription->getIsCompleted()) {
             $prescription->setCompletedTime(new DateTime());
             $prescription->setMedicalRecord($medicalRecord);

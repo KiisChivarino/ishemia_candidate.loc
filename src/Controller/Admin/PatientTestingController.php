@@ -6,11 +6,8 @@ use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTesting\PatientTestingRequiredType;
-use App\Repository\MedicalHistoryRepository;
-use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\Creator\PatientTestingCreatorService;
-use App\Services\Creator\PatientTestingResultsCreatorService;
 use App\Services\DataTable\Admin\PatientTestingDataTableService;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FileService\FileService;
@@ -83,63 +80,6 @@ class PatientTestingController extends AdminAbstractController
                     self::FILTER_LABELS['MEDICAL_HISTORY'],
                 ]
             )
-        );
-    }
-
-    /**
-     * Новый анализ пациента
-     * @Route("/new", name="patient_testing_new", methods={"GET","POST"})
-     *
-     * @param Request $request
-     *
-     * @param PatientTestingResultRepository $patientTestingResultRepository
-     * @param MedicalHistoryRepository $medicalHistoryRepository
-     * @param FileService $fileService
-     * @param PatientTestingResultsCreatorService $patientTestingResultsCreator
-     * @return Response
-     * @throws Exception
-     */
-    public function new(
-        Request $request,
-        PatientTestingResultRepository $patientTestingResultRepository,
-        MedicalHistoryRepository $medicalHistoryRepository,
-        FileService $fileService,
-        PatientTestingResultsCreatorService $patientTestingResultsCreator
-    ): Response
-    {
-        $patientTesting = new PatientTesting();
-        return $this->responseNewMultiForm(
-            $request,
-            $patientTesting,
-            [
-                new FormData($patientTesting, PatientTestingRequiredType::class),
-                new FormData($patientTesting, PatientTestingNotRequiredType::class),
-            ],
-            function (EntityActions $actions)
-            use (
-                $patientTestingResultRepository,
-                $patientTesting,
-                $medicalHistoryRepository,
-                $fileService,
-                $patientTestingResultsCreator
-            ) {
-                $patientTesting->setMedicalHistory(
-                    $actions->getRequest()->query->get(MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)
-                        ? $medicalHistoryRepository
-                        ->find(
-                            $actions->getRequest()->query->get(
-                                MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY
-                            )
-                        )
-                        : null
-                );
-                $fileService->prepareFiles(
-                    $actions->getForm()
-                        ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
-                        ->get(self::FILES_COLLECTION_PROPERTY_NAME)
-                );
-                $patientTestingResultsCreator->persistTestingResultsForTesting($patientTesting);
-            }
         );
     }
 

@@ -87,12 +87,6 @@
                         {{ template.items.show.content.addMedicalRecord }}
                     </a>
                 </li>
-                <li class="sublist__item">
-                    <a href="{{ path('patient_testing_new', { (medicalHistoryParameterKey)  : entity.id } ) }}">
-                        {{ template.items.show.content.addPatientTesting }}
-                    </a>
-                </li>
-                {% if allPrescriptionsCompleted %}
                     <li class="sublist__item">
                         <a href="{{ path(
                             'prescription_new',
@@ -100,12 +94,6 @@
                             {{ template.items.show.content.addPrescription }}
                         </a>
                     </li>
-                {% endif %}
-                <li class="sublist__item">
-                    <a href="{{ path('patient_appointment_new',{ (medicalHistoryParameterKey) : entity.id }) }}">
-                        {{ template.items.show.content.addPatientAppointment }}
-                    </a>
-                </li>
             </ul>
         </button>
         <button class="btn btn--list btn--show">{{ template.items.show.content.list }}

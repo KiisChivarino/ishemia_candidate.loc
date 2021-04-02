@@ -21,3 +21,6 @@ app_controller:
 form:
   error:
     mime_type_message_error: Изображение должно быть в формате «jpeg» или «png»
+hospital_controller:
+  error:
+    delete: Больницу, к которой привязаны пациенты и/или врачи, удалить нельзя!

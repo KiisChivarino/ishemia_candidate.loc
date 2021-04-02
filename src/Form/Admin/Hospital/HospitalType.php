@@ -13,6 +13,7 @@ use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,6 +27,9 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
  */
 class HospitalType extends AbstractType
 {
+    /** @var int Максимальная длина кода */
+    const MAX_CODE_LENGTH = 6;
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -38,7 +42,15 @@ class HospitalType extends AbstractType
         $builder
             ->add('address', null, ['label' => $templateItem->getContentValue('address')])
             ->add('name', null, ['label' => $templateItem->getContentValue('name')])
-            ->add('phone', null, ['label' => $templateItem->getContentValue('phone')])
+            ->add(
+                'phone',
+                TelType::class,
+                [
+                    'label' => $templateItem->getContentValue('phone'),
+                    'attr' => ['class' => 'phone_us'],
+                    'help' => $templateItem->getContentValue('phoneHelp'),
+                ]
+            )
             ->add(
                 'description', null, [
                 'label' => $templateItem->getContentValue('description'),
@@ -68,7 +80,14 @@ class HospitalType extends AbstractType
                 ]
             )
             ->add('email', EmailType::class, ['label' => $templateItem->getContentValue('email')])
-            ->add('code', NumberType::class, ['label' => $templateItem->getContentValue('code')])
+            ->add('code', NumberType::class,
+                [
+                    'label' => $templateItem->getContentValue('code'),
+                    'attr' => [
+                        'maxlength' => self::MAX_CODE_LENGTH
+                    ]
+                ]
+            )
             ->add(
                 'enabled', CheckboxType::class, [
                     'label' => $templateItem->getContentValue('enabled'),

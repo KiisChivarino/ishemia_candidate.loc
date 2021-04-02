@@ -1,26 +1,30 @@
-# [Не вносятся данные ЧСС, ошибка не отображается](https://www.notion.so/8023adc6e58246fda03ba1d62eb3042b)
+# [Страница списка назначения на приём не открывает](https://www.notion.so/6bec0e541067484895ec1efd216379c9)
 
-Bitrix24: https://kvokka.bitrix24.ru/workgroups/group/211/tasks/task/view/5905/
+Created: Mar 31, 2021 3:47 PM
 
-Created: Mar 26, 2021 10:26 AM
+Аналитик: Anton A
 
-Аналитик: Всеволод Лапшин
+Время последнего изменения: Mar 31, 2021 3:53 PM
 
 Исполнитель: Anton A
 
-Подпроект: Каибинет врача 👨‍⚕️
+Отредактировано: Anton A
 
-Приоритет: P1 🔥
+Отредактировано: Anton A
+
+Подпроект: Кабинет врача 👨‍⚕️
+
+Приоритет: P0 ⭐
 
 Разработчик: Anton A
 
 Ревьювер: Максим Викторович
 
-Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-heartRateDataNotBeingAdded
+Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-prescriptionAppointmentList
 
 Статус: In Dev
 
-Тестер: Igor' Nikiforov
+Тестер: Всеволод Лапшин
 
 Тип: Bug 🐞
 
@@ -28,10 +32,12 @@ Created: Mar 26, 2021 10:26 AM
 
 ### Проблема
 
-Не вносятся данные ЧСС, ошибка не отображается. На странице присутствует таблица без столбцов (её следует скрывать, когда в ней нет записей)
-URL: doctor_office/patient/{patient}/patient_testing/{patient_testing}/edit
+Страница списка назначения на приём не открывает
 
-Также нужно добавить флэш-сообщение если пользователь загружает не картинку, форма должны принимать картинки(Жпег, ПНГ)
+[/admin/prescription_appointment/](http://www.test1.loc/admin/prescription_appointment/)
+
+![https://s3.us-west-2.amazonaws.com/secure.notion-static.com/4bca9251-0e6d-4164-9508-7a3642fca566/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210331%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210331T125435Z&X-Amz-Expires=86400&X-Amz-Signature=5ffa385a03e872bd2e7786e569ef87d22176625a987d7e28efb423404442e062&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/4bca9251-0e6d-4164-9508-7a3642fca566/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210331%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210331T125435Z&X-Amz-Expires=86400&X-Amz-Signature=5ffa385a03e872bd2e7786e569ef87d22176625a987d7e28efb423404442e062&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
+
 
 ### Входные данные
 
@@ -40,4 +46,3 @@ URL: doctor_office/patient/{patient}/patient_testing/{patient_testing}/edit
 ### Выходные данные
 
 Описание результата.
-

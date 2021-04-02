@@ -1,7 +1,19 @@
 {% extends 'doctorOffice/index.html.twig' %}
-{% block title %}{{ template.items.edit.content.personal_title }}{% endblock %}
+{% block title %}{{ template.items.edit.content.title }}{% endblock %}
 {% block content %}
-    {% include (template.templatePath~'content_wrapper_top.html.twig') %}
+    <div class="content-wrapper__top">
+        <ul>
+            <li>
+                <h1>{{ template.items.edit.content.h1 }}</h1>
+            </li>
+            <li>
+                <a class="back-page" href="{{ path(
+                    'doctor_medical_history',
+                    {'id': entity.id}
+                ) }}">Назад</a>
+            </li>
+        </ul>
+    </div>
     <div class="adm-users-edit">
         {{ include(template.items.form.path~'_form.html.twig') }}
     </div>
