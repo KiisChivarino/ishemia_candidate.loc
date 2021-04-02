@@ -45,6 +45,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'dischargeEpicrisis' => 'Выписные эпикризы',
         'clinicalDiagnosis' => 'Клинический диагноз',
         'MKBCodePlaceholder' => ClinicalDiagnosisTemplate::FORM_CONTENT['MKBCodePlaceholder'],
+        'treatmentNotCompleted' => 'Лечение не завершено'
     ];
 
     /** @var string[] Common LIST_CONTENT */

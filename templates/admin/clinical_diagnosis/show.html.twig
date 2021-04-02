@@ -3,69 +3,78 @@
 {% block show_content %}
     <li>
         <span class="title">{{ template.items.show.content.text }}</span>
-        <p>{{ entity.text | raw }}</p>
+        <p>
+            {% if entity.text %}
+                {{ entity.text | raw }}
+            {% else %}
+                {{ template.items.show.content.empty }}
+            {% endif %}
+        </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.MKBCode }}</span>
         <p>
-            {% if (entity.MKBCode) %}
+            {% if entity.MKBCode %}
                 <a href="{{ path('diagnosis_show', {'id': entity.MKBCode.id}) }}">
                     {{ entity.MKBCode.code }}
                 </a>
             {% else %}
-                МКБ код не найден!
+                {{ template.items.show.content.noMkbCode }}
             {% endif %}
         </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.mainDisease }}</span>
         <p>
-            {% if (entity.mainDisease) %}
+            {% if entity.mainDisease %}
                 <a href="{{ path('diagnosis_show', {'id': entity.mainDisease.id}) }}">
                     {{ entity.mainDisease.name }}
                 </a>
             {% else %}
-                Основное заболевание не найдено!
+                {{ template.items.show.content.noMainDisease }}
             {% endif %}
         </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.backgroundDiseases }}</span>
-        {% if not entity.backgroundDiseases %}
-            Фоновые заболевания отсутствуют
+        {% if entity.backgroundDiseases | length > 0 %}
+            {% for backgroundDisease in entity.backgroundDiseases %}
+                <p>
+                    <a href="{{ path('diagnosis_show', {'id': backgroundDisease.id}) }}">
+                        {{ backgroundDisease.name }}
+                    </a>
+                </p>
+            {% endfor %}
+        {% else %}
+            <p>{{ template.items.show.content.noBackgroundDiseases }}</p>
         {% endif %}
-        {% for backgroundDisease in entity.backgroundDiseases %}
-            <p>
-                <a href="{{ path('diagnosis_show', {'id': backgroundDisease.id}) }}">
-                    {{ backgroundDisease.name }}
-                </a>
-            </p>
-        {% endfor %}
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complications }}</span>
-        {% if not entity.complications %}
-            Осложнения основной болезни отсутствуют
+        {% if entity.complications | length > 0 %}
+            {% for complication in entity.complications %}
+                <p>
+                    <a href="{{ path('diagnosis_show', {'id': complication.id}) }}">
+                        {{ complication.name }}
+                    </a>
+                </p>
+            {% endfor %}
+        {% else %}
+            <p>{{ template.items.show.content.noComplications }}</p>
         {% endif %}
-        {% for complication in entity.complications %}
-            <p>
-                <a href="{{ path('diagnosis_show', {'id': complication.id}) }}">
-                    {{ complication.name }}
-                </a>
-            </p>
-        {% endfor %}
     </li>
     <li>
         <span class="title">{{ template.items.show.content.concomitantDiseases }}</span>
-        {% if entity.concomitantDiseases %}
-            Сопутствующие заболевания отсутствуют
+        {% if entity.concomitantDiseases | length > 0 %}
+            {% for concomitantDisease in entity.concomitantDiseases %}
+                <p>
+                    <a href="{{ path('diagnosis_show', {'id': concomitantDisease.id}) }}">
+                        {{ concomitantDisease.name }}
+                    </a>
+                </p>
+            {% endfor %}
+        {% else %}
+            <p>{{ template.items.show.content.noConcomitantDiseases }}</p>
         {% endif %}
-        {% for concomitantDisease in entity.concomitantDiseases %}
-            <p>
-                <a href="{{ path('diagnosis_show', {'id': concomitantDisease.id}) }}">
-                    {{ concomitantDisease.name }}
-                </a>
-            </p>
-        {% endfor %}
     </li>
 {% endblock %}

@@ -5,6 +5,8 @@
         <p>
             {% if entity.patientTesting %}
                 <a href="{{ path('patient_testing_show', {'id': entity.patientTesting.id}) }}">{{ patientTestingInfo }}</a>
+            {% else %}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -13,11 +15,19 @@
         <p>
             {% if entity.analysisRate %}
                 <a href="{{ path('analysis_rate_show', {'id': entity.analysisRate.id}) }}">{{ analysisRateInfo }}</a>
+            {% else %}
+                {{ template.items.show.content.empty_plural }}
             {% endif %}
         </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.result }}</span>
-        <p>{{ entity.result }}</p>
+        <p>
+        {% if entity.result %}
+            {{ entity.result }}
+        {% else %}
+            {{ template.items.show.content.empty }}
+        {% endif %}
+        </p>
     </li>
 {% endblock %}

@@ -41,49 +41,50 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
             ->add(
                 'prescription', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('prescription'),
-                    'render' => function (string $data, PrescriptionTesting $prescriptionTesting) {
+                    'render' => function (string $data, PrescriptionTesting $prescriptionTesting) use ($listTemplateItem) {
                         $prescription = $prescriptionTesting->getPrescription();
                         return $prescription ? $this->getLink(
                             PrescriptionInfoService::getPrescriptionTitle($prescription),
                             $prescription->getId(),
                             'prescription_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             )
             ->add(
                 'patientTesting', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('patientTesting'),
-                    'render' => function (string $data, PrescriptionTesting $prescriptionTesting) {
+                    'render' => function (string $data, PrescriptionTesting $prescriptionTesting) use ($listTemplateItem) {
                         /** @var PatientTesting $patientTesting */
                         $patientTesting = $prescriptionTesting->getPatientTesting();
                         return $patientTesting ? $this->getLink(
                             PatientTestingInfoService::getPatientTestingInfoString($patientTesting),
                             $patientTesting->getId(),
                             'patient_testing_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
             ->add(
                 'staff', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staff'),
-                    'render' => function (string $data, PrescriptionTesting $prescriptionTesting) {
+                    'render' => function (string $data, PrescriptionTesting $prescriptionTesting) use ($listTemplateItem) {
                         /** @var Staff $staff */
                         $staff = $prescriptionTesting->getStaff();
                         return $staff ? $this->getLink(
                             AuthUserInfoService::getFIO($staff->getAuthUser()),
                             $staff->getId(),
                             'staff_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             )
             ->add(
-                'plannedTime', DateTimeColumn::class, [
+                'plannedDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('plannedDate'),
                     'format' => 'd.m.Y H:m',
-                    'searchable' => false
+                    'searchable' => false,
+                    'nullValue' => $listTemplateItem->getContentValue('falseValue')
                 ]
             );
         $this->addEnabled($listTemplateItem);

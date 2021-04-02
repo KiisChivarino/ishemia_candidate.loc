@@ -43,14 +43,14 @@ class NotificationDataTableService extends AdminDatatableService
             ->add(
                 'authUserSender', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staff'),
-                    'render' => function (string $data, Notification $notification): string {
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var AuthUser $authUser */
                         $authUser = $notification->getAuthUserSender();
                         return $authUser ? $this->getLink(
                             (new AuthUserInfoService())->getFIO($authUser, true),
                             $authUser->getId(),
                             'auth_user_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
@@ -79,16 +79,24 @@ class NotificationDataTableService extends AdminDatatableService
             ->add(
                 'receiver', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('receiver'),
-                    'render' => function (string $data, Notification $notification): string {
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var NotificationReceiverType $notificationReceiverType */
-                        $patientNotification = $notification->getPatientNotification();
-                        return $this->getLink(
-                            (new AuthUserInfoService())->getFIO(
-                                $patientNotification->getPatient()->getAuthUser(), true
-                            ),
-                            $patientNotification->getPatient()->getId(),
-                            'patient_show'
-                        );
+                        switch ($notification->getNotificationReceiverType()->getName()){
+                            case 'patient':
+                                $patientNotification = $notification->getPatientNotification();
+                                return $patientNotification ? $this->getLink(
+                                    (new AuthUserInfoService())->getFIO(
+                                        $patientNotification->getPatient()->getAuthUser(), true
+                                    ),
+                                    $patientNotification->getPatient()->getId(),
+                                    'patient_show'
+                                ) : $listTemplateItem->getContentValue('empty');
+                            case 'staff':
+//                                TODO: добавить когда появится функционал отправки сообщения врачу
+                            default:
+                                return '';
+                        }
+
                     },
                 ]
             )

@@ -370,7 +370,7 @@ class PatientAppointment
     }
 
     /**
-     * @return PrescriptionAppointment
+     * @return PrescriptionAppointment|null
      */
     public function getPrescriptionAppointment(): ?PrescriptionAppointment
     {

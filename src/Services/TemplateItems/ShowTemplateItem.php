@@ -19,6 +19,8 @@ class ShowTemplateItem extends TemplateItem
     protected const DEFAULT_CONTENT = [
         'title' => 'Просмотр записи',
         'h1' => 'Просмотр записи',
+        'list' => 'Список',
+        'add' => 'Добавить'
     ];
 
     /**
