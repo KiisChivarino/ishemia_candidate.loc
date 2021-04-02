@@ -22,7 +22,7 @@
             {% if entity.oktmoRegionId %}
                 {{ entity.oktmoRegionId }}
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>

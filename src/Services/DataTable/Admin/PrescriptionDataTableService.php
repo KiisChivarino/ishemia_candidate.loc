@@ -39,7 +39,7 @@ class PrescriptionDataTableService extends AdminDatatableService
             ->add(
                 'medicalHistory', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('medicalHistory'),
-                    'render' => function ($dataString, $prescription) {
+                    'render' => function ($dataString, $prescription) use ($listTemplateItem) {
                         /** @var MedicalHistory $medicalHistory */
                         $medicalHistory = $prescription->getMedicalHistory();
                         return $medicalHistory ? $this->getLink(
@@ -48,21 +48,21 @@ class PrescriptionDataTableService extends AdminDatatableService
                             $medicalHistory->getDateBegin()->format('d.m.Y'),
                             $medicalHistory->getId(),
                             'medical_history_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             )
             ->add(
                 'staffFio', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staffFio'),
-                    'render' => function ($dataString, $prescription) {
+                    'render' => function ($dataString, $prescription) use ($listTemplateItem) {
                         /** @var Staff $staff */
                         $staff = $prescription->getStaff();
                         return $staff ? $this->getLink(
                             (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true),
                             $staff->getId(),
                             'staff_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             )

@@ -62,7 +62,7 @@ class MedicalHistoryDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('dateEnd'),
                     'format' => 'd.m.Y',
                     'searchable' => false,
-                    'nullValue' => 'отсутствует',
+                    'nullValue' => $listTemplateItem->getContentValue('empty'),
                 ]
             );
         $this->addEnabled($listTemplateItem);

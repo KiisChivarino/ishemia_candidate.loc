@@ -6,7 +6,7 @@
             {% if entity.patientTesting %}
                 <a href="{{ path('patient_testing_show', {'id': entity.patientTesting.id}) }}">{{ patientTestingInfo }}</a>
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -16,7 +16,7 @@
             {% if entity.analysisRate %}
                 <a href="{{ path('analysis_rate_show', {'id': entity.analysisRate.id}) }}">{{ analysisRateInfo }}</a>
             {% else %}
-                отсутствуют
+                {{ template.items.show.content.empty_plural }}
             {% endif %}
         </p>
     </li>
@@ -26,7 +26,7 @@
         {% if entity.result %}
             {{ entity.result }}
         {% else %}
-            отсутствует
+            {{ template.items.show.content.empty }}
         {% endif %}
         </p>
     </li>

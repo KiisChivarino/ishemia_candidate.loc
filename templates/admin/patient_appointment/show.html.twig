@@ -8,7 +8,7 @@
                     {{ medicalHistoryTitle }}
                 </a>
             {% else %}
-                отсутствует
+            {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -18,7 +18,7 @@
             {% if entity.medicalRecord %}
                 <a href="{{ path('medical_record_show', {'id': entity.medicalRecord.id}) }}">{{ medicalRecordTitle }}</a>
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -28,7 +28,7 @@
             {% if entity.staff %}
                 <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffFio }}</a>
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -40,13 +40,13 @@
                     {{ entity.appointmentType.name }}
                 </a>
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.appointmentTime }}</span>
-        <p>{{ entity.appointmentTime ? entity.appointmentTime|date('d.m.Y H:i') : 'отсутствует' }}</p>
+        <p>{{ entity.appointmentTime ? entity.appointmentTime|date('d.m.Y H:i') : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.isPatientConfirmed }}</span>
@@ -62,7 +62,7 @@
             {% if  entity.recommendation %}
                 {{ entity.recommendation|raw }}
             {% else %}
-                отсутствуют
+                {{ template.items.show.content.empty_plural }}
             {% endif %}
         </p>
     </li>
@@ -77,7 +77,7 @@
             </p>
         {% endfor %}
         {% else %}
-            <p>отсутствуют</p>
+            <p>{{ template.items.show.content.empty_plural }}</p>
         {% endif %}
     </li>
     <li>
@@ -86,7 +86,7 @@
             {% if  entity.complaintsComment %}
                 {{ entity.complaintsComment|raw }}
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -96,7 +96,7 @@
             {% if  entity.objectiveStatus %}
                 {{ entity.objectiveStatus|raw }}
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -106,7 +106,7 @@
             {% if  entity.therapy %}
                 {{ entity.therapy|raw }}
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>

@@ -24,13 +24,13 @@
                 </p>
             {% endfor %}
         {% else %}
-            <p>отсутствуют</p>
+            <p>{{ template.items.show.content.empty_plural }}</p>
         {% endif %}
 
     </li>
     <li>
         <span class="title">{{ template.items.show.content.recordDate }}</span>
-        <p>{{ entity.recordDate ? entity.recordDate|date('Y-m-d') : 'отсутствует' }}</p>
+        <p>{{ entity.recordDate ? entity.recordDate|date('Y-m-d') : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.comment }}</span>
@@ -38,7 +38,7 @@
             {% if entity.comment %}
                 {{ entity.comment }}
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>

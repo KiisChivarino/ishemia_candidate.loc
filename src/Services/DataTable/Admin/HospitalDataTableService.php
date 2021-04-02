@@ -40,12 +40,12 @@ class HospitalDataTableService extends AdminDatatableService
             ->add(
                 'region', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('region'),
-                    'render' => function (string $data, Hospital $hospital) {
+                    'render' => function (string $data, Hospital $hospital) use ($listTemplateItem) {
                         /** @var Region $region */
                         $region = $hospital->getRegion();
                         return $region
                             ? $this->getLink($region->getName(), $region->getId(), 'region_show')
-                            : 'отсутствует';
+                            : $listTemplateItem->getContentValue('empty');
                     },
                     'searchable' => false
                 ]
@@ -53,12 +53,12 @@ class HospitalDataTableService extends AdminDatatableService
             ->add(
                 'city', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('city'),
-                    'render' => function (string $data, Hospital $hospital) {
+                    'render' => function (string $data, Hospital $hospital) use ($listTemplateItem) {
                         /** @var City $city */
                         $city = $hospital->getCity();
                         return $city
                             ? $this->getLink($city->getName(), $city->getId(), 'city_show')
-                            : 'отсутствует';
+                            : $listTemplateItem->getContentValue('empty');
                     },
                     'searchable' => false
                 ]

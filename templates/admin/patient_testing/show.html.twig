@@ -7,6 +7,8 @@
                 <a href="{{ path('analysis_group_show', {'id': entity.analysisGroup.id}) }}">
                     {{ entity.analysisGroup.name }}
                 </a>
+            {% else %}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -18,13 +20,13 @@
                     {{ prescriptionTestingTitle(entity.prescriptionTesting) }}
                 </a>
             {% else %}
-                отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.analysisDate }}</span>
-        <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : 'нет' }}</p>
+        <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : template.items.show.content.falseValue }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.processed }}</span>
@@ -43,12 +45,13 @@
                    href="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
                    class="fancybox"
                    title="{{ patientTestingFile.fileName }}">
-                    <img src="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.{{ patientTestingFile.extension }}"
+                    <img src="/{{ filesDir }}/{{ uploadDir }}/{{ patientTestingFile.id }}.
+                            {{ patientTestingFile.extension }}"
                          alt="{{ patientTestingFile.fileName }}"/>
                 </a>
             {% endfor %}
         {% else %}
-            <p>отсутствуют</p>
+            <p>{{ template.items.show.content.empty_plural }}</p>
         {% endif %}
     </li>
     <li>
@@ -71,17 +74,17 @@
     <li>
         <span class="title">{{ template.items.show.content.resultData }}</span>
         <p>
-        {% if entity.resultData %}
-            {{ entity.resultData }}
-        {% else %}
-            отсутствуют
-        {% endif %}
+            {% if entity.resultData %}
+                {{ entity.resultData }}
+            {% else %}
+                {{ template.items.show.content.empty_plural }}
+            {% endif %}
         </p>
     </li>
 {% endblock %}
 {% block custom_actions %}
     <div class="buttons">
-        <button class="btn btn--list btn--show">Список
+        <button class="btn btn--list btn--show">template.items.show.content.list
             <ul class="sublist">
                 <li class="sublist__item">
                     <a href="{{ path(

@@ -7,7 +7,7 @@
             {% if entity.text %}
                 {{ entity.text | raw }}
             {% else %}
-               отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -19,7 +19,7 @@
                     {{ entity.MKBCode.code }}
                 </a>
             {% else %}
-                МКБ код не найден!
+                {{ template.items.show.content.noMkbCode }}
             {% endif %}
         </p>
     </li>
@@ -31,7 +31,7 @@
                     {{ entity.mainDisease.name }}
                 </a>
             {% else %}
-                Основное заболевание не найдено!
+                {{ template.items.show.content.noMainDisease }}
             {% endif %}
         </p>
     </li>
@@ -46,7 +46,7 @@
                 </p>
             {% endfor %}
         {% else %}
-            Фоновые заболевания отсутствуют
+            <p>{{ template.items.show.content.noBackgroundDiseases }}</p>
         {% endif %}
     </li>
     <li>
@@ -60,7 +60,7 @@
                 </p>
             {% endfor %}
         {% else %}
-            Осложнения основной болезни отсутствуют
+            <p>{{ template.items.show.content.noComplications }}</p>
         {% endif %}
     </li>
     <li>
@@ -74,7 +74,7 @@
                 </p>
             {% endfor %}
         {% else %}
-            Сопутствующие заболевания отсутствуют
+            <p>{{ template.items.show.content.noConcomitantDiseases }}</p>
         {% endif %}
     </li>
 {% endblock %}

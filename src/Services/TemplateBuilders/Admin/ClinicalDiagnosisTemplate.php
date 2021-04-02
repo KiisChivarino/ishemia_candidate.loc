@@ -26,6 +26,11 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
     protected const SHOW_CONTENT = [
         'h1' => 'Просмотр клинического диагноза',
         'title' => 'Просмотр клинического диагноза',
+        'noMkbCode' => 'МКБ код не найден',
+        'noMainDisease' => 'Основное заболевание не найдено',
+        'noBackgroundDiseases' => 'Фоновые заболевания отсутствуют',
+        'noComplications' => 'Осложнения основной болезни отсутствуют',
+        'noConcomitantDiseases' => 'Сопутствующие заболевания отсутствуют',
     ];
 
     /** @var string[] Common EDIT_CONTENT */

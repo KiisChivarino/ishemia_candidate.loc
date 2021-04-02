@@ -23,11 +23,7 @@
     <li>
         <span class="title">{{ template.items.show.content.dateEnd }}</span>
         <p>
-            {% if entity.dateEnd %}
-                {{ entity.dateEnd ? entity.dateEnd|date('Y-m-d') : 'Лечение не завершено' }}
-            {% else %}
-                Лечение не завершено
-            {% endif %}
+            {{ entity.dateEnd ? entity.dateEnd|date('Y-m-d') : template.items.show.content.treatmentNotCompleted }}
         </p>
     </li>
     <li>
@@ -36,7 +32,7 @@
             {% if entity.diseaseHistory %}
                 {{ entity.diseaseHistory|raw }}
             {% else %}
-                Отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -46,7 +42,7 @@
             {% if entity.lifeHistory %}
                 {{ entity.lifeHistory|raw }}
             {% else %}
-                Отсутствует
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -80,11 +76,10 @@
             {% endfor %}
         </li>
     {% endif %}
-
 {% endblock %}
 {% block custom_actions %}
     <div class="buttons">
-        <button class="btn btn--add btn--show">Добавить
+        <button class="btn btn--add btn--show">{{ template.items.show.content.add }}
             {% set medicalHistoryParameterKey = constant('App\\Controller\\Admin\\MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY') %}
             <ul class="sublist">
                 <li class="sublist__item">
@@ -113,7 +108,7 @@
                 </li>
             </ul>
         </button>
-        <button class="btn btn--list btn--show">Список
+        <button class="btn btn--list btn--show">{{ template.items.show.content.list }}
             <ul class="sublist">
                 <li class="sublist__item">
                     <a style="text-decoration: none;"

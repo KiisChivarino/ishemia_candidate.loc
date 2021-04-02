@@ -8,3 +8,4 @@ parameters:
   name: Название
   title: Заголовок
   empty: отсутствует
+  empty_plural: отсутствуют
