@@ -36,7 +36,8 @@ class NotificationDataTableService extends AdminDatatableService
         Closure $renderOperationsFunction,
         ListTemplateItem $listTemplateItem,
         array $filters
-    ): DataTable {
+    ): DataTable
+    {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
@@ -80,22 +81,14 @@ class NotificationDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('receiver'),
                     'render' => function (string $data, Notification $notification): string {
                         /** @var NotificationReceiverType $notificationReceiverType */
-                        switch ($notification->getNotificationReceiverType()->getName()){
-                            case 'patient':
-                                $patientNotification = $notification->getPatientNotification();
-                                return $patientNotification ? $this->getLink(
-                                    (new AuthUserInfoService())->getFIO(
-                                        $patientNotification->getPatient()->getAuthUser(), true
-                                    ),
-                                    $patientNotification->getPatient()->getId(),
-                                    'patient_show'
-                                ) : '';
-                            case 'staff':
-//                                TODO: добавить когда появится функционал отправки сообщения врачу
-                            default:
-                                return '';
-                        }
-
+                        $patientNotification = $notification->getPatientNotification();
+                        return $this->getLink(
+                            (new AuthUserInfoService())->getFIO(
+                                $patientNotification->getPatient()->getAuthUser(), true
+                            ),
+                            $patientNotification->getPatient()->getId(),
+                            'patient_show'
+                        );
                     },
                 ]
             )
@@ -126,8 +119,7 @@ class NotificationDataTableService extends AdminDatatableService
                         ) : '-';
                     },
                 ]
-            )
-        ;
+            );
 
         /** @var Patient $patient */
         $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']])
@@ -141,8 +133,10 @@ class NotificationDataTableService extends AdminDatatableService
                             ->select('n')
                             ->from(Notification::class, 'n')
                             ->leftJoin('n.patientNotification', 'pN')
-                            ->addSelect('pN')
-                        ;
+                            ->leftJoin('n.notificationReceiverType', 'nRT')
+                            ->andWhere('nRT.name = :notificationReceiverType')
+                            ->setParameter('notificationReceiverType', 'patient')
+                            ->addSelect('pN');
                         if ($patient) {
                             $builder
                                 ->andWhere('pN.patient = :patient')
