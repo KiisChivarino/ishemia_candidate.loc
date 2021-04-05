@@ -27,8 +27,9 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'dateBegin' => 'Дата создания',
         'dateEnd' => 'Дата завершения',
         'mainDisease' => 'Основное заболевание',
-        'text' => ClinicalDiagnosisTemplate::COMMON_CONTENT['text'],
+        'treatmentNotCompleted' => 'Лечение не завершено',
         'MKBCode' => ClinicalDiagnosisTemplate::COMMON_CONTENT['MKBCode'],
+        'text' => ClinicalDiagnosisTemplate::COMMON_CONTENT['text'],
     ];
 
     /** @var string[] FORM_SHOW_CONTENT */
@@ -45,7 +46,8 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
         'dischargeEpicrisis' => 'Выписные эпикризы',
         'clinicalDiagnosis' => 'Клинический диагноз',
         'MKBCodePlaceholder' => ClinicalDiagnosisTemplate::FORM_CONTENT['MKBCodePlaceholder'],
-        'treatmentNotCompleted' => 'Лечение не завершено'
+        'dateBeginNotFound' => 'Дата начала лечения не найдена!',
+        'MKBNotFound' => ClinicalDiagnosisTemplate::COMMON_CONTENT['MKBNotFound'],
     ];
 
     /** @var string[] Common LIST_CONTENT */

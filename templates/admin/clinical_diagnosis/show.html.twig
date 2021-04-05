@@ -19,7 +19,7 @@
                     {{ entity.MKBCode.code }}
                 </a>
             {% else %}
-                {{ template.items.show.content.noMkbCode }}
+                {{ template.items.show.content.MKBNotFound }}
             {% endif %}
         </p>
     </li>
@@ -31,13 +31,15 @@
                     {{ entity.mainDisease.name }}
                 </a>
             {% else %}
-                {{ template.items.show.content.noMainDisease }}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.backgroundDiseases }}</span>
-        {% if entity.backgroundDiseases | length > 0 %}
+        {% if entity.backgroundDiseases|length == 0 %}
+            <p>{{ template.items.show.content.empty }}</p>
+        {% else %}
             {% for backgroundDisease in entity.backgroundDiseases %}
                 <p>
                     <a href="{{ path('diagnosis_show', {'id': backgroundDisease.id}) }}">
@@ -45,13 +47,13 @@
                     </a>
                 </p>
             {% endfor %}
-        {% else %}
-            <p>{{ template.items.show.content.noBackgroundDiseases }}</p>
         {% endif %}
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complications }}</span>
-        {% if entity.complications | length > 0 %}
+        {% if entity.complications|length == 0 %}
+            <p>{{ template.items.show.content.empty }}</p>
+        {% else %}
             {% for complication in entity.complications %}
                 <p>
                     <a href="{{ path('diagnosis_show', {'id': complication.id}) }}">
@@ -59,8 +61,6 @@
                     </a>
                 </p>
             {% endfor %}
-        {% else %}
-            <p>{{ template.items.show.content.noComplications }}</p>
         {% endif %}
     </li>
     <li>
@@ -74,7 +74,7 @@
                 </p>
             {% endfor %}
         {% else %}
-            <p>{{ template.items.show.content.noConcomitantDiseases }}</p>
+            <p>{{ template.items.show.content.empty }}</p>
         {% endif %}
     </li>
 {% endblock %}

@@ -26,11 +26,6 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
     protected const SHOW_CONTENT = [
         'h1' => 'Просмотр клинического диагноза',
         'title' => 'Просмотр клинического диагноза',
-        'noMkbCode' => 'МКБ код не найден',
-        'noMainDisease' => 'Основное заболевание не найдено',
-        'noBackgroundDiseases' => 'Фоновые заболевания отсутствуют',
-        'noComplications' => 'Осложнения основной болезни отсутствуют',
-        'noConcomitantDiseases' => 'Сопутствующие заболевания отсутствуют',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
@@ -43,6 +38,7 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
     public const COMMON_CONTENT = [
         'text' => 'Текст клинического диагноза',
         'MKBCode' => 'Код клинического диагноза',
+        'MKBNotFound' => 'Код MKB не задан',
     ];
 
     /** @var string[] Common FORM_CONTENT */
