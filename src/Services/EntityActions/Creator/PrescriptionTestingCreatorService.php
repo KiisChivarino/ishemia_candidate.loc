@@ -40,6 +40,7 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
      * @param FlashBagInterface $flashBag
      * @param string $staffOption
      * @param string $prescriptionOption
+     * @throws Exception
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -48,7 +49,7 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
         string $prescriptionOption
     )
     {
-        parent::__construct($entityManager);
+        parent::__construct($entityManager, PrescriptionTesting::class);
         $this->flashBag = $flashBag;
         $this->STAFF_OPTION = $staffOption;
         $this->PRESCRIPTION_OPTION = $prescriptionOption;

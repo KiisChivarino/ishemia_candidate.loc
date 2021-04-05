@@ -67,13 +67,12 @@ class MedicalHistoryCreatorService
     {
         $this->entityManager->persist($this->prepareMedicalHistory($medicalHistory, $patient));
         $this->patientTestingCreator->persistFirstPatientTestsByPlan($medicalHistory);
-        $this->patientTestingCreator->persistPatientTestsByPlan($medicalHistory, $staff);
+//        $this->patientTestingCreator->persistPatientTestsByPlan($medicalHistory, $staff);
         $this->patientAppointmentCreator->persistFirstPatientAppointment(
             $firstPatientAppointment,
-            $medicalHistory,
             $staff
         );
-        $this->patientAppointmentCreator->persistPatientAppointmentsByPlan($medicalHistory, $staff);
+//        $this->patientAppointmentCreator->persistPatientAppointmentsByPlan($medicalHistory, $staff);
     }
 
     /**

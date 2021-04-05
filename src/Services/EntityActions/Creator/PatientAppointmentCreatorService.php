@@ -46,19 +46,19 @@ class PatientAppointmentCreatorService
     /**
      * Persist patient appointment
      * @param PatientAppointment $patientAppointment
-     * @param MedicalHistory $medicalHistory
      * @param Staff $staff
      */
     public function persistFirstPatientAppointment(
         PatientAppointment $patientAppointment,
-        MedicalHistory $medicalHistory,
+//        MedicalHistory $medicalHistory,
         Staff $staff
     ): void
     {
+
         $this->entityManager->persist(
             $this->prepareFirstPatientAppointment(
                 $patientAppointment,
-                $this->medicalRecordCreator->persistMedicalRecord($medicalHistory),
+//                $this->medicalRecordCreator->persistMedicalRecord($medicalHistory),
                 $staff
             )
         );
@@ -99,12 +99,12 @@ class PatientAppointmentCreatorService
      */
     public function prepareFirstPatientAppointment(
         PatientAppointment $patientAppointment,
-        MedicalRecord $medicalRecord,
+//        MedicalRecord $medicalRecord,
         Staff $staff
     ): PatientAppointment
     {
         return $patientAppointment
-            ->setMedicalRecord($medicalRecord)
+//            ->setMedicalRecord($medicalRecord)
             ->setStaff($staff)
             ->setIsFirst(true)
             ->setAppointmentTime((new DateTime())->setTime(0,0));
