@@ -6,7 +6,7 @@
             {% if entity.patient %}
                 <a href="{{ path('patient_show', {'id': entity.patient.id}) }}">{{ patientFio }}</a>
             {% else %}
-                Пациент не найден!
+            {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -16,7 +16,7 @@
             {% if entity.dateBegin %}
                 {{ entity.dateBegin ? entity.dateBegin|date('Y-m-d') : '' }}
             {% else %}
-                Дата начала лечения не найдена!
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -46,16 +46,20 @@
             {% endif %}
         </p>
     </li>
+
     <li>
-        <span class="title">{{ template.items.show.content.text }}</span>
-        <p>{{ entity.clinicalDiagnosis.text | raw }}</p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.MKBCode }}</span>
+        <span class="title">{{ template.items.show.content.clinicalDiagnosis }}</span>
         <p>
-            {{ entity.clinicalDiagnosis.MKBCode
-            ? entity.clinicalDiagnosis.MKBCode.code
-            : template.items.show.content.empty }}
+            {% if (entity.clinicalDiagnosis.MKBCode or entity.clinicalDiagnosis.text) %}
+                <a href="{{ path('clinical_diagnosis_show', {'id': entity.clinicalDiagnosis.id}) }}">
+                        {{ entity.clinicalDiagnosis.text|striptags('<br>')|raw }}
+                        ({{ entity.clinicalDiagnosis.MKBCode
+                            ? entity.clinicalDiagnosis.MKBCode.code
+                            : template.items.show.content.MKBNotFound  }})
+                </a>
+            {% else %}
+                {{ template.items.show.content.empty }}
+            {% endif %}
         </p>
     </li>
     {% if not entity.patientDischargeEpicrisis is empty %}
@@ -87,13 +91,13 @@
                         {{ template.items.show.content.addMedicalRecord }}
                     </a>
                 </li>
-                    <li class="sublist__item">
-                        <a href="{{ path(
-                            'prescription_new',
-                            { (medicalHistoryParameterKey) : entity.id }) }}">
-                            {{ template.items.show.content.addPrescription }}
-                        </a>
-                    </li>
+                <li class="sublist__item">
+                    <a href="{{ path(
+                        'prescription_new',
+                        { (medicalHistoryParameterKey) : entity.id }) }}">
+                        {{ template.items.show.content.addPrescription }}
+                    </a>
+                </li>
             </ul>
         </button>
         <button class="btn btn--list btn--show">{{ template.items.show.content.list }}
