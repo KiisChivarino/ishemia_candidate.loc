@@ -7,6 +7,8 @@
                 <a href="{{ path('medical_history_show', {'id': entity.medicalHistory.id}) }}">
                     {{ medicalHistoryTitle }}
                 </a>
+            {% else %}
+            {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -15,6 +17,8 @@
         <p>
             {% if entity.medicalRecord %}
                 <a href="{{ path('medical_record_show', {'id': entity.medicalRecord.id}) }}">{{ medicalRecordTitle }}</a>
+            {% else %}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -23,6 +27,8 @@
         <p>
             {% if entity.staff %}
                 <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffFio }}</a>
+            {% else %}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -33,12 +39,14 @@
                 <a href="{{ path('appointment_type_show', {'id': entity.appointmentType.id}) }}">
                     {{ entity.appointmentType.name }}
                 </a>
+            {% else %}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.appointmentTime }}</span>
-        <p>{{ entity.appointmentTime ? entity.appointmentTime|date('d.m.Y H:i') : '' }}</p>
+        <p>{{ entity.appointmentTime ? entity.appointmentTime|date('d.m.Y H:i') : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.isPatientConfirmed }}</span>
@@ -50,10 +58,17 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.recommendation }}</span>
-        <p>{{ entity.recommendation|raw }}</p>
+        <p>
+            {% if  entity.recommendation %}
+                {{ entity.recommendation|raw }}
+            {% else %}
+                {{ template.items.show.content.empty_plural }}
+            {% endif %}
+        </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complaints }}</span>
+        {% if  entity.complaints | length > 0 %}
         {% for complaint in entity.complaints %}
             <p>
                 <a href="{{ path('complaint_show', {'id': complaint.id}) }}">
@@ -61,17 +76,38 @@
                 </a>
             </p>
         {% endfor %}
+        {% else %}
+            <p>{{ template.items.show.content.empty_plural }}</p>
+        {% endif %}
     </li>
     <li>
         <span class="title">{{ template.items.show.content.complaintsComment }}</span>
-        <p>{{ entity.complaintsComment|raw }}</p>
+        <p>
+            {% if  entity.complaintsComment %}
+                {{ entity.complaintsComment|raw }}
+            {% else %}
+                {{ template.items.show.content.empty }}
+            {% endif %}
+        </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.objectiveStatus }}</span>
-        <p>{{ entity.objectiveStatus }}</p>
+        <p>
+            {% if  entity.objectiveStatus %}
+                {{ entity.objectiveStatus|raw }}
+            {% else %}
+                {{ template.items.show.content.empty }}
+            {% endif %}
+        </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.therapy }}</span>
-        <p>{{ entity.therapy|raw }}</p>
+        <p>
+            {% if  entity.therapy %}
+                {{ entity.therapy|raw }}
+            {% else %}
+                {{ template.items.show.content.empty }}
+            {% endif %}
+        </p>
     </li>
 {% endblock %}

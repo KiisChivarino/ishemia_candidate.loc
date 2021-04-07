@@ -25,13 +25,7 @@ class TemplateTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for staff templates */
     protected const COMMON_CONTENT = [
-        'fullName' => 'Полное название',
         'templateType' => 'Тип шаблона'
-    ];
-
-    /** @var string[] Common form content for staff templates */
-    protected const FORM_CONTENT = [
-        'hospitalPlaceholder' => 'Выберите больницу',
     ];
 
     /** @var string[] Common list content for staff templates */
@@ -48,10 +42,6 @@ class TemplateTemplate extends AdminTemplateBuilder
     protected const NEW_CONTENT = [
         'h1' => 'Новый шаблон',
         'title' => 'Новый шаблон',
-    ];
-    /** @var string[] Common show content for staff templates */
-    protected const SHOW_CONTENT = [
-        'analyzesLink' => 'Параметры',
     ];
 
     /** @var string[] Common edit content for staff templates */

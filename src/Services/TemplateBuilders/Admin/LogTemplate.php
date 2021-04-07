@@ -21,39 +21,13 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class LogTemplate extends AdminTemplateBuilder
 {
-    /** @var string[] Common content for staff templates */
-    protected const COMMON_CONTENT = [
-        'fullName' => 'Полное название',
-        'userString' => 'Пользователь',
-        'logAction' => 'Тип лога',
-        'createdAt' => 'Дата и время создания'
-    ];
-
-    /** @var string[] Common form content for staff templates */
-    protected const FORM_CONTENT = [
-        'hospitalPlaceholder' => 'Выберите больницу',
-    ];
-
     /** @var string[] Common list content for staff templates */
     protected const LIST_CONTENT = [
+        'userString' => 'Пользователь',
+        'logAction' => 'Тип лога',
+        'createdAt' => 'Дата и время создания',
         'h1' => 'Список логов',
         'title' => 'Логи',
-    ];
-
-    /** @var string[] Common new content for staff templates */
-    protected const NEW_CONTENT = [
-        'h1' => 'Новый лог',
-        'title' => 'Новый лог',
-    ];
-    /** @var string[] Common show content for staff templates */
-    protected const SHOW_CONTENT = [
-        'logs' => 'Логи',
-    ];
-
-    /** @var string[] Common edit content for staff templates */
-    protected const EDIT_CONTENT = [
-        'h1' => 'Редактирование лога',
-        'title' => 'Редактирование лога',
     ];
 
     /** @var string[] Common FILTER CONTENT */

@@ -27,7 +27,7 @@ class PrescriptionAppointment
 
     /**
      * @ORM\OneToOne(targetEntity=PatientAppointment::class, inversedBy="prescriptionAppointment", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $patientAppointment;
 
@@ -69,61 +69,6 @@ class PrescriptionAppointment
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Prescription|null
-     */
-    public function getPrescription(): ?Prescription
-    {
-        return $this->prescription;
-    }
-
-    /**
-     * @param Prescription|null $prescription
-     * @return $this
-     */
-    public function setPrescription(?Prescription $prescription): self
-    {
-        $this->prescription = $prescription;
-
-        return $this;
-    }
-
-    /**
-     * @return PatientAppointment|null
-     */
-    public function getPatientAppointment(): ?PatientAppointment
-    {
-        return $this->patientAppointment;
-    }
-
-    /**
-     * @param PatientAppointment $patientAppointment
-     * @return $this
-     */
-    public function setPatientAppointment(PatientAppointment $patientAppointment): self
-    {
-        $this->patientAppointment = $patientAppointment;
-        return $this;
-    }
-
-    /**
-     * @return Staff|null
-     */
-    public function getStaff(): ?Staff
-    {
-        return $this->staff;
-    }
-
-    /**
-     * @param Staff|null $staff
-     * @return $this
-     */
-    public function setStaff(?Staff $staff): self
-    {
-        $this->staff = $staff;
-        return $this;
     }
 
     /**
@@ -195,6 +140,63 @@ class PrescriptionAppointment
     public function setPlannedDateTime(DateTimeInterface $plannedDateTime): self
     {
         $this->plannedDateTime = $plannedDateTime;
+        return $this;
+    }
+
+    /**
+     * @return Prescription|null
+     */
+    public function getPrescription(): ?Prescription
+    {
+        return $this->prescription;
+    }
+
+    /**
+     * @param Prescription|null $prescription
+     * @return $this
+     */
+    public function setPrescription(?Prescription $prescription): self
+    {
+        $this->prescription = $prescription;
+
+        return $this;
+    }
+
+    /**
+     * @return PatientAppointment
+     */
+    public function getPatientAppointment(): PatientAppointment
+    {
+        return $this->patientAppointment;
+    }
+
+    /**
+     * @param PatientAppointment $patientAppointment
+     * @return $this
+     */
+    public function setPatientAppointment(PatientAppointment $patientAppointment): self
+    {
+        $this->patientAppointment = $patientAppointment;
+
+        return $this;
+    }
+
+    /**
+     * @return Staff|null
+     */
+    public function getStaff(): ?Staff
+    {
+        return $this->staff;
+    }
+
+    /**
+     * @param Staff|null $staff
+     * @return $this
+     */
+    public function setStaff(?Staff $staff): self
+    {
+        $this->staff = $staff;
+
         return $this;
     }
 

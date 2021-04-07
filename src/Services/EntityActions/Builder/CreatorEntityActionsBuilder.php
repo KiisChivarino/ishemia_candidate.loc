@@ -3,6 +3,7 @@
 namespace App\Services\EntityActions\Builder;
 
 use App\Services\EntityActions\Creator\AbstractCreatorService;
+use Closure;
 
 /**
  * Class CreatorEntityActionsBuilder
@@ -15,12 +16,12 @@ class CreatorEntityActionsBuilder extends EntityActionsBuilder
      * CreatorEntityActionsBuilder constructor.
      * @param AbstractCreatorService $creatorService
      * @param array $beforeOptions
-     * @param array $afterOptions
+     * @param Closure|null $afterOptions
      */
     public function __construct(
         AbstractCreatorService $creatorService,
         array $beforeOptions = [],
-        array $afterOptions = []
+        ?Closure $afterOptions = null
     )
     {
         parent::__construct($beforeOptions, $afterOptions);

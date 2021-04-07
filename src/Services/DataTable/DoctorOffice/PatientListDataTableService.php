@@ -123,8 +123,10 @@ class PatientListDataTableService extends DoctorOfficeDatatableService
                 'city', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('city'),
                     'field' => 'h.name',
-                    'render' => function (string $data, Patient $patient) {
-                        return $patient ? $patient->getCity()->getName() : '';
+                    'render' => function (string $data, Patient $patient) use ($listTemplateItem) {
+                        return $patient->getCity()
+                            ? $patient->getCity()->getName()
+                            : $listTemplateItem->getContentValue('empty');
                     },
                     'orderable' => true,
                     'orderField' => 'h.name',

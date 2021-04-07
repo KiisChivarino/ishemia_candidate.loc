@@ -264,7 +264,8 @@ class TemplateController extends AdminAbstractController
             self::RESPONSE_FORM_TYPE_NEW,
             function (EntityActions $actions) use ($textTemplate, $textTemplateService) {
                 $textTemplateService->persistTemplateParameterTexts($actions->getForm()->all(), $textTemplate);
-            }
+            },
+            self::RESPONSE_FORM_TYPE_NEW
         );
     }
 

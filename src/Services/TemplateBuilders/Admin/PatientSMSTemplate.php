@@ -26,30 +26,17 @@ class PatientSMSTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for staff templates */
     protected const COMMON_CONTENT = [
-        'fullName' => 'Полное название',
-        'userString' => 'Пользователь',
-        'createdAt' => 'Дата и время создания',
         'patient' => 'Пациент',
-        'phone' => 'Номер телефона',
         'text' => 'Сообщение',
-        'created_at' => 'Дата и время создания',
         'isProcessed' => 'Обработано',
-    ];
-
-    /** @var string[] Common form content for staff templates */
-    protected const FORM_CONTENT = [
-        'hospitalPlaceholder' => 'Выберите больницу',
     ];
 
     /** @var string[] Common list content for staff templates */
     protected const LIST_CONTENT = [
         'h1' => 'Список полученных SMS',
         'title' => 'Список полученных SMS',
-    ];
-
-    /** @var string[] Common show content for staff templates */
-    protected const SHOW_CONTENT = [
-        'logs' => 'SMS',
+        'phone' => 'Номер телефона',
+        'createdAt' => 'Дата и время создания',
     ];
 
     /** @var string[] Common edit content for staff templates */

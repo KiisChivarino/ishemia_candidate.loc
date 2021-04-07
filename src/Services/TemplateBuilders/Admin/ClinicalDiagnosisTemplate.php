@@ -38,6 +38,7 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
     public const COMMON_CONTENT = [
         'text' => 'Текст клинического диагноза',
         'MKBCode' => 'Код клинического диагноза',
+        'MKBNotFound' => 'Код MKB не задан',
     ];
 
     /** @var string[] Common FORM_CONTENT */

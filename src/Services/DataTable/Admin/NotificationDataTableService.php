@@ -36,20 +36,21 @@ class NotificationDataTableService extends AdminDatatableService
         Closure $renderOperationsFunction,
         ListTemplateItem $listTemplateItem,
         array $filters
-    ): DataTable {
+    ): DataTable
+    {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
                 'authUserSender', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staff'),
-                    'render' => function (string $data, Notification $notification): string {
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var AuthUser $authUser */
                         $authUser = $notification->getAuthUserSender();
                         return $authUser ? $this->getLink(
                             (new AuthUserInfoService())->getFIO($authUser, true),
                             $authUser->getId(),
                             'auth_user_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
@@ -71,14 +72,14 @@ class NotificationDataTableService extends AdminDatatableService
                     'render' => function (string $data, Notification $notification): string {
                         /** @var NotificationReceiverType $notificationReceiverType */
                         $notificationReceiverType = $notification->getNotificationReceiverType();
-                        return $notificationReceiverType ? $notificationReceiverType->getName() : '';
+                        return $notificationReceiverType ? $notificationReceiverType->getTitle() : '';
                     },
                 ]
             )
             ->add(
                 'receiver', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('receiver'),
-                    'render' => function (string $data, Notification $notification): string {
+                    'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var NotificationReceiverType $notificationReceiverType */
                         switch ($notification->getNotificationReceiverType()->getName()){
                             case 'patient':
@@ -89,8 +90,9 @@ class NotificationDataTableService extends AdminDatatableService
                                     ),
                                     $patientNotification->getPatient()->getId(),
                                     'patient_show'
-                                ) : '';
+                                ) : $listTemplateItem->getContentValue('empty');
                             case 'staff':
+//                                TODO: добавить когда появится функционал отправки сообщения врачу
                             default:
                                 return '';
                         }
@@ -125,8 +127,7 @@ class NotificationDataTableService extends AdminDatatableService
                         ) : '-';
                     },
                 ]
-            )
-        ;
+            );
 
         /** @var Patient $patient */
         $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']])
@@ -140,8 +141,10 @@ class NotificationDataTableService extends AdminDatatableService
                             ->select('n')
                             ->from(Notification::class, 'n')
                             ->leftJoin('n.patientNotification', 'pN')
-                            ->addSelect('pN')
-                        ;
+                            ->leftJoin('n.notificationReceiverType', 'nRT')
+                            ->andWhere('nRT.name = :notificationReceiverType')
+                            ->setParameter('notificationReceiverType', 'patient')
+                            ->addSelect('pN');
                         if ($patient) {
                             $builder
                                 ->andWhere('pN.patient = :patient')

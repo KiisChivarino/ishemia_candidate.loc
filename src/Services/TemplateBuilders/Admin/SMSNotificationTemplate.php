@@ -10,38 +10,21 @@ use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Class AnalysisGroupTemplate
- * builds template settings for AnalysisGroup controller
+ * Class SMSNotificationTemplate
  *
  * @package App\Services\TemplateBuilders
  */
 class SMSNotificationTemplate extends AdminTemplateBuilder
 {
-    /** @var string[] Common content for staff templates */
-    protected const COMMON_CONTENT = [
-        'fullName' => 'Полное название',
-        'userString' => 'Пользователь',
+    /** @var string[] Common list content for staff templates */
+    protected const LIST_CONTENT = [
+        'h1' => 'Список SMS уведомлений',
+        'title' => 'SMS уведомления',
         'notification' => 'Уведомление',
         'smsTo' => 'Получатель',
         'externalId' => 'Id sms',
         'status' => 'Статус',
         'attempt' => 'Попытка'
-    ];
-
-    /** @var string[] Common form content for staff templates */
-    protected const FORM_CONTENT = [
-        'hospitalPlaceholder' => 'Выберите больницу',
-    ];
-
-    /** @var string[] Common list content for staff templates */
-    protected const LIST_CONTENT = [
-        'h1' => 'Список SMS уведомлений',
-        'title' => 'SMS уведомления',
-    ];
-
-    /** @var string[] Common show content for staff templates */
-    protected const SHOW_CONTENT = [
-        'emailNotifications' => 'SMS уведомления',
     ];
 
     /** @var string[] Common ENTITY CONTENT */

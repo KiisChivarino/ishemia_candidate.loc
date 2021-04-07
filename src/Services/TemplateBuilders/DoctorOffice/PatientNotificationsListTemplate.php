@@ -53,16 +53,14 @@ class PatientNotificationsListTemplate extends DoctorOfficeTemplateBuilder
         'sent' => 'Отправлено'
     ];
 
-    /** @var string[] Common NEW_CONTENT */
-    protected const NEW_CONTENT = [
-        'h1' => 'Новая запись',
-        'title' => 'Новая запись',
-    ];
-
     /** @var string[] Common SHOW_CONTENT */
     protected const SHOW_CONTENT = [
         'h1' => 'Просмотр записи',
         'title' => 'Просмотр записи',
+        'authUserSender' => 'Отправитель',
+        'text' => 'Текст',
+        'notificationReceiverType' => 'Тип получателя',
+        'channelType' => 'Канал передачи',
     ];
 
     /** @var string[] Common EDIT_CONTENT */

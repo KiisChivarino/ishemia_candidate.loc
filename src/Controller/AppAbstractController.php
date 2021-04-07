@@ -11,6 +11,8 @@ use App\Services\ControllerGetters\FilterLabels;
 use App\Services\EntityActions\Builder\EntityActionsBuilder;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
+use App\Services\EntityActions\Editor\AbstractEditorService;
+use App\Services\EntityActions\EntityActionsInterface;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
@@ -391,6 +393,11 @@ abstract class AppAbstractController extends AbstractController
             $this->setDefaultRedirectRouteParameters($entity);
             return $this->redirectSubmitted();
         }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors(true) as $value) {
+                $this->addFlash('error', $value->getMessage());
+            }
+        }
         return $renderForm;
     }
 
@@ -515,25 +522,31 @@ abstract class AppAbstractController extends AbstractController
      * @param array $formDataArray
      * @param string $templateName
      * @param string $type
+     * @param null $defaultEntity
      * @return RedirectResponse|Response
      * @throws ReflectionException
+     * @throws Exception
      */
     protected function responseMultiFormWithActions(
         Request $request,
         array $entityActionsBuilderArray,
         array $formDataArray,
         string $templateName,
-        string $type
+        string $type,
+        $defaultEntity = null
     )
     {
         foreach ($entityActionsBuilderArray as $entityActionsBuilder) {
-            if (!is_a($entityActionsBuilder->getEntityActionsService(), EditorEntityActionsBuilder::class)) {
+            if (!is_a($entityActionsBuilder->getEntityActionsService(), AbstractEditorService::class)) {
                 throw new Exception('EntityActionsBuilder must contains AbstractEditorService');
             }
             $entityActionsBuilder
                 ->getEntityActionsService()
                 ->before($entityActionsBuilder->getBeforeOptions());
         }
+        $defaultEntity = $defaultEntity
+            ? $defaultEntity
+            : $entityActionsBuilderArray[0]->getEntityActionsService()->getEntity();
         $formGeneratorService = (new MultiFormService())->mergeFormDataOptions(
             $formDataArray,
             [
@@ -543,16 +556,23 @@ abstract class AppAbstractController extends AbstractController
             ]
         );
         $form = $formGeneratorService->generateForm($this->createFormBuilder(), $formDataArray);
-        $renderParameters = $this->getRenderFormParameters($form);
+        $renderParameters = $this->getRenderFormParameters(
+            $form,
+            [
+                'entity' => $defaultEntity
+            ]
+        );
         $formRender = $this->renderForm($templateName, $renderParameters);
         if (!$this->handleRequest($request, $form)) {
             return $formRender;
         }
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($entityActionsBuilderArray as $editorEntityActionsBuilder) {
-                $editorEntityActionsBuilder
-                    ->getEntityActionsService()
-                    ->after($editorEntityActionsBuilder->getAfterOptions());
+                /** @var EntityActionsInterface $entityActionsEditorService */
+                $entityActionsEditorService = $editorEntityActionsBuilder->getEntityActionsService();
+                $entityActionsEditorService->after(
+                    $editorEntityActionsBuilder->getAfterOptions()($entityActionsEditorService)
+                );
             }
             if (!$this->flush()) {
                 return $formRender;
@@ -560,6 +580,7 @@ abstract class AppAbstractController extends AbstractController
             foreach ($entityActionsBuilderArray as $editorEntityActionsBuilder) {
                 $this->setFormLog($type, $editorEntityActionsBuilder->getEntityActionsService()->getEntity());
             }
+            $this->setDefaultRedirectRouteParameters($defaultEntity);
             return $this->redirectSubmitted();
         }
         return $formRender;
@@ -585,9 +606,10 @@ abstract class AppAbstractController extends AbstractController
     {
         $entityActionsService = $entityActionsBuilder->getEntityActionsService();
         $entityActionsService->before($entityActionsBuilder->getBeforeOptions());
+        $defaultEntity = $entityActionsService->getEntity();
         $form = $this->createForm(
             $formData->getFormClassName(),
-            $entityActionsService->getEntity(),
+            $defaultEntity,
             array_merge(
                 $formData->getFormOptions(),
                 [
@@ -602,11 +624,14 @@ abstract class AppAbstractController extends AbstractController
             return $formRender;
         }
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityActionsService->after($entityActionsBuilder->getAfterOptions());
+            $entityActionsService->after(
+                $entityActionsBuilder->getAfterOptions()($entityActionsService)
+            );
             if (!$this->flush()) {
                 return $formRender;
             }
-            $this->setFormLog($type, $entityActionsService->getEntity());
+            $this->setFormLog($type, $defaultEntity);
+            $this->setDefaultRedirectRouteParameters($defaultEntity);
             return $this->redirectSubmitted();
         }
         return $formRender;
@@ -668,24 +693,6 @@ abstract class AppAbstractController extends AbstractController
             $filters[$filterLabel] = $filterEntity ? $filterEntity : '';
         }
         return $filters;
-    }
-
-    /**
-     * Отображает действия с записью в таблице datatables
-     *
-     * @return Closure
-     */
-    protected function renderTableActions(): Closure
-    {
-        return function ($value, $options) {
-            return $this->render(
-                $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
-                [
-                    'template' => $this->templateService,
-                    'parameters' => array_merge(['id' => $value], is_array($options) ? $options : [])
-                ]
-            )->getContent();
-        };
     }
 
     /**
@@ -915,5 +922,48 @@ abstract class AppAbstractController extends AbstractController
             Prescription::class,
             $this->getGETParameter($request, PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)
         );
+    }
+
+    /**
+     * Отображает действия с записью в таблице datatables
+     *
+     * @return Closure
+     */
+    protected function renderTableActions(): Closure
+    {
+        return function (int $enityId, $rowEntity, $route = null, ?array $routeParameters = []) {
+            return $this->getTableActionsResponseContent($enityId, $rowEntity, $route, $routeParameters);
+        };
+    }
+
+    /**
+     * Gets the response content for table actions
+     * @param int $entityId
+     * @param $rowEntity
+     * @param string|null $route
+     * @param array|null $routeParameters
+     * @return false|string
+     */
+    protected function getTableActionsResponseContent(
+        int $entityId,
+        $rowEntity,
+        ?string $route,
+        ?array $routeParameters = []
+    )
+    {
+        return $this->render(
+            $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
+            [
+                'template' => $this->templateService,
+                'parameters' => array_merge(
+                    [
+                        'id' => $entityId,
+                        'rowEntity' => $rowEntity
+                    ],
+                    $routeParameters
+                ),
+                'route' => $route
+            ]
+        )->getContent();
     }
 }

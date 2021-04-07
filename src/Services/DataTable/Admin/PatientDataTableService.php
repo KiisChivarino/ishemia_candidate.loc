@@ -44,7 +44,10 @@ class PatientDataTableService extends AdminDatatableService
             )
             ->add(
                 'insuranceNumber', TextColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('insuranceNumber')
+                    'label' => $listTemplateItem->getContentValue('insuranceNumber'),
+                    'render' => function ($value) use ($listTemplateItem) {
+                        return $value ? $value : $listTemplateItem->getContentValue('empty');
+                    }
                 ]
             )
             ->add(

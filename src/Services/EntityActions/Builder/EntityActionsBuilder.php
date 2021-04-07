@@ -24,8 +24,8 @@ abstract class EntityActionsBuilder
     private $beforeOptions;
 
     /**
-     * @var array $afterOptions
      * options for method "after" of entity actions service
+     * @var Closure|null
      */
     private $afterOptions;
 
@@ -39,7 +39,7 @@ abstract class EntityActionsBuilder
         ?Closure $addAfterOptionsFunction = null
     )
     {
-        $this->afterOptions = $addAfterOptionsFunction();
+        $this->afterOptions = $addAfterOptionsFunction;
         $this->beforeOptions = $beforeOptions;
     }
 
@@ -76,9 +76,9 @@ abstract class EntityActionsBuilder
     }
 
     /**
-     * @return array
+     * @return Closure
      */
-    public function getAfterOptions(): array
+    public function getAfterOptions(): Closure
     {
         return $this->afterOptions;
     }

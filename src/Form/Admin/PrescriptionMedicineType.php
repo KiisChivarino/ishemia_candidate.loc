@@ -33,6 +33,12 @@ class PrescriptionMedicineType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
+                'instruction', null, [
+                    'label' => $templateItem->getContentValue('instruction'),
+                    'attr' => ['class' => 'tinymce'],
+                ]
+            )
+            ->add(
                 'staff', EntityType::class, [
                     'label' => $templateItem->getContentValue('staff'),
                     'class' => Staff::class,

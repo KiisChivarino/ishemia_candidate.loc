@@ -3,6 +3,7 @@
 namespace App\Services\EntityActions\Builder;
 
 use App\Services\EntityActions\Editor\AbstractEditorService;
+use Closure;
 
 /**
  * Class EditorEntityActionsBuilder
@@ -15,12 +16,12 @@ class EditorEntityActionsBuilder extends EntityActionsBuilder
      * EditorEntityActionsBuilder constructor.
      * @param AbstractEditorService $editorService
      * @param array $beforeOptions
-     * @param array $afterOptions
+     * @param Closure|null $afterOptions
      */
     public function __construct(
         AbstractEditorService $editorService,
         array $beforeOptions = [],
-        array $afterOptions = []
+        ?Closure $afterOptions = null
     )
     {
         parent::__construct($beforeOptions, $afterOptions);

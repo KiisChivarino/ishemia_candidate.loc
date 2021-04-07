@@ -41,42 +41,42 @@ class PatientAppointmentDataTableService extends AdminDatatableService
             ->add(
                 'medicalRecord', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('medicalRecord'),
-                    'render' => function (string $dataString, PatientAppointment $patientAppointment): string {
+                    'render' => function (string $dataString, PatientAppointment $patientAppointment) use ($listTemplateItem): string {
                         /** @var MedicalRecord $medicalRecord */
                         $medicalRecord = $patientAppointment->getMedicalRecord();
                         return $medicalRecord ? $this->getLink(
                             (new MedicalRecordInfoService())->getMedicalRecordTitle($medicalRecord),
                             $medicalRecord->getId(),
                             'medical_record_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
             ->add(
                 'staff', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staff'),
-                    'render' => function (string $dataString, PatientAppointment $patientAppointment): string {
+                    'render' => function (string $dataString, PatientAppointment $patientAppointment) use ($listTemplateItem): string {
                         /** @var Staff $staff */
                         $staff = $patientAppointment->getStaff();
                         return $staff ? $this->getLink(
                             (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true),
                             $staff->getId(),
                             'staff_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
             ->add(
                 'appointmentType', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('appointmentType'),
-                    'render' => function (string $dataString, PatientAppointment $patientAppointment): string {
+                    'render' => function (string $dataString, PatientAppointment $patientAppointment) use ($listTemplateItem): string {
                         /** @var AppointmentType $appointmentType */
                         $appointmentType = $patientAppointment->getAppointmentType();
                         return $appointmentType ? $this->getLink(
                             $appointmentType->getName(),
                             $appointmentType->getId(),
                             'appointment_type_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
@@ -85,14 +85,16 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('plannedDateTime'),
                     'field' => 'pra.plannedDateTime',
                     'searchable' => false,
-                    'format' => 'd.m.Y H:i'
+                    'format' => 'd.m.Y H:i',
+                    'nullValue' => $listTemplateItem->getContentValue('empty')
                 ]
             )
             ->add(
                 'appointmentTime', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('appointmentTime'),
                     'searchable' => false,
-                    'format' => 'd.m.Y H:i'
+                    'format' => 'd.m.Y H:i',
+                    'nullValue' => $listTemplateItem->getContentValue('empty')
                 ]
             )
             ->add(

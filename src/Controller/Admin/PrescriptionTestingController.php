@@ -105,7 +105,9 @@ class PrescriptionTestingController extends AdminAbstractController
                 $patientTesting = (new PatientTesting())
                     ->setEnabled(true)
                     ->setIsProcessedByStaff(false)
-                    ->setMedicalHistory($prescription->getMedicalHistory());
+                    ->setMedicalHistory($prescription->getMedicalHistory())
+                    ->setIsFirst(false)
+                    ->setIsByPlan(false);
                 $prescriptionTesting = (new PrescriptionTesting())
                     ->setPrescription($prescription)
                     ->setEnabled(true)

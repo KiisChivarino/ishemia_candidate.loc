@@ -1,0 +1,9 @@
+{% extends template.commonTemplatePath~'new.html.twig' %}
+{% block content %}
+    <div class="adm-users-edit">
+        {% if template.items.form.isEnabled %}
+            {% set adgasdg = '/admin/staff/' %}
+            {{ include(adgasdg~'_formNewStaff.html.twig') }}
+        {% endif %}
+    </div>
+{% endblock %}

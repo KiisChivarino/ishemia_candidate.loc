@@ -17,79 +17,79 @@ imports:
   - { resource: services/notifications/notification_receiver_types.yaml }
   - { resource: services/entityActions/doctor_office_entity_actions.yml }
 services:
-  # default configuration for services in *this* file
-  _defaults:
-    autowire: true      # Automatically injects dependencies in your services.
-    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-    bind:
-      $rootPath: '%kernel.project_dir%'
-      $projectInfo: '%project_info%'
-      $emailParameters: '%email_notification_service.email_parameters%'
-      $smsParameters: '%sms_notification_service.sms_parameters%'
-      $smsStatuses: '%sms_notification_service.sms_statuses%'
-      $smsUpdateTimes: '%sms_notification_service.sms_update_times%'
-      $phoneParameters: '%sms_notification_service.phone_parameters%'
-      $timeFormats: '%sms_notification_service.time_formats%'
-      $systemUserPhone: '%system_user_phone%'
-      $defaultTimeFormats: '%default_time_formats%'
-      $channelTypes: '%channel_types%'
-      $notificationReceiverTypes: '%notification_receiver_types%'
-      $staffOption: '%staff_option%'
-      $prescriptionOption: '%prescription_option%'
-      $medicalHistoryOption: '%medical_history_option%'
-      $prescriptionMedicine: '%prescription_medicine%'
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $rootPath : '%kernel.project_dir%'
+            $projectInfo: '%project_info%'
+            $emailParameters: '%email_notification_service.email_parameters%'
+            $smsParameters: '%sms_notification_service.sms_parameters%'
+            $smsStatuses: '%sms_notification_service.sms_statuses%'
+            $smsUpdateTimes: '%sms_notification_service.sms_update_times%'
+            $phoneParameters: '%sms_notification_service.phone_parameters%'
+            $timeFormats: '%sms_notification_service.time_formats%'
+            $systemUserPhone: '%system_user_phone%'
+            $defaultTimeFormats: '%default_time_formats%'
+            $channelTypes: '%channel_types%'
+            $staffOption: '%staff_option%'
+            $prescriptionOption: '%prescription_option%'
+            $medicalHistoryOption: '%medical_history_option%'
+            $prescriptionMedicine: '%prescription_medicine%'
+            $notificationReceiverTypeNames: '%notification_receiver_type_names%'
+            $notificationReceiverTypeTitles: '%notification_receiver_type_titles%'
 
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+      resource: '../src/'
+      exclude:
+        - '../src/DependencyInjection/'
+        - '../src/Entity/'
+        - '../src/Kernel.php'
+        - '../src/Tests/'
+        - '../src/Repository/AppRepository.php'
 
-  # makes classes in src/ available to be used as services
-  # this creates a service per class whose id is the fully-qualified class name
-  App\:
-    resource: '../src/'
-    exclude:
-      - '../src/DependencyInjection/'
-      - '../src/Entity/'
-      - '../src/Kernel.php'
-      - '../src/Tests/'
-      - '../src/Repository/AppRepository.php'
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+      resource: '../src/Controller'
+      tags: [ 'controller.service_arguments' ]
 
-  # controllers are imported separately to make sure services can be injected
-  # as action arguments even if you don't extend any base controller class
-  App\Controller\:
-    resource: '../src/Controller'
-    tags: [ 'controller.service_arguments' ]
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    app.menu_builder:
+      class: App\AppBundle\Menu\MenuBuilder
+      arguments: [ "@knp_menu.factory" ]
 
-  # add more service definitions when explicit configuration is needed
-  # please note that last definitions always *replace* previous ones
-  app.menu_builder:
-    class: App\AppBundle\Menu\MenuBuilder
-    arguments: [ "@knp_menu.factory" ]
-
-  app.main_menu:
-    class: Knp\Menu\MenuItem # the service definition requires setting the class
-    factory: [ "@app.menu_builder", createMainMenu ]
-    arguments: [ "@request_stack" ]
-    tags:
-      - { name: knp_menu.menu, alias: main }
-  app.doctor_office_header_menu:
-    class: Knp\Menu\MenuItem # the service definition requires setting the class
-    factory: [ "@app.menu_builder", createDoctorOfficeHeaderMenu ]
-    arguments: [ "@request_stack" ]
-    tags:
-      - { name: knp_menu.menu, alias: doctorOfficeHeader }
-  app.admin_header_menu:
-    class: Knp\Menu\MenuItem # the service definition requires setting the class
-    factory: [ "@app.menu_builder", createAdminHeaderMenu ]
-    arguments: [ "@request_stack" ]
-    tags:
-      - { name: knp_menu.menu, alias: adminHeader }
-  app.doctor_office_sidebar_menu:
-    class: Knp\Menu\MenuItem # the service definition requires setting the class
-    factory: [ "@app.menu_builder", createDoctorOfficeSidebarMenu ]
-    arguments: [ "@request_stack" ]
-    tags:
-      - { name: knp_menu.menu, alias: doctorOfficeSidebar }
-  App\Form\Admin\AuthUser\AuthUserRoleType:
-    arguments: [ '@doctrine.orm.entity_manager' ]
-    tags: [ form.type ]
-  App\Services\EntityActions\AbstractEntityActionsService:
-    abstract: true
-    arguments: [ '@doctrine.orm.entity_manager' ]
+    app.main_menu:
+      class: Knp\Menu\MenuItem # the service definition requires setting the class
+      factory: [ "@app.menu_builder", createMainMenu ]
+      arguments: [ "@request_stack" ]
+      tags:
+        - { name: knp_menu.menu, alias: main }
+    app.doctor_office_header_menu:
+      class: Knp\Menu\MenuItem # the service definition requires setting the class
+      factory: [ "@app.menu_builder", createDoctorOfficeHeaderMenu ]
+      arguments: [ "@request_stack" ]
+      tags:
+        - { name: knp_menu.menu, alias: doctorOfficeHeader }
+    app.admin_header_menu:
+      class: Knp\Menu\MenuItem # the service definition requires setting the class
+      factory: [ "@app.menu_builder", createAdminHeaderMenu ]
+      arguments: [ "@request_stack" ]
+      tags:
+        - { name: knp_menu.menu, alias: adminHeader }
+    app.doctor_office_sidebar_menu:
+      class: Knp\Menu\MenuItem # the service definition requires setting the class
+      factory: [ "@app.menu_builder", createDoctorOfficeSidebarMenu ]
+      arguments: [ "@request_stack" ]
+      tags:
+        - { name: knp_menu.menu, alias: doctorOfficeSidebar }
+    App\Form\Admin\AuthUser\AuthUserRoleType:
+      arguments: [ '@doctrine.orm.entity_manager' ]
+      tags: [ form.type ]
+    App\Services\EntityActions\AbstractEntityActionsService:
+      abstract: true
+      arguments: [ '@doctrine.orm.entity_manager' ]

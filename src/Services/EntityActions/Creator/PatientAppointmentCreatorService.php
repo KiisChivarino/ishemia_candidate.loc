@@ -170,15 +170,17 @@ class PatientAppointmentCreatorService
     }
 
     /**
-     * Check patient testing for regular
+     * Checks patient appointment for regular
      * @param PatientAppointment $patientAppointment
      * @return bool
      */
     public function checkPatientAppointmentForRegular(PatientAppointment $patientAppointment): bool
     {
+        $planAppointment = $patientAppointment->getPlanAppointment();
         return !is_null($patientAppointment->getAppointmentTime())
             && $patientAppointment->getIsByPlan()
-            && $patientAppointment->getPlanAppointment()->getTimeRange()->getIsRegular();
+            && !is_null($planAppointment)
+            && $planAppointment->getTimeRange()->getIsRegular();
     }
 
     /**

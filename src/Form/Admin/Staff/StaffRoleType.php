@@ -53,29 +53,38 @@ class StaffRoleType extends AbstractType
                 $rolesArray[$role->getName()] = $role->getTechName();
             }
         }
+        // Adds current rule for editing staff
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) use ($templateItem, $rolesArray) {
                 /** @var AuthUser $authUser */
                 $authUser = $event->getData();
                 $form = $event->getForm();
+                $staffRoleData = [
+                    'choices' => $rolesArray,
+                    'label' => $templateItem->getContentValue('role'),
+                    'attr' => ['data-form_staf_role_id'=>''],
+                ];
                 if ($authUser) {
                     $roleName = (new AuthUserInfoService())->getRoleNames($this->entityManager->getRepository(AuthUser::class)->getRoles($authUser), true);
                     $form
                         ->add(
-                            'roles', ChoiceType::class, [
-                                'choices' => $rolesArray,
-                                'label' => $templateItem->getContentValue('role'),
-                                'data' => $roleName,
-                            ]
+                            'roles',
+                            ChoiceType::class,
+                            array_merge(
+                                $staffRoleData,
+                                [
+                                    'data' => $roleName,
+                                ]
+                            )
                         );
-                } else {
+                }
+                else {
                     $form
                         ->add(
-                            'roles', ChoiceType::class, [
-                                'choices' => $rolesArray,
-                                'label' => $templateItem->getContentValue('role'),
-                            ]
+                            'roles',
+                            ChoiceType::class,
+                            $staffRoleData
                         );
                 }
             }

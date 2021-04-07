@@ -30,7 +30,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class StaffController
- * @Route("/staff")
+ * @Route("admin/staff")
  * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
@@ -140,7 +140,10 @@ class StaffController extends AdminAbstractController
                     throw $e;
                 }
                 return null;
-            }
+            },
+            null,
+            'newStaff'
+
         );
     }
 

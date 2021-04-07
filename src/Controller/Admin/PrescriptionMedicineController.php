@@ -6,10 +6,12 @@ use App\Entity\PrescriptionMedicine;
 use App\Form\Admin\PrescriptionMedicineType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionMedicineDataTableService;
+use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
+use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -30,6 +32,18 @@ use Twig\Environment;
  */
 class PrescriptionMedicineController extends AdminAbstractController
 {
+    /**
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     */
+    private $STAFF_OPTION;
+
+    /**
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     */
+    private $PRESCRITION_OPTION;
+
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/prescription_medicine/';
 
@@ -39,20 +53,22 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
+     * @param string $staffOption
+     * @param string $prescriptionOption
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
         TranslatorInterface $translator,
-        PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
-
+        string $staffOption,
+        string $prescriptionOption
     )
     {
         parent::__construct($translator);
         $this->templateService = new PrescriptionMedicineTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
-        $this->creatorService = $prescriptionMedicineCreatorService;
+        $this->STAFF_OPTION = $staffOption;
+        $this->PRESCRITION_OPTION = $prescriptionOption;
     }
 
     /**
@@ -94,10 +110,23 @@ class PrescriptionMedicineController extends AdminAbstractController
     {
         return $this->responseNewWithActions(
             $request,
-            PrescriptionMedicineType::class,
-            [
-                'prescription' => $this->getPrescriptionByParameter($request),
-            ]
+            new CreatorEntityActionsBuilder(
+                new PrescriptionMedicineCreatorService(
+                    $this->getDoctrine()->getManager(),
+                    $this->STAFF_OPTION,
+                    $this->PRESCRITION_OPTION
+                ),
+                [
+                    $this->PRESCRITION_OPTION => $this->getPrescriptionByParameter($request)
+                ],
+                function (PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService) {
+                    return
+                        [
+                            $this->STAFF_OPTION => $prescriptionMedicineCreatorService->getEntity()->getStaff()
+                        ];
+                }
+            ),
+            new FormData(PrescriptionMedicineType::class)
         );
     }
 

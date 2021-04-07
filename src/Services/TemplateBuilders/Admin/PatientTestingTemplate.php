@@ -31,7 +31,8 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'analysisGroup' => AnalysisGroupTemplate::ENTITY_CONTENT['entity'],
         'analysisDate' => 'Проведено',
         'isProcessedByStaff' => 'Обработано врачом',
-        'patientTestingFiles'=> 'Сканкопии результатов анализов'
+        'patientTestingFiles'=> 'Сканкопии результатов анализов',
+        'resultData' => 'Данные результатов обследования',
     ];
 
     /** @var string[] Common LIST_CONTENT */

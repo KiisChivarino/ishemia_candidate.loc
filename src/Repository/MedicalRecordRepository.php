@@ -30,24 +30,31 @@ class MedicalRecordRepository extends AppRepository
     }
 
     /**
-     * Find or create medical record for current date
+     * Find current medical record for current date
      *
      * @param MedicalHistory $medicalHistory
      *
      * @return MedicalRecord
      * @throws Exception
      */
-    public function getMedicalRecord(MedicalHistory $medicalHistory): ?MedicalRecord
+    public function getCurrentMedicalRecord(MedicalHistory $medicalHistory): ?MedicalRecord
     {
         return $this
             ->createQueryBuilder('mr')
             ->leftJoin('mr.medicalHistory', 'mh')
-            ->where('mr.recordDate = :recordDate and mr.medicalHistory=:medicalHistory and mr.enabled = true and mh.enabled = true')
+            ->where('mr.recordDate = :recordDate 
+            and mr.medicalHistory=:medicalHistory 
+            and mr.enabled = true 
+            and mh.enabled = true')
             ->setParameters(
                 [
                     'recordDate' => new DateTime(),
                     'medicalHistory' => $medicalHistory
                 ]
-            )->getQuery()->getOneOrNullResult();
+            )
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
+
 }

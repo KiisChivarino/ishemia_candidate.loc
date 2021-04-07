@@ -34,3 +34,9 @@ app_abstract_controller:
 prescription_appointment_controller:
   error:
     new_appointment: Прием уже существует!
+form:
+  error:
+    mime_type_message_error: Изображение должно быть в формате «jpeg» или «png»
+hospital_controller:
+  error:
+    delete: Больницу, к которой привязаны пациенты и/или врачи, удалить нельзя!

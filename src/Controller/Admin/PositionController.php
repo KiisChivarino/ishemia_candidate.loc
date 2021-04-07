@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class PositionController
- * @Route("/position")
+ * @Route("admin/position")
  * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin

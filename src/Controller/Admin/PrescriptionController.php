@@ -8,6 +8,7 @@ use App\Form\Admin\PrescriptionType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\EntityActions\Editor\PrescriptionEditorService;
@@ -48,11 +49,7 @@ class PrescriptionController extends AdminAbstractController
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
      */
-    public function __construct(
-        Environment $twig,
-        RouterInterface $router,
-        TranslatorInterface $translator
-    )
+    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
         parent::__construct($translator);
         $this->templateService = new PrescriptionTemplate($router->getRouteCollection(), get_class($this));
@@ -100,7 +97,7 @@ class PrescriptionController extends AdminAbstractController
         Request $request
     ): Response
     {
-        $prescriptionCreatorService = new PrescriptionCreatorService($this->getDoctrine()->getManager());
+        $prescriptionCreatorService = (new PrescriptionCreatorService($this->getDoctrine()->getManager()));
         return $this->responseNewWithActions(
             $request,
             new CreatorEntityActionsBuilder(
@@ -108,11 +105,13 @@ class PrescriptionController extends AdminAbstractController
                 [
                     PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $this->getMedicalHistoryByParameter($request),
                 ],
-                [
-                    PrescriptionCreatorService::STAFF_OPTION => $prescriptionCreatorService->getEntity()->getStaff(),
-                ]
+                function (PrescriptionCreatorService $prescriptionCreatorService): array {
+                    return [
+                        PrescriptionCreatorService::STAFF_OPTION => $prescriptionCreatorService->getEntity()->getStaff(),
+                    ];
+                }
             ),
-            new FormData($prescriptionCreatorService->getEntity(), PrescriptionType::class)
+            new FormData(PrescriptionType::class)
         );
     }
 
@@ -176,22 +175,26 @@ class PrescriptionController extends AdminAbstractController
         return $this->responseEditMultiformWithActions(
             $request,
             [
-                new CreatorEntityActionsBuilder(
+                new EditorEntityActionsBuilder(
                     new PrescriptionEditorService($entityManager, $prescription),
                     [],
-                    [
-                        PrescriptionEditorService::MEDICAL_RECORD_OPTION_NAME =>
-                            (new MedicalRecordCreatorService($entityManager))->execute(
-                                [
-                                    MedicalRecordCreatorService::MEDICAL_HISTORY_OPTION_NAME => $prescription->getMedicalHistory(),
-                                ]
-                            )->getEntity()
-                    ]
+                    function (PrescriptionEditorService $pescriptionEditorService) use ($entityManager): array {
+                        return
+                            [
+                                PrescriptionEditorService::MEDICAL_RECORD_OPTION_NAME =>
+                                    (new MedicalRecordCreatorService($entityManager))->execute(
+                                        [
+                                            MedicalRecordCreatorService::MEDICAL_HISTORY_OPTION_NAME =>
+                                                $pescriptionEditorService->getEntity()->getMedicalHistory(),
+                                        ]
+                                    )->getEntity()
+                            ];
+                    }
                 ),
             ],
             [
-                new FormData($prescription, PrescriptionType::class),
-                new FormData($prescription, PrescriptionEditType::class),
+                new FormData(PrescriptionType::class, $prescription),
+                new FormData(PrescriptionEditType::class, $prescription),
             ]
         );
     }

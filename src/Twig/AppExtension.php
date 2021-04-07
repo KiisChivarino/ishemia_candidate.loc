@@ -19,7 +19,9 @@ use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\InfoService\PlanTestingInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\InfoService\PrescriptionTestingInfoService;
+use App\Services\MultiFormService\MultiFormService;
 use Doctrine\ORM\EntityManagerInterface;
+use ReflectionException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -49,6 +51,7 @@ class AppExtension extends AbstractExtension
      * @param EntityManagerInterface $entityManager
      * @param $projectInfo
      * @param $defaultTimeFormats
+     * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -136,9 +139,21 @@ class AppExtension extends AbstractExtension
                 ]
             ),
             new TwigFunction(
+                'isPatientTestingResultsExists', [
+                    $this,
+                    'isPatientTestingResultsExists'
+                ]
+            ),
+            new TwigFunction(
                 'globals', [
                     $this,
                     'globals'
+                ]
+            ),
+            new TwigFunction(
+                'formName', [
+                    $this,
+                    'getFormName'
                 ]
             ),
             new TwigFunction(
@@ -218,6 +233,8 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * Returns a string describing the unit of reference values
+     *
      * @param AnalysisRate $analysisRate
      * @return string
      */
@@ -227,6 +244,8 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * Returns enabled patient testing results by testing
+     *
      * @param PatientTesting $testing
      * @return array
      */
@@ -276,6 +295,16 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * Check for patient testing results exists
+     * @param PatientTesting $patientTesting
+     * @return bool
+     */
+    public function isPatientTestingResultsExists(PatientTesting $patientTesting): bool
+    {
+        return PatientTestingInfoService::isPatientTestingResultsExists($patientTesting);
+    }
+
+    /**
      * Returns Global parameters
      *
      * @return array
@@ -311,5 +340,19 @@ class AppExtension extends AbstractExtension
     public function countPrescriptionChildren(Prescription $prescription): int
     {
         return PrescriptionInfoService::countChildren($prescription);
+    }
+
+    /**
+     * Returns form name by class name
+     *
+     * @param string $formClassName
+     *
+     * @return string|string[]
+     *
+     * @throws ReflectionException
+     */
+    public function getFormName(string $formClassName): string
+    {
+        return MultiFormService::getFormName($formClassName);
     }
 }

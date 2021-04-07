@@ -57,11 +57,19 @@
                     <ul>
                         <li>
                             <p>{{ template.items.show.content.weight }}</p>
-                            <p>{{ entity.weight }} кг</p>
+                            {% if entity.weight is not null %}
+                                <p>{{ entity.weight }} кг</p>
+                            {% else %}
+                                <p>Нет данных</p>
+                            {% endif %}
                         </li>
                         <li>
                             <p>{{ template.items.show.content.height }}</p>
-                            <p>{{ entity.height }} см</p>
+                            {% if entity.height is not null %}
+                                <p>{{ entity.height }} см</p>
+                            {% else %}
+                                <p>Нет данных</p>
+                            {% endif %}
                         </li>
                         <li><p>{{ template.items.show.content.imt }}</p>
                             <p>{{ bodyMassIndex(entity) }}</p>

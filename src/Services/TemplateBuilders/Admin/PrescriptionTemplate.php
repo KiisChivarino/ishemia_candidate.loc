@@ -59,7 +59,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
         'title' => 'Просмотр назначения',
         'h1' => 'Просмотр назначения',
         'medicalRecord' => 'Запись в историю болезни',
-        'addPrescriptionMedicine' => 'Добавить лекарство',
+        'addPrescriptionMedicine' => 'Добавить назначение на лекарство',
         'prescriptionMedicines' => 'Лекарства',
         'addPrescriptionTesting' => 'Добавить назначение на обследование',
         'prescriptionTestings' => 'Назначения на обследование',

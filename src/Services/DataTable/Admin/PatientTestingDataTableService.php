@@ -42,7 +42,7 @@ class PatientTestingDataTableService extends AdminDatatableService
             ->add(
                 'fio', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('fio'),
-                    'render' => function (string $data, PatientTesting $patientTesting) {
+                    'render' => function (string $data, PatientTesting $patientTesting) use ($listTemplateItem) {
                         /** @var AuthUser $authUser */
                         $authUser = $patientTesting->getMedicalHistory()->getPatient()->getAuthUser();
                         return
@@ -50,20 +50,20 @@ class PatientTestingDataTableService extends AdminDatatableService
                                 (new AuthUserInfoService())->getFIO($authUser, true),
                                 $patientTesting->getMedicalHistory()->getPatient()->getId(),
                                 'patient_show'
-                            ) : '';
+                            ) : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             )
             ->add(
                 'analysisGroup', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisGroup'),
-                    'render' => function (string $data, PatientTesting $patientTesting) {
+                    'render' => function (string $data, PatientTesting $patientTesting) use ($listTemplateItem) {
                         /** @var AnalysisGroup $analysisGroup */
                         $analysisGroup = $patientTesting->getAnalysisGroup();
                         return
                             $analysisGroup ?
                                 $this->getLink($analysisGroup->getName(), $analysisGroup->getId(), 'analysis_group_show')
-                                : '';
+                                : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             )
@@ -71,14 +71,15 @@ class PatientTestingDataTableService extends AdminDatatableService
                 'analysisDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisDate'),
                     'format' => 'd.m.Y',
+                    'nullValue' => $listTemplateItem->getContentValue('falseValue'),
                     'searchable' => false,
                 ]
             )
             ->add(
                 'isProcessedByStaff', BoolColumn::class, [
                     'label' => $listTemplateItem->getContentValue('isProcessedByStaff'),
-                    'trueValue' => 'да',
-                    'falseValue' => 'нет',
+                    'trueValue' => $listTemplateItem->getContentValue('trueValue'),
+                    'falseValue' => $listTemplateItem->getContentValue('falseValue'),
                     'searchable' => false,
                 ]
             );

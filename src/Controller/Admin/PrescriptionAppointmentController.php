@@ -98,18 +98,25 @@ class PrescriptionAppointmentController extends AdminAbstractController
             } else {
                 $patientAppointment = (new PatientAppointment())
                     ->setEnabled(true)
-                    ->setMedicalHistory($prescription->getMedicalHistory());
+                    ->setMedicalHistory($prescription->getMedicalHistory())
+                    ->setIsConfirmed(false)
+                    ->setIsFirst(false)
+                    ->setIsByPlan(false);
                 $prescriptionAppointment = (new PrescriptionAppointment())
                     ->setPrescription($prescription)
                     ->setEnabled(true)
                     ->setPatientAppointment($patientAppointment)
                     ->setInclusionTime(new DateTime());
+                $patientAppointment->setPrescriptionAppointment($prescriptionAppointment);
                 return $this->responseNewMultiForm(
                     $request,
                     $prescriptionAppointment,
                     [
                         new FormData($prescriptionAppointment, PrescriptionAppointmentType::class),
-                    ]
+                    ],
+                    function () use ($prescriptionAppointment) {
+                        $prescriptionAppointment->getPatientAppointment()->setStaff($prescriptionAppointment->getStaff());
+                    }
                 );
             }
         } else {

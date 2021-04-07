@@ -73,7 +73,7 @@ class ReceivedSmsFromPatientDataTableService extends AdminDatatableService
                         $patient = $patientSMS->getPatient();
                         return $patient
                             ? $this->getLink((new AuthUserInfoService())
-                                ->getFIO($patient->getAuthUser()), $patient->getId(), 'patient_show')
+                                ->getFIO($patient->getAuthUser()), $patient->getId(), 'doctor_medical_history')
                             : '';
                     }
                 ]

@@ -44,7 +44,7 @@
             <div class="statement__head">
                 <h3 class="subtitle">Обследование: {{ patientTestingTitle(testing) }}</h3>
                 <a class="back-page"
-                   href="{{ path('doctor_edit_patient_testing', {'patient': entity.id, 'patientTesting': testing.id}) }}">
+                   href="{{ path('doctor_edit_patient_testing', {'id': entity.id, 'patientTesting': testing.id}) }}">
                     <span class="statement__edit">{{ template.items.show.content.addPatientTestingResults }}</span>
                 </a>
             </div>
@@ -56,10 +56,10 @@
             <div class="statement__content">
                 <div class="statement__info">
                     <div class="statement__info-block">
+                        {% if testing.patientTestingFiles is not empty %}
+                            {{ template.items.show.content.files }}
+                        {% endif %}
                         <p>
-                            {% if testing.patientTestingFiles is not empty %}
-                                {{ template.items.show.content.files }}
-                            {% endif %}
                             {% set uploadDir = constant('App\\Entity\\PatientTestingFile::UPLOAD_DIR') %}
                             {% for testingFile in testing.patientTestingFiles %}
                                 <a target="_blank"

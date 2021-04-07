@@ -43,46 +43,51 @@ class PatientTestingResultDataTableService extends AdminDatatableService
             ->add(
                 'patientTesting', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('patientTesting'),
-                    'render' => function (string $data, PatientTestingResult $patientTestingResult) {
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use ($listTemplateItem) {
                         /** @var PatientTesting $patientTesting */
                         $patientTesting = $patientTestingResult->getPatientTesting();
                         return $patientTesting ? $this->getLink(
                             (new PatientTestingInfoService())->getPatientTestingInfoString($patientTesting),
                             $patientTesting->getId(),
                             'patient_testing_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
             ->add(
                 'analysis', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysis'),
-                    'render' => function (string $data, PatientTestingResult $patientTestingResult) {
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use ($listTemplateItem) {
                         /** @var Analysis $analysis */
                         $analysis = $patientTestingResult->getAnalysis();
                         return
                             $analysis ?
                                 $this->getLink($analysis->getName(), $analysis->getId(), 'analysis_show')
-                                : '';
+                                : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
             ->add(
                 'analysisRate', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisRate'),
-                    'render' => function (string $data, PatientTestingResult $patientTestingResult) {
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use ($listTemplateItem) {
                         /** @var AnalysisRate $analysisRate */
                         $analysisRate = $patientTestingResult->getAnalysisRate();
                         return $analysisRate ? $this->getLink(
                             (new AnalysisRateInfoService())->getAnalysisRateInfoString($analysisRate),
                             $analysisRate->getId(),
                             'analysis_rate_show'
-                        ) : '';
+                        ) : $listTemplateItem->getContentValue('empty_plural');
                     },
                 ]
             )
-            ->add(
-                'result', TextColumn::class, ['label' => $listTemplateItem->getContentValue('result'),]
+            ->add('result',TextColumn::class,
+                [
+                    'label' => $listTemplateItem->getContentValue('result'),
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use ($listTemplateItem) {
+                        return $patientTestingResult->getResult() ? $patientTestingResult->getResult() : $listTemplateItem->getContentValue('empty');
+                    },
+                ]
             );
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);

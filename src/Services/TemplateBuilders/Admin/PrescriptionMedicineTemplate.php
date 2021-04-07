@@ -67,6 +67,11 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
         'entity' => 'Назначение лекарства',
     ];
 
+    /** @var array Common FORM_SHOW content */
+    public const FORM_SHOW_CONTENT = [
+        'instruction' => 'Инструкция по применению',
+    ];
+
     /**
      * PrescriptionMedicineTemplate constructor.
      *

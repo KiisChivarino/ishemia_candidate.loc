@@ -15,8 +15,8 @@ class ClinicalDiagnosisTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common form content for edit templates */
     protected const EDIT_CONTENT = [
-        'anamnestic_h2' => 'Редактирование клинического диагноза',
-        'anamnestic_title' => 'Редактирование клинического диагноза',
+        'h1' => 'Клинический диагноз',
+        'title' => 'Клинический диагноз',
     ];
 
     /** @var string[] Common ENTITY_CONTENT */
