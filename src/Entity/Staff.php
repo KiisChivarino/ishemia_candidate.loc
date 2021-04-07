@@ -64,6 +64,17 @@ class Staff
     private $prescriptionAppointments;
 
     /**
+     * @ORM\Column(type="date", nullable=true, options={"comment"="Дата рождения сотрудника"})
+     */
+    private $dateBirth;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Region::class)
+     */
+    private $region;
+
+
+    /**
      * Staff constructor.
      */
     public function __construct()
@@ -325,4 +336,29 @@ class Staff
 
         return $this;
     }
+
+    public function getDateBirth(): ?\DateTimeInterface
+    {
+        return $this->dateBirth;
+    }
+
+    public function setDateBirth(?\DateTimeInterface $dateBirth): self
+    {
+        $this->dateBirth = $dateBirth;
+
+        return $this;
+    }
+
+    public function getRegion(): ?Region
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?Region $region): self
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
 }

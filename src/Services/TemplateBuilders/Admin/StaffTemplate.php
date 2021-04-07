@@ -19,6 +19,8 @@ class StaffTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'hospital' => 'Больница',
         'position' => 'Должность',
+        'dateBirth' => 'Дата рождения',
+        'region' => 'Регион',
     ];
     /** @var string[] Common form content for staff templates */
     protected const FORM_CONTENT = [

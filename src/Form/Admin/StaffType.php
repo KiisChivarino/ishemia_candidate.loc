@@ -14,6 +14,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use App\Entity\Region;
+use App\Repository\RegionRepository;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 /**
  * Class StaffType
@@ -62,7 +65,28 @@ class StaffType extends AbstractType
                             ->where('p.enabled = true');
                     },
                 ]
+            )
+            ->add(
+                'dateBirth', DateType::class, [
+                    'label' => $templateItem->getContentValue('dateBirth'),
+                    'widget' => 'single_text',
+                    'format' => 'yyyy-MM-dd',
+                    'required' => false
+                ]
+            )
+            ->add(
+                'region', EntityType::class, [
+                    'label' => $templateItem->getContentValue('region'),
+                    'class' => Region::class,
+                    'choice_label' => 'name',
+                    'required' => false,
+                    'query_builder' => function (RegionRepository $er) {
+                        return $er->createQueryBuilder('r')
+                            ->where('r.enabled = true');
+                    },
+                ]
             );
+
     }
 
     /**
