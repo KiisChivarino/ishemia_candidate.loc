@@ -6,7 +6,8 @@ use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Form\Admin\Patient\PatientOptionalType;
 use App\Form\Admin\Patient\PatientRequiredType;
-use App\Form\Doctor\AuthUserPersonalDataType;
+use App\Form\AuthUser\AuthUserEmailType;
+use App\Form\AuthUser\AuthUserRequiredType;
 use App\Services\Creator\AuthUserCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
@@ -84,7 +85,8 @@ class PersonalDataController extends DoctorOfficeAbstractController
             $request,
             $patient,
             [
-                new FormData($authUser, AuthUserPersonalDataType::class),
+                new FormData($authUser, AuthUserRequiredType::class),
+                new FormData($authUser, AuthUserEmailType::class),
                 new FormData($patient, PatientRequiredType::class),
                 new FormData($patient, PatientOptionalType::class),
             ],

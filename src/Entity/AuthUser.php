@@ -205,7 +205,7 @@ class AuthUser implements UserInterface
      */
     public function setFirstName(string $firstName): self
     {
-        $this->firstName = $firstName;
+        $this->firstName = mb_convert_case($firstName, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 
@@ -224,7 +224,7 @@ class AuthUser implements UserInterface
      */
     public function setLastName(string $lastName): self
     {
-        $this->lastName = $lastName;
+        $this->lastName = mb_convert_case($lastName, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 
@@ -243,7 +243,7 @@ class AuthUser implements UserInterface
      */
     public function setPatronymicName(?string $patronymicName): self
     {
-        $this->patronymicName = $patronymicName;
+        $this->patronymicName = mb_convert_case($patronymicName, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 

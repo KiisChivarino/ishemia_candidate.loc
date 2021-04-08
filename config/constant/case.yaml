@@ -1,0 +1,9 @@
+# параметры для управления регистром формы, добавляем константу в data-case тега input
+parameters:
+  caseType:
+    # (data-case="first-upper") - первая буква будет большая
+    firstUpper: first-upper
+    # (data-case="upper") - все буквы большие
+    upper: upper
+    # (data-case="first-upper") - первая буква будет большая
+    lower: lower

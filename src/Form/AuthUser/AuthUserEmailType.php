@@ -1,23 +1,19 @@
 <?php
 
-namespace App\Form\Admin\AuthUser;
+
+namespace App\Form\AuthUser;
+
 
 use App\Controller\AppAbstractController;
 use App\Entity\AuthUser;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class AuthUserType
- * edit/create form of AuthUser controller
- *
- * @package App\Form\Admin\AuthUser
- */
-class AuthUserRequiredType extends AbstractType
+class AuthUserEmailType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -29,16 +25,12 @@ class AuthUserRequiredType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         try {
             $builder
-                ->add('lastName', null, ['label' => $templateItem->getContentValue('lastName')])
-                ->add('firstName', null, ['label' => $templateItem->getContentValue('firstName')])
-                ->add('patronymicName', null, ['label' => $templateItem->getContentValue('patronymicName')])
                 ->add(
-                    'phone',
-                    TelType::class,
+                    'email',
+                    EmailType::class,
                     [
-                        'label' => $templateItem->getContentValue('phone'),
-                        'attr' => ['class' => 'phone_us'],
-                        'help' => $templateItem->getContentValue('phoneHelp'),
+                        'label' => $templateItem->getContentValue('email'),
+                        'required' => false,
                     ]
                 );
         } catch (Exception $e) {
