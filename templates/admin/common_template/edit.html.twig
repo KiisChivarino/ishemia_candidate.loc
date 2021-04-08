@@ -12,6 +12,11 @@
     <div class="adm-users-edit">
         <h2>{{ template.items.edit.content.h1 }}</h2>
         {{ include('flashmessages.html.twig') }}
+
+        {% if template.items.form.content.help_message is defined %}
+            <div class="help_block">{{ template.items.form.content.help_message }}</div>
+        {% endif %}
+
         {% if template.items.filter.isEnabled %}
             {{ include(template.items.filter.path~'_filter_form.html.twig') }}
         {% endif %}

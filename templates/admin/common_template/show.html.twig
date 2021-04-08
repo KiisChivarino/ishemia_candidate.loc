@@ -12,6 +12,11 @@
     <div class="adm-users-edit adm-users-view">
         <h2>{{ template.items.show.content.h1 }}</h2>
         {{ include('flashmessages.html.twig') }}
+
+        {% if template.items.show.content.help_message is defined %}
+            <div class="help_block">{{ template.items.show.content.help_message }}</div>
+        {% endif %}
+
         <ul>
             <li>
                 <span class="title">ID</span>
