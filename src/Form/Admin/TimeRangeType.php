@@ -32,14 +32,19 @@ class TimeRangeType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add('title', TextType::class, ['label' => $templateItem->getContentValue('rangeTitle')])
+            ->add('title', TextType::class, [
+                'label' => $templateItem->getContentValue('rangeTitle'),
+                'help' => $templateItem->getContentValue('rangeTitleHelp'),
+            ])
             ->add('dateInterval', EntityType::class, [
                 'label' => $templateItem->getContentValue('dateInterval'),
                 'class' => DateInterval::class,
                 'choice_label' => 'title',
+                'help' => $templateItem->getContentValue('dateIntervalHelp'),
             ])
             ->add('multiplier', IntegerType::class, [
                 'label' => $templateItem->getContentValue('multiplier'),
+                'help' => $templateItem->getContentValue('multiplierHelp'),
                 'attr' => ['min' => '1'],
             ])
             ->add(
@@ -48,6 +53,7 @@ class TimeRangeType extends AbstractType
                 [
                     'label' => $templateItem->getContentValue('isRegular'),
                     'required' => false,
+                    'help' => $templateItem->getContentValue('isRegularHelp'),
                 ]
             )
             ->add(
