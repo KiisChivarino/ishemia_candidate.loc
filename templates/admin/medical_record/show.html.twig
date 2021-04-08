@@ -36,7 +36,7 @@
         <span class="title">{{ template.items.show.content.comment }}</span>
         <p>
             {% if entity.comment %}
-                {{ entity.comment }}
+                {{ entity.comment | raw }}
             {% else %}
                 {{ template.items.show.content.empty }}
             {% endif %}
