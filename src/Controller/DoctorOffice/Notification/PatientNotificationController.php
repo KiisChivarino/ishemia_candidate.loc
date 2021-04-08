@@ -8,7 +8,7 @@ use App\Entity\Patient;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\DoctorOffice\PatientNotificationListDataTableService;
 use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\DoctorOffice\PatientNotificationsListTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\PatientNotificationsTemplate;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,7 @@ class PatientNotificationController extends DoctorOfficeAbstractController
     public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
         parent::__construct($translator);
-        $this->templateService = new PatientNotificationsListTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new PatientNotificationsTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 

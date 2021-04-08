@@ -12,7 +12,7 @@ use App\Services\TemplateItems\FilterTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
-class PatientNotificationsListTemplate extends DoctorOfficeTemplateBuilder
+class PatientNotificationsTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common content for patient templates */
     protected const COMMON_CONTENT = [
