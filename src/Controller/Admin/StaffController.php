@@ -4,9 +4,10 @@ namespace App\Controller\Admin;
 
 use App\Entity\AuthUser;
 use App\Entity\Staff;
-use App\Form\Admin\AuthUser\AuthUserOptionalType;
-use App\Form\Admin\AuthUser\AuthUserPasswordType;
-use App\Form\Admin\AuthUser\AuthUserRequiredType;
+use App\Form\AuthUser\AuthUserEmailType;
+use App\Form\AuthUser\AuthUserEnabledType;
+use App\Form\AuthUser\AuthUserPasswordType;
+use App\Form\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\Staff\StaffRoleType;
 use App\Form\Admin\StaffType;
 use App\Services\ControllerGetters\EntityActions;
@@ -97,7 +98,8 @@ class StaffController extends AdminAbstractController
             $staff,
             [
                 new FormData($user, AuthUserRequiredType::class),
-                new FormData($user, AuthUserOptionalType::class),
+                new FormData($user, AuthUserEmailType::class),
+                new FormData($user, AuthUserEnabledType::class),
                 new FormData(
                     $user,
                     AuthUserPasswordType::class,
@@ -186,7 +188,8 @@ class StaffController extends AdminAbstractController
             $staff,
             [
                 new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserOptionalType::class),
+                new FormData($authUser, AuthUserEmailType::class),
+                new FormData($authUser, AuthUserEnabledType::class),
                 new FormData(
                     $authUser,
                     AuthUserPasswordType::class,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Admin\AuthUser;
+namespace App\Form\AuthUser;
 
 use App\Controller\AppAbstractController;
 use App\Entity\AuthUser;

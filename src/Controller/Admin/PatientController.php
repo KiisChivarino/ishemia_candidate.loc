@@ -3,8 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\ClinicalDiagnosis;
-use App\Form\Admin\AuthUser\AuthUserPasswordType;
-use App\Form\Admin\AuthUser\AuthUserRequiredType;
+use App\Form\AuthUser\AuthUserEmailType;
+use App\Form\AuthUser\AuthUserEnabledType;
+use App\Form\AuthUser\AuthUserPasswordType;
+use App\Form\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
 use App\Form\Admin\Patient\PatientMKBCodeType;
 use App\Form\Admin\Patient\PatientOptionalType;
@@ -19,7 +21,6 @@ use App\Services\Creator\PatientAppointmentCreatorService;
 use App\Services\Creator\PatientCreatorService;
 use App\Services\DataTable\Admin\PatientDataTableService;
 use App\Entity\Patient;
-use App\Form\Admin\AuthUser\AuthUserOptionalType;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
@@ -114,7 +115,8 @@ class PatientController extends AdminAbstractController
             $patient,
             [
                 new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserOptionalType::class),
+                new FormData($authUser, AuthUserEmailType::class),
+                new FormData($authUser, AuthUserEnabledType::class),
                 new FormData(
                     $authUser,
                     AuthUserPasswordType::class,
@@ -206,7 +208,8 @@ class PatientController extends AdminAbstractController
             $patient,
             [
                 new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserOptionalType::class),
+                new FormData($authUser, AuthUserEmailType::class),
+                new FormData($authUser, AuthUserEnabledType::class),
                 new FormData($authUser, AuthUserPasswordType::class, ['isPasswordRequired' => false]),
                 new FormData($patient, PatientRequiredType::class),
                 new FormData($patient, PatientOptionalType::class),

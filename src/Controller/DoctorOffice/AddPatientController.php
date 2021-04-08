@@ -3,7 +3,7 @@
 namespace App\Controller\DoctorOffice;
 
 use App\Entity\ClinicalDiagnosis;
-use App\Form\Admin\AuthUser\AuthUserRequiredType;
+use App\Form\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
 use App\Form\Admin\Patient\PatientMKBCodeType;
 use App\Form\Admin\Patient\PatientRequiredType;
