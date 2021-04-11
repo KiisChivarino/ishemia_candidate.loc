@@ -6,7 +6,6 @@ use App\Services\EntityActions\AbstractEntityActionsService;
 use App\Services\EntityActions\EntityActionsInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Class AbstractCreatorService
@@ -24,7 +23,6 @@ abstract class AbstractCreatorService extends AbstractEntityActionsService
     {
         parent::__construct($entityManager);
         $this->setEntityClass($entityClass);
-        $this->create();
     }
 
     /**
@@ -36,6 +34,7 @@ abstract class AbstractCreatorService extends AbstractEntityActionsService
     public function before(array $options = []): EntityActionsInterface
     {
         parent::before($options);
+        $this->create();
         return $this;
     }
 

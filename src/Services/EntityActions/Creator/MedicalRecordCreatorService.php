@@ -35,7 +35,6 @@ class MedicalRecordCreatorService extends AbstractCreatorService
      */
     public function create(): void
     {
-        $medicalRecord = null;
         $medicalHistory = $this->options[self::MEDICAL_HISTORY_OPTION_NAME];
         $medicalRecord = $this->entityManager->getRepository(MedicalRecord::class)
             ->getCurrentMedicalRecord($medicalHistory);
