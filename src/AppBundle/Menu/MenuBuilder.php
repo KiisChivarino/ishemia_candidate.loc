@@ -206,7 +206,7 @@ class MenuBuilder
         $menu['medicalHistory']->addChild(
             'prescriptionTestingList', [
                 'label' => 'Назначения на обследование',
-                'route' => 'prescription_testing_list'
+                'route' => 'admin_prescription_testing_list'
             ]
         );
         $menu['medicalHistory']->addChild(

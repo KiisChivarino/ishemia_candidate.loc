@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class PatientTestingNotRequiredType
  * Форма Тестирования пациента
  *
- * @package App\Form\Admin
+ * @package App\Form\PatientTesting
  */
 class PatientTestingNotRequiredType extends AbstractType
 {

@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class PrescriptionTestingType
  *
- * @package App\Form\Admin
+ * @package App\Form
  */
 class PrescriptionTestingType extends AbstractType
 {

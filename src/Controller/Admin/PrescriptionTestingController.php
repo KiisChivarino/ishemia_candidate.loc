@@ -5,8 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
-use App\Form\PatientTesting\PatientTestingRequiredType;
-use App\Form\PrescriptionTestingType;
 use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
@@ -25,6 +23,8 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Form\PrescriptionTestingType;
+use App\Form\PatientTesting\PatientTestingRequiredType;
 
 /**
  * Class PrescriptionTestingController
@@ -54,7 +54,7 @@ class PrescriptionTestingController extends AdminAbstractController
 
     /**
      * List of testing prescriptions
-     * @Route("/", name="prescription_testing_list", methods={"GET","POST"})
+     * @Route("/", name="admin_prescription_testing_list", methods={"GET","POST"})
      *
      * @param Request $request
      * @param PrescriptionTestingDataTableService $dataTableService
@@ -81,7 +81,7 @@ class PrescriptionTestingController extends AdminAbstractController
 
     /**
      * New testing prescription
-     * @Route("/new", name="prescription_testing_new", methods={"GET","POST"})
+     * @Route("/new", name="admin_prescription_testing_new", methods={"GET","POST"})
      *
      * @param Request $request
      *
@@ -117,8 +117,8 @@ class PrescriptionTestingController extends AdminAbstractController
                     $request,
                     $prescriptionTesting,
                     [
-                        new FormData($prescriptionTesting, PrescriptionTestingType::class),
-                        new FormData($patientTesting, PatientTestingRequiredType::class),
+                        new FormData( PrescriptionTestingType::class, $prescriptionTesting),
+                        new FormData( PatientTestingRequiredType::class, $patientTesting),
                     ]
                 );
             }
@@ -133,7 +133,7 @@ class PrescriptionTestingController extends AdminAbstractController
 
     /**
      * Show testing prescription
-     * @Route("/{id}", name="prescription_testing_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="admin_prescription_testing_show", methods={"GET"}, requirements={"id"="\d+"})
      *
      * @param PrescriptionTesting $prescriptionTesting
      *
@@ -143,7 +143,9 @@ class PrescriptionTestingController extends AdminAbstractController
     public function show(PrescriptionTesting $prescriptionTesting): Response
     {
         return $this->responseShow(
-            self::TEMPLATE_PATH, $prescriptionTesting, [
+            self::TEMPLATE_PATH,
+            $prescriptionTesting,
+            [
                 'prescriptionTitle' =>
                     PrescriptionInfoService::getPrescriptionTitle($prescriptionTesting->getPrescription()),
                 'patientTestingInfo' =>
@@ -156,7 +158,7 @@ class PrescriptionTestingController extends AdminAbstractController
 
     /**
      * Edit testing prescription
-     * @Route("/{id}/edit", name="prescription_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/{id}/edit", name="admin_prescription_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param PrescriptionTesting $prescriptionTesting
@@ -171,7 +173,7 @@ class PrescriptionTestingController extends AdminAbstractController
 
     /**
      * Delete testing prescription
-     * @Route("/{id}", name="prescription_testing_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="admin_prescription_testing_delete", methods={"DELETE"}, requirements={"prescriptionTesting"="\d+"})
      *
      * @param Request $request
      * @param PrescriptionTesting $prescriptionTesting
