@@ -3,3 +3,4 @@ parameters:
   prescription_option: 'prescription'
   medical_history_option: 'medicalHistory'
   prescription_medicine: 'prescriptionMedicine'
+  patient_testing_option: 'patientTesting'

@@ -5,6 +5,7 @@ namespace App\Services\EntityActions;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Proxy;
 use Exception;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Class AbstractEntityActionsService
@@ -182,18 +183,27 @@ abstract class AbstractEntityActionsService implements EntityActionsInterface
     }
 
     /**
+     * Returns entity class of EntityActionsService
+     * @return string
+     */
+    public function getEntityClass(): string
+    {
+        return $this->entityClass;
+    }
+
+    /**
      * Check for class or object is entity
      * @param EntityManagerInterface $em
      * @param $class
      * @return bool
      */
-    function isEntity(EntityManagerInterface $em, $class) : bool
+    function isEntity(EntityManagerInterface $em, $class): bool
     {
         if (is_object($class)) {
             $class = ($class instanceof Proxy)
                 ? get_parent_class($class)
                 : get_class($class);
         }
-        return ! $em->getMetadataFactory()->isTransient($class);
+        return !$em->getMetadataFactory()->isTransient($class);
     }
 }

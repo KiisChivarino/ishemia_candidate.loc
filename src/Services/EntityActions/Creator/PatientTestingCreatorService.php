@@ -2,11 +2,8 @@
 
 namespace App\Services\EntityActions\Creator;
 
-use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
-use App\Entity\PlanTesting;
-use App\Entity\Staff;
-use App\Repository\PlanTestingRepository;
+use App\Entity\Prescription;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -14,185 +11,33 @@ use Exception;
  * Class CreatingPatientTestingService
  * @package App\Services\CreatingPatientTesting
  */
-class PatientTestingCreatorService
+abstract class PatientTestingCreatorService extends AbstractCreatorService
 {
-    /** @var PlanTestingRepository $planTestingRepository */
-    private $planTestingRepository;
-
-    /** @var EntityManagerInterface $entityManager */
-    private $entityManager;
-
-    /** @var PatientTestingResultsCreatorService $patientTestingResultsCreator */
-    private $patientTestingResultsCreator;
-
-    /** @var PrescriptionCreatorService $prescriptionCreator */
-    private $prescriptionCreator;
-
-    /** @var PrescriptionTestingCreatorService $prescriptionTestingCreator */
-    private $prescriptionTestingCreator;
+    /** @var string Name of Prescription option */
+    public const PRESCRIPTION_OPTION = 'prescription';
 
     /**
      * PatientTestingCreatorService constructor.
-     * @param PlanTestingRepository $planTestingRepository
      * @param EntityManagerInterface $entityManager
-     * @param PatientTestingResultsCreatorService $patientTestingResultsCreator
-     * @param PrescriptionCreatorService $prescriptionCreator
-     * @param PrescriptionTestingCreatorService $prescriptionTestingCreator
+     * @throws Exception
      */
     public function __construct(
-        PlanTestingRepository $planTestingRepository,
-        EntityManagerInterface $entityManager,
-        PatientTestingResultsCreatorService $patientTestingResultsCreator,
-        PrescriptionCreatorService $prescriptionCreator,
-        PrescriptionTestingCreatorService $prescriptionTestingCreator
+        EntityManagerInterface $entityManager
     )
     {
-        $this->planTestingRepository = $planTestingRepository;
-        $this->entityManager = $entityManager;
-        $this->patientTestingResultsCreator = $patientTestingResultsCreator;
-        $this->prescriptionCreator = $prescriptionCreator;
-        $this->prescriptionTestingCreator = $prescriptionTestingCreator;
+        parent::__construct($entityManager, PatientTesting::class);
     }
 
-    /**
-     * Create Patient testing entity object
-     * @param MedicalHistory $medicalHistory
-     * @param PlanTesting|null $planTesting
-     * @param bool $isFirst
-     * @return PatientTesting
-     */
-    public function createPatientTesting(
-        MedicalHistory $medicalHistory,
-        PlanTesting $planTesting = null,
-        bool $isFirst = false
-    ): PatientTesting
+    protected function prepare(): void
     {
-        return (new PatientTesting())
-            ->setMedicalHistory($medicalHistory)
-            ->setAnalysisGroup($planTesting->getAnalysisGroup())
+        $patientTesting = $this->getEntity();
+        $patientTesting
             ->setIsProcessedByStaff(false)
-            ->setEnabled(true)
-            ->setAnalysisDate(null)
-            ->setIsFirst($isFirst)
-            ->setIsByPlan(false)
-            ->setPlanTesting($planTesting);
+            ->setMedicalHistory($this->options[self::PRESCRIPTION_OPTION]->getMedicalHistory());
     }
 
-    /**
-     * Persist first patient tests by plan
-     * @param MedicalHistory $medicalHistory
-     * @return array
-     */
-    public function persistFirstPatientTestsByPlan(MedicalHistory $medicalHistory): array
+    protected function configureOptions(): void
     {
-        $patientTests = [];
-        /** @var PlanTesting $planTesting */
-        foreach ($this->planTestingRepository->getPlanOfFirstTestings() as $planTesting) {
-            $patientTesting = $this->createPatientTesting($medicalHistory, $planTesting, true);
-            $this->preparePatientTestingByPlan($patientTesting);
-            $this->entityManager->persist($patientTesting);
-            $this->patientTestingResultsCreator->persistTestingResultsForTesting($patientTesting);
-            $patientTests[] = $patientTesting;
-        }
-        return $patientTests;
-    }
-
-    /**
-     * Persist patient tests by plan
-     * @param MedicalHistory $medicalHistory
-     * @param Staff $staff
-     * @return array
-     * @throws Exception
-     */
-    public function persistPatientTestsByPlan(MedicalHistory $medicalHistory, Staff $staff): array
-    {
-        $patientTests = [];
-        /** @var PlanTesting $test */
-        foreach ($this->planTestingRepository->getStandardPlanTesting() as $planTesting) {
-            $patientTesting = $this->createPatientTesting($medicalHistory, $planTesting);
-            $this->preparePatientTestingByPlan($patientTesting);
-            $patientTests[] =
-                $this->persistPatientTesting(
-                    $medicalHistory,
-                    $planTesting,
-                    $staff,
-                    $patientTesting
-                );
-        }
-        return $patientTests;
-    }
-
-    /**
-     * Persist patient testing
-     * @param MedicalHistory $medicalHistory
-     * @param PlanTesting $planTesting
-     * @param Staff $staff
-     * @param PatientTesting $patientTesting
-     * @return PatientTesting
-     * @throws Exception
-     */
-    public function persistPatientTesting(
-        MedicalHistory $medicalHistory,
-        PlanTesting $planTesting,
-        Staff $staff,
-        PatientTesting $patientTesting
-    ): PatientTesting
-    {
-        $this->entityManager->persist($patientTesting);
-        $this->patientTestingResultsCreator->persistTestingResultsForTesting($patientTesting);
-        $prescription = $this->prescriptionCreator->createPrescription($medicalHistory, $staff);
-        $this->entityManager->persist($prescription);
-        $this->entityManager->persist(
-            $this->prescriptionTestingCreator->createPrescriptionTesting(
-                $prescription,
-                $staff,
-                $patientTesting,
-                $planTesting
-            )
-        );
-        return $patientTesting;
-    }
-
-    /**
-     * Check patient testing for regular
-     * @param PatientTesting $patientTesting
-     * @return bool
-     */
-    public function checkPatientTestingForRegular(PatientTesting $patientTesting): bool
-    {
-        return $patientTesting->getIsProcessedByStaff()
-            && $patientTesting->getIsByPlan()
-            && $patientTesting->getPlanTesting()->getTimeRange()->getIsRegular();
-    }
-
-    /**
-     * Check patient testing for regular and if regular create new regular patient testing
-     * @param PatientTesting $patientTesting
-     * @throws Exception
-     */
-    public function checkAndPersistRegularPatientTesting(PatientTesting $patientTesting): void
-    {
-        if ($this->checkPatientTestingForRegular($patientTesting)) {
-            $newPatientTesting = $this->createPatientTesting(
-                $patientTesting->getMedicalHistory(),
-                $patientTesting->getPlanTesting()
-            );
-            $this->preparePatientTestingByPlan($newPatientTesting);
-            $this->persistPatientTesting(
-                $patientTesting->getMedicalHistory(),
-                $patientTesting->getPlanTesting(),
-                $patientTesting->getPrescriptionTesting()->getStaff(),
-                $newPatientTesting
-            );
-        }
-    }
-
-    /**
-     * @param PatientTesting $patientTesting
-     * @return PatientTesting
-     */
-    public function preparePatientTestingByPlan(PatientTesting $patientTesting): PatientTesting
-    {
-        return $patientTesting->setIsByPlan(true);
+        $this->addOptionCheck(Prescription::class, self::PRESCRIPTION_OPTION);
     }
 }

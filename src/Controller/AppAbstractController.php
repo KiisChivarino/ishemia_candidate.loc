@@ -6,11 +6,13 @@ use App\Controller\Admin\MedicalHistoryController;
 use App\Controller\Admin\PrescriptionController;
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
+use App\Form\PrescriptionTestingType;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\EntityActions\Builder\EntityActionsBuilder;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
+use App\Services\EntityActions\Creator\AbstractCreatorService;
 use App\Services\EntityActions\Editor\AbstractEditorService;
 use App\Services\EntityActions\EntityActionsInterface;
 use App\Services\LoggerService\LogService;
@@ -29,6 +31,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\VarDumper\VarDumper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
@@ -480,6 +483,11 @@ abstract class AppAbstractController extends AbstractController
     )
     {
         $this->templateService->edit();
+        foreach ($editorEntityActionsBuilderArray as $entityActionsBuilder) {
+            if (!is_a($entityActionsBuilder->getEntityActionsService(), AbstractEditorService::class)) {
+                throw new Exception('EntityActionsBuilder must contains AbstractEditorService');
+            }
+        }
         return $this->responseMultiFormWithActions(
             $request,
             $editorEntityActionsBuilderArray,
@@ -494,7 +502,7 @@ abstract class AppAbstractController extends AbstractController
      * @param Request $request
      * @param array $creatorEntityActionsBuilderArray
      * @param array $formDataArray
-     * @param string $templateEditName
+     * @param string $templateName
      * @return RedirectResponse|Response
      * @throws ReflectionException
      */
@@ -502,16 +510,21 @@ abstract class AppAbstractController extends AbstractController
         Request $request,
         array $creatorEntityActionsBuilderArray,
         array $formDataArray,
-        string $templateEditName = self::RESPONSE_FORM_TYPE_NEW
+        string $templateName = self::RESPONSE_FORM_TYPE_NEW
     )
     {
         $this->templateService->new();
+        foreach ($creatorEntityActionsBuilderArray as $entityActionsBuilder) {
+            if (!is_a($entityActionsBuilder->getEntityActionsService(), AbstractCreatorService::class)) {
+                throw new Exception('EntityActionsBuilder must contains AbstractCreatorService');
+            }
+        }
         return $this->responseMultiFormWithActions(
             $request,
             $creatorEntityActionsBuilderArray,
             $formDataArray,
-            $templateEditName,
-            self::RESPONSE_FORM_TYPE_EDIT
+            $templateName,
+            self::RESPONSE_FORM_TYPE_NEW
         );
     }
 
@@ -537,16 +550,11 @@ abstract class AppAbstractController extends AbstractController
     )
     {
         foreach ($entityActionsBuilderArray as $entityActionsBuilder) {
-            if (!is_a($entityActionsBuilder->getEntityActionsService(), AbstractEditorService::class)) {
-                throw new Exception('EntityActionsBuilder must contains AbstractEditorService');
-            }
             $entityActionsBuilder
                 ->getEntityActionsService()
                 ->before($entityActionsBuilder->getBeforeOptions());
         }
-        $defaultEntity = $defaultEntity
-            ? $defaultEntity
-            : $entityActionsBuilderArray[0]->getEntityActionsService()->getEntity();
+        $defaultEntity = $defaultEntity ?: $entityActionsBuilderArray[0]->getEntityActionsService()->getEntity();
         $formGeneratorService = (new MultiFormService())->mergeFormDataOptions(
             $formDataArray,
             [
@@ -568,12 +576,15 @@ abstract class AppAbstractController extends AbstractController
         }
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($entityActionsBuilderArray as $editorEntityActionsBuilder) {
-                /** @var EntityActionsInterface $entityActionsEditorService */
-                $entityActionsEditorService = $editorEntityActionsBuilder->getEntityActionsService();
-                $entityActionsEditorService->after(
-                    $editorEntityActionsBuilder->getAfterOptions()($entityActionsEditorService)
+                /** @var EntityActionsInterface $entityActionsService */
+                $entityActionsService = $editorEntityActionsBuilder->getEntityActionsService();
+                $entityActionsService->after(
+                    ($editorEntityActionsBuilder->getAfterOptions() !== null)
+                        ? $editorEntityActionsBuilder->getAfterOptions()($entityActionsService)
+                        : []
                 );
             }
+            VarDumper::dump($entityActionsService->getEntity());
             if (!$this->flush()) {
                 return $formRender;
             }
@@ -802,26 +813,27 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function flush(): bool
     {
-        try {
-            $this->getDoctrine()->getManager()->flush();
-        } catch (DBALException $e) {
-            $this->addFlash(
-                'error',
-                $this->translator->trans('app_abstract_controller.error.dbal_exception')
-            );
-            return false;
-        } catch (Exception $e) {
-            $this->addFlash(
-                'error',
-                $this->translator->trans('app_abstract_controller.error.exception'));
-            return false;
-        }
-        $this->addFlash(
-            'success',
-            $this->translator->trans(
-                'app_abstract_controller.success.add'
-            )
-        );
+        $this->getDoctrine()->getManager()->flush();
+//        try {
+//            $this->getDoctrine()->getManager()->flush();
+//        } catch (DBALException $e) {
+//            $this->addFlash(
+//                'error',
+//                $this->translator->trans('app_abstract_controller.error.dbal_exception')
+//            );
+//            return false;
+//        } catch (Exception $e) {
+//            $this->addFlash(
+//                'error',
+//                $this->translator->trans('app_abstract_controller.error.exception'));
+//            return false;
+//        }
+//        $this->addFlash(
+//            'success',
+//            $this->translator->trans(
+//                'app_abstract_controller.success.add'
+//            )
+//        );
         return true;
     }
 

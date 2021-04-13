@@ -97,7 +97,7 @@ class PrescriptionController extends AdminAbstractController
         Request $request
     ): Response
     {
-        $prescriptionCreatorService = (new PrescriptionCreatorService($this->getDoctrine()->getManager()));
+        $prescriptionCreatorService = new PrescriptionCreatorService($this->getDoctrine()->getManager());
         return $this->responseNewWithActions(
             $request,
             new CreatorEntityActionsBuilder(

@@ -78,7 +78,7 @@ abstract class EntityActionsBuilder
     /**
      * @return Closure
      */
-    public function getAfterOptions(): Closure
+    public function getAfterOptions(): ?Closure
     {
         return $this->afterOptions;
     }

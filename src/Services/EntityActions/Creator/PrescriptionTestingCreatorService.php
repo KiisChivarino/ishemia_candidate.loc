@@ -3,15 +3,12 @@
 namespace App\Services\EntityActions\Creator;
 
 use App\Entity\PatientTesting;
-use App\Entity\PlanTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
 use App\Entity\Staff;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 /**
  * Class PrescriptionTestingCreatorService
@@ -19,97 +16,53 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
  */
 class PrescriptionTestingCreatorService extends AbstractCreatorService
 {
-    /** @var FlashBagInterface $flashBag */
-    protected $flashBag;
+    /**
+     * @var string
+     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     */
+    public static $STAFF_OPTION;
 
     /**
      * @var string
      * yaml:config/services/entityActions/doctor_office_entity_actions.yml
      */
-    private $STAFF_OPTION;
+    public static $PRESCRIPTION_OPTION;
 
     /**
      * @var string
      * yaml:config/services/entityActions/doctor_office_entity_actions.yml
      */
-    private $PRESCRIPTION_OPTION;
+    public static $PATIENT_TESTING_OPTION;
 
     /**
      * PrescriptionTestingCreatorService constructor.
      * @param EntityManagerInterface $entityManager
-     * @param FlashBagInterface $flashBag
      * @param string $staffOption
      * @param string $prescriptionOption
+     * @param string $patientTestingOption
      * @throws Exception
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        FlashBagInterface $flashBag,
         string $staffOption,
-        string $prescriptionOption
+        string $prescriptionOption,
+        string $patientTestingOption
     )
     {
         parent::__construct($entityManager, PrescriptionTesting::class);
-        $this->flashBag = $flashBag;
-        $this->STAFF_OPTION = $staffOption;
-        $this->PRESCRIPTION_OPTION = $prescriptionOption;
+        self::$STAFF_OPTION = $staffOption;
+        self::$PRESCRIPTION_OPTION = $prescriptionOption;
+        self::$PATIENT_TESTING_OPTION = $patientTestingOption;
     }
 
-    /**
-     * Create PrescriptionTesting entity object
-     * @param Prescription $prescription
-     * @param Staff $staff
-     * @param PatientTesting $patientTesting
-     * @param PlanTesting|null $planTesting
-     * @return PrescriptionTesting
-     * @throws Exception
-     */
-    public function createPrescriptionTesting(
-        Prescription $prescription,
-        Staff $staff,
-        PatientTesting $patientTesting,
-        PlanTesting $planTesting = null
-    ): PrescriptionTesting
+    protected function prepare(): void
     {
-       return (new PrescriptionTesting())
-            ->setStaff($staff)
-            ->setEnabled(true)
+        /** @var PrescriptionTesting $prescriptionTesting */
+        $prescriptionTesting = $this->getEntity();
+        $prescriptionTesting
             ->setInclusionTime(new DateTime())
-            ->setPrescription($prescription)
-            ->setPatientTesting($patientTesting)
-            ->setPlannedDate($this->getTestingPlannedDate($planTesting, $patientTesting));
-    }
-
-    /**
-     * Get planned date of testing
-     * @param PlanTesting $planTesting
-     * @param PatientTesting $patientTesting
-     * @return DateTimeInterface|null
-     * @throws Exception
-     */
-    protected function getTestingPlannedDate(
-        PlanTesting $planTesting,
-        PatientTesting $patientTesting
-    ): ?DateTimeInterface
-    {
-        try {
-            if (!$plannedDate = CreatorHelper::getPlannedDate(
-                CreatorHelper::getStartingPointDate(
-                    $planTesting->getStartingPoint()->getName(),
-                    clone $patientTesting->getMedicalHistory()->getDateBegin(),
-                    clone $patientTesting->getMedicalHistory()->getPatient()->getHeartAttackDate()
-                    ),
-                (int) $planTesting->getTimeRangeCount(),
-                (int) $planTesting->getTimeRange()->getMultiplier(),
-                $planTesting->getTimeRange()->getDateInterval()->getFormat()
-            )) {
-                throw new Exception('Не удалось добавить планируемую дату обследования!');
-            }
-        } catch (Exception $e) {
-            $this->flashBag->add('error', $e);
-            return null;
-        }
-        return $plannedDate;
+            ->setPrescription($this->options[self::$PRESCRIPTION_OPTION])
+            ->setPatientTesting($this->options[self::$PATIENT_TESTING_OPTION]);
     }
 
     /**
@@ -118,7 +71,7 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
     protected function configureOptions(): void
     {
         $this->setEntityClass(PrescriptionTesting::class);
-        $this->addOptionCheck(Prescription::class, $this->STAFF_OPTION);
-        $this->addOptionCheck(Staff::class, $this->PRESCRIPTION_OPTION);
+        $this->addOptionCheck(Prescription::class, self::$PRESCRIPTION_OPTION);
+        $this->addOptionCheck(PatientTesting::class, self::$PATIENT_TESTING_OPTION);
     }
 }

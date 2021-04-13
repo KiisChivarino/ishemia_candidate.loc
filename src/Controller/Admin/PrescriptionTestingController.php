@@ -8,18 +8,22 @@ use App\Entity\PrescriptionTesting;
 use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
+use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Creator\PatientTestingCreatorService;
+use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
+use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
-use DateTime;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\VarDumper\VarDumper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -89,7 +93,11 @@ class PrescriptionTestingController extends AdminAbstractController
      * @return Response
      * @throws Exception
      */
-    public function new(Request $request, PrescriptionRepository $prescriptionRepository): Response
+    public function new(
+        Request $request,
+        PrescriptionRepository $prescriptionRepository,
+        PrescriptionTestingCreatorService $prescriptionTestingCreatorService
+    ): Response
     {
         if ($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)) {
             /** @var Prescription $prescription */
@@ -102,23 +110,32 @@ class PrescriptionTestingController extends AdminAbstractController
                 );
                 return $this->redirectToRoute($this->templateService->getRoute('new'));
             } else {
-                $patientTesting = (new PatientTesting())
-                    ->setEnabled(true)
-                    ->setIsProcessedByStaff(false)
-                    ->setMedicalHistory($prescription->getMedicalHistory())
-                    ->setIsFirst(false)
-                    ->setIsByPlan(false);
-                $prescriptionTesting = (new PrescriptionTesting())
-                    ->setPrescription($prescription)
-                    ->setEnabled(true)
-                    ->setPatientTesting($patientTesting)
-                    ->setInclusionTime(new DateTime());
-                return $this->responseNewMultiForm(
-                    $request,
-                    $prescriptionTesting,
+                $entityManager = $this->getDoctrine()->getManager();
+//                $specialPrescriptionTestingCreatorService = new PrescriptionTestingCreatorService($entityManager);
+                /** @var PatientTesting $patientTesting */
+                $patientTesting = (new SpecialPatientTestingCreatorService($entityManager))->execute(
                     [
-                        new FormData( PrescriptionTestingType::class, $prescriptionTesting),
-                        new FormData( PatientTestingRequiredType::class, $patientTesting),
+                        PatientTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
+                    ]
+                )->getEntity();
+                $prescriptionTestingCreatorServiceBeforeOptions = [
+                    PrescriptionTestingCreatorService::$PRESCRIPTION_OPTION => $prescription,
+                    PrescriptionTestingCreatorService::$PATIENT_TESTING_OPTION => $patientTesting,
+                ];
+                return $this->responseNewMultiFormWithActions(
+                    $request,
+                    [
+                        new CreatorEntityActionsBuilder(
+                            $prescriptionTestingCreatorService,
+                            $prescriptionTestingCreatorServiceBeforeOptions
+                        ),
+                    ],
+                    [
+                        new FormData(PrescriptionTestingType::class,
+                            $prescriptionTestingCreatorService->getEntity()?:
+                                $prescriptionTestingCreatorService->before($prescriptionTestingCreatorServiceBeforeOptions)->getEntity()
+                        ),
+                        new FormData(PatientTestingRequiredType::class, $patientTesting),
                     ]
                 );
             }
