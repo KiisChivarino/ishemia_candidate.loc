@@ -6,7 +6,6 @@ use App\Controller\Admin\MedicalHistoryController;
 use App\Controller\Admin\PrescriptionController;
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
-use App\Form\PrescriptionTestingType;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\EntityActions\Builder\EntityActionsBuilder;
@@ -31,7 +30,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\VarDumper\VarDumper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
@@ -549,11 +547,6 @@ abstract class AppAbstractController extends AbstractController
         $defaultEntity = null
     )
     {
-        foreach ($entityActionsBuilderArray as $entityActionsBuilder) {
-            $entityActionsBuilder
-                ->getEntityActionsService()
-                ->before($entityActionsBuilder->getBeforeOptions());
-        }
         $defaultEntity = $defaultEntity ?: $entityActionsBuilderArray[0]->getEntityActionsService()->getEntity();
         $formGeneratorService = (new MultiFormService())->mergeFormDataOptions(
             $formDataArray,
@@ -584,7 +577,6 @@ abstract class AppAbstractController extends AbstractController
                         : []
                 );
             }
-            VarDumper::dump($entityActionsService->getEntity());
             if (!$this->flush()) {
                 return $formRender;
             }
