@@ -4,7 +4,6 @@ namespace App\Services\EntityActions\Creator;
 
 use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
-use App\Entity\Staff;
 use App\Services\EntityActions\EntityActionsInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,9 +57,6 @@ class PrescriptionCreatorService extends AbstractCreatorService
         $prescription->setIsPatientConfirmed(false);
         $prescription->setCreatedTime(new DateTime());
         /** Executes without form */
-        if (!$prescription->getStaff()) {
-            $prescription->setStaff($this->options[self::STAFF_OPTION]);
-        }
     }
 
     /**
@@ -69,6 +65,5 @@ class PrescriptionCreatorService extends AbstractCreatorService
     protected function configureOptions(): void
     {
         $this->addOptionCheck(MedicalHistory::class, self::MEDICAL_HISTORY_OPTION);
-        $this->addOptionCheck(Staff::class, self::STAFF_OPTION);
     }
 }

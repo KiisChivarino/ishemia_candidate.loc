@@ -118,8 +118,8 @@ class PrescriptionTestingController extends AdminAbstractController
                 )->getEntity();
                 $prescriptionTestingCreatorService->before(
                     [
-                        PrescriptionTestingCreatorService::$PRESCRIPTION_OPTION => $prescription,
-                        PrescriptionTestingCreatorService::$PATIENT_TESTING_OPTION => $patientTesting,
+                        PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
+                        PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting,
                     ]
                 );
                 return $this->responseNewMultiFormWithActions(
@@ -129,7 +129,11 @@ class PrescriptionTestingController extends AdminAbstractController
                     ],
                     [
                         new FormData(
-                            PrescriptionTestingType::class,
+                            PrescriptionTestingType\PrescriptionTestingStaff::class,
+                            $prescriptionTestingCreatorService->getEntity()
+                        ),
+                        new FormData(
+                            PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
                             $prescriptionTestingCreatorService->getEntity()
                         ),
                         new FormData(PatientTestingRequiredType::class, $patientTesting),

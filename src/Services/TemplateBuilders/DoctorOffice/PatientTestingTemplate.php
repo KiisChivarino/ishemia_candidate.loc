@@ -20,6 +20,7 @@ class PatientTestingTemplate extends DoctorOfficeTemplateBuilder
     public const COMMON_CONTENT = [
         'analysisGroup' => 'Группа анализов',
         'plannedDate' => 'Запланировано',
+        'staff' => 'staff'
     ];
 
     /** @var string[] Common NEW_CONTENT */

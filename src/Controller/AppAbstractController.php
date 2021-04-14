@@ -568,20 +568,18 @@ abstract class AppAbstractController extends AbstractController
             return $formRender;
         }
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($entityActionsBuilderArray as $editorEntityActionsBuilder) {
+            foreach ($entityActionsBuilderArray as $entityActionsBuilder) {
                 /** @var EntityActionsInterface $entityActionsService */
-                $entityActionsService = $editorEntityActionsBuilder->getEntityActionsService();
+                $entityActionsService = $entityActionsBuilder->getEntityActionsService();
                 $entityActionsService->after(
-                    ($editorEntityActionsBuilder->getAfterOptions() !== null)
-                        ? $editorEntityActionsBuilder->getAfterOptions()($entityActionsService)
-                        : []
+                    $this->getAfterEntityActionsOptions($entityActionsBuilder->getAfterOptions(), $entityActionsService)
                 );
             }
             if (!$this->flush()) {
                 return $formRender;
             }
-            foreach ($entityActionsBuilderArray as $editorEntityActionsBuilder) {
-                $this->setFormLog($type, $editorEntityActionsBuilder->getEntityActionsService()->getEntity());
+            foreach ($entityActionsBuilderArray as $entityActionsBuilder) {
+                $this->setFormLog($type, $entityActionsBuilder->getEntityActionsService()->getEntity());
             }
             $this->setDefaultRedirectRouteParameters($defaultEntity);
             return $this->redirectSubmitted();
@@ -628,7 +626,7 @@ abstract class AppAbstractController extends AbstractController
         }
         if ($form->isSubmitted() && $form->isValid()) {
             $entityActionsService->after(
-                $entityActionsBuilder->getAfterOptions()($entityActionsService)
+                $this->getAfterEntityActionsOptions($entityActionsBuilder->getAfterOptions(), $entityActionsService)
             );
             if (!$this->flush()) {
                 return $formRender;
@@ -969,5 +967,18 @@ abstract class AppAbstractController extends AbstractController
                 'route' => $route
             ]
         )->getContent();
+    }
+
+    /**
+     * Get entity actions options after submitting and validation form
+     * @param Closure|null $afterOptions
+     * @param EntityActionsInterface $entityActionsService
+     * @return array
+     */
+    private function getAfterEntityActionsOptions(
+        ?Closure $afterOptions,
+        EntityActionsInterface $entityActionsService
+    ): array{
+        return ($afterOptions !== null) ? $afterOptions($entityActionsService) : [];
     }
 }

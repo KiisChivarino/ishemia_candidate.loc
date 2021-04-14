@@ -11,6 +11,7 @@ use App\Entity\PrescriptionTesting;
 use App\Services\DataTable\DataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionAppointmentDataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionTestingDataTableService;
+use App\Services\EntityActions\Creator\DoctorOfficePrescriptionService;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\EntityActions\Editor\PrescriptionEditorService;
@@ -92,12 +93,12 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @throws Exception
      */
     public function new(
-        Patient $patient
+        Patient $patient,
+        DoctorOfficePrescriptionService $prescriptionCreatorService
     ): Response
     {
         $this->templateService->new();
         $entityManager = $this->getDoctrine()->getManager();
-        $prescriptionCreatorService = new PrescriptionCreatorService($entityManager);
         $prescriptionCreatorService->execute(
             [
                 PrescriptionCreatorService::MEDICAL_HISTORY_OPTION =>

@@ -1,27 +1,18 @@
 <?php
 
-namespace App\Form;
+
+namespace App\Form\PrescriptionTestingType;
+
 
 use App\Controller\AppAbstractController;
 use App\Entity\PrescriptionTesting;
-use App\Entity\Staff;
-use App\Repository\StaffRepository;
-use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
-use Exception;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class PrescriptionTestingType
- *
- * @package App\Form
- */
-class PrescriptionTestingType extends AbstractType
+class PrescriptionTestingEnableType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -34,32 +25,11 @@ class PrescriptionTestingType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'staff', EntityType::class, [
-                    'label' => $templateItem->getContentValue('staff'),
-                    'class' => Staff::class,
-                    'choice_label' => function ($staff) {
-                        return (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true);
-                    },
-                    'query_builder' => function (StaffRepository $er) {
-                        return $er->createQueryBuilder('s')
-                            ->leftJoin('s.AuthUser', 'a')
-                            ->where('a.enabled = true');
-                    },
-                ]
-            )
-            ->add(
                 'enabled',
                 CheckboxType::class,
                 [
                     'label' => $templateItem->getContentValue('enabled'),
                     'required' => false,
-                ]
-            )
-            ->add(
-                'plannedDate', DateType::class,
-                [
-                    'label' => $templateItem->getContentValue('plannedDate'),
-                    'widget' => 'single_text',
                 ]
             );
     }

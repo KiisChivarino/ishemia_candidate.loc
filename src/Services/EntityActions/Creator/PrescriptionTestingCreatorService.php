@@ -5,7 +5,6 @@ namespace App\Services\EntityActions\Creator;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
-use App\Entity\Staff;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -17,42 +16,30 @@ use Exception;
 class PrescriptionTestingCreatorService extends AbstractCreatorService
 {
     /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     * @const string
      */
-    public static $STAFF_OPTION;
+    public const STAFF_OPTION = 'staff';
 
     /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     * @const string
      */
-    public static $PRESCRIPTION_OPTION;
+    public const PRESCRIPTION_OPTION = 'prescription';
 
     /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     * @const string
      */
-    public static $PATIENT_TESTING_OPTION;
+    public const PATIENT_TESTING_OPTION = 'patientTesting';
 
     /**
      * PrescriptionTestingCreatorService constructor.
      * @param EntityManagerInterface $entityManager
-     * @param string $staffOption
-     * @param string $prescriptionOption
-     * @param string $patientTestingOption
      * @throws Exception
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
-        string $staffOption,
-        string $prescriptionOption,
-        string $patientTestingOption
+        EntityManagerInterface $entityManager
     )
     {
         parent::__construct($entityManager, PrescriptionTesting::class);
-        self::$STAFF_OPTION = $staffOption;
-        self::$PRESCRIPTION_OPTION = $prescriptionOption;
-        self::$PATIENT_TESTING_OPTION = $patientTestingOption;
     }
 
     protected function prepare(): void
@@ -61,8 +48,8 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
         $prescriptionTesting = $this->getEntity();
         $prescriptionTesting
             ->setInclusionTime(new DateTime())
-            ->setPrescription($this->options[self::$PRESCRIPTION_OPTION])
-            ->setPatientTesting($this->options[self::$PATIENT_TESTING_OPTION]);
+            ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
+            ->setPatientTesting($this->options[self::PATIENT_TESTING_OPTION]);
     }
 
     /**
@@ -70,8 +57,7 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
      */
     protected function configureOptions(): void
     {
-        $this->setEntityClass(PrescriptionTesting::class);
-        $this->addOptionCheck(Prescription::class, self::$PRESCRIPTION_OPTION);
-        $this->addOptionCheck(PatientTesting::class, self::$PATIENT_TESTING_OPTION);
+        $this->addOptionCheck(Prescription::class, self::PRESCRIPTION_OPTION);
+        $this->addOptionCheck(PatientTesting::class, self::PATIENT_TESTING_OPTION);
     }
 }

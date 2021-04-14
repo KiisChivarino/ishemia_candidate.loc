@@ -104,12 +104,12 @@ class PrescriptionController extends AdminAbstractController
                 $prescriptionCreatorService,
                 [
                     PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $this->getMedicalHistoryByParameter($request),
-                ],
-                function (PrescriptionCreatorService $prescriptionCreatorService): array {
-                    return [
-                        PrescriptionCreatorService::STAFF_OPTION => $prescriptionCreatorService->getEntity()->getStaff(),
-                    ];
-                }
+                ]//,
+//                function (PrescriptionCreatorService $prescriptionCreatorService): array {
+//                    return [
+//                        PrescriptionCreatorService::STAFF_OPTION => $prescriptionCreatorService->getEntity()->getStaff(),
+//                    ];
+//                }
             ),
             new FormData(PrescriptionType::class)
         );
@@ -172,11 +172,12 @@ class PrescriptionController extends AdminAbstractController
     ): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
+        $prescriptionEditorService = (new PrescriptionEditorService($entityManager, $prescription))->before();
         return $this->responseEditMultiformWithActions(
             $request,
             [
                 new EditorEntityActionsBuilder(
-                    new PrescriptionEditorService($entityManager, $prescription),
+                    $prescriptionEditorService,
                     [],
                     function (PrescriptionEditorService $pescriptionEditorService) use ($entityManager): array {
                         return
