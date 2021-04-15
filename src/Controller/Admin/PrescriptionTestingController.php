@@ -186,7 +186,7 @@ class PrescriptionTestingController extends AdminAbstractController
      */
     public function edit(Request $request, PrescriptionTesting $prescriptionTesting): Response
     {
-        return $this->responseEdit($request, $prescriptionTesting, PrescriptionTestingType::class);
+        return $this->responseEdit($request, $prescriptionTesting, PescriptionTestingType::class);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Controller\DoctorOffice\MedicalHistoryController;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
+use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
 use App\Services\DataTable\DataTableService;
@@ -386,4 +387,18 @@ class PrescriptionController extends DoctorOfficeAbstractController
     {
         return lcfirst((new ReflectionClass($className))->getShortName());
     }
+
+    /**
+     * @Route(
+     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/{patientAppointment}/edit/",
+     *     name="to_edit_prescription_appointment_by_doctor",
+     *     methods={"GET","POST"}
+     *     )
+     */
+    public function edit(Patient $patient,Prescription $prescription,PatientAppointment $appointment){
+        return $this->redirectToRoute(
+            'edit_prescription_appointment_by_doctor'
+        );
+    }
+
 }

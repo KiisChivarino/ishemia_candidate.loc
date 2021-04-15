@@ -97,7 +97,10 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
 
     /**
      * New prescription appointment
-     * @Route("doctor_office/patient/{patient}/prescription/{prescription}/appointment/new/", name="adding_reception_by_doctor", methods={"GET","POST"})
+     * @Route(
+     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/new/",
+     *     name="adding_reception_by_doctor",
+     *     methods={"GET","POST"})
      * @param Request $request
      * @param Prescription $prescription
      * @param Patient $patient
@@ -162,7 +165,11 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
 
     /**
      * Edit prescription appointment
-     * @Route("doctor_office/patient/{patient}/prescription/{prescription}/appointment/{id}/edit/", name="edit_prescription_appointment_by_doctor", methods={"GET","POST"})
+     * @Route(
+     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/{id}/edit/",
+     *     name="edit_prescription_appointment_by_doctor",
+     *     methods={"GET","POST"}
+     *     )
      * @param Request $request
      * @param PrescriptionAppointment $prescriptionAppointment
      * @return Response
