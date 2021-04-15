@@ -132,11 +132,11 @@ class PatientAppointmentController extends AdminAbstractController
             $request,
             $patientAppointment,
             [
-                new FormData($patientAppointment, PatientAppointmentType::class),
-                new FormData($patientAppointment, StaffType::class),
-                new FormData($patientAppointment, AppointmentTypeType::class),
-                new FormData($patientAppointment, ConfirmedType::class),
-                new FormData($patientAppointment, EnabledType::class),
+                new FormData(PatientAppointmentType::class, $patientAppointment),
+                new FormData(StaffType::class, $patientAppointment),
+                new FormData(AppointmentTypeType::class, $patientAppointment),
+                new FormData(ConfirmedType::class, $patientAppointment),
+                new FormData(EnabledType::class, $patientAppointment),
             ],
             function () use ($patientAppointment, $patientAppointmentCreator) {
                 $patientAppointmentCreator->checkAndPersistRegularPatientAppointment($patientAppointment);

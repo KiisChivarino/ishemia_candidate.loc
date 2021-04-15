@@ -51,7 +51,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
     }
 
     /**
-     * New prescription
+     * New prescription testing
      * @Route(
      *     "/patient/{patient}/prescription/{prescription}/patient_testing/new",
      *     name="adding_testing_by_doctor", methods={"GET","POST"}

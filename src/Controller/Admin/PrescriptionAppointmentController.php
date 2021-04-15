@@ -5,16 +5,17 @@ namespace App\Controller\Admin;
 use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
-use App\Form\Admin\Prescription\PrescriptionAppointmentType;
 use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentStaffType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionAppointmentDataTableService;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
+use App\Services\EntityActions\Editor\PrescriptionAppointmentEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientAppointmentInfoService;
@@ -171,13 +172,39 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * Edit prescription appointment
      * @Route("/{id}/edit", name="prescription_appointment_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      * @param Request $request
-     * @param PrescriptionAppointment $prescriptionAppointment
+     * @param PrescriptionAppointmentCreatorService $prescriptionAppointmentCreatorService
+     * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
      * @return Response
-     * @throws Exception
+     * @throws \ReflectionException
      */
-    public function edit(Request $request, PrescriptionAppointment $prescriptionAppointment): Response
+    public function edit(
+        Request $request,
+        PrescriptionAppointment $prescriptionAppointment
+    ): Response
     {
-        return $this->responseEdit($request, $prescriptionAppointment, PrescriptionAppointmentType::class);
+        $prescriptionAppointmentEditorService = new PrescriptionAppointmentEditorService(
+            $this->getDoctrine()->getManager(),
+            $prescriptionAppointment
+        );
+
+        return $this->responseEditMultiFormWithActions(
+            $request,
+            [
+                new EditorEntityActionsBuilder(
+                    $prescriptionAppointmentEditorService
+                )
+            ],
+            [
+                new FormData(
+                    PrescriptionAppointmentPlannedDateType::class,
+                    $prescriptionAppointment
+                ),
+                new FormData(
+                    PrescriptionAppointmentStaffType::class,
+                    $prescriptionAppointment
+                )
+            ]
+        );
     }
 
     /**

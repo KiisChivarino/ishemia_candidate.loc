@@ -5,12 +5,16 @@ namespace App\Controller\DoctorOffice\MedicalHistory\Prescription;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Entity\Prescription;
+use App\Entity\PrescriptionAppointment;
 use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType;
+use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
+use App\Services\EntityActions\Editor\PrescriptionAppointmentEditorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientAppointmentTemplate;
 use Doctrine\ORM\EntityManagerInterface;
@@ -151,6 +155,44 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 new FormData(
                     PatientAppointmentType::class,
                     $patientAppointmentCreatorService->getEntity()
+                )
+            ]
+        );
+    }
+
+    /**
+     * Edit prescription appointment
+     * @Route("doctor_office/patient/{patient}/prescription/{prescription}/appointment/{id}/edit/", name="edit_prescription_appointment_by_doctor", methods={"GET","POST"})
+     * @param Request $request
+     * @param PrescriptionAppointment $prescriptionAppointment
+     * @return Response
+     * @throws \Exception
+     */
+    public function edit(
+        Request $request,
+        PrescriptionAppointment $prescriptionAppointment
+    ): Response
+    {
+        $prescriptionAppointmentEditorService = new PrescriptionAppointmentEditorService(
+            $this->getDoctrine()->getManager(),
+            $prescriptionAppointment
+        );
+
+        return $this->responseEditMultiFormWithActions(
+            $request,
+            [
+                new EditorEntityActionsBuilder(
+                    $prescriptionAppointmentEditorService
+                )
+            ],
+            [
+                new FormData(
+                    PrescriptionAppointmentPlannedDateType::class,
+                    $prescriptionAppointment
+                ),
+                new FormData(
+                    PatientAppointmentType::class,
+                    $prescriptionAppointment->getPatientAppointment()
                 )
             ]
         );
