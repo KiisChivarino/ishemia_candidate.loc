@@ -179,14 +179,14 @@ class PrescriptionController extends AdminAbstractController
                 new EditorEntityActionsBuilder(
                     $prescriptionEditorService,
                     [],
-                    function (PrescriptionEditorService $pescriptionEditorService) use ($entityManager): array {
+                    function (PrescriptionEditorService $prescriptionEditorService) use ($entityManager): array {
                         return
                             [
                                 PrescriptionEditorService::MEDICAL_RECORD_OPTION_NAME =>
                                     (new MedicalRecordCreatorService($entityManager))->execute(
                                         [
                                             MedicalRecordCreatorService::MEDICAL_HISTORY_OPTION_NAME =>
-                                                $pescriptionEditorService->getEntity()->getMedicalHistory(),
+                                                $prescriptionEditorService->getEntity()->getMedicalHistory(),
                                         ]
                                     )->getEntity()
                             ];

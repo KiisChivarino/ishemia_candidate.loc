@@ -52,7 +52,11 @@ class PrescriptionAppointmentDataTableService extends AdminDatatableService
             ->add('appointmentType', TextColumn::class, [
                 'label' => $showTemplateItem->getContentValue('appointmentType'),
                 'field' => 'pta.appointmentType.name',
-                'searchable' => true
+                'searchable' => true,
+                'render' => function (string $data) use ($showTemplateItem) {
+                    return
+                        $data ?: $showTemplateItem->getContentValue('empty');
+                }
             ]);
         $this->addOperations($renderOperationsFunction, $showTemplateItem);
         return $this->dataTable

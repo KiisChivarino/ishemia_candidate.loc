@@ -7,7 +7,7 @@ namespace App\Services\EntityActions\Creator;
 use App\Entity\Staff;
 use Exception;
 
-class DoctorOfficePrescriptionTestingService extends PrescriptionTestingCreatorService
+class DoctorOfficePrescriptionAppointmentService extends PrescriptionAppointmentCreatorService
 {
     /**
      * Actions with entity before persisting one
@@ -30,4 +30,5 @@ class DoctorOfficePrescriptionTestingService extends PrescriptionTestingCreatorS
         parent::configureOptions();
         $this->addOptionCheck(Staff::class, self::STAFF_OPTION);
     }
+
 }

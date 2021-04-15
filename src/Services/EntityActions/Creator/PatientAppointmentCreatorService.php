@@ -2,13 +2,8 @@
 
 namespace App\Services\EntityActions\Creator;
 
-use App\Entity\MedicalHistory;
-use App\Entity\MedicalRecord;
 use App\Entity\PatientAppointment;
-use App\Entity\PlanAppointment;
-use App\Entity\Staff;
-use App\Repository\PlanAppointmentRepository;
-use DateTime;
+use App\Entity\Prescription;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -16,192 +11,41 @@ use Exception;
  * Class PatientAppointmentCreatorService
  * @package App\Services\EntityActions\Creator
  */
-class PatientAppointmentCreatorService
+class PatientAppointmentCreatorService extends AbstractCreatorService
 {
-    /** @var EntityManagerInterface $entityManager */
-    private $entityManager;
+    /** @var string Name of Prescription option */
+    public const PRESCRIPTION_OPTION = 'prescription';
 
-    /** @var PrescriptionCreatorService $prescriptionCreator */
-    private $prescriptionCreator;
+    /** @var string Name of Prescription option */
+    public const PATIENT_APPOINTMENT_OPTION = 'patientAppointment';
 
-    /** @var PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator */
-    private $prescriptionAppointmentCreator;
+    /** @var string Name of Medical History option */
+    public const MEDICAL_HISTORY_OPTION = 'medicalHistory';
 
     /**
-     * PatientAppointmentCreatorService constructor.
+     * PatientTestingCreatorService constructor.
      * @param EntityManagerInterface $entityManager
-     * @param PrescriptionCreatorService $prescriptionCreator
-     * @param PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator
-     */
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        PrescriptionCreatorService $prescriptionCreator,
-        PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator
-    ){
-        $this->entityManager = $entityManager;
-        $this->prescriptionCreator = $prescriptionCreator;
-        $this->prescriptionAppointmentCreator = $prescriptionAppointmentCreator;
-    }
-
-    /**
-     * Persist patient appointment
-     * @param PatientAppointment $patientAppointment
-     * @param Staff $staff
-     */
-    public function persistFirstPatientAppointment(
-        PatientAppointment $patientAppointment,
-//        MedicalHistory $medicalHistory,
-        Staff $staff
-    ): void
-    {
-
-        $this->entityManager->persist(
-            $this->prepareFirstPatientAppointment(
-                $patientAppointment,
-//                $this->medicalRecordCreator->persistMedicalRecord($medicalHistory),
-                $staff
-            )
-        );
-    }
-
-    /**
-     * @param MedicalHistory $medicalHistory
-     * @param PlanAppointment|null $planAppointment
-     * @return PatientAppointment
-     */
-    public function createPatientAppointment(MedicalHistory $medicalHistory, PlanAppointment $planAppointment = null): PatientAppointment
-    {
-        return (new PatientAppointment())
-            ->setMedicalHistory($medicalHistory)
-            ->setEnabled(true)
-            ->setIsConfirmed(false)
-            ->setIsByPlan(false)
-            ->setPlanAppointment($planAppointment);
-    }
-
-    /**
-     * @param PatientAppointment $patientAppointment
-     * @param Staff $staff
-     * @return PatientAppointment
-     */
-    public function preparePatientAppointment(PatientAppointment $patientAppointment, Staff $staff): PatientAppointment
-    {
-        return $patientAppointment
-            ->setStaff($staff)
-            ->setIsFirst(false);
-    }
-
-    /**
-     * @param PatientAppointment $patientAppointment
-     * @param MedicalRecord $medicalRecord
-     * @param Staff $staff
-     * @return PatientAppointment
-     */
-    public function prepareFirstPatientAppointment(
-        PatientAppointment $patientAppointment,
-//        MedicalRecord $medicalRecord,
-        Staff $staff
-    ): PatientAppointment
-    {
-        return $patientAppointment
-//            ->setMedicalRecord($medicalRecord)
-            ->setStaff($staff)
-            ->setIsFirst(true)
-            ->setAppointmentTime((new DateTime())->setTime(0,0));
-    }
-
-    /**
-     * Persist patient appointments by plan
-     * @param MedicalHistory $medicalHistory
-     * @param Staff $staff
-     * @return array
-     */
-    public function persistPatientAppointmentsByPlan(MedicalHistory $medicalHistory, Staff $staff): array
-    {
-        $patientAppointments = [];
-        /** @var PlanAppointmentRepository $planAppointmentRepository */
-        $planAppointmentRepository = $this->entityManager->getRepository(PlanAppointment::class);
-        /** @var PlanAppointment $appointment */
-        foreach ($planAppointmentRepository->getStandardPlanAppointment() as $appointmentPlan) {
-            $patientAppointment = $this->createPatientAppointment($medicalHistory, $appointmentPlan);
-            $this->preparePatientAppointment($patientAppointment, $staff);
-            $this->preparePatientAppointmentByPlan($patientAppointment);
-            $this->persistPatientAppointment($patientAppointment, $medicalHistory, $staff, $appointmentPlan);
-            $patientAppointments[] = $patientAppointment;
-        }
-        return $patientAppointments;
-    }
-
-    /**
-     * Create patient appointment and create its prescription
-     * @param PatientAppointment $patientAppointment
-     * @param MedicalHistory $medicalHistory
-     * @param Staff $staff
-     * @param PlanAppointment|null $planAppointment
-     * @return PatientAppointment
-     */
-    public function persistPatientAppointment(
-        PatientAppointment $patientAppointment,
-        MedicalHistory $medicalHistory,
-        Staff $staff,
-        PlanAppointment $planAppointment = null
-    ): PatientAppointment{
-        $this->entityManager->persist($patientAppointment);
-        $prescription = $this->prescriptionCreator->createPrescription($medicalHistory, $staff);
-        $this->entityManager->persist($prescription);
-        $this->entityManager->persist(
-            $this->prescriptionAppointmentCreator->createPrescriptionAppointment(
-                $staff,
-                $prescription,
-                $patientAppointment,
-                $planAppointment
-            )
-        );
-        return $patientAppointment;
-    }
-
-    /**
-     * @param PatientAppointment $patientAppointment
-     * @return PatientAppointment
-     */
-    public function preparePatientAppointmentByPlan(PatientAppointment $patientAppointment): PatientAppointment
-    {
-        return $patientAppointment->setIsByPlan(true);
-    }
-
-    /**
-     * Checks patient appointment for regular
-     * @param PatientAppointment $patientAppointment
-     * @return bool
-     */
-    public function checkPatientAppointmentForRegular(PatientAppointment $patientAppointment): bool
-    {
-        $planAppointment = $patientAppointment->getPlanAppointment();
-        return !is_null($patientAppointment->getAppointmentTime())
-            && $patientAppointment->getIsByPlan()
-            && !is_null($planAppointment)
-            && $planAppointment->getTimeRange()->getIsRegular();
-    }
-
-    /**
-     * Check patient testing for regular and if regular create new regular patient testing
-     * @param PatientAppointment $patientAppointment
      * @throws Exception
      */
-    public function checkAndPersistRegularPatientAppointment(PatientAppointment $patientAppointment): void
+    public function __construct(
+        EntityManagerInterface $entityManager
+    )
     {
-        if ($this->checkPatientAppointmentForRegular($patientAppointment)) {
-            $newPatientAppointment = $this->createPatientAppointment(
-                $patientAppointment->getMedicalHistory(),
-                $patientAppointment->getPlanAppointment()
-            );
-            $this->preparePatientAppointmentByPlan($newPatientAppointment);
-            $this->persistPatientAppointment(
-                $newPatientAppointment,
-                $patientAppointment->getMedicalHistory(),
-                $patientAppointment->getPrescriptionAppointment()->getStaff(),
-                $patientAppointment->getPlanAppointment()
-            );
-        }
+        parent::__construct($entityManager, PatientAppointment::class);
+    }
+
+    protected function prepare(): void
+    {
+        $patientAppointment = $this->getEntity();
+        $patientAppointment
+            ->setIsConfirmed(false)
+            ->setIsFirst(false)
+            ->setIsByPlan(false)
+            ->setMedicalHistory($this->options[self::PRESCRIPTION_OPTION]->getMedicalHistory());
+    }
+
+    protected function configureOptions(): void
+    {
+        $this->addOptionCheck(Prescription::class, self::PRESCRIPTION_OPTION);
     }
 }

@@ -4,25 +4,22 @@ namespace App\Controller\DoctorOffice\MedicalHistory\Prescription;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
-use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
-use App\Entity\PrescriptionAppointment;
+use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType;
-use App\Form\PrescriptionPatientAppointmentType;
-use App\Repository\PrescriptionAppointmentRepository;
-use App\Services\InfoService\PatientAppointmentInfoService;
+use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
+use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
+use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientAppointmentTemplate;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
-use App\Services\ControllerGetters\EntityActions;
 
 /**
  * Class AddingReceptionController
@@ -100,61 +97,62 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @param Request $request
      * @param Prescription $prescription
      * @param Patient $patient
-     * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
+     * @param DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreatorService
+     * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
      * @return Response
-     * @throws Exception
+     * @throws \ReflectionException
      */
     public function new(
         Request $request,
         Prescription $prescription,
         Patient $patient,
-        PrescriptionAppointmentRepository $prescriptionAppointmentRepository
+        DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreatorService,
+        PatientAppointmentCreatorService $patientAppointmentCreatorService
     ): Response
     {
-        $patientAppointment = new PatientAppointment();
-        $prescriptionAppointment = new PrescriptionAppointment();
-        return $this->responseNewMultiForm(
-            $request,
-            $prescriptionAppointment,
+
+        $patientAppointment = $patientAppointmentCreatorService->execute(
             [
-                new FormData($patientAppointment, PrescriptionPatientAppointmentType::class),
-                new FormData($prescriptionAppointment, PrescriptionAppointmentType::class),
+                PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription
+            ])->getEntity();
+
+        $prescriptionAppointmentCreatorService->before([
+            PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+            PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
+        ]);
+
+
+        return $this->responseNewMultiFormWithActions(
+            $request,
+            [
+                new CreatorEntityActionsBuilder(
+                    $prescriptionAppointmentCreatorService,
+                    [
+                        PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+                    ],
+                    function (PrescriptionAppointmentCreatorService $prescriptionAppointmentCreatorService) use (
+                        $patientAppointment,
+                        $prescription,
+                        $patientAppointmentCreatorService,
+                        $patient
+                    ): array {
+                        return [
+                            PrescriptionAppointmentCreatorService::STAFF_OPTION => $this->getStaff($patient),
+                            PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
+                        ];
+                    }
+                )
             ],
-            function (EntityActions $entityActions) use (
-                $patientAppointment,
-                $prescriptionAppointment,
-                $prescription,
-                $patient,
-                $prescriptionAppointmentRepository
-            )
-            {
-                if ((new PatientAppointmentInfoService($this->entityManager))->isAppointmentNotExists($prescription, $prescriptionAppointmentRepository))
-                {
-                    $patientAppointment
-                        ->setMedicalHistory($prescription->getMedicalHistory())
-                        ->setStaff($this->getStaff($patient))
-                        ->setIsConfirmed(false)
-                        ->setEnabled(true)
-                        ->setPrescriptionAppointment($prescriptionAppointment)
-                        ->setIsFirst(false)
-                        ->setIsByPlan(false);
-                    $prescriptionAppointment
-                        ->setPrescription($prescription)
-                        ->setPatientAppointment($patientAppointment)
-                        ->setStaff($this->getStaff($patient))
-                        ->setEnabled(true)
-                        ->setInclusionTime(new DateTime())
-                        ->setConfirmedByStaff(true);
-                    $entityActions->getEntityManager()->persist($patientAppointment);
-                } else{
-                    $this->addFlash(
-                        'error',
-                        $this->translator->trans(
-                            'prescription_appointment_controller.error.new_appointment'
-                        )
-                    );
-                }
-            }
+            [
+                new FormData(
+                    PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType::class,
+                    $prescriptionAppointmentCreatorService->getEntity()
+                ),
+                new FormData(
+                    PatientAppointmentType::class,
+                    $patientAppointmentCreatorService->getEntity()
+                )
+            ]
         );
     }
 }

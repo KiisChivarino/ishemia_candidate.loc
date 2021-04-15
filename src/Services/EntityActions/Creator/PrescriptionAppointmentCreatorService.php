@@ -3,84 +3,62 @@
 namespace App\Services\EntityActions\Creator;
 
 use App\Entity\PatientAppointment;
-use App\Entity\PlanAppointment;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
-use App\Entity\Staff;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 /**
  * Class PrescriptionAppointmentCreatorService
  * @package App\Services\EntityActions\Creator
  */
-class PrescriptionAppointmentCreatorService
+class PrescriptionAppointmentCreatorService extends AbstractCreatorService
 {
-    /** @var FlashBagInterface $flashBag */
-    protected $flashBag;
+    /**
+     * @const string
+     */
+    public const STAFF_OPTION = 'staff';
 
     /**
-     * PrescriptionAppointmentCreatorService constructor.
-     * @param FlashBagInterface $flashBag
+     * @const string
      */
-    public function __construct(FlashBagInterface $flashBag)
+    public const PRESCRIPTION_OPTION = 'prescription';
+
+    /**
+     * @const string
+     */
+    public const PATIENT_APPOINTMENT_OPTION = 'patientAppointment';
+
+    /**
+     * PrescriptionTestingCreatorService constructor.
+     * @param EntityManagerInterface $entityManager
+     * @throws Exception
+     */
+    public function __construct(
+        EntityManagerInterface $entityManager
+    )
     {
-        $this->flashBag = $flashBag;
+        parent::__construct($entityManager, PrescriptionAppointment::class);
     }
 
-    /**
-     * Create PrescriptionAppointment entity object
-     * @param Staff $staff
-     * @param Prescription $prescription
-     * @param PatientAppointment $patientAppointment
-     * @param PlanAppointment $planAppointment
-     * @return PrescriptionAppointment
-     */
-    public function createPrescriptionAppointment(
-        Staff $staff,
-        Prescription $prescription,
-        PatientAppointment $patientAppointment,
-        PlanAppointment $planAppointment
-    ): PrescriptionAppointment
+    protected function prepare(): void
     {
-        return (new PrescriptionAppointment())
-            ->setStaff($staff)
-            ->setEnabled(true)
+        /** @var PrescriptionAppointment $prescriptionAppointment */
+        $prescriptionAppointment = $this->getEntity();
+        $prescriptionAppointment
             ->setInclusionTime(new DateTime())
-            ->setPrescription($prescription)
-            ->setPatientAppointment($patientAppointment)
-            ->setPlannedDateTime($this->getAppointmentPlannedDate($planAppointment, $patientAppointment));
+            ->setConfirmedByStaff(false)
+            ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
+            ->setPatientAppointment($this->options[self::PATIENT_APPOINTMENT_OPTION]);
     }
 
     /**
-     * Get planned date of appointment
-     * @param PlanAppointment $planAppointment
-     * @param PatientAppointment $patientAppointment
-     * @return DateTime|null
+     * @throws Exception
      */
-    protected function getAppointmentPlannedDate(
-        PlanAppointment $planAppointment,
-        PatientAppointment $patientAppointment
-    ): ?DateTime
+    protected function configureOptions(): void
     {
-        try {
-            if (!$plannedDate = CreatorHelper::getPlannedDate(
-                CreatorHelper::getStartingPointDate(
-                    $planAppointment->getStartingPoint()->getName(),
-                    clone $patientAppointment->getMedicalHistory()->getDateBegin(),
-                    clone $patientAppointment->getMedicalHistory()->getPatient()->getHeartAttackDate()
-                ),
-                (int)$planAppointment->getTimeRangeCount(),
-                (int)$planAppointment->getTimeRange()->getMultiplier(),
-                $planAppointment->getTimeRange()->getDateInterval()->getFormat()
-            )) {
-                throw new Exception('Не удалось добавить дату приема по плану!');
-            }
-        } catch (Exception $e) {
-            $this->flashBag->add('error', $e);
-            return null;
-        }
-        return $plannedDate;
+        $this->addOptionCheck(Prescription::class, self::PRESCRIPTION_OPTION);
+        $this->addOptionCheck(PatientAppointment::class, self::PATIENT_APPOINTMENT_OPTION);
     }
 }
