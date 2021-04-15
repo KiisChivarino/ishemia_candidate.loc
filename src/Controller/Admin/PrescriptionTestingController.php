@@ -217,7 +217,7 @@ class PrescriptionTestingController extends AdminAbstractController
                     $prescriptionTesting
                 ),
                 new FormData(
-                    PrescriptionTestingType\PrescriptionTestingEnableType::class,
+                    PrescriptionTestingType\PrescriptionTestingConfirmedEnableType::class,
                     $prescriptionTesting
                 ),
             ]

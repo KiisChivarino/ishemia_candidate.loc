@@ -27,7 +27,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class AddingSurveyController
- * @Route("/doctor_office")
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory\Prescription
  */
@@ -56,7 +55,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
     /**
      * New prescription testing
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/patient_testing/new",
+     *     "/patient/{patient}/prescription/{prescription}/testing/new",
      *     name="adding_testing_by_doctor", methods={"GET","POST"}
      *     )
      * @param Request $request
@@ -119,7 +118,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
     /**
      * Edit prescription appointment
      * @Route(
-     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/{prescriptionTesting}/edit/",
+     *     "/patient/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/edit/",
      *     name="edit_prescription_testing_by_doctor",
      *     methods={"GET","POST"}
      *     )

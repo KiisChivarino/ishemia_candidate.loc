@@ -7,12 +7,13 @@ namespace App\Form\PrescriptionTestingType;
 use App\Controller\AppAbstractController;
 use App\Entity\PrescriptionTesting;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PrescriptionTestingEnableType extends AbstractType
+class PrescriptionTestingConfirmedEnableType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -24,6 +25,12 @@ class PrescriptionTestingEnableType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
+//            ->add(
+//                'enabled', CheckboxType::class, [
+//                    'label' => $templateItem->getContentValue('enabled'),
+//                    'required' => false,
+//                ]
+//            )
             ->add(
                 'enabled',
                 CheckboxType::class,

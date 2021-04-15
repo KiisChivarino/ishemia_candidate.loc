@@ -26,6 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
+ * @Route("/doctor_office")
  * Class AddingReceptionController
  * @package App\Controller\DoctorOffice\MedicalHistory\Prescription
  */
@@ -166,7 +167,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
     /**
      * Edit prescription appointment
      * @Route(
-     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/edit/",
+     *     "/patient/{patient}/prescription/{prescription}/testing/{prescriptionAppointment}/edit/",
      *     name="edit_prescription_appointment_by_doctor",
      *     methods={"GET","POST"}
      *     )

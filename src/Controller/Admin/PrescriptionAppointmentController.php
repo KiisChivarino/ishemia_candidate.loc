@@ -200,13 +200,13 @@ class PrescriptionAppointmentController extends AdminAbstractController
                     $prescriptionAppointment
                 ),
                 new FormData(
+                    PatientAppointmentType::class,
+                    $prescriptionAppointment->getPatientAppointment()
+                ),
+                new FormData(
                     PrescriptionAppointmentConfirmedEnabledType::class,
                     $prescriptionAppointment
                 ),
-                new FormData(
-                    PatientAppointmentType::class,
-                    $prescriptionAppointment->getPatientAppointment()
-                )
             ]
         );
     }
