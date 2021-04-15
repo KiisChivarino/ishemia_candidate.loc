@@ -49,7 +49,8 @@ abstract class AppAbstractController extends AbstractController
         'TEMPLATE_TYPE' => 'templateType',
         'TEMPLATE_PARAMETER' => 'templateParameter',
         'LOG_ACTION' => 'logAction',
-        'NOTIFICATION' => 'notification'
+        'NOTIFICATION' => 'notification',
+        'CHANNEL_TYPE' => 'channelType'
     ];
 
     /** @var string Label of form option for adding formTemplateItem in form */
@@ -104,7 +105,8 @@ abstract class AppAbstractController extends AbstractController
         $dataTableService,
         ?FilterLabels $filterLabels = null,
         ?array $options = [],
-        ?Closure $listActions = null
+        ?Closure $listActions = null,
+        array $parameters = []
     ): Response
     {
         $template = $this->templateService->list($filterLabels ? $filterLabels->getFilterService() : null);
@@ -127,10 +129,10 @@ abstract class AppAbstractController extends AbstractController
         }
         return $this->render(
             $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath() . 'list.html.twig',
-            [
+            array_merge([
                 'datatable' => $table,
                 'filters' => $template->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
-            ]
+            ], $parameters)
         );
     }
 
