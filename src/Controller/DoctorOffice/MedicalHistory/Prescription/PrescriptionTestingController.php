@@ -5,12 +5,15 @@ namespace App\Controller\DoctorOffice\MedicalHistory\Prescription;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Entity\Prescription;
+use App\Entity\PrescriptionTesting;
 use App\Form\PatientTesting\PatientTestingRequiredType;
 use App\Form\PrescriptionTestingType;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionTestingService;
 use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
+use App\Services\EntityActions\Editor\PrescriptionTestingEditorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientTestingTemplate;
 use Symfony\Component\Routing\Annotation\Route;
@@ -109,6 +112,48 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
                     $prescriptionTestingCreatorService->getEntity()
                 ),
                 new FormData(PatientTestingRequiredType::class, $patientTesting),
+            ]
+        );
+    }
+
+    /**
+     * Edit prescription appointment
+     * @Route(
+     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/{prescriptionTesting}/edit/",
+     *     name="edit_prescription_testing_by_doctor",
+     *     methods={"GET","POST"}
+     *     )
+     * @param Request $request
+     * @param PrescriptionTesting $prescriptionTesting
+     * @return Response
+     * @throws \Exception
+     */
+    public function edit(
+        Request $request,
+        PrescriptionTesting $prescriptionTesting
+    ): Response
+    {
+        $prescriptionTestingEditorService = new PrescriptionTestingEditorService(
+            $this->getDoctrine()->getManager(),
+            $prescriptionTesting
+        );
+
+        return $this->responseEditMultiFormWithActions(
+            $request,
+            [
+                new EditorEntityActionsBuilder(
+                    $prescriptionTestingEditorService
+                )
+            ],
+            [
+                new FormData(
+                    PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
+                    $prescriptionTesting
+                ),
+                new FormData(
+                    PatientTestingRequiredType::class,
+                    $prescriptionTesting->getPatientTesting()
+                ),
             ]
         );
     }

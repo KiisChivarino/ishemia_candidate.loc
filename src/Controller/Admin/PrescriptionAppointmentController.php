@@ -2,8 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Patient;
-use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
@@ -85,8 +83,6 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * New patient appointment
      * @Route("/new", name="prescription_appointment_new", methods={"GET","POST"})
      * @param Request $request
-     * @param Prescription $prescription
-     * @param Patient $patient
      * @param DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreatorService
      * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
      * @return Response
@@ -132,11 +128,11 @@ class PrescriptionAppointmentController extends AdminAbstractController
             ],
             [
                 new FormData(
-                    PrescriptionAppointmentPlannedDateType::class,
+                    PrescriptionAppointmentStaffType::class,
                     $prescriptionAppointmentCreatorService->getEntity()
                 ),
                 new FormData(
-                    PrescriptionAppointmentStaffType::class,
+                    PrescriptionAppointmentPlannedDateType::class,
                     $prescriptionAppointmentCreatorService->getEntity()
                 ),
                 new FormData(
@@ -172,10 +168,9 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * Edit prescription appointment
      * @Route("/{id}/edit", name="prescription_appointment_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      * @param Request $request
-     * @param PrescriptionAppointmentCreatorService $prescriptionAppointmentCreatorService
-     * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
+     * @param PrescriptionAppointment $prescriptionAppointment
      * @return Response
-     * @throws \ReflectionException
+     * @throws Exception
      */
     public function edit(
         Request $request,
@@ -196,13 +191,13 @@ class PrescriptionAppointmentController extends AdminAbstractController
             ],
             [
                 new FormData(
-                    PrescriptionAppointmentPlannedDateType::class,
+                    PrescriptionAppointmentStaffType::class,
                     $prescriptionAppointment
                 ),
                 new FormData(
-                    PrescriptionAppointmentStaffType::class,
+                    PrescriptionAppointmentPlannedDateType::class,
                     $prescriptionAppointment
-                )
+                ),
             ]
         );
     }

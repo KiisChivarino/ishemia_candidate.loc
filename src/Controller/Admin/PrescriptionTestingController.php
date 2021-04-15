@@ -9,9 +9,11 @@ use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\PatientTestingCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
+use App\Services\EntityActions\Editor\PrescriptionTestingEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
@@ -184,9 +186,42 @@ class PrescriptionTestingController extends AdminAbstractController
      * @return Response
      * @throws Exception
      */
-    public function edit(Request $request, PrescriptionTesting $prescriptionTesting): Response
+    public function edit(
+        Request $request,
+        PrescriptionTesting $prescriptionTesting
+    ): Response
     {
-        return $this->responseEdit($request, $prescriptionTesting, PescriptionTestingType::class);
+        $prescriptionTestingEditorService = new PrescriptionTestingEditorService(
+            $this->getDoctrine()->getManager(),
+            $prescriptionTesting
+        );
+
+        return $this->responseEditMultiFormWithActions(
+            $request,
+            [
+                new EditorEntityActionsBuilder(
+                    $prescriptionTestingEditorService
+                )
+            ],
+            [
+                new FormData(
+                    PrescriptionTestingType\PrescriptionTestingStaff::class,
+                    $prescriptionTesting
+                ),
+                new FormData(
+                    PatientTestingRequiredType::class,
+                    $prescriptionTesting->getPatientTesting()
+                ),
+                new FormData(
+                    PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
+                    $prescriptionTesting
+                ),
+                new FormData(
+                    PrescriptionTestingType\PrescriptionTestingEnableType::class,
+                    $prescriptionTesting
+                ),
+            ]
+        );
     }
 
     /**

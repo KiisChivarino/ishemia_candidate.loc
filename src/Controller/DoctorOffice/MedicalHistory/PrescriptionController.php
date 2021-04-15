@@ -6,7 +6,6 @@ use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Controller\DoctorOffice\MedicalHistoryController;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
-use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
 use App\Services\DataTable\DataTableService;
@@ -47,6 +46,12 @@ class PrescriptionController extends DoctorOfficeAbstractController
 {
     /** @var string Path to custom template directory */
     const TEMPLATE_PATH = 'doctorOffice/patient_prescription/';
+
+    /** @var string Route name for edit prescription appointment */
+    const EDIT_PRESCRIPTION_APPOINTMENT_ROUTE_NAME = 'edit_prescription_appointment_by_doctor';
+
+    /** @var string Route name for edit prescription testing */
+    const EDIT_PRESCRIPTION_TESTING_ROUTE_NAME = 'edit_prescription_testing_by_doctor';
 
     /**
      * @var NotifierService
@@ -308,7 +313,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
             $prescriptionTestingDataTableService,
             $patient,
             $prescription,
-            $prescriptionTestingDataTableService::ENTITY_CLASS
+            $prescriptionTestingDataTableService::ENTITY_CLASS,
+            self::EDIT_PRESCRIPTION_TESTING_ROUTE_NAME
         );
     }
 
@@ -333,7 +339,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
             $prescriptionAppointmentDataTableService,
             $patient,
             $prescription,
-            $prescriptionAppointmentDataTableService::ENTITY_CLASS
+            $prescriptionAppointmentDataTableService::ENTITY_CLASS,
+            self::EDIT_PRESCRIPTION_APPOINTMENT_ROUTE_NAME
         );
     }
 
@@ -344,6 +351,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @param Patient $patient
      * @param Prescription $prescription
      * @param string $entityClassName
+     * @param string|null $editRouteName
      * @return mixed
      * @throws ReflectionException
      */
@@ -352,22 +360,24 @@ class PrescriptionController extends DoctorOfficeAbstractController
         DataTableService $specialPrescriptionDatatableService,
         Patient $patient,
         Prescription $prescription,
-        string $entityClassName
+        string $entityClassName,
+        string $editRouteName = null
     )
     {
         return $specialPrescriptionDatatableService->getTable(
             function (
                 string $id,
                 $entity
-            ) use ($prescription, $patient, $entityClassName) {
+            ) use ($editRouteName, $prescription, $patient, $entityClassName) {
                 return $this->render(
                     $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
                     [
                         'template' => $this->templateService,
+                        'route' => $editRouteName,
                         'parameters' => [
                             'patient' => $patient->getId(),
                             'prescription' => $prescription->getId(),
-                            $this->getShortClassName($entityClassName) => $entity,
+                            $this->getShortClassName($entityClassName) => $entity->getId(),
                         ]
                     ]
                 )->getContent();
@@ -387,18 +397,4 @@ class PrescriptionController extends DoctorOfficeAbstractController
     {
         return lcfirst((new ReflectionClass($className))->getShortName());
     }
-
-    /**
-     * @Route(
-     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/{patientAppointment}/edit/",
-     *     name="to_edit_prescription_appointment_by_doctor",
-     *     methods={"GET","POST"}
-     *     )
-     */
-    public function edit(Patient $patient,Prescription $prescription,PatientAppointment $appointment){
-        return $this->redirectToRoute(
-            'edit_prescription_appointment_by_doctor'
-        );
-    }
-
 }

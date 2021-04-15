@@ -166,7 +166,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
     /**
      * Edit prescription appointment
      * @Route(
-     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/{id}/edit/",
+     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/edit/",
      *     name="edit_prescription_appointment_by_doctor",
      *     methods={"GET","POST"}
      *     )
