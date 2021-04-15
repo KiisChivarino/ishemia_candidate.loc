@@ -11,64 +11,15 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
 {
-    /** @var string[] Common content for patient templates */
-    protected const COMMON_CONTENT = [
-        'insuranceNumber' => 'Номер страховки',
-        'dateBirth' => 'Дата рождения',
-        'dateStartOfTreatment' => 'Начало гестации',
-        'phone' => 'Телефон',
-        'diagnoses' => 'Диагнозы',
-        'unprocessedTestings' => 'Показатели',
-        'staff' => 'Отправитель',
-        'notificationTime' => 'Дата и время отправки',
-        'receiver' => 'Пациент получать',
-        'channels' => 'Каналы доставки',
-        'notificationType' => 'Тип уведомления'
-    ];
-
     /** @var string[] Common FORM_CONTENT */
     protected const FORM_CONTENT = [
         "text" => "Текст сообщения"
-    ];
-
-    /** @var string[] Common FORM_SHOW_CONTENT */
-    protected const FORM_SHOW_CONTENT = [
-        "text" => "Текст сообщения"
-    ];
-
-    /** @var string[] Common LIST_CONTENT */
-    protected const LIST_CONTENT = [
-        'h1' => 'Список записей',
-        'title' => 'Список записей',
-        'fio' => 'ФИО',
-        'age' => 'Возраст',
-    ];
-
-    /** @var string[] Common NEW_CONTENT */
-    protected const NEW_CONTENT = [
-        'h1' => 'Новая запись',
-        'title' => 'Новая запись',
-    ];
-
-    /** @var string[] Common SHOW_CONTENT */
-    protected const SHOW_CONTENT = [
-        'h1' => 'Новое сообщение',
-        'title' => 'Новое сообщение',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
         'h1' => 'Новое сообщение',
         'title' => 'Новое сообщение',
-    ];
-    /** @var string[] Common FILTER_CONTENT */
-    protected const FILTER_CONTENT = [
-        'label' => 'Фильтр по пациенту',
-    ];
-
-    /** @var string[] Common ENTITY_CONTENT */
-    public const ENTITY_CONTENT = [
-        'entity' => 'Список уведомлений',
     ];
 
     /**
@@ -101,7 +52,6 @@ class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
     public function edit(?object $entity = null): AppTemplateBuilder
     {
         parent::edit();
-        $this->setRedirectRoute('patients_list');
         return $this;
     }
 
