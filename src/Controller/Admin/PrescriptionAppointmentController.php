@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\PrescriptionAppointment;
 use App\Form\PatientAppointmentType;
+use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentConfirmedEnabledType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentStaffType;
 use App\Services\ControllerGetters\FilterLabels;
@@ -198,6 +199,14 @@ class PrescriptionAppointmentController extends AdminAbstractController
                     PrescriptionAppointmentPlannedDateType::class,
                     $prescriptionAppointment
                 ),
+                new FormData(
+                    PrescriptionAppointmentConfirmedEnabledType::class,
+                    $prescriptionAppointment
+                ),
+                new FormData(
+                    PatientAppointmentType::class,
+                    $prescriptionAppointment->getPatientAppointment()
+                )
             ]
         );
     }
