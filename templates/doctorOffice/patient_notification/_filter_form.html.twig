@@ -1,0 +1,14 @@
+{% for filter in filters %}
+    {% if filter.vars.name == hospitalFilter %}
+        {% if is_granted('ROLE_DOCTOR_CONSULTANT') %}
+            {{ form_start(filter) }}
+            {{ form_widget(filter) }}
+            {{ form_end(filter) }}
+        {% endif %}
+    {% endif %}
+    {% if filter.vars.name == channelTypeFilter %}
+            {{ form_start(filter) }}
+            {{ form_widget(filter) }}
+            {{ form_end(filter) }}
+    {% endif %}
+{% endfor %}

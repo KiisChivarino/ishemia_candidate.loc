@@ -3,8 +3,10 @@
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Controller\AppAbstractController;
-use App\Entity\Patient;
-use App\Repository\PatientRepository;
+use App\Entity\ChannelType;
+use App\Entity\Hospital;
+use App\Repository\ChannelTypeRepository;
+use App\Repository\HospitalRepository;
 use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
@@ -63,20 +65,35 @@ class NotificationTemplate extends DoctorOfficeTemplateBuilder
                 $filterService,
                 [
                     new TemplateFilter(
-                        AppAbstractController::FILTER_LABELS['PATIENT'],
-                        Patient::class,
+                        AppAbstractController::FILTER_LABELS['CHANNEL_TYPE'],
+                        ChannelType::class,
                         [
                             'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
-                                ->getContentValue('patientFilter'),
-                            'class' => Patient::class,
+                                ->getContentValue('channelTypeFilter'),
+                            'class' => ChannelType::class,
                             'required' => false,
                             'choice_label' => function ($value) {
-                                return $value->getAuthUser()->getLastName() . ' ' . $value->getAuthUser()->getFirstName();
+                                return $value->getName();
                             },
-                            'query_builder' => function (PatientRepository $er) {
-                                return $er->createQueryBuilder('p')
-                                    ->leftJoin('p.AuthUser', 'au')
-                                    ->where('au.enabled = true');
+                            'query_builder' => function (ChannelTypeRepository $er) {
+                                return $er->createQueryBuilder('cT');
+                            },
+                        ]
+                    ),
+                    new TemplateFilter(
+                        AppAbstractController::FILTER_LABELS['HOSPITAL'],
+                        Hospital::class,
+                        [
+                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                                ->getContentValue('hospitalFilter'),
+                            'class' => Hospital::class,
+                            'required' => false,
+                            'choice_label' => function ($value) {
+                                return $value->getName();
+                            },
+                            'query_builder' => function (HospitalRepository $er) {
+                                return $er->createQueryBuilder('h')
+                                    ->andWhere('h.enabled = true');
                             },
                         ]
                     ),

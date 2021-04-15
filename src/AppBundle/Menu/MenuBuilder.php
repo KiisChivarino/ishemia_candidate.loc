@@ -638,6 +638,12 @@ class MenuBuilder
                 ]
             );
         }
+        $menu->addChild(
+            'doctor_office_notification_list', [
+                'label' => 'Уведомления пациентам',
+                'route' => 'doctor_office_notification_list'
+            ]
+        );
         $this->activateStoringSelectedMenuItem($menu, $requestStack);
         if ((new AuthUserInfoService())->isDoctorConsultant($this->security->getUser())) {
             $menu->addChild(

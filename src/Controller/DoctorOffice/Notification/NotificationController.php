@@ -3,12 +3,17 @@
 namespace App\Controller\DoctorOffice\Notification;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
+use App\Entity\ChannelType;
+use App\Entity\Hospital;
 use App\Entity\Notification;
 use App\Entity\Patient;
+use App\Repository\StaffRepository;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\DataTable\Admin\NotificationDataTableService;
+use App\Services\DataTable\DoctorOffice\NotificationDataTableService;
 use App\Services\FilterService\FilterService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateBuilders\DoctorOffice\NotificationTemplate;
+use App\Services\TemplateItems\FilterTemplateItem;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +31,7 @@ use Twig\Environment;
 class NotificationController extends DoctorOfficeAbstractController
 {
     //путь к twig шаблонам
-    public const TEMPLATE_PATH = 'doctorOffice/notification/';
+    public const TEMPLATE_PATH = 'doctorOffice/patient_notification/';
 
     /**
      * NotificationController constructor.
@@ -47,19 +52,39 @@ class NotificationController extends DoctorOfficeAbstractController
      * @param Request $request
      * @param NotificationDataTableService $notificationDataTableService
      * @param FilterService $filterService
+     * @param StaffRepository $staffRepository
      * @return Response
-     * @throws Exception
      */
     public function list(
         Request $request,
         NotificationDataTableService $notificationDataTableService,
-        FilterService $filterService
-    ): Response {
+        FilterService $filterService,
+        StaffRepository $staffRepository
+    ): Response
+    {
+        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
+            $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
+        }
         return $this->responseList(
             $request, $notificationDataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
-                [self::FILTER_LABELS['PATIENT'],]
-            )
+                [self::FILTER_LABELS['CHANNEL_TYPE'], self::FILTER_LABELS['HOSPITAL']]
+            ),
+            $options ?? [],
+            function () {
+                $this->templateService
+                    ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->setPath(self::TEMPLATE_PATH);
+            },
+            [
+                'hospitalFilter' => $filterService->generateFilterName(
+                'doctor_office_notification_list',
+                Hospital::class
+                ),
+                'channelTypeFilter' => $filterService->generateFilterName(
+                    'doctor_office_notification_list',
+                    ChannelType::class
+                ),
+            ]
         );
     }
 
