@@ -11,7 +11,7 @@ use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,12 +33,6 @@ class PrescriptionMedicineType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'instruction', null, [
-                    'label' => $templateItem->getContentValue('instruction'),
-                    'attr' => ['class' => 'tinymce'],
-                ]
-            )
-            ->add(
                 'staff', EntityType::class, [
                     'label' => $templateItem->getContentValue('staff'),
                     'class' => Staff::class,
@@ -53,13 +47,19 @@ class PrescriptionMedicineType extends AbstractType
                 ]
             )
             ->add(
-                'enabled',
-                CheckboxType::class,
-                [
-                    'label' => $templateItem->getContentValue('enabled'),
-                    'required' => false,
+                'startingMedicationDate', DateType::class, [
+                    'label' => $templateItem->getContentValue('startingMedicationDate'),
+                    'widget' => 'single_text',
                 ]
-            );
+            )
+            ->add(
+                'endMedicationDate', DateType::class, [
+                    'label' => $templateItem->getContentValue('endMedicationDate'),
+                    'widget' => 'single_text',
+                    'required' => false
+                ]
+            )
+           ;
     }
 
     /**

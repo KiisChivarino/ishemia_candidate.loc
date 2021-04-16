@@ -25,12 +25,15 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'prescription' => 'Назначение',
         'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
+        'startingMedicationDate' => 'Дата начала приема лекарства',
+        'endMedicationDate' => 'Дата окончания приема лекарства',
+        'patientMedicine' => PatientMedicineTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
         'h1' => 'Назначенные лекарства',
-        'title' => 'Список назначенных лекарст',
+        'title' => 'Список назначенных лекарств',
     ];
 
     /** @var string[] Common NEW_CONTENT */
@@ -43,7 +46,8 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     protected const SHOW_CONTENT = [
         'title' => 'Просмотр назначения лекарства',
         'h1' => 'Просмотр назначения лекарства',
-        'inclusionTime' => 'Дата и время включения лекарства в назначение'
+        'inclusionTime' => 'Дата и время включения лекарства в назначение',
+        'notificationConfirmId' => 'Id уведомления о подтверждении'
     ];
 
     /** @var string[] Common EDIT_CONTENT */
@@ -112,7 +116,8 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
                         AppAbstractController::FILTER_LABELS['PRESCRIPTION'],
                         Prescription::class,
                         [
-                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getContentValue('prescriptionFilter'),
+                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                                ->getContentValue('prescriptionFilter'),
                             'class' => Prescription::class,
                             'required' => false,
                             'choice_label' => function (Prescription $value) {

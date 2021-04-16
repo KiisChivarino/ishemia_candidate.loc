@@ -192,6 +192,12 @@ class MenuBuilder
             ]
         );
         $menu['medicalHistory']->addChild(
+            'patientMedicineList', [
+                'label' => 'Лекарства пациентов',
+                'route' => 'patient_medicine_list'
+            ]
+        );
+        $menu['medicalHistory']->addChild(
             'prescriptionList', [
                 'label' => 'Назначения',
                 'route' => 'prescription_list'
@@ -200,7 +206,7 @@ class MenuBuilder
         $menu['medicalHistory']->addChild(
             'prescriptionMedicineList', [
                 'label' => 'Назначения лекарств',
-                'route' => 'prescription_medicine_list'
+                'route' => 'prescription_medicine_list',
             ]
         );
         $menu['medicalHistory']->addChild(

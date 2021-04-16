@@ -1,32 +1,35 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
     <li>
-        <span class="title">{{ template.items.show.content.medicineName }}</span>
+        <span class="title">{{ template.items.show.content.prescriptionMedicine }}</span>
         <p>
-            {{ entity.medicineName }}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.instruction }}</span>
-        {{ entity.instruction }}
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.medicalHistory }}</span>
-        <p>
-            {% if entity.medicalHistory %}
-                <a href="{{ path('medical_history_show', {'id': entity.medicalHistory.id}) }}">
-                    {{ medicalHistoryTitle }}
-                </a>
+            {% if entity.prescriptionMedicine %}
+                <a href="{{ path(
+                    'prescription_medicine_show',
+                    {
+                        'prescriptionMedicine': entity.prescriptionMedicine.id,
+                        'prescription': entity.prescriptionMedicine.prescription.id}
+                ) }}">{{ template.items.show.content.prescriptionMedicine }}</a>
+            {% else %}
+                {{ template.items.list.content.empty }}
             {% endif %}
         </p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.dateBegin }}</span>
+        <span class="title">{{ template.items.show.content.medicine }}</span>
+        <p>{{ entity.medicineName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.receptionMethod }}</span>
+        <p>{{ entity.receptionMethod ? entity.receptionMethod.name : template.items.show.content.empty }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.instruction }}</span>
         <p>
-            {% if entity.dateBegin %}
-                {{ entity.dateBegin ? entity.dateBegin|date('Y-m-d') : '' }}
+            {% if entity.instruction %}
+                {{ entity.instruction | raw }}
             {% else %}
-                Дата начала приема лекарства не найдена!
+                {{ template.items.list.content.empty }}
             {% endif %}
         </p>
     </li>

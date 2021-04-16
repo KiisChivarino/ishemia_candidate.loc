@@ -3,9 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\PatientMedicine;
-use App\Form\PatientMedicineType;
+use App\Form\Admin\PatientMedicineType;
+use App\Form\Admin\PatientMedicineTypeEnabled;
 use App\Services\DataTable\Admin\PatientMedicineDataTableService;
-use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
+use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PatientMedicineTemplate;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class PatientMedicineController
+ * @Route("/admin/patient_medicine")
+ * @IsGranted("ROLE_ADMIN")
+ *
  * @package App\Controller\Admin
- * @Route("admin/patient_medicine")
  */
 class PatientMedicineController extends AdminAbstractController
 {
@@ -27,52 +31,38 @@ class PatientMedicineController extends AdminAbstractController
 
     /**
      * PatientMedicineController constructor.
+     *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param PatientMedicineCreatorService $patientMedicineCreatorService
      */
-    public function __construct(
-        Environment $twig,
-        RouterInterface $router,
-        TranslatorInterface $translator,
-        PatientMedicineCreatorService $patientMedicineCreatorService
-    )
+    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
         parent::__construct($translator);
         $this->templateService = new PatientMedicineTemplate($router->getRouteCollection(), get_class($this));
-        $this->creatorService = $patientMedicineCreatorService;
         $this->setTemplateTwigGlobal($twig);
     }
 
     /**
-     * Patient medication list
+     * PatientMedicine list
      * @Route("/", name="patient_medicine_list", methods={"GET","POST"})
+     *
      * @param Request $request
      * @param PatientMedicineDataTableService $dataTableService
      * @return Response
-     * @throws Exception
      */
-    public function list(Request $request, PatientMedicineDataTableService $dataTableService): Response
+    public function list(
+        Request $request,
+        PatientMedicineDataTableService $dataTableService
+    ): Response
     {
         return $this->responseList($request, $dataTableService);
     }
 
     /**
-     * New patient medicine
-     * @Route("/new", name="patient_medicine_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function new(Request $request): Response
-    {
-        return $this->responseNewWithActions($request, PatientMedicineType::class);
-    }
-
-    /**
-     * Show patient medicine
+     * Show patient medicine info
      * @Route("/{id}", name="patient_medicine_show", methods={"GET"}, requirements={"id"="\d+"})
+     *
      * @param PatientMedicine $patientMedicine
      * @return Response
      * @throws Exception
@@ -85,6 +75,7 @@ class PatientMedicineController extends AdminAbstractController
     /**
      * Edit patient medicine
      * @Route("/{id}/edit", name="patient_medicine_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     *
      * @param Request $request
      * @param PatientMedicine $patientMedicine
      * @return Response
@@ -92,12 +83,20 @@ class PatientMedicineController extends AdminAbstractController
      */
     public function edit(Request $request, PatientMedicine $patientMedicine): Response
     {
-        return $this->responseEdit($request, $patientMedicine, PatientMedicineType::class);
+        return $this->responseEditMultiForm(
+            $request,
+            $patientMedicine,
+            [
+                new FormData($patientMedicine, PatientMedicineType::class),
+                new FormData($patientMedicine, PatientMedicineTypeEnabled::class),
+            ]
+        );
     }
 
     /**
      * Delete patient medicine
-     * @Route("/{id}", name="patient_medicine_delete", methods={"DELETE"})
+     * @Route("/{id}", name="patient_medicine_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     *
      * @param Request $request
      * @param PatientMedicine $patientMedicine
      * @return Response

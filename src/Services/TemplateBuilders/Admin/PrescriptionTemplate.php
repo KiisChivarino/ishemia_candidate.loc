@@ -26,7 +26,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
-        'medicalHistory' => 'История болезни',
+        'medicalHistory' => MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
         'staffFio' => StaffTemplate::ENTITY_CONTENT['staffFio'],
         'createdTime' => 'Создано',
         'isCompleted' => 'Назначено',
@@ -58,7 +58,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
     protected const SHOW_CONTENT = [
         'title' => 'Просмотр назначения',
         'h1' => 'Просмотр назначения',
-        'medicalRecord' => 'Запись в историю болезни',
+        'medicalRecord' => MedicalRecordTemplate::ENTITY_CONTENT['entity'],
         'addPrescriptionMedicine' => 'Добавить назначение на лекарство',
         'prescriptionMedicines' => 'Лекарства',
         'addPrescriptionTesting' => 'Добавить назначение на обследование',
@@ -125,11 +125,13 @@ class PrescriptionTemplate extends AdminTemplateBuilder
                         AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY'],
                         MedicalHistory::class,
                         [
-                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getContentValue('medicalHistory'),
+                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                                ->getContentValue('medicalHistory'),
                             'class' => MedicalHistory::class,
                             'required' => false,
                             'choice_label' => function (MedicalHistory $value) {
-                                return (new AuthUserInfoService())->getFIO($value->getPatient()->getAuthUser()).': '.$value->getDateBegin()->format('d.m.Y');
+                                return (new AuthUserInfoService())->getFIO($value->getPatient()->getAuthUser()).': '
+                                    .$value->getDateBegin()->format('d.m.Y');
                             },
                             'query_builder' => function (MedicalHistoryRepository $er) {
                                 return $er->createQueryBuilder('mh')
@@ -143,7 +145,8 @@ class PrescriptionTemplate extends AdminTemplateBuilder
                         AppAbstractController::FILTER_LABELS['STAFF'],
                         Staff::class,
                         [
-                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getContentValue('staff'),
+                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                                ->getContentValue('staff'),
                             'class' => Staff::class,
                             'required' => false,
                             'choice_label' => function (Staff $value) {
