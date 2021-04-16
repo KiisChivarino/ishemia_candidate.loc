@@ -26,28 +26,6 @@ class PrescriptionMedicine
     private $prescription;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Medicine::class)
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $medicine;
-
-    /**
-     * @ORM\Column(type="text", options={"comment"="Инструкция по применению"})
-     */
-    private $instruction;
-
-    /**
-     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
-     */
-    private $enabled;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=ReceptionMethod::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $receptionMethod;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Staff::class, inversedBy="prescriptionMedicines")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -65,30 +43,31 @@ class PrescriptionMedicine
     private $notificationConfirm;
 
     /**
+     * @ORM\OneToOne(targetEntity=PatientMedicine::class, mappedBy="prescriptionMedicine", cascade={"persist", "remove"})
+     */
+    private $patientMedicine;
+
+    /**
+     * @ORM\Column(type="date", options={"comment"="Дата начала приема лекарства"})
+     */
+    private $startingMedicationDate;
+
+    /**
+     * @ORM\Column(type="date", nullable=true, options={"comment"="Дата окончания приема лекарства"})
+     */
+    private $endMedicationDate;
+
+    /**
+     * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
+     */
+    private $enabled;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getInstruction(): ?string
-    {
-        return $this->instruction;
-    }
-
-    /**
-     * @param string $instruction
-     * @return $this
-     */
-    public function setInstruction(string $instruction): self
-    {
-        $this->instruction = $instruction;
-
-        return $this;
     }
 
     /**
@@ -149,44 +128,6 @@ class PrescriptionMedicine
     }
 
     /**
-     * @return Medicine|null
-     */
-    public function getMedicine(): ?Medicine
-    {
-        return $this->medicine;
-    }
-
-    /**
-     * @param Medicine|null $medicine
-     * @return $this
-     */
-    public function setMedicine(?Medicine $medicine): self
-    {
-        $this->medicine = $medicine;
-
-        return $this;
-    }
-
-    /**
-     * @return ReceptionMethod|null
-     */
-    public function getReceptionMethod(): ?ReceptionMethod
-    {
-        return $this->receptionMethod;
-    }
-
-    /**
-     * @param ReceptionMethod|null $receptionMethod
-     * @return $this
-     */
-    public function setReceptionMethod(?ReceptionMethod $receptionMethod): self
-    {
-        $this->receptionMethod = $receptionMethod;
-
-        return $this;
-    }
-
-    /**
      * @return Staff|null
      */
     public function getStaff(): ?Staff
@@ -223,4 +164,60 @@ class PrescriptionMedicine
 
         return $this;
     }
+
+    public function getPatientMedicine(): ?PatientMedicine
+    {
+        return $this->patientMedicine;
+    }
+
+    public function setPatientMedicine(PatientMedicine $patientMedicine): self
+    {
+        // set the owning side of the relation if necessary
+        if ($patientMedicine->getPrescriptionMedicine() !== $this) {
+            $patientMedicine->setPrescriptionMedicine($this);
+        }
+
+        $this->patientMedicine = $patientMedicine;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getEndMedicationDate(): ?DateTimeInterface
+    {
+        return $this->endMedicationDate;
+    }
+
+    /**
+     * @param DateTimeInterface|null $endMedicationDate
+     * @return $this
+     */
+    public function setEndMedicationDate(?DateTimeInterface $endMedicationDate): self
+    {
+        $this->endMedicationDate = $endMedicationDate;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getStartingMedicationDate(): ?DateTimeInterface
+    {
+        return $this->startingMedicationDate;
+    }
+
+    /**
+     * @param DateTimeInterface $startingMedicationDate
+     * @return $this
+     */
+    public function setStartingMedicationDate(DateTimeInterface $startingMedicationDate): self
+    {
+        $this->startingMedicationDate = $startingMedicationDate;
+
+        return $this;
+    }
+
 }

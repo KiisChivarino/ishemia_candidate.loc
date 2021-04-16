@@ -1,47 +1,109 @@
-{% extends template.commonTemplatePath~'show.html.twig' %}
-{% block show_content %}
-    <li>
-        <span class="title">{{ template.items.show.content.prescription }}</span>
-        <p>
-            {% if entity.prescription %}
-                <a href="{{ path('prescription_show', {'id': entity.prescription.id}) }}">
-                    {{ prescriptionTitle }}
-                </a>
+{% extends 'admin/index.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
+{% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            {% if template.items.list.isEnabled %}
+                <a href="{{ path(template.routes.list) }}"
+                   class="back-page">{{ template.items.show.content.toList }}</a>
             {% endif %}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.staff }}</span>
-        <p>
-            {% if entity.staff %}
-                <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffTitle }}</a>
+        </ul>
+    </div>
+    <div class="adm-users-edit adm-users-view">
+        <h2>{{ template.items.show.content.h1 }}</h2>
+        {{ include('flashmessages.html.twig') }}
+
+        {% if template.items.show.content.help_message is defined %}
+            <div class="help_block">{{ template.items.show.content.help_message }}</div>
+        {% endif %}
+
+        <ul>
+            <li>
+                <span class="title">ID</span>
+                <p>{{ entity.id }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.prescription }}</span>
+                <p>
+                    {% if entity.prescription %}
+                        <a href="{{ path('prescription_show', {'id': entity.prescription.id}) }}">
+                            {{ prescriptionTitle }}
+                        </a>
+                    {% endif %}
+                </p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.staff }}</span>
+                <p>
+                    {% if entity.staff %}
+                        <a href="{{ path('staff_show', {'id': entity.staff.id}) }}">{{ staffTitle }}</a>
+                    {% endif %}
+                </p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.inclusionTime }}</span>
+                <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.notificationConfirmId }}</span>
+                <p>{{ entity.notificationConfirm ? entity.notificationConfirm.id : 'отсутвует' }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.medicine }}</span>
+                <p>{{ entity.patientMedicine.medicineName }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.instruction }}</span>
+                <p>
+                    {% if entity.patientMedicine.instruction %}
+                        {{ entity.patientMedicine.instruction | raw }}
+                    {% else %}
+                        {{ template.items.list.content.empty }}
+                    {% endif %}
+                </p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.startingMedicationDate }}</span>
+                <p>
+                    {{ entity.startingMedicationDate | date('d.m.Y') }}
+                </p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.endMedicationDate }}</span>
+                <p>
+                    {% if entity.endMedicationDate %}
+                        {{ entity.endMedicationDate | date('d.m.Y') }}
+                    {% else %}
+                        {{ template.items.list.content.empty }}
+                    {% endif %}
+                </p>
+            </li>
+            {% if entity.enabled is defined %}
+                <li>
+                    <span class="title">{{ template.items.show.content.enabled }}</span>
+                    <p>{{ entity.enabled ?
+                        template.items.show.content.trueValue :
+                        template.items.show.content.falseValue }}
+                    </p>
+                </li>
             {% endif %}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.medicine }}</span>
-        <p>
-            {% if entity.medicine %}
-                <a href="{{ path('medicine_show', {'id': entity.medicine.id}) }}">{{ entity.medicine.name }}</a>
+        </ul>
+        <div class="buttons">
+            {% if template.items.delete.isEnabled %}
+                {{ include(template.commonTemplatePath~'_delete_form.html.twig') }}
             {% endif %}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.receptionMethod }}</span>
-        <p>
-            {% if entity.receptionMethod %}
-                <a href="{{ path('reception_method_show', {'id': entity.receptionMethod.id}) }}">
-                    {{ entity.receptionMethod.name }}
-                </a>
+            {% if template.items.edit.isEnabled %}
+                <button class="btn btn--edit">
+                    <a style="text-decoration: none; color: inherit; display:block;"
+                       href="{{ path(template.routes.edit,
+                           {
+                               'prescription': entity.prescription.id,
+                               'prescriptionMedicine': entity.id}) }}">
+                        {{ template.items.show.content.toEdit }}
+                    </a>
+                </button>
             {% endif %}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.instruction }}</span>
-        <p>{{ entity.instruction | raw }}</p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.inclusionTime }}</span>
-        <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
-    </li>
+        </div>
+        {% block custom_actions %}{% endblock %}
+    </div>
 {% endblock %}

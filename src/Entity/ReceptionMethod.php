@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ReceptionMethodRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,6 +31,19 @@ class ReceptionMethod
     private $enabled;
 
     /**
+     * @ORM\OneToMany(targetEntity=PatientMedicine::class, mappedBy="receptionMethod")
+     */
+    private $patientMedicines;
+
+    /**
+     * ReceptionMethod constructor.
+     */
+    public function __construct()
+    {
+        $this->patientMedicines = new ArrayCollection();
+    }
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -52,7 +67,6 @@ class ReceptionMethod
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -72,7 +86,42 @@ class ReceptionMethod
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+        return $this;
+    }
 
+    /**
+     * @return Collection|PatientMedicine[]
+     */
+    public function getPatientMedicines(): Collection
+    {
+        return $this->patientMedicines;
+    }
+
+    /**
+     * @param PatientMedicine $patientMedicine
+     * @return $this
+     */
+    public function addPatientMedicine(PatientMedicine $patientMedicine): self
+    {
+        if (!$this->patientMedicines->contains($patientMedicine)) {
+            $this->patientMedicines[] = $patientMedicine;
+            $patientMedicine->setReceptionMethod($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param PatientMedicine $patientMedicine
+     * @return $this
+     */
+    public function removePatientMedicine(PatientMedicine $patientMedicine): self
+    {
+        if ($this->patientMedicines->removeElement($patientMedicine)) {
+            // set the owning side to null (unless already changed)
+            if ($patientMedicine->getReceptionMethod() === $this) {
+                $patientMedicine->setReceptionMethod(null);
+            }
+        }
         return $this;
     }
 }
