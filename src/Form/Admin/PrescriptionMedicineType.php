@@ -4,16 +4,14 @@ namespace App\Form\Admin;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PrescriptionMedicine;
-use App\Entity\ReceptionMethod;
 use App\Entity\Staff;
-use App\Repository\ReceptionMethodRepository;
 use App\Repository\StaffRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -35,24 +33,6 @@ class PrescriptionMedicineType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'instruction', null, [
-                    'label' => $templateItem->getContentValue('instruction'),
-                    'attr' => ['class' => 'tinymce'],
-                ]
-            )
-            ->add(
-                'receptionMethod', EntityType::class, [
-                    'label' => $templateItem->getContentValue('receptionMethod'),
-                    'class' => ReceptionMethod::class,
-                    'choice_label' => 'name',
-                    'required' => false,
-                    'query_builder' => function (ReceptionMethodRepository $er) {
-                        return $er->createQueryBuilder('rm')
-                            ->where('rm.enabled = true');
-                    },
-                ]
-            )
-            ->add(
                 'staff', EntityType::class, [
                     'label' => $templateItem->getContentValue('staff'),
                     'class' => Staff::class,
@@ -67,13 +47,19 @@ class PrescriptionMedicineType extends AbstractType
                 ]
             )
             ->add(
-                'enabled',
-                CheckboxType::class,
-                [
-                    'label' => $templateItem->getContentValue('enabled'),
-                    'required' => false,
+                'startingMedicationDate', DateType::class, [
+                    'label' => $templateItem->getContentValue('startingMedicationDate'),
+                    'widget' => 'single_text',
                 ]
-            );
+            )
+            ->add(
+                'endMedicationDate', DateType::class, [
+                    'label' => $templateItem->getContentValue('endMedicationDate'),
+                    'widget' => 'single_text',
+                    'required' => false
+                ]
+            )
+           ;
     }
 
     /**

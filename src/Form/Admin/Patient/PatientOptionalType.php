@@ -7,7 +7,6 @@ use App\Entity\Patient;
 use App\Entity\District;
 use App\Repository\DistrictRepository;
 use App\Services\TemplateItems\FormTemplateItem;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,19 +22,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  */
 class PatientOptionalType extends AbstractType
 {
-    /** @var EntityManagerInterface $entityManager */
-    private $entityManager;
-
-    /**
-     * PatientType constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -55,7 +41,13 @@ class PatientOptionalType extends AbstractType
                         'required' => false
                     ]
                 )
-                ->add('insuranceNumber', null, ['label' => $templateItem->getContentValue('insuranceNumber')])
+                ->add(
+                    'insuranceNumber',
+                    null,
+                    [
+                        'label' => $templateItem->getContentValue('insuranceNumber'),
+                    ]
+                )
                 ->add('smsInforming', null, ['label' => $templateItem->getContentValue('smsInforming')])
                 ->add('emailInforming', null, ['label' => $templateItem->getContentValue('emailInforming')])
                 ->add(

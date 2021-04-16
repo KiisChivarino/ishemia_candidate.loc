@@ -1,0 +1,32 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.prescriptionMedicine }}</span>
+        <p>
+            {% if entity.prescriptionMedicine %}
+                <a href="{{ path(
+                    'prescription_medicine_show',
+                    {
+                        'prescriptionMedicine': entity.prescriptionMedicine.id,
+                        'prescription': entity.prescriptionMedicine.prescription.id}
+                ) }}">{{ template.items.show.content.prescriptionMedicine }}</a>
+            {% else %}
+                {{ template.items.list.content.empty }}
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.medicine }}</span>
+        <p>{{ entity.medicineName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.instruction }}</span>
+        <p>
+            {% if entity.instruction %}
+                {{ entity.instruction | raw }}
+            {% else %}
+                {{ template.items.list.content.empty }}
+            {% endif %}
+        </p>
+    </li>
+{% endblock %}

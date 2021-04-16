@@ -130,18 +130,4 @@ abstract class AdminDatatableService extends DataTableService
                 ]
             );
     }
-
-    /**
-     * Get link
-     *
-     * @param string $value
-     * @param int $id
-     * @param string $route
-     *
-     * @return string
-     */
-    protected function getLink(string $value, int $id, string $route): string
-    {
-        return '<a href="' . $this->router->generate($route, ['id' => $id]) . '">' . $value . '</a>';
-    }
 }
