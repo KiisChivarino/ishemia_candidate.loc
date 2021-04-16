@@ -24,7 +24,9 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /** @var string[] Common content for analysis templates */
     protected const COMMON_CONTENT = [
         'prescription' => 'Назначение',
+        'medicine' => 'Препарат',
         'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
+        'medicineName' => 'Препарат',
         'startingMedicationDate' => 'Дата начала приема лекарства',
         'endMedicationDate' => 'Дата окончания приема лекарства',
         'patientMedicine' => PatientMedicineTemplate::ENTITY_CONTENT['entity'],
@@ -33,7 +35,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
         'h1' => 'Назначенные лекарства',
-        'title' => 'Список назначенных лекарств',
+        'title' => 'Список назначенных лекарст',
     ];
 
     /** @var string[] Common NEW_CONTENT */
@@ -61,6 +63,12 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
         'medicinePlaceholder' => 'Введите название препарата',
     ];
 
+    /** @var string[] Common form and show content */
+    protected const FORM_SHOW_CONTENT = [
+        'instruction' => 'Инструкция по применению',
+        'receptionMethod' => 'Способ приема',
+    ];
+
     /** @var string[] Common filter content */
     protected const FILTER_CONTENT = [
         'prescriptionFilter' => 'Фильтр по назначению',
@@ -69,11 +77,6 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
         'entity' => 'Назначение лекарства',
-    ];
-
-    /** @var array Common FORM_SHOW content */
-    public const FORM_SHOW_CONTENT = [
-        'instruction' => 'Инструкция по применению',
     ];
 
     /**

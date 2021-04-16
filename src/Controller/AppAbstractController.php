@@ -11,8 +11,6 @@ use App\Services\ControllerGetters\FilterLabels;
 use App\Services\EntityActions\Core\Builder\EntityActionsBuilder;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
-use App\Services\EntityActions\Core\AbstractCreatorService;
-use App\Services\EntityActions\Core\AbstractEditorService;
 use App\Services\EntityActions\Core\EntityActionsInterface;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\FormData;
@@ -480,11 +478,6 @@ abstract class AppAbstractController extends AbstractController
     )
     {
         $this->templateService->edit();
-        foreach ($editorEntityActionsBuilderArray as $entityActionsBuilder) {
-            if (!is_a($entityActionsBuilder->getEntityActionsService(), AbstractEditorService::class)) {
-                throw new Exception('EntityActionsBuilder must contains AbstractEditorService');
-            }
-        }
         return $this->responseMultiFormWithActions(
             $request,
             $editorEntityActionsBuilderArray,
@@ -512,11 +505,6 @@ abstract class AppAbstractController extends AbstractController
     )
     {
         $this->templateService->new();
-        foreach ($creatorEntityActionsBuilderArray as $entityActionsBuilder) {
-            if (!is_a($entityActionsBuilder->getEntityActionsService(), AbstractCreatorService::class)) {
-                throw new Exception('EntityActionsBuilder must contains AbstractCreatorService');
-            }
-        }
         return $this->responseMultiFormWithActions(
             $request,
             $creatorEntityActionsBuilderArray,

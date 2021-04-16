@@ -25,7 +25,7 @@ class PatientMedicineTemplate extends AdminTemplateBuilder
         'endMedicationDate' => 'Дата окончания приема лекарства',
         'instruction' => 'Инструкция',
         'prescription' => PrescriptionTemplate::ENTITY_CONTENT['entity'],
-        'patient' => MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
+        'patient' => MedicalHistoryTemplate::ENTITY_CONTENT['entity']
     ];
 
     /** @var string[] Common LIST_CONTENT */

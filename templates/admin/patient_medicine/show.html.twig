@@ -20,10 +20,6 @@
         <p>{{ entity.medicineName }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.receptionMethod }}</span>
-        <p>{{ entity.receptionMethod ? entity.receptionMethod.name : template.items.show.content.empty }}</p>
-    </li>
-    <li>
         <span class="title">{{ template.items.show.content.instruction }}</span>
         <p>
             {% if entity.instruction %}

@@ -42,11 +42,25 @@
             </li>
             <li>
                 <span class="title">{{ template.items.show.content.inclusionTime }}</span>
-                <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : template.items.show.content.empty }}</p>
+                <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
             </li>
             <li>
                 <span class="title">{{ template.items.show.content.notificationConfirmId }}</span>
-                <p>{{ entity.notificationConfirm ? entity.notificationConfirm.id : template.items.show.content.empty }}</p>
+                <p>{{ entity.notificationConfirm ? entity.notificationConfirm.id : 'отсутвует' }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.medicine }}</span>
+                <p>{{ entity.patientMedicine.medicineName }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.instruction }}</span>
+                <p>
+                    {% if entity.patientMedicine.instruction %}
+                        {{ entity.patientMedicine.instruction | raw }}
+                    {% else %}
+                        {{ template.items.list.content.empty }}
+                    {% endif %}
+                </p>
             </li>
             <li>
                 <span class="title">{{ template.items.show.content.startingMedicationDate }}</span>
