@@ -7,10 +7,14 @@ use App\Entity\Notification;
 use App\Entity\Patient;
 use App\Form\Doctor\CustomNotificationType;
 use App\Repository\MedicalHistoryRepository;
+use App\Services\LoggerService\LogService;
 use App\Services\Notification\NotificationData;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
 use App\Services\TemplateBuilders\DoctorOffice\CustomNotificationTemplate;
+use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\FormTemplateItem;
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,9 +33,6 @@ use Twig\Environment;
  */
 class CustomNotificationController extends DoctorOfficeAbstractController
 {
-    /** @var string */
-    private const EDIT_PERSONAL_DATA_TEMPLATE_NAME = 'create_notification';
-
     /** @var string Путь к папке твиг шаблонов */
     const TEMPLATE_PATH = 'doctorOffice/notification/';
 
@@ -88,13 +89,37 @@ class CustomNotificationController extends DoctorOfficeAbstractController
         MedicalHistoryRepository $medicalHistoryRepository
     ): Response
     {
-        $notification = new Notification();
-        return $this->responseEdit(
-            $request,
-            $notification,
-            CustomNotificationType::class,
-            [],
-            function () use ($request, $patient, $medicalHistoryRepository) {
+        $entity = new Notification();
+        $formName = self::RESPONSE_FORM_TYPE_EDIT;
+        $form = $this->createForm(
+            CustomNotificationType::class, $entity,
+            array_merge([], [self::FORM_TEMPLATE_ITEM_OPTION_TITLE =>
+                $this->templateService->edit()->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),])
+        );
+        try {
+            $form->handleRequest($request);
+        } catch (Exception $e) {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('app_controller.error.invalid_handle_request')
+            );
+            return $this->render(
+                $this->templateService->getTemplateFullName(
+                    $formName,
+                    $this->getParameter('kernel.project_dir')),
+                [
+                    'entity' => $entity,
+                    'form' => $form->createView(),
+                    'filters' =>
+                        $this->templateService
+                            ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                            ->getFiltersViews(),
+                ]
+            );
+        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $entityManager = $this->getDoctrine()->getManager();
                 $notificationServiceBuilder = $this->notificationServiceBuilder
                     ->makeCustomMessageNotification(
                         (
@@ -112,14 +137,60 @@ class CustomNotificationController extends DoctorOfficeAbstractController
                     $notificationServiceBuilder->getSMSNotificationService(),
                     $notificationServiceBuilder->getEmailNotificationService()
                 );
-                $this->getDoctrine()->getManager()->flush();
-
-                $this->addFlash('success', 'Сообщение пациенту отправлено!');
-                return $this->redirectToRoute('notifications_list', [
+                /** @noinspection PhpParamsInspection */
+                (new LogService($entityManager))
+                    ->setUser($this->getUser())
+                    ->setDescription(
+                        $this->translator->trans(
+                            'log.new.entity',
+                            [
+                                '%entity%' => 'Уведомление',
+                                '%id%' => $entity->getId(),
+                            ]
+                        )
+                    )
+                    ->logCreateEvent();
+                $entityManager->flush();
+            } catch (DBALException $e) {
+                $this->addFlash('error', $this->translator->trans('app_controller.error.post_dbal_exception'));
+                return $this->render(
+                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                    [
+                        'entity' => $entity,
+                        'form' => $form->createView(),
+                    ]
+                );
+            } catch (Exception $e) {
+                $this->addFlash('error', $this->translator->trans('app_controller.error.exception'));
+                return $this->render(
+                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
+                    [
+                        'entity' => $entity,
+                        'form' => $form->createView(),
+                    ]
+                );
+            }
+            $this->addFlash('success', $this->translator->trans('app_controller.success.success_post'));
+            return $this->redirectToRoute(
+                'notifications_list',
+                [
                     'id' => $patient->getId()
-                ]);
-            },
-            self::EDIT_PERSONAL_DATA_TEMPLATE_NAME
+                ]
+            );
+
+        }
+        return $this->render(
+            $this->templateService->getTemplateFullName(
+                $formName,
+                $this->getParameter('kernel.project_dir')),
+            [
+                'entity' => $entity,
+                'form' => $form->createView(),
+                'filters' =>
+                    $this->templateService
+                        ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                        ->getFiltersViews(),
+            ]
         );
     }
 }

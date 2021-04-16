@@ -11,7 +11,7 @@ import '../css/app.scss';
 import '../css/main.min.css';
 import '../css/select2.min.css';
 import 'font-awesome/css/font-awesome.css';
-
+import '../js/formcase'
 const $ = require('jquery');
 import 'select2';
 // this "modifies" the jquery module: adding behavior to it

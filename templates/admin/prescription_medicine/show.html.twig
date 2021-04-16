@@ -19,6 +19,28 @@
         </p>
     </li>
     <li>
+        <span class="title">{{ template.items.show.content.medicine }}</span>
+        <p>
+            {% if entity.medicine %}
+                <a href="{{ path('medicine_show', {'id': entity.medicine.id}) }}">{{ entity.medicine.name }}</a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.receptionMethod }}</span>
+        <p>
+            {% if entity.receptionMethod %}
+                <a href="{{ path('reception_method_show', {'id': entity.receptionMethod.id}) }}">
+                    {{ entity.receptionMethod.name }}
+                </a>
+            {% endif %}
+        </p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.instruction }}</span>
+        <p>{{ entity.instruction | raw }}</p>
+    </li>
+    <li>
         <span class="title">{{ template.items.show.content.inclusionTime }}</span>
         <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
     </li>

@@ -8,14 +8,16 @@ parameters:
   app_locales: ar|cs|da|de|en|eo|es|eu|fi|fr|it|ja|nl|pl|pt_BR|ru|sk|sv|tr|zh_CN
 
 imports:
-  - { resource: globals.yaml }
-  - { resource: services/roles.yaml }
-  - { resource: services/template/content.yaml }
-  - { resource: services/notifications/email_notification_service.yml }
-  - { resource: services/notifications/sms_notification_service.yml }
-  - { resource: services/notifications/notification_channel_types.yaml }
-  - { resource: services/notifications/notification_receiver_types.yaml }
-  - { resource: services/entityActions/doctor_office_entity_actions.yml }
+    - { resource: globals.yaml }
+    - { resource: services/roles.yaml }
+    - { resource: services/template/content.yaml }
+    - { resource: services/notifications/email_notification_service.yml }
+    - { resource: services/notifications/sms_notification_service.yml }
+    - { resource: services/notifications/notification_channel_types.yaml }
+    - { resource: services/notifications/notification_receiver_types.yaml }
+    - { resource: services/entityActions/doctor_office_entity_actions.yml }
+    - { resource: constant/case.yaml }
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -40,6 +42,8 @@ services:
             $notificationReceiverTypeNames: '%notification_receiver_type_names%'
             $notificationReceiverTypeTitles: '%notification_receiver_type_titles%'
             $patientTestingOption: '%patient_testing_option%'
+            $caseType: '%caseType%'
+
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -83,14 +87,14 @@ services:
       tags:
         - { name: knp_menu.menu, alias: adminHeader }
     app.doctor_office_sidebar_menu:
-      class: Knp\Menu\MenuItem # the service definition requires setting the class
-      factory: [ "@app.menu_builder", createDoctorOfficeSidebarMenu ]
-      arguments: [ "@request_stack" ]
-      tags:
-        - { name: knp_menu.menu, alias: doctorOfficeSidebar }
-    App\Form\Admin\AuthUser\AuthUserRoleType:
-      arguments: [ '@doctrine.orm.entity_manager' ]
-      tags: [ form.type ]
+        class: Knp\Menu\MenuItem # the service definition requires setting the class
+        factory: ["@app.menu_builder", createDoctorOfficeSidebarMenu]
+        arguments: ["@request_stack"]
+        tags:
+            - { name: knp_menu.menu, alias: doctorOfficeSidebar}
+    App\Form\AuthUser\AuthUserRoleType:
+        arguments: ['@doctrine.orm.entity_manager']
+        tags: [form.type]
     App\Services\EntityActions\AbstractEntityActionsService:
-      abstract: true
-      arguments: [ '@doctrine.orm.entity_manager' ]
+        abstract: true
+        arguments: [ '@doctrine.orm.entity_manager' ]

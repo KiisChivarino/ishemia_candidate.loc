@@ -75,7 +75,7 @@
         <span class="title">{{ template.items.show.content.resultData }}</span>
         <p>
             {% if entity.resultData %}
-                {{ entity.resultData }}
+                {{ entity.resultData | raw }}
             {% else %}
                 {{ template.items.show.content.empty_plural }}
             {% endif %}

@@ -33,12 +33,13 @@ class NotificationTemplate extends AdminTemplateBuilder
         'receiver' => 'Получатель',
         'medicalHistory' => 'История болезни',
         'medicalRecord' => 'Запись в истории болезни',
+        'channelType' => 'Канал доставки',
     ];
 
     /** @var string[] Common LIST_CONTENT */
     public const LIST_CONTENT = [
-        'h1' => 'Список уведомлений',
-        'title' => 'Список уведомлений',
+        'h1' => 'Список уведомлений пациентам',
+        'title' => 'Список уведомлений пациентам',
     ];
 
     public const SHOW_CONTENT = [
@@ -48,7 +49,8 @@ class NotificationTemplate extends AdminTemplateBuilder
     ];
 
     public const FILTER_CONTENT = [
-        'patientFilter' => 'Пациент'
+        'channelTypeFilter' => 'Канал доставки',
+        'hospitalFilter' => 'Больница'
     ];
 
     /** @var string[] Common ENTITY CONTENT */

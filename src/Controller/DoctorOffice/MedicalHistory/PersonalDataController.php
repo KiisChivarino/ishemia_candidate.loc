@@ -7,7 +7,7 @@ use App\Entity\Patient;
 use App\Form\Admin\Patient\PatientOptionalType;
 use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Doctor\AuthUserPersonalDataType;
-use App\Services\EntityActions\Creator\AuthUserCreatorService;
+use App\Services\Creator\AuthUserCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PersonalDataTemplate;

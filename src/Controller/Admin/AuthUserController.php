@@ -3,10 +3,11 @@
 namespace App\Controller\Admin;
 
 use App\Entity\AuthUser;
-use App\Form\Admin\AuthUser\AuthUserRequiredType;
-use App\Form\Admin\AuthUser\AuthUserRoleType;
-use App\Form\Admin\AuthUser\AuthUserOptionalType;
-use App\Form\Admin\AuthUser\AuthUserPasswordType;
+use App\Form\AuthUser\AuthUserEmailType;
+use App\Form\AuthUser\AuthUserEnabledType;
+use App\Form\AuthUser\AuthUserRequiredType;
+use App\Form\AuthUser\AuthUserRoleType;
+use App\Form\AuthUser\AuthUserPasswordType;
 use App\Repository\UserRepository;
 use App\Services\EntityActions\Creator\AuthUserCreatorService;
 use App\Services\DataTable\Admin\AuthUserDataTableService;
@@ -117,7 +118,8 @@ class AuthUserController extends AdminAbstractController
             $authUser,
             [
                 new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserOptionalType::class),
+                new FormData($authUser, AuthUserEmailType::class),
+                new FormData($authUser, AuthUserEnabledType::class),
                 new FormData(
                     $authUser,
                     AuthUserPasswordType::class,

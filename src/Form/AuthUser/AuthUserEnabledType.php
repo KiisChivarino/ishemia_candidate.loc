@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Form\Admin\AuthUser;
+
+namespace App\Form\AuthUser;
+
 
 use App\Controller\AppAbstractController;
 use App\Entity\AuthUser;
@@ -8,17 +10,10 @@ use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class AuthUserType
- * edit/create form of AuthUser controller
- *
- * @package App\Form\Admin\AuthUser
- */
-class AuthUserOptionalType extends AbstractType
+class AuthUserEnabledType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -30,14 +25,6 @@ class AuthUserOptionalType extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         try {
             $builder
-                ->add(
-                    'email',
-                    EmailType::class,
-                    [
-                        'label' => $templateItem->getContentValue('email'),
-                        'required' => false,
-                    ]
-                )
                 ->add(
                     'enabled', CheckboxType::class, [
                         'label' => $templateItem->getContentValue('enabled'),

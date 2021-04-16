@@ -2,6 +2,10 @@
 {% block title %}{{ template.items.list.content.title }}{% endblock %}
 {% block h1 %}<h1>{{ template.items.list.content.h1 }}</h1>{% endblock %}
 {% block content %}
+
+    {% if template.items.list.content.help_message is defined %}
+        <div class="help_block">{{ template.items.list.content.help_message }}</div>
+    {% endif %}
     <div class="tabs">
         <ul class="content-wrapper__nav tabs__caption">
         {% if template.items.filter.isEnabled %}
