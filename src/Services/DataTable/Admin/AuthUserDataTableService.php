@@ -9,9 +9,11 @@ use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\DataTableState;
 
 /**
  * Class DataTableService
@@ -51,6 +53,8 @@ class AuthUserDataTableService extends AdminDatatableService
             ->add(
                 'roles', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('role'),
+                    'searchable' => false,
+                    'orderable' => false,
                     'data' => function ($value) {
                         return $this->entityManager->getRepository(Role::class)
                             ->findOneBy(['tech_name' => $value->getRoles()[0]])->getId();
@@ -65,17 +69,20 @@ class AuthUserDataTableService extends AdminDatatableService
             )
             ->add(
                 'lastName', TextColumn::class, [
-                    'visible' => false
+                    'visible' => false,
+                    'field' => 'upper(au.lastName)',
                 ]
             )
             ->add(
                 'firstName', TextColumn::class, [
-                    'visible' => false
+                    'visible' => false,
+                    'field' => 'upper(au.firstName)',
                 ]
             )
             ->add(
                 'patronymicName', TextColumn::class, [
-                    'visible' => false
+                    'visible' => false,
+                    'field' => 'upper(au.patronymicName)',
                 ]
             )
             ->add(
@@ -97,6 +104,13 @@ class AuthUserDataTableService extends AdminDatatableService
                             ->select('au')
                             ->from(AuthUser::class, 'au');
                     },
+                    'criteria' => [
+                        function (QueryBuilder $queryBuilder, DataTableState $state) {
+                            $state->setGlobalSearch(mb_strtoupper($state->getGlobalSearch()));
+                        },
+                        new SearchCriteriaProvider(),
+                    ],
+
                 ]
             );
     }
