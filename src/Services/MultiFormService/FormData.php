@@ -27,13 +27,19 @@ class FormData
 
     /**
      * FormData constructor.
-     * @param object $entity
      * @param string $formClassName
+     * @param object|null $entity
      * @param array $formOptions
      * @param bool $isAddFormData
      * @param int|null $formNamePostfix
      */
-    public function __construct(object $entity, string $formClassName, array $formOptions = [], bool $isAddFormData = true, int $formNamePostfix = null)
+    public function __construct(
+        string $formClassName,
+        ?object $entity = null,
+        array $formOptions = [],
+        bool $isAddFormData = true,
+        int $formNamePostfix = null
+    )
     {
         $this->entity = $entity;
         $this->formClassName = $formClassName;

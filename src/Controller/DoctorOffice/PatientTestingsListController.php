@@ -255,8 +255,8 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
         $patientTestingResultsFormData = [];
         foreach ($enabledTestingResults as $key => $patientTestingResult) {
             $patientTestingResultsFormData[] = new FormData(
-                $patientTestingResult,
                 PatientTestingResultType::class,
+                $patientTestingResult,
                 [
                     'analysis' => $patientTestingResult->getAnalysis()
                 ],
@@ -269,7 +269,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
             $patientTesting,
             array_merge(
                 [
-                    new FormData($patientTesting, PatientTestingNotRequiredType::class),
+                    new FormData(PatientTestingNotRequiredType::class, $patientTesting),
                 ],
                 $patientTestingResultsFormData
             ),
