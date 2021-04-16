@@ -25,17 +25,19 @@ class PrescriptionTestingConfirmedEnableType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-//            ->add(
-//                'enabled', CheckboxType::class, [
-//                    'label' => $templateItem->getContentValue('enabled'),
-//                    'required' => false,
-//                ]
-//            )
             ->add(
                 'enabled',
                 CheckboxType::class,
                 [
                     'label' => $templateItem->getContentValue('enabled'),
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'confirmedByStaff',
+                CheckboxType::class,
+                [
+                    'label' => $templateItem->getContentValue('confirmedByStaff'),
                     'required' => false,
                 ]
             );
