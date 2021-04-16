@@ -9,11 +9,9 @@ use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
-use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\PatientTestingCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
-use App\Services\EntityActions\Editor\PrescriptionTestingEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
@@ -191,18 +189,10 @@ class PrescriptionTestingController extends AdminAbstractController
         PrescriptionTesting $prescriptionTesting
     ): Response
     {
-        $prescriptionTestingEditorService = new PrescriptionTestingEditorService(
-            $this->getDoctrine()->getManager(),
-            $prescriptionTesting
-        );
 
-        return $this->responseEditMultiFormWithActions(
+        return $this->responseEditMultiForm(
             $request,
-            [
-                new EditorEntityActionsBuilder(
-                    $prescriptionTestingEditorService
-                )
-            ],
+            $prescriptionTesting,
             [
                 new FormData(
                     PrescriptionTestingType\PrescriptionTestingStaff::class,

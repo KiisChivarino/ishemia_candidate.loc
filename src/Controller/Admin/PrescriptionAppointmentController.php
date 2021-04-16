@@ -10,11 +10,9 @@ use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentStaffType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionAppointmentDataTableService;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
-use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
-use App\Services\EntityActions\Editor\PrescriptionAppointmentEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientAppointmentInfoService;
@@ -178,18 +176,10 @@ class PrescriptionAppointmentController extends AdminAbstractController
         PrescriptionAppointment $prescriptionAppointment
     ): Response
     {
-        $prescriptionAppointmentEditorService = new PrescriptionAppointmentEditorService(
-            $this->getDoctrine()->getManager(),
-            $prescriptionAppointment
-        );
 
-        return $this->responseEditMultiFormWithActions(
+        return $this->responseEditMultiForm(
             $request,
-            [
-                new EditorEntityActionsBuilder(
-                    $prescriptionAppointmentEditorService
-                )
-            ],
+            $prescriptionAppointment,
             [
                 new FormData(
                     PrescriptionAppointmentStaffType::class,

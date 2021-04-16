@@ -9,11 +9,9 @@ use App\Entity\PrescriptionTesting;
 use App\Form\PatientTesting\PatientTestingRequiredType;
 use App\Form\PrescriptionTestingType;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
-use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionTestingService;
 use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
-use App\Services\EntityActions\Editor\PrescriptionTestingEditorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientTestingTemplate;
 use Symfony\Component\Routing\Annotation\Route;
@@ -132,18 +130,10 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         PrescriptionTesting $prescriptionTesting
     ): Response
     {
-        $prescriptionTestingEditorService = new PrescriptionTestingEditorService(
-            $this->getDoctrine()->getManager(),
-            $prescriptionTesting
-        );
 
-        return $this->responseEditMultiFormWithActions(
+        return $this->responseEditMultiForm(
             $request,
-            [
-                new EditorEntityActionsBuilder(
-                    $prescriptionTestingEditorService
-                )
-            ],
+            $prescriptionTesting,
             [
                 new FormData(
                     PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,

@@ -10,11 +10,9 @@ use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
-use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
-use App\Services\EntityActions\Editor\PrescriptionAppointmentEditorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientAppointmentTemplate;
 use Doctrine\ORM\EntityManagerInterface;
@@ -181,18 +179,9 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
         PrescriptionAppointment $prescriptionAppointment
     ): Response
     {
-        $prescriptionAppointmentEditorService = new PrescriptionAppointmentEditorService(
-            $this->getDoctrine()->getManager(),
-            $prescriptionAppointment
-        );
-
-        return $this->responseEditMultiFormWithActions(
+        return $this->responseEditMultiForm(
             $request,
-            [
-                new EditorEntityActionsBuilder(
-                    $prescriptionAppointmentEditorService
-                )
-            ],
+            $prescriptionAppointment,
             [
                 new FormData(
                     PrescriptionAppointmentPlannedDateType::class,
