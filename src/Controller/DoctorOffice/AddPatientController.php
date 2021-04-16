@@ -10,10 +10,10 @@ use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Repository\StaffRepository;
 use App\Services\ControllerGetters\EntityActions;
-use App\Services\EntityActions\Creator\AuthUserCreatorService;
-use App\Services\EntityActions\Creator\MedicalHistoryCreatorService;
-use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
-use App\Services\EntityActions\Creator\PatientCreatorService;
+use App\Services\Creator\AuthUserCreatorService;
+use App\Services\Creator\MedicalHistoryCreatorService;
+use App\Services\Creator\PatientAppointmentCreatorService;
+use App\Services\Creator\PatientCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
@@ -39,9 +39,6 @@ class AddPatientController extends DoctorOfficeAbstractController
     /** @var string Path to custom template directory */
     const TEMPLATE_PATH = 'doctorOffice/create_patient/';
 
-    /** @var UserPasswordEncoderInterface $passwordEncoder */
-    private $passwordEncoder;
-
     /** @var string array key name */
     const IS_DOCTOR_HOSPITAL = 'isDoctorHospital';
 
@@ -50,18 +47,15 @@ class AddPatientController extends DoctorOfficeAbstractController
      *
      * @param Environment $twig
      * @param RouterInterface $router
-     * @param UserPasswordEncoderInterface $passwordEncoder
      * @param TranslatorInterface $translator
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
-        UserPasswordEncoderInterface $passwordEncoder,
         TranslatorInterface $translator
     )
     {
         parent::__construct($translator);
-        $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new CreateNewPatientTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
@@ -107,17 +101,12 @@ class AddPatientController extends DoctorOfficeAbstractController
             $request,
             $patient,
             [
-                new FormData($patientAuthUser, AuthUserRequiredType::class),
-                new FormData(
-                    $patient,
-                    PatientRequiredType::class,
-                    [
-                        self::IS_DOCTOR_HOSPITAL => $isDoctorHospital ?? null
-                    ]
-                ),
-                new FormData($clinicalDiagnosis, PatientClinicalDiagnosisTextType::class),
-                new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
-                new FormData($firstPatientAppointment, AppointmentTypeType::class),
+                new FormData(AuthUserRequiredType::class, $patientAuthUser),
+                new FormData(PatientRequiredType::class, $patient, [self::IS_DOCTOR_HOSPITAL => $isDoctorHospital ?? null]),
+                new FormData(PatientClinicalDiagnosisTextType::class, $clinicalDiagnosis),
+                new FormData(PatientMKBCodeType::class, $clinicalDiagnosis),
+                new FormData(AppointmentTypeType::class, $firstPatientAppointment),
+
             ],
             function (EntityActions $actions)
             use (

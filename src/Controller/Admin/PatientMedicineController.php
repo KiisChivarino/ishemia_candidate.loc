@@ -87,8 +87,8 @@ class PatientMedicineController extends AdminAbstractController
             $request,
             $patientMedicine,
             [
-                new FormData($patientMedicine, PatientMedicineType::class),
-                new FormData($patientMedicine, PatientMedicineTypeEnabled::class),
+                new FormData(PatientMedicineType::class, $patientMedicine),
+                new FormData(PatientMedicineTypeEnabled::class, $patientMedicine),
             ]
         );
     }

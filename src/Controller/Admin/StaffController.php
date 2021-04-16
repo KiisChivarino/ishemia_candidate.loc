@@ -97,16 +97,16 @@ class StaffController extends AdminAbstractController
             $request,
             $staff,
             [
-                new FormData($user, AuthUserRequiredType::class),
-                new FormData($user, AuthUserEmailType::class),
-                new FormData($user, AuthUserEnabledType::class),
+                new FormData(AuthUserRequiredType::class, $user),
+                new FormData(AuthUserEmailType::class, $user),
+                new FormData(AuthUserEnabledType::class, $user),
                 new FormData(
-                    $user,
                     AuthUserPasswordType::class,
+                    $user,
                     [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => true]
                 ),
-                new FormData($user, StaffRoleType::class, [], false),
-                new FormData($staff, StaffType::class),
+                new FormData(StaffRoleType::class, $user, [], false),
+                new FormData(StaffType::class, $staff),
             ],
             function (EntityActions $actions) use ($user, $staff): ?Response {
                 try {
@@ -190,16 +190,16 @@ class StaffController extends AdminAbstractController
             $request,
             $staff,
             [
-                new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserEmailType::class),
-                new FormData($authUser, AuthUserEnabledType::class),
+                new FormData(AuthUserRequiredType::class, $authUser),
+                new FormData(AuthUserEmailType::class, $authUser),
+                new FormData(AuthUserEnabledType::class, $authUser),
                 new FormData(
-                    $authUser,
                     AuthUserPasswordType::class,
+                    $authUser,
                     [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false]
                 ),
-                new FormData($authUser, StaffRoleType::class, []),
-                new FormData($staff, StaffType::class),
+                new FormData(StaffRoleType::class, $authUser, []),
+                new FormData(StaffType::class, $staff),
             ],
             function () use ($authUser, $oldPassword, $staff) {
                 AuthUserCreatorService::updatePassword($this->passwordEncoder, $authUser, $oldPassword);

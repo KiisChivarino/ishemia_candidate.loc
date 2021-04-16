@@ -39,12 +39,6 @@ class PatientAppointmentController extends AdminAbstractController
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/patient_appointment/';
 
-    /** @var string Flash message stating that no medical history was found */
-    private const FLASH_ERROR_MEDICAL_HISTORY_NOT_FOUND =
-        'Прием пациента не может быть добавлен: история болезни не найдена!';
-    /** @var string Route for redirect after error "Medical history not found" */
-    private const FLASH_ERROR_REDIRECT_ROUTE = 'medical_history_list';
-
     /**
      * PatientAppointmentController constructor.
      *

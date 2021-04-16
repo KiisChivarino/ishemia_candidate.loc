@@ -137,8 +137,8 @@ class PatientTestingController extends AdminAbstractController
             $request,
             $patientTesting,
             [
-                new FormData($patientTesting, PatientTestingRequiredType::class),
-                new FormData($patientTesting, PatientTestingNotRequiredType::class),
+                new FormData(PatientTestingRequiredType::class, $patientTesting),
+                new FormData(PatientTestingNotRequiredType::class, $patientTesting),
             ],
             function (EntityActions $actions) use ($patientTesting, $fileService, $patientTestingCreator) {
                 $patientTestingCreator->checkAndPersistRegularPatientTesting($patientTesting);

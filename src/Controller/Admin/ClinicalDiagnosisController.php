@@ -68,8 +68,8 @@ class ClinicalDiagnosisController extends AdminAbstractController
             $request,
             $clinicalDiagnosis,
             [
-                new FormData($clinicalDiagnosis, ClinicalDiagnosisType::class),
-                new FormData($clinicalDiagnosis, DiseasesType::class),
+                new FormData(ClinicalDiagnosisType::class, $clinicalDiagnosis),
+                new FormData(DiseasesType::class, $clinicalDiagnosis),
             ]);
     }
 
@@ -99,8 +99,8 @@ class ClinicalDiagnosisController extends AdminAbstractController
             $request,
             $clinicalDiagnosis,
             [
-                new FormData($clinicalDiagnosis, ClinicalDiagnosisType::class),
-                new FormData($clinicalDiagnosis, DiseasesType::class),
+                new FormData(ClinicalDiagnosisType::class, $clinicalDiagnosis),
+                new FormData(DiseasesType::class, $clinicalDiagnosis),
             ]);
     }
 

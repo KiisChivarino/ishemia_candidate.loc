@@ -6,7 +6,8 @@ use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Form\Admin\Patient\PatientOptionalType;
 use App\Form\Admin\Patient\PatientRequiredType;
-use App\Form\Doctor\AuthUserPersonalDataType;
+use App\Form\AuthUser\AuthUserEmailType;
+use App\Form\AuthUser\AuthUserRequiredType;
 use App\Services\Creator\AuthUserCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
@@ -84,9 +85,10 @@ class PersonalDataController extends DoctorOfficeAbstractController
             $request,
             $patient,
             [
-                new FormData($authUser, AuthUserPersonalDataType::class),
-                new FormData($patient, PatientRequiredType::class),
-                new FormData($patient, PatientOptionalType::class),
+                new FormData(AuthUserRequiredType::class, $authUser),
+                new FormData(AuthUserEmailType::class, $authUser),
+                new FormData(PatientRequiredType::class, $patient),
+                new FormData(PatientOptionalType::class, $patient),
             ],
             function () use ($authUser, $oldPassword, $passwordEncoder) {
                 AuthUserCreatorService::updatePassword($passwordEncoder, $authUser, $oldPassword);

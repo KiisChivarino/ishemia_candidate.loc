@@ -8,12 +8,12 @@ use App\Entity\MedicalHistory;
 use App\Entity\Prescription;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\EntityActions\Builder\EntityActionsBuilder;
-use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
-use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
-use App\Services\EntityActions\Creator\AbstractCreatorService;
-use App\Services\EntityActions\Editor\AbstractEditorService;
-use App\Services\EntityActions\EntityActionsInterface;
+use App\Services\EntityActions\Core\Builder\EntityActionsBuilder;
+use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
+use App\Services\EntityActions\Core\AbstractCreatorService;
+use App\Services\EntityActions\Core\AbstractEditorService;
+use App\Services\EntityActions\Core\EntityActionsInterface;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
@@ -60,8 +60,7 @@ abstract class AppAbstractController extends AbstractController
         'TEMPLATE_TYPE' => 'templateType',
         'TEMPLATE_PARAMETER' => 'templateParameter',
         'LOG_ACTION' => 'logAction',
-        'NOTIFICATION' => 'notification',
-        'CHANNEL_TYPE' => 'channelType'
+        'NOTIFICATION' => 'notification'
     ];
 
     /** @var string Label of form option for adding formTemplateItem in form */
@@ -104,8 +103,7 @@ abstract class AppAbstractController extends AbstractController
         $dataTableService,
         ?FilterLabels $filterLabels = null,
         ?array $options = [],
-        ?Closure $listActions = null,
-        array $parameters = []
+        ?Closure $listActions = null
     ): Response
     {
         $template = $this->templateService->list($filterLabels ? $filterLabels->getFilterService() : null);
@@ -127,10 +125,10 @@ abstract class AppAbstractController extends AbstractController
         }
         return $this->render(
             $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath() . 'list.html.twig',
-            array_merge([
+            [
                 'datatable' => $table,
                 'filters' => $template->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
-            ], $parameters)
+            ]
         );
     }
 
@@ -180,7 +178,7 @@ abstract class AppAbstractController extends AbstractController
             $request,
             $entity,
             $this->createForm(
-                $typeClass, $formEntity ? $formEntity : $entity,
+                $typeClass, $formEntity ?: $entity,
                 array_merge($customFormOptions, [self::FORM_TEMPLATE_ITEM_OPTION_TITLE =>
                     $this->templateService->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME),])
             ),
@@ -340,14 +338,13 @@ abstract class AppAbstractController extends AbstractController
                         'error',
                         $this->translator->trans('app_controller.error.foreign_key')
                     );
-                    return $this->redirectToRoute($this->templateService->getRoute('list'));
                 } else {
                     $this->addFlash(
                         'error',
                         $this->translator->trans('app_controller.error.delete_dbal_exception')
                     );
-                    return $this->redirectToRoute($this->templateService->getRoute('list'));
                 }
+                return $this->redirectToRoute($this->templateService->getRoute('list'));
             }
         }
         $this->addFlash('success', $this->translator->trans('app_controller.success.success_delete'));
@@ -505,6 +502,7 @@ abstract class AppAbstractController extends AbstractController
      * @param string $templateName
      * @return RedirectResponse|Response
      * @throws ReflectionException
+     * @throws Exception
      */
     protected function responseNewMultiFormWithActions(
         Request $request,
@@ -693,7 +691,7 @@ abstract class AppAbstractController extends AbstractController
                 ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
                 ->getFilterDataByName($filterLabel)
                 ->getEntity();
-            $filters[$filterLabel] = $filterEntity ? $filterEntity : '';
+            $filters[$filterLabel] = $filterEntity ?: '';
         }
         return $filters;
     }
@@ -805,27 +803,26 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function flush(): bool
     {
-        $this->getDoctrine()->getManager()->flush();
-//        try {
-//            $this->getDoctrine()->getManager()->flush();
-//        } catch (DBALException $e) {
-//            $this->addFlash(
-//                'error',
-//                $this->translator->trans('app_abstract_controller.error.dbal_exception')
-//            );
-//            return false;
-//        } catch (Exception $e) {
-//            $this->addFlash(
-//                'error',
-//                $this->translator->trans('app_abstract_controller.error.exception'));
-//            return false;
-//        }
-//        $this->addFlash(
-//            'success',
-//            $this->translator->trans(
-//                'app_abstract_controller.success.add'
-//            )
-//        );
+        try {
+            $this->getDoctrine()->getManager()->flush();
+        } catch (DBALException $e) {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('app_abstract_controller.error.dbal_exception')
+            );
+            return false;
+        } catch (Exception $e) {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('app_abstract_controller.error.exception'));
+            return false;
+        }
+        $this->addFlash(
+            'success',
+            $this->translator->trans(
+                'app_abstract_controller.success.add'
+            )
+        );
         return true;
     }
 
@@ -901,7 +898,7 @@ abstract class AppAbstractController extends AbstractController
      * @param Request $request
      * @return MedicalHistory|object|RedirectResponse
      * @throws Exception
-     * @todo сделать нормальные роуты в админке и убрать этот дебильный метод!!!
+     * @todo сделать нормальные рауты в админке и убрать этот дебильный метод!!!
      */
     protected function getMedicalHistoryByParameter(Request $request): MedicalHistory
     {
@@ -917,7 +914,7 @@ abstract class AppAbstractController extends AbstractController
      * @param Request $request
      * @return Prescription|object|RedirectResponse
      * @throws Exception
-     * @todo сделать нормальные роуты в админке и убрать этот дебильный метод!!!
+     * @todo сделать нормальные рауты в админке и убрать этот дебильный метод!!!
      */
     protected function getPrescriptionByParameter(Request $request): Prescription
     {
@@ -935,8 +932,8 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function renderTableActions(): Closure
     {
-        return function (int $enityId, $rowEntity, $route = null, ?array $routeParameters = []) {
-            return $this->getTableActionsResponseContent($enityId, $rowEntity, $route, $routeParameters);
+        return function (int $entityId, $rowEntity, $route = null, ?array $routeParameters = []) {
+            return $this->getTableActionsResponseContent($entityId, $rowEntity, $route, $routeParameters);
         };
     }
 

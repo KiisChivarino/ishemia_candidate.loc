@@ -121,13 +121,13 @@ class InitialExaminationController extends DoctorOfficeAbstractController
             $firstAppointment,
             [
                 new FormData(
-                    $firstAppointment,
                     PatientAppointmentType::class,
+                    $firstAppointment,
                     [PatientAppointmentType::OBJECTIVE_STATUS_TEXT_OPTION_NAME => $objectiveStatus]
                 ),
                 new FormData(
-                    $firstAppointment->getMedicalHistory(),
                     AnamnesOfLifeType::class,
+                    $firstAppointment->getMedicalHistory(),
                     [
                         'anamnesOfLifeText' =>
                             $firstAppointment->getMedicalHistory()->getLifeHistory() ?
@@ -135,7 +135,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
                                 : ''
                     ]
                 ),
-                new FormData($firstAppointment->getMedicalHistory(), DiseaseHistoryType::class),
+                new FormData(DiseaseHistoryType::class, $firstAppointment->getMedicalHistory()),
             ],
             null,
             self::EDIT_OBJECTIVE_DATA_TEMPLATE_NAME

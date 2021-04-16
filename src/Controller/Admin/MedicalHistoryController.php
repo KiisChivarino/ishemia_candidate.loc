@@ -187,14 +187,14 @@ class MedicalHistoryController extends AdminAbstractController
             $request,
             $medicalHistory,
             [
-                new FormData($clinicalDiagnosis, PatientClinicalDiagnosisTextType::class),
-                new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
-                new FormData($medicalHistory, MedicalHistoryType::class),
-                new FormData($medicalHistory, AnamnesOfLifeType::class),
-                new FormData($medicalHistory, DiseaseHistoryType::class),
-                new FormData($medicalHistory, EditMedicalHistoryType::class),
-                new FormData($patientDischargeEpicrisis, DischargeEpicrisisType::class),
-                new FormData($medicalHistory, EnabledType::class),
+                new FormData(PatientClinicalDiagnosisTextType::class, $clinicalDiagnosis),
+                new FormData(PatientMKBCodeType::class, $clinicalDiagnosis),
+                new FormData(MedicalHistoryType::class, $medicalHistory),
+                new FormData(AnamnesOfLifeType::class, $medicalHistory),
+                new FormData(DiseaseHistoryType::class, $medicalHistory),
+                new FormData(EditMedicalHistoryType::class, $medicalHistory),
+                new FormData(DischargeEpicrisisType::class, $patientDischargeEpicrisis),
+                new FormData(EnabledType::class, $medicalHistory),
             ],
             function (EntityActions $actions) use ($patientTestingFileRepository, $fileService) {
                 $fileService->prepareFiles(

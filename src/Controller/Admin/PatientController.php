@@ -114,20 +114,20 @@ class PatientController extends AdminAbstractController
             $request,
             $patient,
             [
-                new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserEmailType::class),
-                new FormData($authUser, AuthUserEnabledType::class),
+                new FormData(AuthUserRequiredType::class, $authUser),
+                new FormData(AuthUserEmailType::class, $authUser),
+                new FormData(AuthUserEnabledType::class, $authUser),
                 new FormData(
-                    $authUser,
                     AuthUserPasswordType::class,
+                    $authUser,
                     [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false]
                 ),
-                new FormData($patient, PatientRequiredType::class),
-                new FormData($patient, PatientOptionalType::class),
-                new FormData($clinicalDiagnosis, PatientClinicalDiagnosisTextType::class),
-                new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
-                new FormData($patientAppointment, StaffType::class),
-                new FormData($patientAppointment, AppointmentTypeType::class),
+                new FormData(PatientRequiredType::class, $patient),
+                new FormData(PatientOptionalType::class, $patient),
+                new FormData(PatientClinicalDiagnosisTextType::class, $clinicalDiagnosis),
+                new FormData(PatientMKBCodeType::class, $clinicalDiagnosis),
+                new FormData(StaffType::class, $patientAppointment),
+                new FormData(AppointmentTypeType::class, $patientAppointment),
             ],
             function (EntityActions $actions)
             use (
@@ -207,14 +207,14 @@ class PatientController extends AdminAbstractController
             $request,
             $patient,
             [
-                new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserEmailType::class),
-                new FormData($authUser, AuthUserEnabledType::class),
-                new FormData($authUser, AuthUserPasswordType::class, ['isPasswordRequired' => false]),
-                new FormData($patient, PatientRequiredType::class),
-                new FormData($patient, PatientOptionalType::class),
-                new FormData($clinicalDiagnosis, PatientMKBCodeType::class),
-                new FormData($clinicalDiagnosis, PatientClinicalDiagnosisTextType::class),
+                new FormData(AuthUserRequiredType::class, $authUser),
+                new FormData(AuthUserEmailType::class, $authUser),
+                new FormData(AuthUserEnabledType::class, $authUser),
+                new FormData(AuthUserPasswordType::class, $authUser, ['isPasswordRequired' => false]),
+                new FormData(PatientRequiredType::class, $patient),
+                new FormData(PatientOptionalType::class, $patient),
+                new FormData(PatientMKBCodeType::class, $clinicalDiagnosis),
+                new FormData(PatientClinicalDiagnosisTextType::class, $clinicalDiagnosis),
             ],
             function () use ($authUser, $oldPassword, $patient, $clinicalDiagnosis) {
                 AuthUserCreatorService::updatePassword($this->passwordEncoder, $authUser, $oldPassword);
