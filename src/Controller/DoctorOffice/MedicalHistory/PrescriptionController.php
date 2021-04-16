@@ -308,6 +308,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
+        $this->templateService
+            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionTestingDataTableService,
@@ -334,6 +336,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
+        $this->templateService
+            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionAppointmentDataTableService,

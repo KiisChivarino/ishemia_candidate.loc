@@ -48,6 +48,7 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
         $prescriptionTesting = $this->getEntity();
         $prescriptionTesting
             ->setInclusionTime(new DateTime())
+            ->setConfirmedByStaff(false)
             ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
             ->setPatientTesting($this->options[self::PATIENT_TESTING_OPTION]);
     }
