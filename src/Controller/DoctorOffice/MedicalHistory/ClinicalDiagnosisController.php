@@ -86,16 +86,16 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
             $patient,
             [
                 new FormData(
-                    $clinicalDiagnosis,
-                    PatientClinicalDiagnosisTextType::class
+                    PatientClinicalDiagnosisTextType::class,
+                    $clinicalDiagnosis
                 ),
                 new FormData(
-                    $clinicalDiagnosis,
-                    PatientMKBCodeType::class
+                    PatientMKBCodeType::class,
+                    $clinicalDiagnosis
                 ),
                 new FormData(
-                    $medicalHistory,
                     MedicalHistoryType::class,
+                    $medicalHistory,
                     [
                         MedicalHistoryType::ANAMNES_OF_LIFE_TEXT_OPTION_KEY => $lifeAnamnesisText,
                     ]

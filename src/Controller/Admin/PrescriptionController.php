@@ -185,8 +185,8 @@ class PrescriptionController extends AdminAbstractController
             $request,
             $prescription,
             [
-                new FormData($prescription, PrescriptionType::class),
-                new FormData($prescription, PrescriptionEditType::class),
+                new FormData(PrescriptionType::class, $prescription),
+                new FormData(PrescriptionEditType::class, $prescription),
             ],
             function (EntityActions $entityActions)
             use ($medicalRecordRepository) {

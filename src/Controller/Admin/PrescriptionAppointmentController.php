@@ -112,7 +112,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
                     $request,
                     $prescriptionAppointment,
                     [
-                        new FormData($prescriptionAppointment, PrescriptionAppointmentType::class),
+                        new FormData(PrescriptionAppointmentType::class, $prescriptionAppointment),
                     ],
                     function () use ($prescriptionAppointment) {
                         $prescriptionAppointment->getPatientAppointment()->setStaff($prescriptionAppointment->getStaff());

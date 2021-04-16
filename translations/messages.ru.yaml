@@ -15,9 +15,25 @@ app_controller:
       exception: Ошибка cохранения записи!
       foreign_key: Запись не удалена! Удалите все дочерние элементы!
       delete_dbal_exception: Ошибка! Запись не удалена. Обратитесь к администратору...
+      parameter_not_found: Запись не найдена по параметру!
   success:
     success_post: Запись успешно сохранена!
     success_delete: Запись успешно удалена!
+admin_controller:
+  error:
+    medical_history_not_found: История болезни не найдена по параметру!
+entity_actions:
+  error:
+    entity_class_not_found: Класс %entityClass% не найден!
+app_abstract_controller:
+  success:
+    add: Запись успешно сохранена!
+  error:
+    dbal_exception: Не удалось сохранить запись!
+    exception: Ошибка cохранения записи!
+prescription_appointment_controller:
+  error:
+    new_appointment: Прием уже существует!
 form:
   error:
     mime_type_message_error: Изображение должно быть в формате «jpeg» или «png»

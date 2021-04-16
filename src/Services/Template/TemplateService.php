@@ -242,4 +242,12 @@ class TemplateService
             throw new Exception('Файл шаблона не найден! Искали по адресам: "' . $templatePathFullName . '", "' . $commonPathFullName . '"');
         }
     }
+
+    /**
+     * Sets redirect route parameters
+     * @param array $redirectRouteParameters
+     */
+    public function setRedirectRouteParameters(array $redirectRouteParameters){
+        $this->redirectRouteParameters = $redirectRouteParameters;
+    }
 }

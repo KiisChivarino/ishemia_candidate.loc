@@ -117,8 +117,8 @@ class PrescriptionTestingController extends AdminAbstractController
                     $request,
                     $prescriptionTesting,
                     [
-                        new FormData($prescriptionTesting, PrescriptionTestingType::class),
-                        new FormData($patientTesting, PatientTestingRequiredType::class),
+                        new FormData(PrescriptionTestingType::class, $prescriptionTesting),
+                        new FormData(PatientTestingRequiredType::class, $patientTesting),
                     ]
                 );
             }

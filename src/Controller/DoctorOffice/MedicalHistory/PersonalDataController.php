@@ -85,10 +85,10 @@ class PersonalDataController extends DoctorOfficeAbstractController
             $request,
             $patient,
             [
-                new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserEmailType::class),
-                new FormData($patient, PatientRequiredType::class),
-                new FormData($patient, PatientOptionalType::class),
+                new FormData(AuthUserRequiredType::class, $authUser),
+                new FormData(AuthUserEmailType::class, $authUser),
+                new FormData(PatientRequiredType::class, $patient),
+                new FormData(PatientOptionalType::class, $patient),
             ],
             function () use ($authUser, $oldPassword, $passwordEncoder) {
                 AuthUserCreatorService::updatePassword($passwordEncoder, $authUser, $oldPassword);

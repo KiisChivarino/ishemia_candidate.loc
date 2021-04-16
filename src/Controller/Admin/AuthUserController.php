@@ -36,25 +36,19 @@ class AuthUserController extends AdminAbstractController
     /** @var string путь шаблонам контроллера */
     public const TEMPLATE_PATH = 'admin/auth_user/';
 
-    /** @var UserPasswordEncoderInterface $passwordEncoder */
-    private $passwordEncoder;
-
     /**
      * AuthUserController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
-     * @param UserPasswordEncoderInterface $passwordEncoder
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
-        UserPasswordEncoderInterface $passwordEncoder,
         TranslatorInterface $translator
     )
     {
         parent::__construct($translator);
-        $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new AuthUserTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
@@ -116,15 +110,15 @@ class AuthUserController extends AdminAbstractController
             $request,
             $authUser,
             [
-                new FormData($authUser, AuthUserRequiredType::class),
-                new FormData($authUser, AuthUserEmailType::class),
-                new FormData($authUser, AuthUserEnabledType::class),
+                new FormData(AuthUserRequiredType::class, $authUser),
+                new FormData(AuthUserEmailType::class, $authUser),
+                new FormData(AuthUserEnabledType::class, $authUser),
                 new FormData(
-                    $authUser,
                     AuthUserPasswordType::class,
+                    $authUser,
                     [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false]
                 ),
-                new FormData($authUser, AuthUserRoleType::class, [], false),
+                new FormData(AuthUserRoleType::class, $authUser, [], false),
             ],
             function ()
             use ($oldPassword, $authUser, $authUserCreatorService) {
