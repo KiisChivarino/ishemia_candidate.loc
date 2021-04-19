@@ -43,11 +43,6 @@ class PrescriptionMedicine
     private $notificationConfirm;
 
     /**
-     * @ORM\OneToOne(targetEntity=PatientMedicine::class, mappedBy="prescriptionMedicine", cascade={"persist", "remove"})
-     */
-    private $patientMedicine;
-
-    /**
      * @ORM\Column(type="date", options={"comment"="Дата начала приема лекарства"})
      */
     private $startingMedicationDate;
@@ -61,6 +56,12 @@ class PrescriptionMedicine
      * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
      */
     private $enabled;
+
+    /**
+     * @ORM\OneToOne(targetEntity=PatientMedicine::class, inversedBy="prescriptionMedicine", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+     */
+    private $patientMedicine;
 
     /**
      * @return int|null
@@ -165,23 +166,6 @@ class PrescriptionMedicine
         return $this;
     }
 
-    public function getPatientMedicine(): ?PatientMedicine
-    {
-        return $this->patientMedicine;
-    }
-
-    public function setPatientMedicine(PatientMedicine $patientMedicine): self
-    {
-        // set the owning side of the relation if necessary
-        if ($patientMedicine->getPrescriptionMedicine() !== $this) {
-            $patientMedicine->setPrescriptionMedicine($this);
-        }
-
-        $this->patientMedicine = $patientMedicine;
-
-        return $this;
-    }
-
     /**
      * @return DateTimeInterface|null
      */
@@ -216,6 +200,18 @@ class PrescriptionMedicine
     public function setStartingMedicationDate(DateTimeInterface $startingMedicationDate): self
     {
         $this->startingMedicationDate = $startingMedicationDate;
+
+        return $this;
+    }
+
+    public function getPatientMedicine(): ?PatientMedicine
+    {
+        return $this->patientMedicine;
+    }
+
+    public function setPatientMedicine(PatientMedicine $patientMedicine): self
+    {
+        $this->patientMedicine = $patientMedicine;
 
         return $this;
     }

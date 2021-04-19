@@ -2,7 +2,7 @@
 
 namespace App\Services\EntityActions\Builder;
 
-use App\Services\EntityActions\Editor\AbstractEditorService;
+use App\Services\EntityActions\Core\AbstractEditorService;
 use Closure;
 
 /**

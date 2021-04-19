@@ -5,6 +5,8 @@ namespace App\Services\TemplateBuilders\DoctorOffice;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\ListTemplateItem;
+use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -58,8 +60,21 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
      */
     public function new(?FilterService $filterService = null): AppTemplateBuilder
     {
-        parent::new();
+        parent::new($filterService);
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
+        return $this;
+    }
+
+    /**
+     * @param FilterService|null $filterService
+     *
+     * @return AppTemplateBuilder
+     * @throws Exception
+     */
+    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::list();
+        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);
         return $this;
     }
 }

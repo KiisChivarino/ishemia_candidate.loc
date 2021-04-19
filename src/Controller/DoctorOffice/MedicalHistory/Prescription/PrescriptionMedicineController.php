@@ -91,19 +91,25 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
 
     /**
      * New medicine prescription
-     * @Route("/patient/{patient}/prescription/{prescription}/patient_medicine/new", name="prescription_patient_medicine_new", methods={"GET","POST"})
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/patient_medicine/new",
+     *     name="prescription_patient_medicine_new",
+     *     methods={"GET","POST"},
+     *     requirements={"prescription"="\d+"}
+     *     )
      * @param Request $request
      * @param Prescription $prescription
      * @param Patient $patient
-     * @param DoctorOfficePrescriptionMedicineCreatorService $PrescriptionMedicineCreatorService
+     * @param DoctorOfficePrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
      * @return Response
+     * @throws \ReflectionException
      */
     public function new(
         Request $request,
         Prescription $prescription,
         Patient $patient,
-        DoctorOfficePrescriptionMedicineCreatorService $PrescriptionMedicineCreatorService,
+        DoctorOfficePrescriptionMedicineCreatorService $prescriptionMedicineCreatorService,
         PatientMedicineCreatorService $patientMedicineCreatorService
     ): Response
     {
@@ -113,7 +119,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
             ]
         )->getEntity();
 
-        $PrescriptionMedicineCreatorService->before([
+        $prescriptionMedicineCreatorService->before([
             PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
             PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
         ]);
@@ -122,32 +128,31 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
             $request,
             [
                 new CreatorEntityActionsBuilder(
-                    $PrescriptionMedicineCreatorService,
+                    $prescriptionMedicineCreatorService,
                     [
                         PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
                     ],
                     function (PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService) use (
                         $patientMedicine,
                         $prescription,
-                        $PrescriptionMedicineCreatorService,
+                        $patientMedicineCreatorService,
                         $patient
                     ): array {
                         return [
                             PrescriptionMedicineCreatorService::STAFF_OPTION => $this->getStaff($patient),
-                            PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
+                            PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine,
                         ];
                     }
                 )
             ],
             [
-
                 new FormData(
                     PrescriptionMedicineType::class,
-                    $PrescriptionMedicineCreatorService->getEntity()
+                    $prescriptionMedicineCreatorService->getEntity()
                 ),
                 new FormData(
                     PrescriptionMedicineTypeEnabled::class,
-                    $PrescriptionMedicineCreatorService->getEntity()
+                    $prescriptionMedicineCreatorService->getEntity()
                 ),
                 new FormData(
                     PatientMedicineType::class,
@@ -155,5 +160,20 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                 ),
             ]
         );
+    }
+
+    /**
+     * Edit prescription appointment
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/patient_medicine/{prescriptionTesting}/edit/",
+     *     name="edit_patient_medicine_by_doctor",
+     *     methods={"GET","POST"}
+     *     )
+     * @return Response
+     */
+    public function edit(
+
+    ): Response
+    {
     }
 }

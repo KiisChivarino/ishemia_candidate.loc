@@ -4,6 +4,7 @@ namespace App\Services\EntityActions\Creator;
 
 use App\Entity\MedicalHistory;
 use App\Entity\MedicalRecord;
+use App\Services\EntityActions\Core\AbstractCreatorService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;

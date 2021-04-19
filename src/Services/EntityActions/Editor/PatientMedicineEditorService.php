@@ -3,6 +3,7 @@
 namespace App\Services\EntityActions\Editor;
 
 use App\Entity\PatientMedicine;
+use App\Services\EntityActions\Core\AbstractEditorService;
 use Exception;
 
 /**

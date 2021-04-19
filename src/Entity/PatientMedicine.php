@@ -19,12 +19,6 @@ class PatientMedicine
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=PrescriptionMedicine::class, inversedBy="patientMedicine", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     */
-    private $prescriptionMedicine;
-
-    /**
      * @ORM\Column(type="string", length=255, options={"comment"="Название лекарства"})
      */
     private $medicineName;
@@ -57,25 +51,6 @@ class PatientMedicine
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return PrescriptionMedicine|null
-     */
-    public function getPrescriptionMedicine(): ?PrescriptionMedicine
-    {
-        return $this->prescriptionMedicine;
-    }
-
-    /**
-     * @param \App\Entity\PrescriptionMedicine|null $prescriptionMedicine
-     * @return $this
-     */
-    public function setPrescriptionMedicine(PrescriptionMedicine $prescriptionMedicine): self
-    {
-        $this->prescriptionMedicine = $prescriptionMedicine;
-
-        return $this;
     }
 
     /**

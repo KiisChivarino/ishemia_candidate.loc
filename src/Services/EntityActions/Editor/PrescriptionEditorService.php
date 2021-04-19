@@ -4,6 +4,7 @@ namespace App\Services\EntityActions\Editor;
 
 use App\Entity\MedicalRecord;
 use App\Entity\Prescription;
+use App\Services\EntityActions\Core\AbstractEditorService;
 use DateTime;
 use Exception;
 

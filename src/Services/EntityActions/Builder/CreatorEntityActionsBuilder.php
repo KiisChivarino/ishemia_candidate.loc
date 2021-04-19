@@ -2,7 +2,7 @@
 
 namespace App\Services\EntityActions\Builder;
 
-use App\Services\EntityActions\Creator\AbstractCreatorService;
+use App\Services\EntityActions\Core\AbstractCreatorService;
 use Closure;
 
 /**

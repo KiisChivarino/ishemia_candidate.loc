@@ -11,6 +11,7 @@ class DoctorOfficePrescriptionMedicineCreatorService extends PrescriptionMedicin
 {
     /**
      * Actions with entity before persisting one
+     * @throws Exception
      */
     protected function prepare(): void
     {

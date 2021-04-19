@@ -2,7 +2,7 @@
 
 namespace App\Services\EntityActions\Builder;
 
-use App\Services\EntityActions\EntityActionsInterface;
+use App\Services\EntityActions\Core\EntityActionsInterface;
 use Closure;
 
 /**

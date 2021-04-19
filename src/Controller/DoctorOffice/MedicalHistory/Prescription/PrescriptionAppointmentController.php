@@ -118,8 +118,9 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
     {
         $patientAppointment = $patientAppointmentCreatorService->execute(
             [
-                PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription
-            ])->getEntity();
+                PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+            ]
+        )->getEntity();
 
         $prescriptionAppointmentCreatorService->before([
             PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,

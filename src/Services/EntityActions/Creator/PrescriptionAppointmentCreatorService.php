@@ -5,6 +5,7 @@ namespace App\Services\EntityActions\Creator;
 use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
+use App\Services\EntityActions\Core\AbstractCreatorService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
