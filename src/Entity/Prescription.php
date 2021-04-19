@@ -75,6 +75,7 @@ class Prescription
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="prescriptions")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $medicalRecord;
 

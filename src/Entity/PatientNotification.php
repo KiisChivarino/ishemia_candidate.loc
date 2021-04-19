@@ -33,6 +33,7 @@ class PatientNotification
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientNotifications")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $medicalRecord;
 
