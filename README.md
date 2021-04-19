@@ -1,12 +1,12 @@
-# [CandidateTests: Нельзя удалить запись в истории болезни](https://www.notion.so/CandidateTests-030bcdb95e864f6db8588c58ead40f37)
+# [Поправить отображение даты в столбце Запланировано](https://www.notion.so/17f154feeb6846fe97c7d5d572acf0b9)
 
-Created: Apr 3, 2021 5:09 PM
+Created: Apr 9, 2021 11:08 AM
 
 Аналитик: Igor' Nikiforov
 
 Вид входящего: Проблемы
 
-Время последнего изменения: Apr 13, 2021 4:03 PM
+Время последнего изменения: Apr 12, 2021 5:33 PM
 
 Исполнитель: Anton A
 
@@ -18,9 +18,7 @@ Created: Apr 3, 2021 5:09 PM
 
 Разработчик: Anton A
 
-Ревьювер: Всеволод Лапшин
-
-Ссылка на ветку: http://git.kvokka.com/mlobanov/ishemia/-/tree/FIX-errorDeliteMedicalHistory
+Ревьювер: Максим Лобанов
 
 Статус: In Dev
 
@@ -32,8 +30,8 @@ Created: Apr 3, 2021 5:09 PM
 
 ### Проблема
 
-Нельзя удалить запись в истории болезни. Отображается flashMessage: Запись не удалена! Удалите все дочерние элементы!
-URL: `admin/medical_record/`
+Поправить отображение даты в столбце Запланировано на странице просмотра Назначения на обследование
+URL: `admin/prescription_testing/`
 
 ### Входные данные
 
