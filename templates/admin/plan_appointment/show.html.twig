@@ -1,7 +1,7 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
     <li>
-        <span class="title">{{ template.items.show.content.timeRangeCount }}</span>
+        <span class="title">{{ template.items.show.content.timeRange }}</span>
         <p>
             {% if entity.timeRange %}
                 <a href="{{ path('analysis_group_show', {'id': entity.timeRange.id}) }}">
@@ -11,7 +11,7 @@
         </p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.timeRange }}</span>
+        <span class="title">{{ template.items.show.content.timeRangeCount }}</span>
         <p>{{ entity.timeRangeCount }}</p>
     </li>
     <li>
