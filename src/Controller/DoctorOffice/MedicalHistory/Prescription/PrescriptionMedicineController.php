@@ -5,8 +5,14 @@ namespace App\Controller\DoctorOffice\MedicalHistory\Prescription;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Entity\Prescription;
+use App\Form\Admin\PrescriptionMedicineType;
+use App\Form\Admin\PrescriptionMedicineTypeEnabled;
+use App\Form\Doctor\PatientMedicineType;
+use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionMedicineCreatorService;
 use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
+use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
+use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -99,7 +105,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
         PatientMedicineCreatorService $patientMedicineCreatorService
     ): Response
     {
-
+        dd(228);
 //        $patientMedicine = $patientMedicineCreatorService->execute(
 //            [
 //                PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription
@@ -133,19 +139,19 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
 //                )
 //            ],
 //            [
-//                dd(228)
-////                new FormData(
-////                    PrescriptionMedicineType::class,
-////                    $PrescriptionMedicineCreatorService->getEntity()
-////                ),
-////                new FormData(
-////                    PrescriptionMedicineTypeEnabled::class,
-////                    $PrescriptionMedicineCreatorService->getEntity()
-////                ),
-////                new FormData(
-////                    PatientMedicineType::class,
-////                    $patientMedicineCreatorService->getEntity()
-////                ),
+//
+//                new FormData(
+//                    PrescriptionMedicineType::class,
+//                    $PrescriptionMedicineCreatorService->getEntity()
+//                ),
+//                new FormData(
+//                    PrescriptionMedicineTypeEnabled::class,
+//                    $PrescriptionMedicineCreatorService->getEntity()
+//                ),
+//                new FormData(
+//                    PatientMedicineType::class,
+//                    $patientMedicineCreatorService->getEntity()
+//                ),
 //            ]
 //        );
     }

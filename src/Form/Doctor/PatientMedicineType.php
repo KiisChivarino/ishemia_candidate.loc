@@ -35,17 +35,7 @@ class PatientMedicineType extends AbstractType
             ))
             ->add('instruction', TextareaType::class, array(
                 'label' => $templateItem->getContentValue('instruction'),
-            ))
-            ->add(
-                'dateBegin', DateType::class, [
-                    'label' => $templateItem->getContentValue('dateBegin'),
-                    'widget' => 'single_text',
-                    'format' => 'yyyy-MM-dd',
-                    'attr' => [
-                        'min' => date('Y-m-d'),
-                    ]
-                ]
-            );
+            ));
     }
 
     /**
