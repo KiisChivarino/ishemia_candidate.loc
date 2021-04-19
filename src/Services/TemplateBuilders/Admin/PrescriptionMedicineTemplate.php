@@ -30,7 +30,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
         'startingMedicationDate' => 'Дата начала приема лекарства',
         'endMedicationDate' => 'Дата окончания приема лекарства',
         'patientMedicine' => PatientMedicineTemplate::ENTITY_CONTENT['entity'],
-        'dateBegin' => PatientMedicineTemplate::ENTITY_CONTENT['dateBegin']
+//        'dateBegin' => PatientMedicineTemplate::ENTITY_CONTENT['dateBegin']
     ];
 
     /** @var string[] Common LIST_CONTENT */
