@@ -58,8 +58,9 @@ class AuthUserRequiredType extends AbstractType
                 ])
                 ->add('patronymicName', TextType::class, [
                     'label' => $templateItem->getContentValue('patronymicName'),
+                    'required' => false,
                     'attr' => [
-                        'data-case' => $this->CASE_TYPE['firstUpper']
+                        'data-case' => $this->CASE_TYPE['firstUpper'],
                     ]
                 ])
                 ->add(
