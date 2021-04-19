@@ -2,9 +2,9 @@
 
 namespace App\Services\EntityActions\Creator;
 
+use App\Entity\PatientMedicine;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
-use App\Entity\Staff;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -16,26 +16,25 @@ use Exception;
 class PrescriptionMedicineCreatorService extends AbstractCreatorService
 {
     /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     * @const string
      */
-    private $STAFF_OPTION;
+    public const STAFF_OPTION = 'staff';
 
     /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
+     * @const string
      */
-    private $PRESCRITION_OPTION;
+    public const PRESCRIPTION_OPTION = 'prescription';
+
+    /**
+     * @const string
+     */
+    public const PATIENT_MEDICINE_OPTION = 'patientMedicine';
 
     public function __construct(
-        EntityManagerInterface $entityManager,
-        string $staffOption,
-        string $prescriptionOption
+        EntityManagerInterface $entityManager
     )
     {
         parent::__construct($entityManager, PrescriptionMedicine::class);
-        $this->STAFF_OPTION = $staffOption;
-        $this->PRESCRITION_OPTION = $prescriptionOption;
     }
 
     /**
@@ -47,11 +46,8 @@ class PrescriptionMedicineCreatorService extends AbstractCreatorService
         $prescriptionMedicine = $this->getEntity();
         $prescriptionMedicine
             ->setInclusionTime(new DateTime())
-            ->setPrescription($this->options['prescription']);
-        /** Executes without form */
-        if (!$prescriptionMedicine->getStaff()) {
-            $prescriptionMedicine->setStaff($this->options[$this->STAFF_OPTION]);
-        }
+            ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
+            ->setPatientMedicine($this->options[self::PATIENT_MEDICINE_OPTION]);
     }
 
     /**
@@ -59,7 +55,7 @@ class PrescriptionMedicineCreatorService extends AbstractCreatorService
      */
     protected function configureOptions(): void
     {
-        $this->addOptionCheck(Prescription::class, $this->PRESCRITION_OPTION);
-        $this->addOptionCheck(Staff::class, $this->STAFF_OPTION);
+        $this->addOptionCheck(Prescription::class, self::PRESCRIPTION_OPTION);
+        $this->addOptionCheck(PatientMedicine::class, self::PATIENT_MEDICINE_OPTION);
     }
 }

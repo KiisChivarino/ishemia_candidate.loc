@@ -2,9 +2,8 @@
 
 namespace App\Services\EntityActions\Creator;
 
-use App\Entity\MedicalHistory;
 use App\Entity\PatientMedicine;
-use App\Entity\PrescriptionMedicine;
+use App\Entity\Prescription;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,27 +14,15 @@ use Exception;
  */
 class PatientMedicineCreatorService extends AbstractCreatorService
 {
-    /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $MEDICAL_HISTORY_OPTION;
 
-    /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $PRESCRIPTION_MEDICINE;
+    /** @var string Name of Prescription option */
+    public const PRESCRIPTION_OPTION = 'prescription';
 
     public function __construct(
-        EntityManagerInterface $entityManager,
-        string $medicalHistoryOption,
-        string $prescriptionMedicine
+        EntityManagerInterface $entityManager
     )
     {
-        parent::__construct($entityManager);
-        $this->MEDICAL_HISTORY_OPTION = $medicalHistoryOption;
-        $this->PRESCRIPTION_MEDICINE = $prescriptionMedicine;
+        parent::__construct($entityManager, PatientMedicine::class);
     }
 
     protected function prepare(): void
@@ -43,8 +30,7 @@ class PatientMedicineCreatorService extends AbstractCreatorService
         /** @var PatientMedicine $patientMedicine */
         $patientMedicine = $this->getEntity();
         $patientMedicine
-            ->setMedicalHistory($this->options['medicalHistory'])
-            ->setPrescriptionMedicine($this->options['prescriptionMedicine']);
+            ->setEnabled(true);
     }
 
     /**
@@ -52,8 +38,6 @@ class PatientMedicineCreatorService extends AbstractCreatorService
      */
     protected function configureOptions(): void
     {
-        $this->setEntityClass(PatientMedicine::class);
-        $this->addOptionCheck(MedicalHistory::class, $this->MEDICAL_HISTORY_OPTION);
-        $this->addOptionCheck(PrescriptionMedicine::class, $this->PRESCRIPTION_MEDICINE);
+        $this->addOptionCheck(Prescription::class, self::PRESCRIPTION_OPTION);
     }
 }

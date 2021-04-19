@@ -116,7 +116,6 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
         PatientAppointmentCreatorService $patientAppointmentCreatorService
     ): Response
     {
-
         $patientAppointment = $patientAppointmentCreatorService->execute(
             [
                 PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription
@@ -126,7 +125,6 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
             PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
             PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
         ]);
-
 
         return $this->responseNewMultiFormWithActions(
             $request,

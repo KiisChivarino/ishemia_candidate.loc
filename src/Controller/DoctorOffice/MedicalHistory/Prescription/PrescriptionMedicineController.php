@@ -5,11 +5,9 @@ namespace App\Controller\DoctorOffice\MedicalHistory\Prescription;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Entity\Prescription;
-use App\Form\Doctor\PatientMedicineType;
+use App\Services\EntityActions\Creator\DoctorOfficePrescriptionMedicineCreatorService;
 use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
-use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
-use App\Services\TemplateBuilders\DoctorOffice\PatientMedicineTemplate;
-use Exception;
+use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -76,7 +74,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     )
     {
         parent::__construct($translator);
-        $this->templateService = new PatientMedicineTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new PrescriptionMedicineTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
         $this->creatorService = $patientMedicineCreatorService;
         $this->STAFF_OPTION = $staffOption;
@@ -90,31 +88,65 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      * @Route("/patient/{patient}/prescription/{prescription}/patient_medicine/new", name="prescription_patient_medicine_new", methods={"GET","POST"})
      * @param Request $request
      * @param Prescription $prescription
-     * @param PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
      * @param Patient $patient
      * @return Response
-     * @throws Exception
      */
     public function new(
         Request $request,
         Prescription $prescription,
-        PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService,
-        Patient $patient
+        Patient $patient,
+        DoctorOfficePrescriptionMedicineCreatorService $PrescriptionMedicineCreatorService,
+        PatientMedicineCreatorService $patientMedicineCreatorService
     ): Response
     {
-        $prescriptionMedicineCreatorService->execute(
-            [
-                $this->PRESCRIPTION_OPTION => $prescription,
-                $this->STAFF_OPTION => $this->getStaff($patient),
-            ]
-        );
-        return $this->responseNewWithActions(
-            $request,
-            PatientMedicineType::class,
-            [
-                $this->MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
-                $this->PRESCRIPTION_MEDICINE => $prescriptionMedicineCreatorService->getEntity(),
-            ]
-        );
+
+//        $patientMedicine = $patientMedicineCreatorService->execute(
+//            [
+//                PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription
+//            ]
+//        )->getEntity();
+//
+//        $PrescriptionMedicineCreatorService->before([
+//            PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
+//            PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
+//        ]);
+//
+//        return $this->responseNewMultiFormWithActions(
+//            $request,
+//            [
+//                new CreatorEntityActionsBuilder(
+//                    $PrescriptionMedicineCreatorService,
+//                    [
+//                        PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
+//                    ],
+//                    function (PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService) use (
+//                        $patientMedicine,
+//                        $prescription,
+//                        $PrescriptionMedicineCreatorService,
+//                        $patient
+//                    ): array {
+//                        return [
+//                            PrescriptionMedicineCreatorService::STAFF_OPTION => $this->getStaff($patient),
+//                            PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
+//                        ];
+//                    }
+//                )
+//            ],
+//            [
+//                dd(228)
+////                new FormData(
+////                    PrescriptionMedicineType::class,
+////                    $PrescriptionMedicineCreatorService->getEntity()
+////                ),
+////                new FormData(
+////                    PrescriptionMedicineTypeEnabled::class,
+////                    $PrescriptionMedicineCreatorService->getEntity()
+////                ),
+////                new FormData(
+////                    PatientMedicineType::class,
+////                    $patientMedicineCreatorService->getEntity()
+////                ),
+//            ]
+//        );
     }
 }
