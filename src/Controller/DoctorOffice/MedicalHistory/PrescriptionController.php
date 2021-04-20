@@ -10,6 +10,7 @@ use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
 use App\Services\DataTable\DataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionAppointmentDataTableService;
+use App\Services\DataTable\DoctorOffice\PrescriptionMedicineDataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionService;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
@@ -52,6 +53,9 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /** @var string Route name for edit prescription testing */
     const EDIT_PRESCRIPTION_TESTING_ROUTE_NAME = 'edit_prescription_testing_by_doctor';
+
+    /** @var string Route name for edit prescription appointment */
+    const EDIT_PRESCRIPTION_MEDICINE_ROUTE_NAME = 'edit_prescription_medicine_by_doctor';
 
     /**
      * @var NotifierService
@@ -145,7 +149,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription,
         Request $request,
         PrescriptionTestingDataTableService $prescriptionTestingDataTableService,
-        PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService
+        PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService,
+        PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService
     ): Response
     {
         if ($prescription->getIsCompleted()) {
@@ -175,11 +180,24 @@ class PrescriptionController extends DoctorOfficeAbstractController
         if ($prescriptionAppointmentTable->isCallback()) {
             return $prescriptionAppointmentTable->getResponse();
         }
+
+        $prescriptionMedicineTable = $this->generatePrescriptionMedicineDataTable(
+            $request,
+            $prescriptionMedicineDataTableService,
+            $patient,
+            $prescription
+        );
+
+        if ($prescriptionMedicineTable->isCallback()) {
+            return $prescriptionMedicineTable->getResponse();
+        }
+
         return $this->render(
             self::TEMPLATE_PATH . 'prescription_show.html.twig',
             [
                 'prescriptionTestingTable' => $prescriptionTestingTable,
                 'prescriptionAppointmentTable' => $prescriptionAppointmentTable,
+                'prescriptionMedicineTable' => $prescriptionMedicineTable,
                 'patient' => $patient,
                 'prescription' => $prescription
             ]
@@ -345,6 +363,34 @@ class PrescriptionController extends DoctorOfficeAbstractController
             $prescription,
             $prescriptionAppointmentDataTableService::ENTITY_CLASS,
             self::EDIT_PRESCRIPTION_APPOINTMENT_ROUTE_NAME
+        );
+    }
+
+    /**
+     * Generates and handles datatable of one prescription medicine
+     * @param Request $request
+     * @param PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService
+     * @param Patient $patient
+     * @param Prescription $prescription
+     * @return DataTable
+     * @throws ReflectionException
+     */
+    public function generatePrescriptionMedicineDataTable(
+        Request $request,
+        PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService,
+        Patient $patient,
+        Prescription $prescription
+    ): DataTable
+    {
+        $this->templateService
+            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
+        return $this->generateSpecialPrescriptionDatatable(
+            $request,
+            $prescriptionMedicineDataTableService,
+            $patient,
+            $prescription,
+            $prescriptionMedicineDataTableService::ENTITY_CLASS,
+            self::EDIT_PRESCRIPTION_MEDICINE_ROUTE_NAME
         );
     }
 

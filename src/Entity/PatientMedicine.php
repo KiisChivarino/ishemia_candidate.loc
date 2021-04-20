@@ -46,6 +46,12 @@ class PatientMedicine
     private $enabled;
 
     /**
+     * @ORM\OneToOne(targetEntity=PrescriptionMedicine::class, mappedBy="patientMedicine", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
+     */
+    private $prescriptionMedicine;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -144,6 +150,18 @@ class PatientMedicine
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function getPrescriptionMedicine(): ?PrescriptionMedicine
+    {
+        return $this->prescriptionMedicine;
+    }
+
+    public function setPrescriptionMedicine(PrescriptionMedicine $prescriptionMedicine): self
+    {
+        $this->prescriptionMedicine = $prescriptionMedicine;
 
         return $this;
     }

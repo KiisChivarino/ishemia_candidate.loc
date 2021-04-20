@@ -115,7 +115,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     {
         $patientMedicine = $patientMedicineCreatorService->execute(
             [
-                PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription
+                PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
             ]
         )->getEntity();
 
@@ -165,8 +165,8 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     /**
      * Edit prescription appointment
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/patient_medicine/{prescriptionTesting}/edit/",
-     *     name="edit_patient_medicine_by_doctor",
+     *     "/patient/{patient}/prescription/{prescription}/patient_medicine/{prescriptionMedicine}/edit/",
+     *     name="edit_prescription_medicine_by_doctor",
      *     methods={"GET","POST"}
      *     )
      * @return Response

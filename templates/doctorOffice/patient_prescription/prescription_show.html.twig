@@ -71,6 +71,15 @@
         }
     ) }}
 
+    {{ include(
+        'show_table.html.twig',
+        {
+            'tableId': 'prescriptionMedicine',
+            'table' : prescriptionMedicineTable,
+            'data_name': dataName
+        }
+    ) }}
+
     <div class="buttons">
         <button class="button main-button"
                 onclick="location.href='{{ path(
