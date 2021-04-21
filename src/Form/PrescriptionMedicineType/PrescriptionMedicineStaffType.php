@@ -10,10 +10,11 @@ use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PrescriptionMedicineStaffType
+class PrescriptionMedicineStaffType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder

@@ -153,10 +153,6 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                     $prescriptionMedicineCreatorService->getEntity()
                 ),
                 new FormData(
-                    PrescriptionMedicineTypeEnabled::class,
-                    $prescriptionMedicineCreatorService->getEntity()
-                ),
-                new FormData(
                     PatientMedicineType::class,
                     $patientMedicineCreatorService->getEntity()
                 ),

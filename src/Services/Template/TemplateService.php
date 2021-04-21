@@ -245,6 +245,10 @@ class TemplateService
 
     /**
      * Sets redirect route parameters
+     * $redirectRouteParameters =
+     * [
+     * 'paramName' => 'entityObject'
+     * ]
      * @param array $redirectRouteParameters
      */
     public function setRedirectRouteParameters(array $redirectRouteParameters){
