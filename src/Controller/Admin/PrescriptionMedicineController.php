@@ -117,7 +117,7 @@ class PrescriptionMedicineController extends AdminAbstractController
         $this->templateService->setRedirectRouteParameters(
             [
                 'prescription' => $prescription,
-                'prescriptionMedicine' => $prescriptionMedicineCreatorService
+                'prescriptionMedicine' => $prescriptionMedicineCreatorService->getEntity()
             ]
         );
 
@@ -204,6 +204,14 @@ class PrescriptionMedicineController extends AdminAbstractController
      */
     public function edit(Request $request, PrescriptionMedicine $prescriptionMedicine): Response
     {
+
+        $this->templateService->setRedirectRouteParameters(
+            [
+                'prescription' => $prescriptionMedicine->getPrescription(),
+                'prescriptionMedicine' => $prescriptionMedicine
+            ]
+        );
+
         return $this->responseEditMultiForm(
             $request,
             $prescriptionMedicine,

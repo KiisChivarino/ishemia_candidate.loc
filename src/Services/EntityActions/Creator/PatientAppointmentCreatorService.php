@@ -17,11 +17,6 @@ class PatientAppointmentCreatorService extends AbstractCreatorService
     /** @var string Name of Prescription option */
     public const PRESCRIPTION_OPTION = 'prescription';
 
-    /** @var string Name of Prescription option */
-    public const PATIENT_APPOINTMENT_OPTION = 'patientAppointment';
-
-    /** @var string Name of Medical History option */
-    public const MEDICAL_HISTORY_OPTION = 'medicalHistory';
 
     /**
      * PatientTestingCreatorService constructor.

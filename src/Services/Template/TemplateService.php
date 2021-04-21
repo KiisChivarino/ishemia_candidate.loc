@@ -220,6 +220,11 @@ class TemplateService
      */
     public function getRedirectRouteParameters(): ?array
     {
+        array_walk( $this->redirectRouteParameters, function (&$array) {
+            if (is_object($array) and method_exists($array, 'getId')) {
+                $array = $array->getId();
+            }
+        });
         return $this->redirectRouteParameters;
     }
 
@@ -251,7 +256,8 @@ class TemplateService
      * ]
      * @param array $redirectRouteParameters
      */
-    public function setRedirectRouteParameters(array $redirectRouteParameters){
+    public function setRedirectRouteParameters(array $redirectRouteParameters)
+    {
         $this->redirectRouteParameters = $redirectRouteParameters;
     }
 }

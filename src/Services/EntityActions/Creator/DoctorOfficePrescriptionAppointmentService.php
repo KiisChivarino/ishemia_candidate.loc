@@ -1,12 +1,14 @@
 <?php
 
-
 namespace App\Services\EntityActions\Creator;
-
 
 use App\Entity\Staff;
 use Exception;
 
+/**
+ * Class DoctorOfficePrescriptionAppointmentService
+ * @package App\Services\EntityActions\Creator
+ */
 class DoctorOfficePrescriptionAppointmentService extends PrescriptionAppointmentCreatorService
 {
     /**
