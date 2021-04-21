@@ -10,6 +10,8 @@ use Closure;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+use Omines\DataTablesBundle\Column\DateTimeColumn;
+use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 
 /**
@@ -39,12 +41,37 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
         $this->addSerialNumber();
         $this->dataTable
             ->setName(self::DATATABLE_NAME);
-//        $this->dataTable->add(
-//                'inclusionTime', DateTimeColumn::class, [
-//                    'format' => 'd.m.Y',
-//                    'searchable' => false
-//                ]
-//            );
+        $this->dataTable
+            ->add(
+                'inclusionTime', DateTimeColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('inclusionTime'),
+                    'format' => 'd.m.Y h:m',
+                    'searchable' => false
+                ]
+            )
+            ->add(
+                'medicine_name', TextColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('medicine_name'),
+                    'field' => 'pma.medicine_name',
+                    'searchable' => true,
+                    'render' => function (string $data) use ($showTemplateItem) {
+                        return
+                            $data ?: $showTemplateItem->getContentValue('empty');
+                    }
+                ]
+            )
+            ->add(
+                'instruction', TextColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('instruction'),
+                    'field' => 'pma.instruction',
+                    'searchable' => true,
+                    'render' => function (string $data) use ($showTemplateItem) {
+                        return
+                            $data ?: $showTemplateItem->getContentValue('empty');
+                    }
+                ]
+            )
+        ;
 
         $this->addOperations($renderOperationsFunction, $showTemplateItem);
 
@@ -56,12 +83,13 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                             $builder
                                 ->select('pm')
                                 ->from(self::ENTITY_CLASS, 'pm')
+                                ->join('pm.patientMedicine', 'pma')
                             ;
-//                        if ($prescription) {
-//                            $builder
-//                                ->andWhere('pt.prescription = :prescription')
-//                                ->setParameter('prescription', $prescription);
-//                        }
+                        if ($prescription) {
+                            $builder
+                                ->andWhere('pm.prescription = :prescription')
+                                ->setParameter('prescription', $prescription);
+                        }
                     },
                 ]
             );

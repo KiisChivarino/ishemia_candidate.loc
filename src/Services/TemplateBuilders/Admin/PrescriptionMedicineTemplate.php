@@ -81,6 +81,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
         'entity' => 'Назначение лекарства',
+        'inclusionTime' => self::SHOW_CONTENT['inclusionTime']
     ];
 
     /**
