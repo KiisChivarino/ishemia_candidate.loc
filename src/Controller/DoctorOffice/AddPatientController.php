@@ -10,17 +10,16 @@ use App\Form\Admin\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Repository\StaffRepository;
 use App\Services\ControllerGetters\EntityActions;
-use App\Services\Creator\AuthUserCreatorService;
-use App\Services\Creator\MedicalHistoryCreatorService;
-use App\Services\Creator\PatientAppointmentCreatorService;
-use App\Services\Creator\PatientCreatorService;
+use App\Services\EntityActions\Creator\AuthUserCreatorService;
+use App\Services\EntityActions\Creator\MedicalHistoryCreatorService;
+use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
+use App\Services\EntityActions\Creator\PatientCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -85,8 +84,7 @@ class AddPatientController extends DoctorOfficeAbstractController
         $staff = $staffRepository->getStaff($this->getUser());
         $patientAuthUser = $authUserCreatorService->createAuthUser();
         $patient = $patientCreator->createPatient();
-        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
-            $staff = $staffRepository->getStaff($this->getUser());
+        if (AuthUserInfoService::isDoctorHospital($this->getUser())) {
             $patient
                 ->setHospital($staff->getHospital())
                 ->setCity($staff->getHospital()->getCity());

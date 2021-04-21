@@ -487,21 +487,21 @@ class MenuBuilder
         $menu->setAttribute('class', 'sidebar__list');
         $patientsNoResultsTestingsCount = $patientTestingCounterRepository
             ->getNoResultsTestingsCount(
-                (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                AuthUserInfoService::isDoctorHospital($this->security->getUser())
                     ? $this->entityManager->getRepository(Staff::class)
                     ->getStaff($this->security->getUser())->getHospital()
                     : null
             );
         $patientsNoProcessedTestingsCount = $patientTestingCounterRepository
             ->getNoProcessedTestingsCount(
-                (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                AuthUserInfoService::isDoctorHospital($this->security->getUser())
                     ? $this->entityManager->getRepository(Staff::class)
                     ->getStaff($this->security->getUser())->getHospital()
                     : null
             );
         $patientsOpenedPrescriptionsCount = $this->entityManager->getRepository(Prescription::class)
             ->getOpenedPrescriptionsCount(
-                (new AuthUserInfoService())->isDoctorHospital($this->security->getUser())
+                AuthUserInfoService::isDoctorHospital($this->security->getUser())
                     ? $this->entityManager->getRepository(Staff::class)
                     ->getStaff($this->security->getUser())->getHospital()
                     : null
@@ -580,7 +580,7 @@ class MenuBuilder
                 ->getOverdueTestingsCount($patientId);
             $menu->addChild(
                 'patient', [
-                    'label' => '<strong>' . (new AuthUserInfoService())->getFIO(
+                    'label' => '<strong>' . AuthUserInfoService::getFIO(
                             $this->entityManager->getRepository(Patient::class)->find($patientId)->getAuthUser(),
                             true
                         ) . '</strong>',
@@ -668,7 +668,7 @@ class MenuBuilder
             ]
         );
         $this->activateStoringSelectedMenuItem($menu, $requestStack);
-        if ((new AuthUserInfoService())->isDoctorConsultant($this->security->getUser())) {
+        if (AuthUserInfoService::isDoctorConsultant($this->security->getUser())) {
             $menu->addChild(
                 'hospitalsList', [
                     'label' => 'Больницы',
