@@ -779,7 +779,6 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function redirectSubmitted(): RedirectResponse
     {
-        dd($this->templateService->getRedirectRouteParameters());
         return $this->redirectToRoute(
             $this->templateService->getRoute($this->templateService->getRedirectRouteName()),
             $this->templateService->getRedirectRouteParameters()
