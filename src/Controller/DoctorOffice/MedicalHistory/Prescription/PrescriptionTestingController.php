@@ -130,7 +130,6 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         PrescriptionTesting $prescriptionTesting
     ): Response
     {
-
         return $this->responseEditMultiForm(
             $request,
             $prescriptionTesting,

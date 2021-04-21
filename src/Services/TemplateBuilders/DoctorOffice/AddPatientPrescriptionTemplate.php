@@ -36,7 +36,8 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
         'loadTableData' => ListTemplateItem::DEFAULT_CONTENT['loadTableData'],
         'plannedDateTime' => PrescriptionAppointmentTemplate::COMMON_CONTENT['plannedDateTime'],
         'appointmentType' => PatientAppointmentTemplate::COMMON_CONTENT['appointmentType'],
-        'inclusionTime' => PrescriptionMedicineTemplate::ENTITY_CONTENT['inclusionTime'],
+        'startingMedicationDate' => PrescriptionMedicineTemplate::ENTITY_CONTENT['startingMedicationDate'],
+        'endMedicationDate' => PrescriptionMedicineTemplate::ENTITY_CONTENT['endMedicationDate'],
         'medicine_name' => PatientMedicineTemplate::COMMON_CONTENT['medicineName'],
         'instruction' => PatientMedicineTemplate::COMMON_CONTENT['instruction'],
     ];

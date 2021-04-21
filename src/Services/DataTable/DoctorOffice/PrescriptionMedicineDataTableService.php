@@ -43,8 +43,15 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
             ->setName(self::DATATABLE_NAME);
         $this->dataTable
             ->add(
-                'inclusionTime', DateTimeColumn::class, [
-                    'label' => $showTemplateItem->getContentValue('inclusionTime'),
+                'startingMedicationDate', DateTimeColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('startingMedicationDate'),
+                    'format' => 'd.m.Y h:m',
+                    'searchable' => false
+                ]
+            )
+            ->add(
+                'endMedicationDate', DateTimeColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('endMedicationDate'),
                     'format' => 'd.m.Y h:m',
                     'searchable' => false
                 ]

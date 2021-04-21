@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Form\Admin;
+namespace App\Form\PrescriptionMedicineType;
 
 use App\Controller\AppAbstractController;
-use App\Entity\PatientMedicine;
+use App\Entity\PrescriptionMedicine;
+use App\Entity\Staff;
+use App\Repository\StaffRepository;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class PatientMedicineType
- *
- * @package App\Form\Admin
- */
-class PatientMedicineTypeEnabled extends AbstractType
+class PrescriptionMedicineStaffType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -29,11 +26,17 @@ class PatientMedicineTypeEnabled extends AbstractType
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
             ->add(
-                'enabled',
-                CheckboxType::class,
-                [
-                    'label' => $templateItem->getContentValue('enabled'),
-                    'required' => true,
+                'staff', EntityType::class, [
+                    'label' => $templateItem->getContentValue('staff'),
+                    'class' => Staff::class,
+                    'choice_label' => function ($staff) {
+                        return (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true);
+                    },
+                    'query_builder' => function (StaffRepository $er) {
+                        return $er->createQueryBuilder('s')
+                            ->leftJoin('s.AuthUser', 'a')
+                            ->where('a.enabled = true');
+                    },
                 ]
             );
     }
@@ -44,7 +47,7 @@ class PatientMedicineTypeEnabled extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => PatientMedicine::class,])
+            ->setDefaults(['data_class' => PrescriptionMedicine::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

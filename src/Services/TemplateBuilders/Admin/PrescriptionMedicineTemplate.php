@@ -33,7 +33,6 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
         'startingMedicationDate' => 'Дата начала приема лекарства',
         'endMedicationDate' => 'Дата окончания приема лекарства',
         'patientMedicine' => PatientMedicineTemplate::ENTITY_CONTENT['entity'],
-//        'dateBegin' => PatientMedicineTemplate::ENTITY_CONTENT['dateBegin']
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -81,7 +80,8 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
         'entity' => 'Назначение лекарства',
-        'inclusionTime' => self::SHOW_CONTENT['inclusionTime']
+        'startingMedicationDate' => self::COMMON_CONTENT['startingMedicationDate'],
+        'endMedicationDate' => self::COMMON_CONTENT['endMedicationDate'],
     ];
 
     /**
