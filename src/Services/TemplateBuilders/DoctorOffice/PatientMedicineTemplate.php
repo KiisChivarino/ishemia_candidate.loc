@@ -23,12 +23,20 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
         'medicineName' => 'Название лекарства',
         'instruction' => 'Инструкция по применению',
         'dateBegin' => 'Дата начала приема',
+        'startingMedicationDate' => 'Дата начала приема лекарства',
+        'endMedicationDate' => 'Дата окончания приема лекарства',
     ];
 
     /** @var string[] Common NEW_CONTENT */
     protected const NEW_CONTENT = [
         'h1' => 'Добавление лекарства',
         'title' => 'Добавление лекарства',
+    ];
+
+    /** @var string[] Common EDIT_CONTENT */
+    protected const EDIT_CONTENT = [
+        'h1' => 'Редактирование лекарства',
+        'title' => 'Редактирование лекарства',
     ];
 
     /**

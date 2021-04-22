@@ -37,8 +37,7 @@ class PrescriptionInfoService
     static public function countChildren(Prescription $prescription): int
     {
         return
-        //TODO Разобраться с ошибкой
-//            $prescription->getPrescriptionMedicines()->count() +
+            $prescription->getPrescriptionMedicines()->count() +
             $prescription->getPrescriptionTestings()->count() +
             $prescription->getPrescriptionAppointments()->count();
     }

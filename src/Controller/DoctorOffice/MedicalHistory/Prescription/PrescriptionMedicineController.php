@@ -5,15 +5,17 @@ namespace App\Controller\DoctorOffice\MedicalHistory\Prescription;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Entity\Prescription;
-use App\Form\Admin\PrescriptionMedicineType;
-use App\Form\Admin\PrescriptionMedicineTypeEnabled;
+use App\Entity\PrescriptionMedicine;
 use App\Form\Doctor\PatientMedicineType;
+use App\Form\PrescriptionMedicineType\PrescriptionMedicineType;
+use App\Form\PrescriptionMedicineType\PrescriptionMedicineTypeEnabled;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionMedicineCreatorService;
 use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
 use App\Services\MultiFormService\FormData;
-use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
+use App\Services\TemplateBuilders\DoctorOffice\PatientMedicineTemplate;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,59 +36,20 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     const TEMPLATE_PATH = 'doctorOffice/patient_medicine/';
 
     /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $STAFF_OPTION;
-
-    /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $PRESCRIPTION_OPTION;
-
-    /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $MEDICAL_HISTORY_OPTION;
-
-    /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $PRESCRIPTION_MEDICINE;
-
-    /**
      * PatientPrescriptionController constructor.
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param PatientMedicineCreatorService $patientMedicineCreatorService
-     * @param string $staffOption
-     * @param string $prescriptionOption
-     * @param string $medicalHistoryOption
-     * @param string $prescriptionMedicine
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
-        TranslatorInterface $translator,
-        PatientMedicineCreatorService $patientMedicineCreatorService,
-        string $staffOption,
-        string $prescriptionOption,
-        string $medicalHistoryOption,
-        string $prescriptionMedicine
+        TranslatorInterface $translator
     )
     {
         parent::__construct($translator);
-        $this->templateService = new PrescriptionMedicineTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new PatientMedicineTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
-        $this->creatorService = $patientMedicineCreatorService;
-        $this->STAFF_OPTION = $staffOption;
-        $this->PRESCRIPTION_OPTION = $prescriptionOption;
-        $this->MEDICAL_HISTORY_OPTION = $medicalHistoryOption;
-        $this->PRESCRIPTION_MEDICINE = $prescriptionMedicine;
     }
 
     /**
@@ -151,10 +114,6 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                     $prescriptionMedicineCreatorService->getEntity()
                 ),
                 new FormData(
-                    PrescriptionMedicineTypeEnabled::class,
-                    $prescriptionMedicineCreatorService->getEntity()
-                ),
-                new FormData(
                     PatientMedicineType::class,
                     $patientMedicineCreatorService->getEntity()
                 ),
@@ -163,17 +122,39 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Edit prescription appointment
+     * Edit prescription medicine
      * @Route(
      *     "/patient/{patient}/prescription/{prescription}/patient_medicine/{prescriptionMedicine}/edit/",
      *     name="edit_prescription_medicine_by_doctor",
      *     methods={"GET","POST"}
      *     )
+     * @param Request $request
+     * @param PrescriptionMedicine $prescriptionMedicine
      * @return Response
+     * @throws ReflectionException
      */
     public function edit(
-
+        Request $request,
+        PrescriptionMedicine $prescriptionMedicine
     ): Response
     {
+        return $this->responseEditMultiForm(
+            $request,
+            $prescriptionMedicine,
+            [
+                new FormData(
+                    PrescriptionMedicineType::class,
+                    $prescriptionMedicine
+                ),
+                new FormData(
+                    PrescriptionMedicineTypeEnabled::class,
+                    $prescriptionMedicine
+                ),
+                new FormData(
+                    PatientMedicineType::class,
+                    $prescriptionMedicine->getPatientMedicine()
+                ),
+            ]
+        );
     }
 }

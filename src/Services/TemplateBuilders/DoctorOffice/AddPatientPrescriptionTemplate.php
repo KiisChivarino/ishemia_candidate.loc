@@ -5,6 +5,7 @@ namespace App\Services\TemplateBuilders\DoctorOffice;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionAppointmentTemplate;
+use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
@@ -35,6 +36,10 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
         'loadTableData' => ListTemplateItem::DEFAULT_CONTENT['loadTableData'],
         'plannedDateTime' => PrescriptionAppointmentTemplate::COMMON_CONTENT['plannedDateTime'],
         'appointmentType' => PatientAppointmentTemplate::COMMON_CONTENT['appointmentType'],
+        'startingMedicationDate' => PrescriptionMedicineTemplate::ENTITY_CONTENT['startingMedicationDate'],
+        'endMedicationDate' => PrescriptionMedicineTemplate::ENTITY_CONTENT['endMedicationDate'],
+        'medicine_name' => PatientMedicineTemplate::COMMON_CONTENT['medicineName'],
+        'instruction' => PatientMedicineTemplate::COMMON_CONTENT['instruction'],
     ];
 
 

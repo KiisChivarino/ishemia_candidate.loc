@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Form\Admin;
+namespace App\Form\PatientMedicineType;
 
 use App\Controller\AppAbstractController;
-use App\Entity\PrescriptionMedicine;
+use App\Entity\PatientMedicine;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
@@ -12,11 +12,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class PrescriptionMedicineType
+ * Class PatientMedicineType
  *
  * @package App\Form\Admin
  */
-class PrescriptionMedicineTypeEnabled extends AbstractType
+class PatientMedicineTypeEnabled extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -33,7 +33,7 @@ class PrescriptionMedicineTypeEnabled extends AbstractType
                 CheckboxType::class,
                 [
                     'label' => $templateItem->getContentValue('enabled'),
-                    'required' => false,
+                    'required' => true,
                 ]
             );
     }
@@ -44,7 +44,7 @@ class PrescriptionMedicineTypeEnabled extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => PrescriptionMedicine::class,])
+            ->setDefaults(['data_class' => PatientMedicine::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

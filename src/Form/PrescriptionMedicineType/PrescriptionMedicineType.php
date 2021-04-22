@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Admin;
+namespace App\Form\PrescriptionMedicineType;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PrescriptionMedicine;
@@ -28,20 +28,6 @@ class PrescriptionMedicineType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-//            ->add(
-//                'staff', EntityType::class, [
-//                    'label' => $templateItem->getContentValue('staff'),
-//                    'class' => Staff::class,
-//                    'choice_label' => function ($staff) {
-//                        return (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true);
-//                    },
-//                    'query_builder' => function (StaffRepository $er) {
-//                        return $er->createQueryBuilder('s')
-//                            ->leftJoin('s.AuthUser', 'a')
-//                            ->where('a.enabled = true');
-//                    },
-//                ]
-//            )
             ->add(
                 'startingMedicationDate', DateType::class, [
                     'label' => $templateItem->getContentValue('startingMedicationDate'),

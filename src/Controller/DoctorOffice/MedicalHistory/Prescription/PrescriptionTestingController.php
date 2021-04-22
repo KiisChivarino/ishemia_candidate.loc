@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-
 /**
  * Class AddingSurveyController
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
@@ -130,7 +129,6 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         PrescriptionTesting $prescriptionTesting
     ): Response
     {
-
         return $this->responseEditMultiForm(
             $request,
             $prescriptionTesting,

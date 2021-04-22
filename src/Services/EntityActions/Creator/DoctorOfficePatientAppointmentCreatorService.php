@@ -6,11 +6,12 @@ use App\Entity\Staff;
 use Exception;
 
 /**
- * Class DoctorOfficePrescriptionTestingService
+ * Class DoctorOfficePatientAppointmentCreatorService
  * @package App\Services\EntityActions\Creator
  */
-class DoctorOfficePrescriptionTestingService extends PrescriptionTestingCreatorService
+class DoctorOfficePatientAppointmentCreatorService extends PatientAppointmentCreatorService
 {
+
     /**
      * Actions with entity before persisting one
      */
