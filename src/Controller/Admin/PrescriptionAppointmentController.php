@@ -86,6 +86,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
      * @return Response
      * @throws \ReflectionException
+     * @throws \Exception
      */
     public function new(
         Request $request,
@@ -94,45 +95,35 @@ class PrescriptionAppointmentController extends AdminAbstractController
     ): Response
     {
         $prescription = $this->getPrescriptionByParameter($request);
-
-        $patientAppointment = $patientAppointmentCreatorService->execute(
+        $patientAppointment = $patientAppointmentCreatorService->before(
+            [
+                PatientAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+            ]
+        )->getEntity();
+        $prescriptionAppointment = $prescriptionAppointmentCreatorService->before(
             [
                 PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
-            ])->getEntity();
-
+                PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
+            ]
+        )->getEntity();
         return $this->responseNewMultiFormWithActions(
             $request,
             [
+                new CreatorEntityActionsBuilder($prescriptionAppointmentCreatorService),
                 new CreatorEntityActionsBuilder(
-                    $prescriptionAppointmentCreatorService,
-                    [
-                        PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
-                        PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
-                    ],
-                    function (PrescriptionAppointmentCreatorService $prescriptionAppointmentCreatorService) use (
-                        $patientAppointment,
-                        $prescription,
-                        $patientAppointmentCreatorService
-                    ): array {
+                    $patientAppointmentCreatorService,
+                    [],
+                    function () use ($prescriptionAppointment) {
                         return [
-                            PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
+                            PatientAppointmentCreatorService::PRESCRIPTION_APPOINTMENT_OPTION => $prescriptionAppointment
                         ];
                     }
                 ),
             ],
             [
-                new FormData(
-                    PrescriptionAppointmentStaffType::class,
-                    $prescriptionAppointmentCreatorService->getEntity()
-                ),
-                new FormData(
-                    PrescriptionAppointmentPlannedDateType::class,
-                    $prescriptionAppointmentCreatorService->getEntity()
-                ),
-                new FormData(
-                    PatientAppointmentType::class,
-                    $patientAppointmentCreatorService->getEntity()
-                )
+                new FormData(PrescriptionAppointmentStaffType::class, $prescriptionAppointment),
+                new FormData(PrescriptionAppointmentPlannedDateType::class, $prescriptionAppointment),
+                new FormData(PatientAppointmentType::class, $patientAppointment)
             ]
         );
     }
