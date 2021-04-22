@@ -43,6 +43,7 @@ services:
             $notificationReceiverTypeTitles: '%notification_receiver_type_titles%'
             $patientTestingOption: '%patient_testing_option%'
             $caseType: '%caseType%'
+            $roles: '%roles%'
 
 
     # makes classes in src/ available to be used as services
@@ -95,6 +96,6 @@ services:
     App\Form\AuthUser\AuthUserRoleType:
         arguments: ['@doctrine.orm.entity_manager']
         tags: [form.type]
-    App\Services\EntityActions\AbstractEntityActionsService:
+    App\Services\EntityActions\Core\AbstractEntityActionsService:
         abstract: true
         arguments: [ '@doctrine.orm.entity_manager' ]

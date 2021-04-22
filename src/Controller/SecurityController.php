@@ -11,6 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class SecurityController
+ * @package App\Controller
+ */
 class SecurityController extends AbstractController
 {
     /**
@@ -25,11 +29,11 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
         if ($this->getUser()) {
-            $roleTechName = (new AuthUserInfoService())
-                ->getRoleNames($this->getDoctrine()->getManager()->getRepository(AuthUser::class)
-                    ->getRoles($this->getUser()), true);
+            $roleTechName = AuthUserInfoService::getRoleNames(
+                $this->getDoctrine()->getManager()->getRepository(AuthUser::class)->getRoles($this->getUser()),
+                true);
             $roles = Yaml::parseFile('..//config/services/roles.yaml');
-            foreach ($roles['parameters'] as $roleData) {
+            foreach ($roles['parameters']['roles'] as $roleData) {
                 if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {
                     return $this->redirectToRoute($roleData['route']);
                 }elseif (array_search($roleData['techName'], $this->getUser()->getRoles()) !== false) {
