@@ -2,8 +2,8 @@
 
 namespace App\Services\EntityActions\Creator;
 
+use App\Entity\MedicalHistory;
 use App\Entity\PatientAppointment;
-use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use App\Services\EntityActions\Core\AbstractCreatorService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,23 +15,21 @@ use Exception;
  */
 class PatientAppointmentCreatorService extends AbstractCreatorService
 {
-    /** @var string Name of Prescription option */
-    public const PRESCRIPTION_OPTION = 'prescription';
-
     /** @var string Name of Prescription appointment option */
     public const PRESCRIPTION_APPOINTMENT_OPTION = 'prescriptionAppointment';
 
     /** @var string Name of Staff option */
     public const STAFF_OPTION = 'staff';
 
+    /** @var string Name of Medical History option */
+    public const MEDICAL_HISTORY_OPTION = 'medicalHistory';
+
     /**
      * PatientTestingCreatorService constructor.
      * @param EntityManagerInterface $entityManager
      * @throws Exception
      */
-    public function __construct(
-        EntityManagerInterface $entityManager
-    )
+    public function __construct(EntityManagerInterface $entityManager)
     {
         parent::__construct($entityManager, PatientAppointment::class);
     }
@@ -44,14 +42,14 @@ class PatientAppointmentCreatorService extends AbstractCreatorService
             ->setIsConfirmed(false)
             ->setIsFirst(false)
             ->setIsByPlan(false)
-            ->setMedicalHistory($this->options[self::PRESCRIPTION_OPTION]->getMedicalHistory())
+            ->setMedicalHistory($this->options[self::MEDICAL_HISTORY_OPTION])
             ->setPrescriptionAppointment($this->options[self::PRESCRIPTION_APPOINTMENT_OPTION])
             ->setStaff($patientAppointment->getPrescriptionAppointment()->getStaff());
     }
 
     protected function configureOptions(): void
     {
-        $this->addOptionCheck(Prescription::class, self::PRESCRIPTION_OPTION);
+        $this->addOptionCheck(MedicalHistory::class, self::MEDICAL_HISTORY_OPTION);
         $this->addOptionCheck(PrescriptionAppointment::class, self::PRESCRIPTION_APPOINTMENT_OPTION);
     }
 }

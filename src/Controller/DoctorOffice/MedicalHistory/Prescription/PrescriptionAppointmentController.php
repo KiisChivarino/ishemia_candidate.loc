@@ -76,7 +76,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
         /** @var PatientAppointment $patientAppointment */
         $patientAppointment = $patientAppointmentCreatorService->before(
             [
-                PatientAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+                PatientAppointmentCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
                 PatientAppointmentCreatorService::STAFF_OPTION => $this->getStaff($patient),
             ]
         )->getEntity();
@@ -86,7 +86,6 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
             PrescriptionAppointmentCreatorService::STAFF_OPTION => $this->getStaff($patient),
             PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
         ])->getEntity();
-
         return $this->responseNewMultiFormWithActions(
             $request,
             [

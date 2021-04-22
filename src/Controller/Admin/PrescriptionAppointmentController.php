@@ -97,7 +97,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
         $prescription = $this->getPrescriptionByParameter($request);
         $patientAppointment = $patientAppointmentCreatorService->before(
             [
-                PatientAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+                PatientAppointmentCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
             ]
         )->getEntity();
         $prescriptionAppointment = $prescriptionAppointmentCreatorService->before(
