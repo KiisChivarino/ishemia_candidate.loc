@@ -10,6 +10,7 @@ use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Creator\DoctorOfficePatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
@@ -104,7 +105,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @param Prescription $prescription
      * @param Patient $patient
      * @param DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreatorService
-     * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
+     * @param DoctorOfficePatientAppointmentCreatorService $patientAppointmentCreatorService
      * @return Response
      * @throws \ReflectionException
      */
@@ -113,12 +114,13 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
         Prescription $prescription,
         Patient $patient,
         DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreatorService,
-        PatientAppointmentCreatorService $patientAppointmentCreatorService
+        DoctorOfficePatientAppointmentCreatorService $patientAppointmentCreatorService
     ): Response
     {
         $patientAppointment = $patientAppointmentCreatorService->execute(
             [
                 PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+                PrescriptionAppointmentCreatorService::STAFF_OPTION => $this->getStaff($patient),
             ]
         )->getEntity();
 

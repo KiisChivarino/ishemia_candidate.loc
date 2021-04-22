@@ -97,14 +97,8 @@ class PrescriptionAppointmentController extends AdminAbstractController
 
         $patientAppointment = $patientAppointmentCreatorService->execute(
             [
-                PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription
+                PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
             ])->getEntity();
-
-        $prescriptionAppointmentCreatorService->before([
-            PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
-            PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
-        ]);
-
 
         return $this->responseNewMultiFormWithActions(
             $request,
@@ -113,6 +107,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
                     $prescriptionAppointmentCreatorService,
                     [
                         PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+                        PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
                     ],
                     function (PrescriptionAppointmentCreatorService $prescriptionAppointmentCreatorService) use (
                         $patientAppointment,
@@ -123,7 +118,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
                             PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
                         ];
                     }
-                )
+                ),
             ],
             [
                 new FormData(
