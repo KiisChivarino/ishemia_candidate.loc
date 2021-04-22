@@ -36,59 +36,20 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     const TEMPLATE_PATH = 'doctorOffice/patient_medicine/';
 
     /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $STAFF_OPTION;
-
-    /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $PRESCRIPTION_OPTION;
-
-    /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $MEDICAL_HISTORY_OPTION;
-
-    /**
-     * @var string
-     * yaml:config/services/entityActions/doctor_office_entity_actions.yml
-     */
-    private $PRESCRIPTION_MEDICINE;
-
-    /**
      * PatientPrescriptionController constructor.
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param PatientMedicineCreatorService $patientMedicineCreatorService
-     * @param string $staffOption
-     * @param string $prescriptionOption
-     * @param string $medicalHistoryOption
-     * @param string $prescriptionMedicine
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
-        TranslatorInterface $translator,
-        PatientMedicineCreatorService $patientMedicineCreatorService,
-        string $staffOption,
-        string $prescriptionOption,
-        string $medicalHistoryOption,
-        string $prescriptionMedicine
+        TranslatorInterface $translator
     )
     {
         parent::__construct($translator);
         $this->templateService = new PatientMedicineTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
-        $this->creatorService = $patientMedicineCreatorService;
-        $this->STAFF_OPTION = $staffOption;
-        $this->PRESCRIPTION_OPTION = $prescriptionOption;
-        $this->MEDICAL_HISTORY_OPTION = $medicalHistoryOption;
-        $this->PRESCRIPTION_MEDICINE = $prescriptionMedicine;
     }
 
     /**
