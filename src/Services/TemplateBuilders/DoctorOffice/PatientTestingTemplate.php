@@ -29,6 +29,12 @@ class PatientTestingTemplate extends DoctorOfficeTemplateBuilder
         'title' => 'Добавление обследования',
     ];
 
+    /** @var string[] Common EDIT_CONTENT */
+    protected const EDIT_CONTENT = [
+        'h1' => 'Редактирование обследования',
+        'title' => 'Редактирование обследования',
+    ];
+
     /**
      * PatientTestingTemplate constructor.
      *

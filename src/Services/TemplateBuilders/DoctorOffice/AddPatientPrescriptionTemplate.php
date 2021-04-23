@@ -28,8 +28,11 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
     protected const SHOW_CONTENT = [
         'title' => 'Просмотр назначения',
         'h2' => 'Просмотр назначения',
-        'createdTime' => 'Дата и время создания назначения',
-        'doctor' => 'Врач',
+        'createdTime' => 'Дата и время создания назначения:',
+        'doctor' => 'Врач создавший назначение:',
+        'PrescriptionTesting' => 'Назначенные обследования:',
+        'PrescriptionAppointment' => 'Назначенные приёмы:',
+        'PrescriptionMedicine' => 'Назначенные лекарства:',
         'analysisGroup' => AnalysisGroupTemplate::ENTITY_CONTENT['entity'],
         'plannedDate' => PrescriptionTestingTemplate::COMMON_CONTENT['plannedDate'],
         'operations' => ListTemplateItem::DEFAULT_CONTENT['operations'],

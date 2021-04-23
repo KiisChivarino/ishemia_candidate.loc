@@ -16,6 +16,8 @@ use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientAppointmentCreatorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientAppointmentTemplate;
+use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,11 +61,11 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @param Request $request
      * @param Prescription $prescription
      * @param Patient $patient
-     * @param \App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreator
-     * @param \App\Services\EntityActions\Creator\SpecialPatientAppointmentCreatorService $patientAppointmentCreator
+     * @param DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreator
+     * @param SpecialPatientAppointmentCreatorService $patientAppointmentCreator
      * @return Response
-     * @throws \ReflectionException
-     * @throws \Exception
+     * @throws ReflectionException
+     * @throws Exception
      */
     public function new(
         Request $request,
@@ -121,7 +123,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @param Request $request
      * @param PrescriptionAppointment $prescriptionAppointment
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function edit(
         Request $request,

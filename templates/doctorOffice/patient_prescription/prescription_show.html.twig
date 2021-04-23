@@ -44,42 +44,46 @@
     </div>
     <div id="prescriptionInfo">
         <div id="prescriptionDate">
-            <div>{{ template.items.show.content.createdTime }}</div>
+            <b>{{ template.items.show.content.createdTime }}</b><br>
             {{ prescription.createdTime ? prescription.createdTime|date('Y-m-d') : '' }}
         </div>
         <div id="prescriptionStaff">
-            <div>{{ template.items.show.content.doctor }}</div>
+            <b>{{ template.items.show.content.doctor }}</b><br>
             {{ fio(prescription.staff.AuthUser) }}
         </div>
     </div>
 
-    {{ include(
-        'show_table.html.twig',
-        {
-            'tableId': 'prescriptionTestingList',
-            'table' : prescriptionTestingTable,
-            'data_name': dataName
-        }
-    ) }}
+    <div class="dataTablePrescriptionWrapper">
+        <h3 class="labelSeparating">{{ template.items.show.content.PrescriptionTesting }}</h3>
+        {{ include(
+            'show_table.html.twig',
+            {
+                'tableId': 'prescriptionTestingList',
+                'table' : prescriptionTestingTable,
+                'data_name': dataName
+            }
+        ) }}
 
-    {{ include(
-        'show_table.html.twig',
-        {
-            'tableId': 'prescriptionAppointment',
-            'table' : prescriptionAppointmentTable,
-            'data_name': dataName
-        }
-    ) }}
+        <h3 class="labelSeparating">{{ template.items.show.content.PrescriptionAppointment }}</h3>
+        {{ include(
+            'show_table.html.twig',
+            {
+                'tableId': 'prescriptionAppointment',
+                'table' : prescriptionAppointmentTable,
+                'data_name': dataName
+            }
+        ) }}
 
-    {{ include(
-        'show_table.html.twig',
-        {
-            'tableId': 'prescriptionMedicine',
-            'table' : prescriptionMedicineTable,
-            'data_name': dataName
-        }
-    ) }}
-
+        <h3 class="labelSeparating">{{ template.items.show.content.PrescriptionMedicine }}</h3>
+        {{ include(
+            'show_table.html.twig',
+            {
+                'tableId': 'prescriptionMedicine',
+                'table' : prescriptionMedicineTable,
+                'data_name': dataName
+            }
+        ) }}
+    </div>
     <div class="buttons">
         <button class="button main-button"
                 onclick="location.href='{{ path(
@@ -103,6 +107,59 @@
             </button>
         {% endif %}
     </div>
+
+    <style>
+        /*
+        Верстка страницы назначений в кабинете врача
+        /doctor_office/patient/{id}/prescription/{id}/show
+        Выполнено в рамках задачи
+        https://www.notion.so/EntityActions-1ddaf1763cb64e379685ed3f359a86e8
+        */
+        .main-button {
+            margin: 5px;
+        }
+
+        .main-button:nth-child(1) {
+            margin: 5px 5px 5px 0;
+        }
+
+        .main-button:nth-last-child {
+            margin: 5px 0 5px 5px;
+        }
+
+
+        #prescriptionDate, #prescriptionStaff {
+            margin: 10px 0;
+        }
+
+        #prescriptionInfo {
+            margin-top: 5px;
+        }
+
+        .dataTablePrescriptionWrapper{
+            margin-bottom: 25px;
+        }
+
+        .labelSeparating{
+            margin: 20px 0 10px 0;
+        }
+
+        /*Дататейблы*/
+
+        .dataTable th {
+            cursor: pointer;
+        }
+
+        .dataTable .sorting_disabled {
+            cursor: default;
+        }
+
+        .pagination:empty {
+            display: none;
+        }
+
+    </style>
+
 {% endblock %}
 
 {% block javascripts %}
