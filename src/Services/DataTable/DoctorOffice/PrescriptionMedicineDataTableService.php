@@ -73,8 +73,10 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                     'field' => 'pma.instruction',
                     'searchable' => true,
                     'render' => function (string $data) use ($showTemplateItem) {
-                        return
-                            $data ?: $showTemplateItem->getContentValue('empty');
+                    return
+                            $data
+                                ? htmlspecialchars_decode($data)
+                                : $showTemplateItem->getContentValue('empty');
                     }
                 ]
             )

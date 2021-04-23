@@ -6,7 +6,7 @@ use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
-use App\Form\Doctor\PatientMedicineType;
+use App\Form\PatientMedicineType\PatientMedicineType;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineType;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineTypeEnabled;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;

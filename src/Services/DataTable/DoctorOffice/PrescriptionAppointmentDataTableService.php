@@ -45,7 +45,7 @@ class PrescriptionAppointmentDataTableService extends AdminDatatableService
             ->add(
                 'plannedDateTime', DateTimeColumn::class, [
                     'label' => $showTemplateItem->getContentValue('plannedDateTime'),
-                    'format' => 'd.m.Y',
+                    'format' => 'd.m.Y h:i',
                     'searchable' => false
                 ]
             )
