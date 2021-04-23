@@ -81,6 +81,14 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
             PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting
         ]);
 
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $patient,
+                'prescription' => $prescription
+            ]
+        );
+
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -129,6 +137,15 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         PrescriptionTesting $prescriptionTesting
     ): Response
     {
+
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $prescriptionTesting->getPrescription()->getMedicalHistory()->getPatient(),
+                'prescription' => $prescriptionTesting->getPrescription()
+            ]
+        );
+
         return $this->responseEditMultiForm(
             $request,
             $prescriptionTesting,

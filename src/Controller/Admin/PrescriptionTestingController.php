@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
-use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
@@ -19,6 +18,7 @@ use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -84,148 +84,137 @@ class PrescriptionTestingController extends AdminAbstractController
 
     /**
      * New testing prescription
-     * @Route("/new", name="admin_prescription_testing_new", methods={"GET","POST"})
+     * @Route(
+     *     "/prescription/{prescription}/prescription_testing/new",
+     *     name="admin_prescription_testing_new",
+     *     methods={"GET","POST"}
+     *     )
      *
      * @param Request $request
-     *
-     * @param PrescriptionRepository $prescriptionRepository
+     * @param Prescription $prescription
+     * @param PrescriptionTestingCreatorService $prescriptionTestingCreatorService
+     * @param SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
      * @return Response
-     * @throws Exception
+     * @throws ReflectionException
      */
     public function new(
         Request $request,
-        PrescriptionRepository $prescriptionRepository,
+        Prescription $prescription,
         PrescriptionTestingCreatorService $prescriptionTestingCreatorService,
         SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
     ): Response
     {
-        if ($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)) {
-            /** @var Prescription $prescription */
-            $prescription = $prescriptionRepository
-                ->find($request->query->get(PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY));
-            if (!$prescription || !is_a($prescription, Prescription::class)) {
-                $this->addFlash(
-                    'warning',
-                    'Назначение на консультацию не может быть добавлено: назначение не найдено!'
-                );
-                return $this->redirectToRoute($this->templateService->getRoute('new'));
-            } else {
-                /** @var PatientTesting $patientTesting */
-                $patientTesting = $specialPatientTestingCreatorService->execute(
-                    [
-                        PatientTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
-                    ]
-                )->getEntity();
-                $prescriptionTestingCreatorService->before(
-                    [
-                        PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
-                        PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting,
-                    ]
-                );
-                return $this->responseNewMultiFormWithActions(
-                    $request,
-                    [
-                        new CreatorEntityActionsBuilder($prescriptionTestingCreatorService),
-                    ],
-                    [
-                        new FormData(
-                            PrescriptionTestingType\PrescriptionTestingStaff::class,
-                            $prescriptionTestingCreatorService->getEntity()
-                        ),
-                        new FormData(
-                            PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
-                            $prescriptionTestingCreatorService->getEntity()
-                        ),
-                        new FormData(PatientTestingRequiredType::class, $patientTesting),
-                    ]
-                );
-            }
-        } else {
-            $this->addFlash(
-                'warning',
-                'Назначение на консультацию не может быть добавлено: необходим код назначения!'
-            );
-            return $this->redirectToRoute($this->templateService->getRoute('list'));
-        }
-    }
-
-    /**
-     * Show testing prescription
-     * @Route("/{id}", name="admin_prescription_testing_show", methods={"GET"}, requirements={"id"="\d+"})
-     *
-     * @param PrescriptionTesting $prescriptionTesting
-     *
-     * @return Response
-     * @throws Exception
-     */
-    public function show(PrescriptionTesting $prescriptionTesting): Response
-    {
-        return $this->responseShow(
-            self::TEMPLATE_PATH,
-            $prescriptionTesting,
+        /** @var PatientTesting $patientTesting */
+        $patientTesting = $specialPatientTestingCreatorService->execute(
             [
-                'prescriptionTitle' =>
-                    PrescriptionInfoService::getPrescriptionTitle($prescriptionTesting->getPrescription()),
-                'patientTestingInfo' =>
-                    PatientTestingInfoService::getPatientTestingInfoString($prescriptionTesting->getPatientTesting()),
-                'staff' =>
-                    AuthUserInfoService::getFIO($prescriptionTesting->getStaff()->getAuthUser(), true),
+                PatientTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
+            ]
+        )->getEntity();
+        $prescriptionTestingCreatorService->before(
+            [
+                PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
+                PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting,
             ]
         );
-    }
-
-    /**
-     * Edit testing prescription
-     * @Route("/{id}/edit", name="admin_prescription_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
-     *
-     * @param Request $request
-     * @param PrescriptionTesting $prescriptionTesting
-     *
-     * @return Response
-     * @throws Exception
-     */
-    public function edit(
-        Request $request,
-        PrescriptionTesting $prescriptionTesting
-    ): Response
-    {
-
-        return $this->responseEditMultiForm(
+        return $this->responseNewMultiFormWithActions(
             $request,
-            $prescriptionTesting,
+            [
+                new CreatorEntityActionsBuilder($prescriptionTestingCreatorService),
+            ],
             [
                 new FormData(
                     PrescriptionTestingType\PrescriptionTestingStaff::class,
-                    $prescriptionTesting
-                ),
-                new FormData(
-                    PatientTestingRequiredType::class,
-                    $prescriptionTesting->getPatientTesting()
+                    $prescriptionTestingCreatorService->getEntity()
                 ),
                 new FormData(
                     PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
-                    $prescriptionTesting
+                    $prescriptionTestingCreatorService->getEntity()
                 ),
-                new FormData(
-                    PrescriptionTestingType\PrescriptionTestingConfirmedEnableType::class,
-                    $prescriptionTesting
-                ),
+                new FormData(PatientTestingRequiredType::class, $patientTesting),
             ]
         );
-    }
+}
 
-    /**
-     * Delete testing prescription
-     * @Route("/{id}", name="admin_prescription_testing_delete", methods={"DELETE"}, requirements={"prescriptionTesting"="\d+"})
-     *
-     * @param Request $request
-     * @param PrescriptionTesting $prescriptionTesting
-     *
-     * @return Response
-     * @throws Exception
-     */
-    public function delete(Request $request, PrescriptionTesting $prescriptionTesting): Response
-    {
-        return $this->responseDelete($request, $prescriptionTesting);
-    }
+/**
+ * Show testing prescription
+ * @Route("/{id}", name="admin_prescription_testing_show", methods={"GET"}, requirements={"id"="\d+"})
+ *
+ * @param PrescriptionTesting $prescriptionTesting
+ *
+ * @return Response
+ * @throws Exception
+ */
+public
+function show(PrescriptionTesting $prescriptionTesting): Response
+{
+    return $this->responseShow(
+        self::TEMPLATE_PATH,
+        $prescriptionTesting,
+        [
+            'prescriptionTitle' =>
+                PrescriptionInfoService::getPrescriptionTitle($prescriptionTesting->getPrescription()),
+            'patientTestingInfo' =>
+                PatientTestingInfoService::getPatientTestingInfoString($prescriptionTesting->getPatientTesting()),
+            'staff' =>
+                AuthUserInfoService::getFIO($prescriptionTesting->getStaff()->getAuthUser(), true),
+        ]
+    );
+}
+
+/**
+ * Edit testing prescription
+ * @Route("/{id}/edit", name="admin_prescription_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+ *
+ * @param Request $request
+ * @param PrescriptionTesting $prescriptionTesting
+ *
+ * @return Response
+ * @throws Exception
+ */
+public
+function edit(
+    Request $request,
+    PrescriptionTesting $prescriptionTesting
+): Response
+{
+
+    return $this->responseEditMultiForm(
+        $request,
+        $prescriptionTesting,
+        [
+            new FormData(
+                PrescriptionTestingType\PrescriptionTestingStaff::class,
+                $prescriptionTesting
+            ),
+            new FormData(
+                PatientTestingRequiredType::class,
+                $prescriptionTesting->getPatientTesting()
+            ),
+            new FormData(
+                PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
+                $prescriptionTesting
+            ),
+            new FormData(
+                PrescriptionTestingType\PrescriptionTestingConfirmedEnableType::class,
+                $prescriptionTesting
+            ),
+        ]
+    );
+}
+
+/**
+ * Delete testing prescription
+ * @Route("/{id}", name="admin_prescription_testing_delete", methods={"DELETE"}, requirements={"prescriptionTesting"="\d+"})
+ *
+ * @param Request $request
+ * @param PrescriptionTesting $prescriptionTesting
+ *
+ * @return Response
+ * @throws Exception
+ */
+public
+function delete(Request $request, PrescriptionTesting $prescriptionTesting): Response
+{
+    return $this->responseDelete($request, $prescriptionTesting);
+}
 }

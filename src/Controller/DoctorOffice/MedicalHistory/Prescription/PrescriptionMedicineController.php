@@ -66,7 +66,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      * @param DoctorOfficePrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
      * @return Response
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function new(
         Request $request,
@@ -86,6 +86,14 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
             PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
             PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
         ]);
+
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $patient,
+                'prescription' => $prescription
+            ]
+        );
 
         return $this->responseNewMultiFormWithActions(
             $request,
@@ -138,6 +146,14 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
         PrescriptionMedicine $prescriptionMedicine
     ): Response
     {
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $prescriptionMedicine->getPrescription()->getMedicalHistory()->getPatient(),
+                'prescription' => $prescriptionMedicine->getPrescription()
+            ]
+        );
+
         return $this->responseEditMultiForm(
             $request,
             $prescriptionMedicine,

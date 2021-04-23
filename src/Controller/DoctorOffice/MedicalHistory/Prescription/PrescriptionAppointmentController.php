@@ -91,6 +91,15 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                     PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
                 ]
             )->getEntity();
+
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $patient,
+                'prescription' => $prescription
+            ]
+        );
+
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -130,6 +139,14 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
         PrescriptionAppointment $prescriptionAppointment
     ): Response
     {
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $prescriptionAppointment->getPrescription()->getMedicalHistory()->getPatient(),
+                'prescription' => $prescriptionAppointment->getPrescription()
+            ]
+        );
+
         return $this->responseEditMultiForm(
             $request,
             $prescriptionAppointment,
