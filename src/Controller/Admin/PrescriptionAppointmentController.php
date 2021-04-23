@@ -10,9 +10,9 @@ use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentStaffType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionAppointmentDataTableService;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
-use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
+use App\Services\EntityActions\Creator\SpecialPatientAppointmentCreatorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientAppointmentInfoService;
@@ -82,40 +82,44 @@ class PrescriptionAppointmentController extends AdminAbstractController
      * New patient appointment
      * @Route("/new", name="prescription_appointment_new", methods={"GET","POST"})
      * @param Request $request
-     * @param DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreatorService
-     * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
+     * @param \App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator
+     * @param \App\Services\EntityActions\Creator\SpecialPatientAppointmentCreatorService $patientAppointmentCreator
      * @return Response
      * @throws \ReflectionException
      * @throws \Exception
      */
     public function new(
         Request $request,
-        PrescriptionAppointmentCreatorService $prescriptionAppointmentCreatorService,
-        PatientAppointmentCreatorService $patientAppointmentCreatorService
+        PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator,
+        SpecialPatientAppointmentCreatorService $patientAppointmentCreator
     ): Response
     {
         $prescription = $this->getPrescriptionByParameter($request);
-        $patientAppointment = $patientAppointmentCreatorService->before(
-            [
-                PatientAppointmentCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
-            ]
-        )->getEntity();
-        $prescriptionAppointment = $prescriptionAppointmentCreatorService->before(
-            [
-                PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
-                PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
-            ]
-        )->getEntity();
+        $patientAppointment =
+            $patientAppointmentCreator->before(
+                [
+                    PatientAppointmentCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
+                ]
+            )->getEntity();
+        $prescriptionAppointment =
+            $prescriptionAppointmentCreator->before(
+                [
+                    PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+                    PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
+                ]
+            )->getEntity();
         return $this->responseNewMultiFormWithActions(
             $request,
             [
-                new CreatorEntityActionsBuilder($prescriptionAppointmentCreatorService),
+                new CreatorEntityActionsBuilder($prescriptionAppointmentCreator),
                 new CreatorEntityActionsBuilder(
-                    $patientAppointmentCreatorService,
+                    $patientAppointmentCreator,
                     [],
                     function () use ($prescriptionAppointment) {
                         return [
-                            PatientAppointmentCreatorService::PRESCRIPTION_APPOINTMENT_OPTION => $prescriptionAppointment
+                            //до отправки формы prescriptionAppointment добавить через creator не получается, добавляем после отправки
+                            SpecialPatientAppointmentCreatorService::PRESCRIPTION_APPOINTMENT_OPTION => $prescriptionAppointment,
+                            SpecialPatientAppointmentCreatorService::STAFF_OPTION => $prescriptionAppointment->getStaff(),
                         ];
                     }
                 ),

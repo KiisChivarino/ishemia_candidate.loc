@@ -490,9 +490,9 @@ abstract class AppAbstractController extends AbstractController
     /**
      * Response several forms for creating using service of actions with entity
      * @param Request $request
-     * @param array $creatorEntityActionsBuilderArray
-     * @param array $formDataArray
-     * @param string $templateName
+     * @param array $creatorEntityActionsBuilderArray - array of EntityActionsBuilders: EntityActionsCreator, options for it before and after submit form
+     * @param array $formDataArray - array of form data: name of form class, entity object for form, form options and others
+     * @param string $templateName - special name of twig template
      * @return RedirectResponse|Response
      * @throws ReflectionException
      * @throws Exception
