@@ -4,6 +4,7 @@ namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -66,6 +67,17 @@ class PatientTestingTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::new();
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     * @return $this|AppTemplateBuilder
+     */
+    public function edit(?object $entity = null): AppTemplateBuilder
+    {
+        parent::edit();
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
         return $this;
     }
 }

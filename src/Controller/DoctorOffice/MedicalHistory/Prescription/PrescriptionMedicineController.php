@@ -8,13 +8,13 @@ use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Form\PatientMedicineType\PatientMedicineType;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineType;
-use App\Form\PrescriptionMedicineType\PrescriptionMedicineTypeEnabled;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionMedicineCreatorService;
 use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientMedicineTemplate;
+use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -163,14 +163,42 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                     $prescriptionMedicine
                 ),
                 new FormData(
-                    PrescriptionMedicineTypeEnabled::class,
-                    $prescriptionMedicine
-                ),
-                new FormData(
                     PatientMedicineType::class,
                     $prescriptionMedicine->getPatientMedicine()
                 ),
             ]
         );
+    }
+
+    /**
+     * Delete prescription appointment
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/patient_medicine/{prescriptionMedicine}/delete",
+     *     name="delete_prescription_medicine_by_doctor",
+     *     methods={"DELETE"},
+     *     requirements={"id"="\d+"}
+     *     )
+     * @param Request $request
+     * @param PrescriptionMedicine $prescriptionMedicine
+     * @param Patient $patient
+     * @param Prescription $prescription
+     * @return Response
+     * @throws Exception
+     */
+    public function delete(
+        Request $request,
+        PrescriptionMedicine $prescriptionMedicine,
+        Patient $patient,
+        Prescription $prescription
+    ): Response
+    {
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $patient->getId(),
+                'prescription' => $prescription->getId(),
+            ]
+        );
+        return $this->responseDelete($request, $prescriptionMedicine);
     }
 }

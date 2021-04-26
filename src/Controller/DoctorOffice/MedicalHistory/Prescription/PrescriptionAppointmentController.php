@@ -55,7 +55,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
     /**
      * New prescription appointment
      * @Route(
-     *     "doctor_office/patient/{patient}/prescription/{prescription}/appointment/new/",
+     *     "/patient/{patient}/prescription/{prescription}/appointment/new/",
      *     name="adding_reception_by_doctor",
      *     methods={"GET","POST"})
      * @param Request $request
@@ -75,22 +75,33 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
         SpecialPatientAppointmentCreatorService $patientAppointmentCreator
     ): Response
     {
+        $countPrescriptionAppointment = $this->getDoctrine()
+            ->getRepository(PrescriptionAppointment::class)
+            ->countPrescriptionAppointmentsByPrescription($prescription);
+        if ($countPrescriptionAppointment !== 0) {
+            return $this->redirectToRoute('add_prescription_show',
+                [
+                    "patient" => $patient->getId(),
+                    "prescription" => $prescription->getId(),
+                ]
+            );
+        }
         $staff = $this->getStaff($patient);
         /** @var PatientAppointment $patientAppointment */
         $patientAppointment = $patientAppointmentCreator->before(
-                [
-                    PatientAppointmentCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
-                    SpecialPatientAppointmentCreatorService::STAFF_OPTION => $staff,
-                ]
-            )->getEntity();
+            [
+                PatientAppointmentCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
+                SpecialPatientAppointmentCreatorService::STAFF_OPTION => $staff,
+            ]
+        )->getEntity();
         /** @var PrescriptionAppointment $prescriptionAppointment */
         $prescriptionAppointment = $prescriptionAppointmentCreator->before(
-                [
-                    PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
-                    PrescriptionAppointmentCreatorService::STAFF_OPTION => $staff,
-                    PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
-                ]
-            )->getEntity();
+            [
+                PrescriptionAppointmentCreatorService::PRESCRIPTION_OPTION => $prescription,
+                PrescriptionAppointmentCreatorService::STAFF_OPTION => $staff,
+                PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
+            ]
+        )->getEntity();
 
         $this->templateService->setRedirectRoute(
             'add_prescription_show',
@@ -155,5 +166,37 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 new FormData(PatientAppointmentType::class, $prescriptionAppointment->getPatientAppointment()),
             ]
         );
+    }
+
+    /**
+     * Delete prescription appointment
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/delete",
+     *     name="delete_prescription_appointment_by_doctor",
+     *     methods={"DELETE"},
+     *     requirements={"id"="\d+"}
+     *     )
+     * @param Request $request
+     * @param PrescriptionAppointment $prescriptionAppointment
+     * @param Patient $patient
+     * @param Prescription $prescription
+     * @return Response
+     * @throws Exception
+     */
+    public function delete(
+        Request $request,
+        PrescriptionAppointment $prescriptionAppointment,
+        Patient $patient,
+        Prescription $prescription
+    ): Response
+    {
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $patient->getId(),
+                'prescription' => $prescription->getId()
+            ]
+        );
+        return $this->responseDelete($request, $prescriptionAppointment);
     }
 }

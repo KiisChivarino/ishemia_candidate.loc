@@ -14,6 +14,7 @@ use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientTestingTemplate;
+use Exception;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
+ * @Route("/doctor_office")
  * Class AddingSurveyController
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory\Prescription
@@ -137,7 +139,6 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         PrescriptionTesting $prescriptionTesting
     ): Response
     {
-
         $this->templateService->setRedirectRoute(
             'add_prescription_show',
             [
@@ -160,5 +161,38 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
                 ),
             ]
         );
+    }
+
+    /**
+     * Delete prescription testing
+     * @Route(
+     *     "/prescriptionTesting/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/delete",
+     *     name="delete_prescription_testing_by_doctor",
+     *     methods={"DELETE"},
+     *     requirements={"id"="\d+"}
+     *     )
+     * @param Request $request
+     * @param PrescriptionTesting $prescriptionTesting
+     * @param Patient $patient
+     * @param Prescription $prescription
+     * @return Response
+     * @throws Exception
+     */
+    public function delete(
+        Request $request,
+        PrescriptionTesting $prescriptionTesting,
+        Patient $patient,
+        Prescription $prescription
+    ): Response
+    {
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $patient->getId(),
+                'prescription' => $prescription->getId(),
+            ]
+        );
+
+        return $this->responseDelete($request, $prescriptionTesting);
     }
 }

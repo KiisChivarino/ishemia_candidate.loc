@@ -346,7 +346,7 @@ abstract class AppAbstractController extends AbstractController
             }
         }
         $this->addFlash('success', $this->translator->trans('app_controller.success.success_delete'));
-        return $this->redirectToRoute($this->templateService->getRoute('list'));
+        return $this->redirectToRoute($this->templateService->getRoute('list'), $this->templateService->getRedirectRouteParameters());
     }
 
     /**

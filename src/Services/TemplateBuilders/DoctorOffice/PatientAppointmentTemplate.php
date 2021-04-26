@@ -9,6 +9,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
@@ -148,6 +149,18 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
                     ),
                 ]
             );
+        return $this;
+    }
+
+
+    /**
+     * @param object|null $entity
+     * @return $this|AppTemplateBuilder
+     */
+    public function edit(?object $entity = null): AppTemplateBuilder
+    {
+        parent::edit();
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
         return $this;
     }
 }

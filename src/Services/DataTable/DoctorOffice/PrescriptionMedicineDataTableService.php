@@ -53,7 +53,13 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                 'endMedicationDate', DateTimeColumn::class, [
                     'label' => $showTemplateItem->getContentValue('endMedicationDate'),
                     'format' => 'd.m.Y h:m',
-                    'searchable' => false
+                    'searchable' => false,
+                    'render' => function (string $data) use ($showTemplateItem) {
+                        return
+                            $data
+                                ? htmlspecialchars_decode($data)
+                                : $showTemplateItem->getContentValue('empty');
+                    }
                 ]
             )
             ->add(

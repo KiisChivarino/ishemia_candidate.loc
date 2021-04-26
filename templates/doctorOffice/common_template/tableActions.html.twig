@@ -13,7 +13,7 @@
         </span>
         {% endif %}
         {% if template.items.delete.isEnabled %}
-            <form method="post" action="{{ path(template.routes.delete, parameters) }}" style="display: inline;"
+            <form method="post" action="{{ path((routeDelete ? routeDelete : template.routes.delete), parameters) }}" style="display: inline;"
                   onsubmit="return confirm('{{ template.items.tableActions.content.deleteConfirm }}');">
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parameters.id) }}">
