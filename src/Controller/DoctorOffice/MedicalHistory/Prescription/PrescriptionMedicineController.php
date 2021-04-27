@@ -12,6 +12,7 @@ use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionMedicineCreatorService;
 use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientMedicineTemplate;
 use Exception;
@@ -33,7 +34,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class PrescriptionMedicineController extends DoctorOfficeAbstractController
 {
     /** @var string Path to custom template directory */
-    const TEMPLATE_PATH = 'doctorOffice/patient_medicine/';
+    const TEMPLATE_PATH = 'doctorOffice/prescription_medicine/';
 
     /**
      * PatientPrescriptionController constructor.
@@ -55,7 +56,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     /**
      * New medicine prescription
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/patient_medicine/new",
+     *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/new",
      *     name="prescription_patient_medicine_new",
      *     methods={"GET","POST"},
      *     requirements={"prescription"="\d+"}
@@ -130,9 +131,40 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Delete prescription testing
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/show/",
+     *     name="show_prescription_medicine_by_doctor",
+     *     )
+     * @param PrescriptionMedicine $prescriptionMedicine
+     * @return Response
+     * @throws Exception
+     */
+    public function show(
+        PrescriptionMedicine $prescriptionMedicine
+    ): Response
+    {
+        return $this->responseShow(
+            self::TEMPLATE_PATH,
+            $prescriptionMedicine, [
+                'staffTitle' =>
+                    AuthUserInfoService::getFIO($prescriptionMedicine->getStaff()->getAuthUser()),
+                'backRouteName' => 'add_prescription_show',
+                'editRouteName' => 'edit_prescription_testing_by_doctor',
+                'deleteRouteName' => 'delete_prescription_testing_by_doctor',
+                'routParam' => [
+                    'patient' => $prescriptionMedicine->getPatientMedicine()->getId(),
+                    'prescription' => $prescriptionMedicine->getPrescription()->getId(),
+                    'prescriptionTesting' => $prescriptionMedicine->getId()
+                ]
+            ]
+        );
+    }
+
+    /**
      * Edit prescription medicine
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/patient_medicine/{prescriptionMedicine}/edit/",
+     *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/edit/",
      *     name="edit_prescription_medicine_by_doctor",
      *     methods={"GET","POST"}
      *     )
@@ -173,7 +205,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     /**
      * Delete prescription appointment
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/patient_medicine/{prescriptionMedicine}/delete",
+     *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/delete",
      *     name="delete_prescription_medicine_by_doctor",
      *     methods={"DELETE"},
      *     requirements={"id"="\d+"}

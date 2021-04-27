@@ -129,13 +129,11 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
      *     "/prescriptionTesting/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/show",
      *     name="show_prescription_testing_by_doctor",
      *     )
-     * @param Request $request
      * @param PrescriptionTesting $prescriptionTesting
      * @return Response
      * @throws Exception
      */
     public function show(
-        Request $request,
         PrescriptionTesting $prescriptionTesting
     ): Response
     {

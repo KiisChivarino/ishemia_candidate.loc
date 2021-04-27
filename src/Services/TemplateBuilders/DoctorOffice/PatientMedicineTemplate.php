@@ -26,6 +26,8 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
         'dateBegin' => 'Дата начала приема',
         'startingMedicationDate' => 'Дата начала приема лекарства',
         'endMedicationDate' => 'Дата окончания приема лекарства',
+        'inclusion_time' => 'Дата и время включения в назначение',
+        'staff' => 'Врач создавший назначение'
     ];
 
     /** @var string[] Common NEW_CONTENT */
