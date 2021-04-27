@@ -14,9 +14,13 @@
         <span class="title">{{ template.items.show.content.timeRange }}</span>
         <p>
             {% if entity.timeRange %}
-                <a href="{{ path('time_range_show', {'id': entity.timeRange.id}) }}">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('time_range_show', {'id': entity.timeRange.id}) }}">
+                        {{ entity.timeRange.title }}
+                    </a>
+                {% else %}
                     {{ entity.timeRange.title }}
-                </a>
+                {% endif %}
             {% endif %}
         </p>
     </li>

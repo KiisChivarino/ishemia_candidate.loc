@@ -46,11 +46,17 @@ class NotificationDataTableService extends AdminDatatableService
                     'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var AuthUser $authUser */
                         $authUser = $notification->getAuthUserSender();
-                        return $authUser ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($authUser, true),
-                            $authUser->getId(),
-                            'auth_user_show'
-                        ) : $listTemplateItem->getContentValue('empty');
+                        return $authUser
+                            ? $this->adminOrManagerReturn(
+                                $this->getLink(
+                                    (new AuthUserInfoService())->getFIO($authUser, true),
+                                    $authUser->getId(),
+                                    'auth_user_show'
+                                ),
+                                (new AuthUserInfoService())->getFIO($authUser, true),
+                                $listTemplateItem->getContentValue('empty')
+                            )
+                            : $listTemplateItem->getContentValue('empty');
                     },
                 ]
             )
@@ -81,7 +87,7 @@ class NotificationDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('receiver'),
                     'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var NotificationReceiverType $notificationReceiverType */
-                        switch ($notification->getNotificationReceiverType()->getName()){
+                        switch ($notification->getNotificationReceiverType()->getName()) {
                             case 'patient':
                                 $patientNotification = $notification->getPatientNotification();
                                 return $patientNotification ? $this->getLink(

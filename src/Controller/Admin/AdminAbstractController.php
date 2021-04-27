@@ -9,8 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class AppAbstractController
- * @IsGranted("ROLE_ADMIN")
- *
+ * @IsGranted("ROLE_MANAGER")
  * @package App\Controller\Admin
  */
 abstract class AdminAbstractController extends AppAbstractController

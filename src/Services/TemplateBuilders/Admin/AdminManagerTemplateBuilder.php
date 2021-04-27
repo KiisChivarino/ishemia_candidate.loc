@@ -2,23 +2,20 @@
 
 namespace App\Services\TemplateBuilders\Admin;
 
-use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\EditTemplateItem;
-use App\Services\TemplateItems\FormTemplateItem;
-use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * Class AuthUserTemplate
- * builder of templates AuthUser
+ * Class AdminManagerTemplate
+ * builder of templates AdminManager
  *
  * @package App\Services\TemplateBuilders
  */
-class AuthUserTemplate extends AdminTemplateBuilder
+class AdminManagerTemplateBuilder extends AdminTemplateBuilder
 {
     /** @var string[] Common content for AuthUser templates */
     public const COMMON_CONTENT = [
@@ -44,31 +41,27 @@ class AuthUserTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common list content for staff templates */
     public const LIST_CONTENT = [
-        'h1' => 'Пользователи',
-        'title' => 'Список пользователей',
+        'h1' => 'Менеджеры панели администрирования',
+        'title' => 'Список менеджеров',
         'fio' => 'ФИО'
     ];
 
     /** @var string[] Common new content for staff templates */
     public const NEW_CONTENT = [
-        'h1' => 'Новый пользователь',
-        'title' => 'Новый пользователь',
+        'h1' => 'Новый менеджер панели администрирования',
+        'title' => 'Новый менеджер панели администрирования',
     ];
 
     /** @var string[] Common show content for staff templates */
     public const SHOW_CONTENT = [
-        'title' => 'Данные пользователя',
+        'title' => 'Данные менеджера панели администрирования',
     ];
 
     /** @var string[] Common edit content for staff templates */
     public const EDIT_CONTENT = [
-        'title' => 'Редактирование пользователя',
+        'title' => 'Редактирование менеджера панели администрирования',
     ];
 
-    /** @var string[] Common filter content for staff templates */
-    public const FILTER_CONTENT = [
-        'analysisGroupFilter' => 'Фильтр группы анализов',
-    ];
 
     /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
@@ -103,21 +96,6 @@ class AuthUserTemplate extends AdminTemplateBuilder
     }
 
     /**
-     * Builds list template
-     *
-     * @param FilterService|null $filterService
-     *
-     * @return AppTemplateBuilder
-     */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
-    {
-        parent::list($filterService);
-        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
-            ->setIsEnabled(false);
-        return $this;
-    }
-
-    /**
      * Builds show template
      *
      * @param object|null $entity
@@ -129,7 +107,7 @@ class AuthUserTemplate extends AdminTemplateBuilder
         parent::show($entity);
         $authUserInfoService = new AuthUserInfoService();
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
-            ->setContent('h1', 'Просмотр данных пользователя: '.$authUserInfoService->getFIO($entity, true));
+            ->setContent('h1', 'Просмотр данных менеджера: '.$authUserInfoService->getFIO($entity, true));
         return $this;
     }
 
@@ -145,9 +123,9 @@ class AuthUserTemplate extends AdminTemplateBuilder
         parent::edit();
         $authUserInfoService = new AuthUserInfoService();
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
-            ->setContent('h1', 'Редактирование пользователя: '.$authUserInfoService->getFIO($entity, true));
-        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
-            ->setPath($this->getTemplatePath());
+            ->setContent('h1', 'Редактирование менджера: '.$authUserInfoService->getFIO($entity, true));
         return $this;
     }
+
+
 }

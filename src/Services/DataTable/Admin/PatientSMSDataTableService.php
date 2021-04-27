@@ -77,9 +77,11 @@ class PatientSMSDataTableService extends AdminDatatableService
                     'searchable' => false,
                     'format' => 'd.m.Y H:m',
                 ]
-            )
-            ;
-        $this->addOperations($renderOperationsFunction, $listTemplateItem);
+            );
+
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            $this->addOperations($renderOperationsFunction, $listTemplateItem);
+        }
 
         /** @var Patient $patient */
         $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']])
@@ -96,8 +98,7 @@ class PatientSMSDataTableService extends AdminDatatableService
                             ->leftJoin('p.AuthUser', 'u')
                             ->andWhere('u.enabled = :val')
                             ->setParameter('val', true)
-                            ->orderBy('ps.id', 'desc')
-                        ;
+                            ->orderBy('ps.id', 'desc');
                         if ($patient) {
                             $builder
                                 ->andWhere('ps.patient = :patient')

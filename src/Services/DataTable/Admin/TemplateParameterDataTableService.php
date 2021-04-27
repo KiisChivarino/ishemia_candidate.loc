@@ -21,6 +21,7 @@ use Omines\DataTablesBundle\DataTable;
  */
 class TemplateParameterDataTableService extends AdminDatatableService
 {
+
     /**
      * Таблица типов параметров в админке
      *
@@ -47,17 +48,14 @@ class TemplateParameterDataTableService extends AdminDatatableService
             ->add(
                 'templateType', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('templateType'),
-                    'render' => function (string $data, TemplateParameter $templateParameter) {
+                    'render' => function (string $data, TemplateParameter $templateParameter) use ($listTemplateItem) {
                         /** @var TemplateType $templateType */
                         $templateType = $templateParameter->getTemplateType();
-                        return
-                            $templateType ?
-                                $this->getLink(
-                                    $templateType->getName(),
-                                    $templateType->getId(),
-                                    'template_type_show'
-                                )
-                                : '';
+                        return $this->adminOrManagerReturn(
+                            $this->getLink($templateType->getName(),$templateType->getId(),'template_type_show'),
+                            $templateType->getName(),
+                            $listTemplateItem->getContentValue('empty')
+                        );
                     }
                 ]
             );

@@ -2,9 +2,11 @@
 
 namespace App\Services\TemplateBuilders\Admin;
 
+use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class CityTemplate
@@ -49,15 +51,21 @@ class CityTemplate extends AdminTemplateBuilder
         'entity' => 'Город',
     ];
 
+
     /**
      * CityTemplate constructor.
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(RouteCollection $routeCollection, string $className)
+    public function __construct(
+        RouteCollection $routeCollection,
+        string $className,
+        AuthorizationCheckerInterface $authorizationChecker
+    )
     {
-        parent::__construct($routeCollection, $className);
+        parent::__construct($routeCollection, $className, $authorizationChecker);
         $this->addContent(
             self::LIST_CONTENT,
             self::NEW_CONTENT,
@@ -69,6 +77,22 @@ class CityTemplate extends AdminTemplateBuilder
             self::FILTER_CONTENT,
             self::ENTITY_CONTENT
         );
+
+    }
+
+    /**
+     * Builds list of city
+     * @param FilterService|null $filterService
+     * @return AppTemplateBuilder
+     */
+    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::list($filterService);
+
+        $this->onlyAdminAccessAdded();
+        $this->onlyAdminAccessEdit();
+
+        return $this;
     }
 
     /**
@@ -82,6 +106,10 @@ class CityTemplate extends AdminTemplateBuilder
         parent::show();
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
             ->setContent('h1', 'Просмотр города ' . $entity->getName());
+
+        $this->onlyAdminAccessDelete();
+        $this->onlyAdminAccessEdit();
+
         return $this;
     }
 }

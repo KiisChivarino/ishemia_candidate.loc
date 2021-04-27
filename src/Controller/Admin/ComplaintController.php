@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
@@ -33,11 +34,20 @@ class ComplaintController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        AuthorizationCheckerInterface $authorizationChecker)
     {
         parent::__construct($translator);
-        $this->templateService = new ComplaintTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new ComplaintTemplate(
+            $router->getRouteCollection(),
+            get_class($this),
+            $authorizationChecker
+        );
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -102,6 +112,7 @@ class ComplaintController extends AdminAbstractController
     /**
      * Delete complaint
      * @Route("/{id}", name="complaint_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param Complaint $complaint

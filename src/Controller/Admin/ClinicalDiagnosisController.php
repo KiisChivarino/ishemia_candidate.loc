@@ -15,13 +15,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
  * Class ClinicalDiagnosisController
  * @Route("admin/clinical_diagnosis")
- * @IsGranted("ROLE_ADMIN")
+ * @IsGranted("ROLE_MANAGER")
  * @package App\Controller\Admin
  */
 class ClinicalDiagnosisController extends AdminAbstractController
@@ -34,11 +35,20 @@ class ClinicalDiagnosisController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        AuthorizationCheckerInterface $authorizationChecker)
     {
         parent::__construct($translator);
-        $this->templateService = new ClinicalDiagnosisTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new ClinicalDiagnosisTemplate(
+            $router->getRouteCollection(),
+            get_class($this),
+            $authorizationChecker
+        );
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -107,6 +117,8 @@ class ClinicalDiagnosisController extends AdminAbstractController
     /**
      * Delete clinical diagnosis
      * @Route("/{id}", name="clinical_diagnosis_delete", methods={"DELETE"})
+     * @IsGranted("ROLE_ADMIN")
+     *
      * @param Request $request
      * @param ClinicalDiagnosis $clinicalDiagnosis
      * @return Response

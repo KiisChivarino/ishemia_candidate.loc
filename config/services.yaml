@@ -16,6 +16,7 @@ imports:
     - { resource: services/notifications/notification_channel_types.yaml }
     - { resource: services/notifications/notification_receiver_types.yaml }
     - { resource: constant/case.yaml }
+    - { resource: services/user_data.yaml }
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -35,6 +36,7 @@ services:
             $channelTypes: '%channel_types%'
             $notificationReceiverTypeNames: '%notification_receiver_type_names%'
             $notificationReceiverTypeTitles: '%notification_receiver_type_titles%'
+            $userData: '%user_data%'
             $caseType: '%caseType%'
 
     # makes classes in src/ available to be used as services
