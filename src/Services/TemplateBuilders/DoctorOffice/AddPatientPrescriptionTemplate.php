@@ -42,6 +42,7 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
         'endMedicationDate' => PrescriptionMedicineTemplate::ENTITY_CONTENT['endMedicationDate'],
         'medicine_name' => PatientMedicineTemplate::COMMON_CONTENT['medicineName'],
         'instruction' => PatientMedicineTemplate::COMMON_CONTENT['instruction'],
+        'inclusionTime' => PrescriptionTestingTemplate::FORM_SHOW_CONTENT['inclusionTime'],
     ];
 
 
@@ -76,8 +77,6 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
     public function show(?object $entity = null): AppTemplateBuilder
     {
         parent::show($entity);
-//        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setName();
-//        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
         return $this;
     }
 }

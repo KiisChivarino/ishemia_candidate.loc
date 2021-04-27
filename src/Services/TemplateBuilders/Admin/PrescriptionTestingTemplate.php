@@ -32,7 +32,7 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
         'confirmedByStaff' => 'Подтверждено врачом'
     ];
     /** @var string[] FORM_SHOW_CONTENT */
-    protected const FORM_SHOW_CONTENT = [
+    public const FORM_SHOW_CONTENT = [
         'inclusionTime' => 'Дата и время включения в назначение',
     ];
 

@@ -5,6 +5,7 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
@@ -86,7 +87,21 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                     }
                 ]
             )
-        ;
+            ->add(
+                'inclusionTime', DateTimeColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('inclusionTime'),
+                    'format' => 'd.m.Y H:i',
+                    'searchable' => false
+                ]
+            )
+            ->add(
+                'staff', TextColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('doctor'),
+                    'data' => function ($value) {
+                        return (new AuthUserInfoService())->getFIO($value->getStaff()->getAuthUser());
+                    }
+                ]
+            );
 
         $this->addOperations($renderOperationsFunction, $showTemplateItem);
 

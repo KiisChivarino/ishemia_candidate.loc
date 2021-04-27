@@ -48,7 +48,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     ];
 
     /** @var string[] Common SHOW_CONTENT */
-    protected const SHOW_CONTENT = [
+    public const SHOW_CONTENT = [
         'title' => 'Просмотр назначения лекарства',
         'h1' => 'Просмотр назначения лекарства',
         'inclusionTime' => 'Дата и время включения лекарства в назначение',
