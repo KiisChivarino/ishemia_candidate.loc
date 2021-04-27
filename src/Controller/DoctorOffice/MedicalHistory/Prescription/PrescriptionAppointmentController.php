@@ -14,6 +14,7 @@ use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentServic
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientAppointmentCreatorService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientAppointmentTemplate;
 use Exception;
@@ -33,7 +34,7 @@ use Twig\Environment;
 class PrescriptionAppointmentController extends DoctorOfficeAbstractController
 {
     /** @var string Path to custom template directory */
-    const TEMPLATE_PATH = 'doctor_office/common_template/';
+    const TEMPLATE_PATH = 'doctorOffice/prescription_appointment/';
 
     /**
      * PatientPrescriptionController constructor.
@@ -128,6 +129,37 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
             [
                 new FormData(PrescriptionAppointmentPlannedDateType::class, $prescriptionAppointment),
                 new FormData(PatientAppointmentType::class, $patientAppointment),
+            ]
+        );
+    }
+
+    /**
+     * Show prescription testing
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/show/",
+     *     name="show_prescription_appointment_by_doctor",
+     *     )
+     * @param PrescriptionAppointment $prescriptionAppointment
+     * @return Response
+     * @throws Exception
+     */
+    public function show(
+        PrescriptionAppointment $prescriptionAppointment
+    ): Response
+    {
+        return $this->responseShow(
+            self::TEMPLATE_PATH,
+            $prescriptionAppointment, [
+                'staffTitle' =>
+                    AuthUserInfoService::getFIO($prescriptionAppointment->getStaff()->getAuthUser()),
+                'backRouteName' => 'add_prescription_show',
+                'editRouteName' => 'edit_prescription_testing_by_doctor',
+                'deleteRouteName' => 'delete_prescription_testing_by_doctor',
+                'routParam' => [
+                    'patient' => $prescriptionAppointment->getPatientAppointment()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $prescriptionAppointment->getPrescription()->getId(),
+                    'prescriptionTesting' => $prescriptionAppointment->getId()
+                ]
             ]
         );
     }

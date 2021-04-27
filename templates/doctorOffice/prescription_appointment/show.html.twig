@@ -1,0 +1,23 @@
+{% extends template.commonTemplatePath~'show.html.twig' %}
+{% block show_content %}
+    <li>
+        <span class="title">{{ template.items.show.content.appointmentType }}</span>
+        <p>{{ entity.patientAppointment.appointmentType.name }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.plannedDateTime }}</span>
+        <p>{{ entity.plannedDateTime
+            ? entity.plannedDateTime|date('Y-m-d H:i:s')
+            : template.items.show.content.empty }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.staff }}</span>
+        <p>{{ staffTitle }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.inclusion_time }}</span>
+        <p>{{ entity.inclusionTime
+            ? entity.inclusionTime|date('Y-m-d H:i:s')
+            : template.items.show.content.empty }}</p>
+    </li>
+{% endblock %}

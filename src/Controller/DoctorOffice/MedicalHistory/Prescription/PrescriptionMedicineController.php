@@ -131,7 +131,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Delete prescription testing
+     * Show prescription testing
      * @Route(
      *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/show/",
      *     name="show_prescription_medicine_by_doctor",

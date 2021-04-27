@@ -27,8 +27,9 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
     public const COMMON_CONTENT = [
         'medicalRecord' => 'Запись в историю',
         'appointmentTime' => 'Дата приема',
+        'inclusion_time' => 'Дата и время включения в назначение',
         'isConfirmed' => 'Подтверждено',
-        'staff' => 'Врач',
+        'staff' => 'Врач создавший назначение',
         'appointmentType' => 'Вид приема',
         'plannedDateTime' => 'Дата и время приема'
     ];
