@@ -36,9 +36,13 @@
         <span class="title">{{ template.items.show.content.region }}</span>
         <p>
             {% if entity.region %}
-                <a href="{{ path('region_show', {'id': entity.region.id}) }}">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('region_show', {'id': entity.region.id}) }}">
+                        {{ entity.region.name }}
+                    </a>
+                {% else %}
                     {{ entity.region.name }}
-                </a>
+                {% endif %}
             {% endif %}
         </p>
     </li>

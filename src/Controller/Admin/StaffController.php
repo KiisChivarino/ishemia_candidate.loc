@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -32,7 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * Class StaffController
  * @Route("admin/staff")
- * @IsGranted("ROLE_ADMIN")
+ * @IsGranted("ROLE_MANAGER")
  *
  * @package App\Controller\Admin
  */
@@ -51,15 +52,22 @@ class StaffController extends AdminAbstractController
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param TranslatorInterface $translator
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
-        UserPasswordEncoderInterface $passwordEncoder, TranslatorInterface $translator)
+        UserPasswordEncoderInterface $passwordEncoder,
+        TranslatorInterface $translator,
+        AuthorizationCheckerInterface $authorizationChecker)
     {
         parent::__construct($translator);
         $this->passwordEncoder = $passwordEncoder;
-        $this->templateService = new StaffTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new StaffTemplate(
+            $router->getRouteCollection(),
+            get_class($this),
+            $authorizationChecker
+        );
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -208,6 +216,7 @@ class StaffController extends AdminAbstractController
     /**
      * Delete staff
      * @Route("/{id}", name="staff_delete", methods={"DELETE"})
+     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param Staff $staff

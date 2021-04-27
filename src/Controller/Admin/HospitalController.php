@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +22,7 @@ use App\Services\InfoService\HospitalInfoService;
  * Class HospitalController
  * Обработка роутов сущности Hospital
  * @Route("/admin/hospital")
- * @IsGranted("ROLE_ADMIN")
+ * @IsGranted("ROLE_MANAGER")
  *
  * @package App\Controller\Admin
  */
@@ -36,18 +37,33 @@ class HospitalController extends AdminAbstractController
     /** @var string Ключ для редиректа в случае невозможности удаления сущности Hospital */
     const REDIRECT_PARAMETER_KEY_IF_IMPOSSIBLE_TO_DELETE = 'id';
 
+    /** @var AuthorizationCheckerInterface */
+    private $authorizationChecker;
+
     /**
      * HospitalController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        AuthorizationCheckerInterface $authorizationChecker
+    )
     {
         parent::__construct($translator);
-        $this->templateService = new HospitalTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new HospitalTemplate(
+            $router->getRouteCollection(),
+            get_class($this),
+            $authorizationChecker
+        );
         $this->setTemplateTwigGlobal($twig);
+
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -111,6 +127,7 @@ class HospitalController extends AdminAbstractController
     /**
      * Удаление больницы
      * @Route("/{id}", name="hospital_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param Hospital $hospital
@@ -140,7 +157,8 @@ class HospitalController extends AdminAbstractController
         return function (int $hospitalId, ?Hospital $hospital, $route = null) {
             $deleteTemplateItem = $this->templateService
                 ->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME);
-            if (!is_null($hospital) && !HospitalInfoService::isHospitalDeletable($hospital)) {
+
+            if ((!is_null($hospital) && !HospitalInfoService::isHospitalDeletable($hospital)) or !$this->authorizationChecker->isGranted("ROLE_ADMIN")) {
                 $deleteTemplateItem->setIsEnabled(false);
             }else{
                 $deleteTemplateItem->setIsEnabled(true);

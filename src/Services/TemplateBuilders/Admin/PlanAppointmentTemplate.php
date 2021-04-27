@@ -2,7 +2,10 @@
 
 namespace App\Services\TemplateBuilders\Admin;
 
+use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\AppTemplateBuilder;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PlanAppointmentTemplate extends AdminTemplateBuilder
 {
@@ -51,10 +54,15 @@ class PlanAppointmentTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(RouteCollection $routeCollection, string $className)
+    public function __construct(
+        RouteCollection $routeCollection,
+        string $className,
+        AuthorizationCheckerInterface $authorizationChecker
+    )
     {
-        parent::__construct($routeCollection, $className);
+        parent::__construct($routeCollection, $className, $authorizationChecker);
         $this->addContent(
             self::LIST_CONTENT,
             self::NEW_CONTENT,
@@ -66,5 +74,35 @@ class PlanAppointmentTemplate extends AdminTemplateBuilder
             self::FILTER_CONTENT,
             self::ENTITY_CONTENT
         );
+    }
+
+    /**
+     * Builds list of plan appointment
+     * @param FilterService|null $filterService
+     * @return AppTemplateBuilder
+     */
+    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::list($filterService);
+
+        $this->onlyAdminAccessAdded();
+        $this->onlyAdminAccessEdit();
+
+        return $this;
+    }
+
+    /**
+     * Builds show of plan appointment
+     * @param object|null $entity
+     *
+     * @return AppTemplateBuilder
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show();
+
+        $this->onlyAdminAccessEdit();
+
+        return $this;
     }
 }

@@ -9,6 +9,8 @@
         <p>
             {% if entity.district %}
                 <a href="{{ path('district_show', {'id': entity.district.id}) }}">{{ entity.district.name }}</a>
+            {% else %}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -16,7 +18,11 @@
         <span class="title">{{ template.items.show.content.region }}</span>
         <p>
             {% if entity.region %}
-                <a href="{{ path('region_show', {'id': entity.region.id}) }}">{{ entity.region.name }}</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('region_show', {'id': entity.region.id}) }}">{{ entity.region.name }}</a>
+                {% else %}
+                    {{ entity.region.name }}
+                {% endif %}
             {% endif %}
         </p>
     </li>

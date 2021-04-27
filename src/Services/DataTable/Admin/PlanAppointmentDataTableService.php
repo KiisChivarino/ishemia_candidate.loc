@@ -34,13 +34,15 @@ class PlanAppointmentDataTableService extends AdminDatatableService
             ->add(
                 'timeRange', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('timeRange'),
-                    'render' => function (string $data, PlanAppointment $planAppointment) {
+                    'render' => function (string $data, PlanAppointment $planAppointment) use ($listTemplateItem) {
                         /** @var TimeRange $timeRange */
                         $timeRange = $planAppointment->getTimeRange();
-                        return
-                            $timeRange ?
-                                $this->getLink($timeRange->getTitle(), $timeRange->getId(), 'time_range_show')
-                                : '';
+
+                        return $this->adminOrManagerReturn(
+                            $this->getLink($timeRange->getTitle(), $timeRange->getId(), 'time_range_show'),
+                            $timeRange->getTitle(),
+                            $listTemplateItem->getContentValue('empty')
+                        );
                     }
                 ]
             )

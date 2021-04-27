@@ -1,0 +1,8 @@
+parameters:
+  user_data:
+    manager_user_data:
+      manager_phone: '%env(string:MANAGER_PHONE)%'
+      manager_first_name: '%env(string:MANAGER_FIRST_NAME)%'
+      manager_last_name: '%env(string:MANAGER_LAST_NAME)%'
+      manager_password: '%env(string:MANAGER_PASSWORD)%'
+      manager_role: '%env(string:MANAGER_ROLE)%'

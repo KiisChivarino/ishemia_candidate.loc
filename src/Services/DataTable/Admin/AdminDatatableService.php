@@ -12,6 +12,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class AdminDatatableService
@@ -27,18 +28,28 @@ abstract class AdminDatatableService extends DataTableService
     /** @var EntityManagerInterface|null $entityManager */
     protected $entityManager;
 
+    /** @var AuthorizationCheckerInterface $authorizationChecker */
+    protected $authorizationChecker;
+
     /**
      * AdminDatatableService constructor.
      *
+     * @param AuthorizationCheckerInterface $authorizationChecker
      * @param DataTableFactory $dataTableFactory
      * @param UrlGeneratorInterface|null $router
      * @param EntityManagerInterface|null $entityManager
      */
-    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $entityManager = null)
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        EntityManagerInterface $entityManager = null
+    )
     {
         parent::__construct($dataTableFactory);
         $this->router = $router;
         $this->entityManager = $entityManager;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -129,5 +140,37 @@ abstract class AdminDatatableService extends DataTableService
                     'searchable' => false
                 ]
             );
+    }
+
+    /**
+     * Get link
+     *
+     * @param string $value
+     * @param int $id
+     * @param string $route
+     *
+     * @return string
+     */
+    protected function getLink(string $value, int $id, string $route): string
+    {
+        return '<a href="' . $this->router->generate($route, ['id' => $id]) . '">' . $value . '</a>';
+    }
+
+    /**
+     *
+     * return string for admin and manager
+     *
+     * @param string $adminString
+     * @param string $managerString
+     * @param string $emptyString
+     * @return string
+     */
+    protected function adminOrManagerReturn(string $adminString, string $managerString, string $emptyString): string
+    {
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            return $adminString ? $adminString : $emptyString;
+        } else {
+            return $managerString ? $managerString : $emptyString;
+        }
     }
 }

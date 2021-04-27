@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -20,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * Контроллеры сущности "Анализ"
  * @Route("/admin/analysis")
- * @IsGranted("ROLE_ADMIN")
+ * @IsGranted("ROLE_MANAGER")
  */
 class AnalysisController extends AdminAbstractController
 {
@@ -34,11 +35,20 @@ class AnalysisController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        AuthorizationCheckerInterface $authorizationChecker)
     {
         parent::__construct($translator);
-        $this->templateService = new AnalysisTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new AnalysisTemplate(
+            $router->getRouteCollection(),
+            get_class($this),
+            $authorizationChecker
+        );
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -120,6 +130,7 @@ class AnalysisController extends AdminAbstractController
     /**
      * Удаление анализа
      * @Route("/{id}", name="analysis_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param Analysis $analysis

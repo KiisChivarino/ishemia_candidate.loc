@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  * Class PlanTestingController
  * Контроллеры стандартного плана анализов для пациента
  * @Route("/admin/plan_testing")
- * @IsGranted("ROLE_ADMIN")
+ * @IsGranted("ROLE_MANAGER")
  *
  * @package App\Controller\Admin
  */
@@ -34,16 +35,27 @@ class PlanTestingController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        AuthorizationCheckerInterface $authorizationChecker
+    )
     {
         parent::__construct($translator);
-        $this->templateService = new PlanTEstingTemplate($router->getRouteCollection(), get_class($this));
+        $this->templateService = new PlanTEstingTemplate(
+            $router->getRouteCollection(),
+            get_class($this),
+            $authorizationChecker
+        );
         $this->setTemplateTwigGlobal($twig);
     }
 
     /**
      * Список планируемых тестов
+     *
      * @Route("/", name="plan_testing_list", methods={"GET","POST"})
      *
      * @param Request $request
@@ -60,6 +72,7 @@ class PlanTestingController extends AdminAbstractController
     /**
      * Добавление теста в план
      * @Route("/new", name="plan_testing_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      *
@@ -88,6 +101,7 @@ class PlanTestingController extends AdminAbstractController
     /**
      * Редактирование планируемого теста
      * @Route("/{id}/edit", name="plan_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param PlanTesting $planTesting
@@ -103,6 +117,7 @@ class PlanTestingController extends AdminAbstractController
     /**
      * Удаление планируемого теста
      * @Route("/{id}", name="plan_testing_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param PlanTesting $planTesting
