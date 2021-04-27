@@ -3,7 +3,6 @@
 namespace App\Services\TemplateBuilders\Admin;
 
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class MedicineTemplate
@@ -46,15 +45,10 @@ class MedicineTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
-     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(
-        RouteCollection $routeCollection,
-        string $className,
-        AuthorizationCheckerInterface $authorizationChecker
-    )
+    public function __construct(RouteCollection $routeCollection, string $className)
     {
-        parent::__construct($routeCollection, $className, $authorizationChecker);
+        parent::__construct($routeCollection, $className);
         $this->addContent(
             self::LIST_CONTENT,
             self::NEW_CONTENT,

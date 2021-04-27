@@ -24,8 +24,3 @@ parameters:
     techName: ROLE_SYSTEM
     route: admin
     description: Системный пользователь
-  10:
-    name: Менеджер панели администрирования
-    techName: ROLE_MANAGER
-    route: admin
-    description: Менеджер панели администрирования

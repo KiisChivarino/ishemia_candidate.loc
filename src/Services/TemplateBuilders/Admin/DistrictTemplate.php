@@ -2,10 +2,7 @@
 
 namespace App\Services\TemplateBuilders\Admin;
 
-use App\Services\FilterService\FilterService;
-use App\Services\TemplateBuilders\AppTemplateBuilder;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class DistrictTemplate
@@ -49,24 +46,15 @@ class DistrictTemplate extends AdminTemplateBuilder
         'entity' => 'Район',
     ];
 
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
-
-
     /**
      * DistrictTemplate constructor.
      *
      * @param RouteCollection $routeCollection
      * @param string $className
-     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(
-        RouteCollection $routeCollection,
-        string $className,
-        AuthorizationCheckerInterface $authorizationChecker
-    )
+    public function __construct(RouteCollection $routeCollection, string $className)
     {
-        parent::__construct($routeCollection, $className, $authorizationChecker);
+        parent::__construct($routeCollection, $className);
         $this->addContent(
             self::LIST_CONTENT,
             self::NEW_CONTENT,
@@ -78,35 +66,5 @@ class DistrictTemplate extends AdminTemplateBuilder
             self::FILTER_CONTENT,
             self::ENTITY_CONTENT
         );
-        $this->authorizationChecker = $authorizationChecker;
-    }
-
-    /**
-     * Builds list of city
-     * @param FilterService|null $filterService
-     * @return AppTemplateBuilder
-     */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
-    {
-        parent::list($filterService);
-
-        $this->onlyAdminAccessAdded();
-        $this->onlyAdminAccessEdit();
-
-        return $this;
-    }
-
-    /**
-     * Builds show of city
-     * @param object|null $entity
-     *
-     * @return AppTemplateBuilder
-     */
-    public function show(?object $entity = null): AppTemplateBuilder
-    {
-        parent::show();
-        $this->onlyAdminAccessEdit();
-
-        return $this;
     }
 }

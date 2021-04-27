@@ -12,14 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
  * Class PlanAppointmentController
  * @Route("/admin/plan_appointment")
- * @IsGranted("ROLE_MANAGER")
+ * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
  */
@@ -34,21 +33,11 @@ class PlanAppointmentController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(
-        Environment $twig,
-        RouterInterface $router,
-        TranslatorInterface $translator,
-        AuthorizationCheckerInterface $authorizationChecker
-    )
+    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
         parent::__construct($translator);
-        $this->templateService = new PlanAppointmentTemplate(
-            $router->getRouteCollection(),
-            get_class($this),
-            $authorizationChecker
-        );
+        $this->templateService = new PlanAppointmentTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -70,7 +59,6 @@ class PlanAppointmentController extends AdminAbstractController
     /**
      * New plan appointment
      * @Route("/new", name="plan_appointment_new", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      *
@@ -98,8 +86,6 @@ class PlanAppointmentController extends AdminAbstractController
 
     /**
      * @Route("/{id}/edit", name="plan_appointment_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
-     *
      * @param Request $request
      * @param PlanAppointment $planAppointment
      *
@@ -113,8 +99,6 @@ class PlanAppointmentController extends AdminAbstractController
 
     /**
      * @Route("/{id}", name="plan_appointment_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
-     *
      * @param Request $request
      * @param PlanAppointment $planAppointment
      *

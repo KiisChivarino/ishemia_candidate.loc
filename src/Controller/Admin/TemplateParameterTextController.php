@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * Контроллеры сущности "Текст параметра шаблона"
  * @Route("/admin/template_parameter_text")
- * @IsGranted("ROLE_MANAGER")
+ * @IsGranted("ROLE_ADMIN")
  */
 class TemplateParameterTextController extends AdminAbstractController
 {
@@ -34,21 +33,11 @@ class TemplateParameterTextController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(
-        Environment $twig,
-        RouterInterface $router,
-        TranslatorInterface $translator,
-        AuthorizationCheckerInterface $authorizationChecker
-    )
+    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
         parent::__construct($translator);
-        $this->templateService = new TemplateParameterTextTemplate(
-            $router->getRouteCollection(),
-            get_class($this),
-            $authorizationChecker
-        );
+        $this->templateService = new TemplateParameterTextTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -140,7 +129,6 @@ class TemplateParameterTextController extends AdminAbstractController
     /**
      * Delete template parameter text
      * @Route("/{id}", name="template_parameter_text_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param TemplateParameterText $templateParameterText

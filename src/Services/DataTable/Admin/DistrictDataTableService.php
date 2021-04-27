@@ -41,15 +41,10 @@ class DistrictDataTableService extends AdminDatatableService
             ->add(
                 'region', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('region'),
-                    'render' => function (string $data, District $district) use ($listTemplateItem) {
+                    'render' => function (string $data, District $district) {
                         /** @var Region $region */
                         $region = $district->getRegion();
-                        return $region ? $this->adminOrManagerReturn(
-                            $this->getLink($region->getName(), $region->getId(), 'region_show'),
-                            $region->getName(),
-                            $listTemplateItem->getContentValue('empty')
-                        ) : $listTemplateItem->getContentValue('empty');
-
+                        return $region ? $this->getLink($region->getName(), $region->getId(), 'region_show') : '';
                     },
                     'searchable' => false
                 ]
