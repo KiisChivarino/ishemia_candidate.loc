@@ -67,16 +67,4 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
         );
     }
 
-    public function new(?FilterService $filterService = null): AppTemplateBuilder
-    {
-        parent::new($filterService);
-        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
-        return $this;
-    }
-
-    public function show(?object $entity = null): AppTemplateBuilder
-    {
-        parent::show($entity);
-        return $this;
-    }
 }

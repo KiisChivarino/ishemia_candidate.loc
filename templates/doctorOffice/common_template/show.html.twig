@@ -4,7 +4,10 @@
     <div class="content-wrapper__top">
         <ul>
             {% if template.items.list.isEnabled %}
-                <a href="{{ path(template.routes.list) }}"
+                <a href="{{ path(
+                    (backRouteName is defined ? backRouteName : template.routes.list),
+                    routParam is defined ? routParam : []
+                ) }}"
                    class="back-page">{{ template.items.show.content.toList }}</a>
             {% endif %}
         </ul>

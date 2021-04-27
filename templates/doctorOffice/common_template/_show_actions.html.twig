@@ -5,7 +5,9 @@
     {% if template.items.edit.isEnabled %}
         <button class="btn btn--edit">
             <a style="text-decoration: none; color: inherit; display:block;"
-               href="{{ path(template.routes.edit, {'id': entity.id}) }}">{{ template.items.show.content.toEdit }}</a>
+               href="{{ path(
+                   (editRouteName is defined ? editRouteName : template.routes.edit),
+               routParam is defined ? routParam : {'id': entity.id}) }}">{{ template.items.show.content.toEdit }}</a>
         </button>
     {% endif %}
 </div>

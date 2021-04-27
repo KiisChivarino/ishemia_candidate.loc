@@ -12,6 +12,7 @@ use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionTestingService;
 use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientTestingTemplate;
 use Exception;
@@ -32,7 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class PrescriptionTestingController extends DoctorOfficeAbstractController
 {
     /** @var string Path to custom template directory */
-    const TEMPLATE_PATH = 'doctor_office/common_template/';
+    const TEMPLATE_PATH = 'doctorOffice/prescription_testing/';
 
     /**
      * PatientPrescriptionController constructor.
@@ -123,6 +124,39 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Delete prescription testing
+     * @Route(
+     *     "/prescriptionTesting/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/show",
+     *     name="show_prescription_testing_by_doctor",
+     *     )
+     * @param Request $request
+     * @param PrescriptionTesting $prescriptionTesting
+     * @return Response
+     * @throws Exception
+     */
+    public function show(
+        Request $request,
+        PrescriptionTesting $prescriptionTesting
+    ): Response
+    {
+        return $this->responseShow(
+            self::TEMPLATE_PATH,
+            $prescriptionTesting, [
+                'staffTitle' =>
+                    AuthUserInfoService::getFIO($prescriptionTesting->getStaff()->getAuthUser()),
+                'backRouteName' => 'add_prescription_show',
+                'editRouteName' => 'edit_prescription_testing_by_doctor',
+                'deleteRouteName' => 'delete_prescription_testing_by_doctor',
+                'routParam' => [
+                    'patient' => $prescriptionTesting->getPatientTesting()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $prescriptionTesting->getPrescription()->getId(),
+                    'prescriptionTesting' => $prescriptionTesting->getId()
+                ]
+            ]
+        );
+    }
+
+    /**
      * Edit prescription appointment
      * @Route(
      *     "/patient/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/edit/",
@@ -162,6 +196,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
             ]
         );
     }
+
 
     /**
      * Delete prescription testing

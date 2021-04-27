@@ -57,14 +57,23 @@ class PrescriptionController extends DoctorOfficeAbstractController
     /** @var string Route name for edit prescription appointment */
     const EDIT_PRESCRIPTION_MEDICINE_ROUTE_NAME = 'edit_prescription_medicine_by_doctor';
 
-    /** @var string Route name for edit prescription appointment */
+    /** @var string Route name for delete prescription appointment */
     const DELETE_PRESCRIPTION_APPOINTMENT_ROUTE_NAME = 'delete_prescription_appointment_by_doctor';
 
-    /** @var string Route name for edit prescription testing */
+    /** @var string Route name for delete prescription testing */
     const DELETE_PRESCRIPTION_TESTING_ROUTE_NAME = 'delete_prescription_testing_by_doctor';
 
-    /** @var string Route name for edit prescription appointment */
+    /** @var string Route name for delete prescription appointment */
     const DELETE_PRESCRIPTION_MEDICINE_ROUTE_NAME = 'delete_prescription_medicine_by_doctor';
+
+    /** @var string Route name for show prescription appointment */
+    const SHOW_PRESCRIPTION_APPOINTMENT_ROUTE_NAME = 'show_prescription_appointment_by_doctor';
+
+    /** @var string Route name for show prescription testing */
+    const SHOW_PRESCRIPTION_TESTING_ROUTE_NAME = 'show_prescription_testing_by_doctor';
+
+    /** @var string Route name for show prescription appointment */
+    const SHOW_PRESCRIPTION_MEDICINE_ROUTE_NAME = 'show_prescription_medicine_by_doctor';
 
     /**
      * @var NotifierService
@@ -337,8 +346,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
-        $this->templateService
-            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionTestingDataTableService,
@@ -346,7 +353,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
             $prescription,
             $prescriptionTestingDataTableService::ENTITY_CLASS,
             self::EDIT_PRESCRIPTION_TESTING_ROUTE_NAME,
-            self::DELETE_PRESCRIPTION_TESTING_ROUTE_NAME
+            self::DELETE_PRESCRIPTION_TESTING_ROUTE_NAME,
+            self::SHOW_PRESCRIPTION_TESTING_ROUTE_NAME
         );
     }
 
@@ -375,7 +383,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
             $prescription,
             $prescriptionAppointmentDataTableService::ENTITY_CLASS,
             self::EDIT_PRESCRIPTION_APPOINTMENT_ROUTE_NAME,
-            self::DELETE_PRESCRIPTION_APPOINTMENT_ROUTE_NAME
+            self::DELETE_PRESCRIPTION_APPOINTMENT_ROUTE_NAME,
+            self::SHOW_PRESCRIPTION_APPOINTMENT_ROUTE_NAME
         );
     }
 
@@ -404,7 +413,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
             $prescription,
             $prescriptionMedicineDataTableService::ENTITY_CLASS,
             self::EDIT_PRESCRIPTION_MEDICINE_ROUTE_NAME,
-            self::DELETE_PRESCRIPTION_MEDICINE_ROUTE_NAME
+            self::DELETE_PRESCRIPTION_MEDICINE_ROUTE_NAME,
+            self::SHOW_PRESCRIPTION_MEDICINE_ROUTE_NAME
         );
     }
 
@@ -417,6 +427,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @param string $entityClassName
      * @param string|null $editRouteName
      * @param string|null $deleteRouteName
+     * @param string|null $showRouteName
      * @return mixed
      * @throws ReflectionException
      */
@@ -427,20 +438,22 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription,
         string $entityClassName,
         string $editRouteName = null,
-        string $deleteRouteName = null
+        string $deleteRouteName = null,
+        string $showRouteName = null
     )
     {
         return $specialPrescriptionDatatableService->getTable(
             function (
                 string $id,
                 $entity
-            ) use ($editRouteName, $prescription, $patient, $entityClassName, $deleteRouteName) {
+            ) use ($showRouteName, $editRouteName, $prescription, $patient, $entityClassName, $deleteRouteName) {
                 return $this->render(
                     $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
                     [
                         'template' => $this->templateService,
                         'route' => $editRouteName,
                         'routeDelete' => $deleteRouteName,
+                        'routeShow' => $showRouteName,
                         'parameters' => [
                             'patient' => $patient->getId(),
                             'prescription' => $prescription->getId(),

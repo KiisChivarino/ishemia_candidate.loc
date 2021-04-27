@@ -2,7 +2,7 @@
     <div class="table-wrapper__operation-icons">
         {% if template.items.show.isEnabled %}
             <span>
-            <a href="{{ path(template.routes.show, parameters) }}"><img
+            <a href="{{ path((routeShow is defined ? routeShow : template.routes.show), parameters) }}"><img
                         src="{{ asset('build/images/operation-icon-1.svg') }}" alt=""></a>
         </span>
         {% endif %}

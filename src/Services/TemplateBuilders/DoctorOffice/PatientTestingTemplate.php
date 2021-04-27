@@ -21,7 +21,7 @@ class PatientTestingTemplate extends DoctorOfficeTemplateBuilder
     public const COMMON_CONTENT = [
         'analysisGroup' => 'Группа анализов',
         'plannedDate' => 'Запланировано',
-        'staff' => 'staff'
+        'staff' => 'Врач'
     ];
 
     /** @var string[] Common NEW_CONTENT */
@@ -36,6 +36,13 @@ class PatientTestingTemplate extends DoctorOfficeTemplateBuilder
         'title' => 'Редактирование обследования',
     ];
 
+    /** @var string[] Common EDIT_CONTENT */
+    protected const SHOW_CONTENT = [
+        'h1' => 'Просмотр обследования',
+        'title' => 'Просмотр обследования',
+        'inclusion_time' => 'Дата и время включения в назначение',
+        'staff' => 'Врач создавший назначение'
+    ];
     /**
      * PatientTestingTemplate constructor.
      *
