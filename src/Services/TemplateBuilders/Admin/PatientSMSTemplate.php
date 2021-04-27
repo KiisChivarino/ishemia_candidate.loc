@@ -15,7 +15,6 @@ use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class AnalysisGroupTemplate
@@ -61,15 +60,10 @@ class PatientSMSTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
-     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(
-        RouteCollection $routeCollection,
-        string $className,
-        AuthorizationCheckerInterface $authorizationChecker
-    )
+    public function __construct(RouteCollection $routeCollection, string $className)
     {
-        parent::__construct($routeCollection, $className, $authorizationChecker);
+        parent::__construct($routeCollection, $className);
         $this->addContent(
             self::LIST_CONTENT,
             self::NEW_CONTENT,
@@ -98,7 +92,6 @@ class PatientSMSTemplate extends AdminTemplateBuilder
             ->setIsEnabled(false);
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
             ->setIsEnabled(false);
-        $this->onlyAdminAccessEdit();
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->setContents(self::FILTER_CONTENT)
             ->setFilters(
                 $filterService,

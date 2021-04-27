@@ -17,9 +17,6 @@ class AuthUserCreatorService
     /** @var string Роль пациента */
     private const PATIENT_ROLE = 'ROLE_PATIENT';
 
-    /** @var string Роль менеджера */
-    private const MANAGER_ROLE = 'ROLE_MANAGER';
-
     /** @var EntityManagerInterface $entityManager */
     private $entityManager;
 
@@ -49,17 +46,6 @@ class AuthUserCreatorService
     }
 
     /**
-     * @param AuthUser $authUser
-     * @return AuthUser
-     */
-    public function persistNewManagerAuthUser(AuthUser $authUser): AuthUser
-    {
-        $this->prepareNewManagerAuthUser($authUser);
-        $this->entityManager->persist($authUser);
-        return $authUser;
-    }
-
-    /**
      * @return AuthUser
      */
     public function createAuthUser(): AuthUser
@@ -73,25 +59,6 @@ class AuthUserCreatorService
      */
     public function prepareNewPatientAuthUser(AuthUser $authUser): AuthUser
     {
-        return $this->prepareAuthUser($authUser, self::PATIENT_ROLE);
-    }
-
-    /**
-     * @param AuthUser $authUser
-     * @return AuthUser
-     */
-    public function prepareNewManagerAuthUser(AuthUser $authUser): AuthUser
-    {
-        return $this->prepareAuthUser($authUser, self::MANAGER_ROLE);
-    }
-
-    /**
-     * @param AuthUser $authUser
-     * @param string $role
-     * @return AuthUser
-     */
-    public function prepareAuthUser(AuthUser $authUser, string $role): AuthUser
-    {
         return $authUser
             ->setEnabled(true)
             ->setPassword(
@@ -99,10 +66,9 @@ class AuthUserCreatorService
                     $this->passwordEncoder->encodePassword($authUser, $authUser->getPassword()) :
                     $this->passwordEncoder->encodePassword($authUser, AuthUserInfoService::randomPassword())
             )
-            ->setRoles($role)
+            ->setRoles(self::PATIENT_ROLE)
             ->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
     }
-
 
     /**
      * Редактирует пользователя

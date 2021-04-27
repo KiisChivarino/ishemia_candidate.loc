@@ -8,13 +8,9 @@
         <span class="title">{{ template.items.show.content.templateType }}</span>
         <p>
             {% if entity.templateType %}
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('template_type_show', {'id': entity.templateType.id}) }}">
-                        {{ entity.templateType.name }}
-                    </a>
-                {% else %}
+                <a href="{{ path('template_type_show', {'id': entity.templateType.id}) }}">
                     {{ entity.templateType.name }}
-                {% endif %}
+                </a>
             {% endif %}
         </p>
     </li>

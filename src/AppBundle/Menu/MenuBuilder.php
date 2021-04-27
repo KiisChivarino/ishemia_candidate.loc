@@ -13,7 +13,6 @@ use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -41,30 +40,22 @@ class MenuBuilder
     const PATIENT_QUERY_PARAMETER = 'id';
 
     /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authChecker;
-
-    /**
      * @param FactoryInterface $factory
      * @param ContainerInterface $container
      * @param Security $security
      * @param EntityManagerInterface $entityManager
-     * @param AuthorizationCheckerInterface $authChecker
      */
     public function __construct(
         FactoryInterface $factory,
         ContainerInterface $container,
         Security $security,
-        EntityManagerInterface $entityManager,
-        AuthorizationCheckerInterface $authChecker
+        EntityManagerInterface $entityManager
     )
     {
         $this->factory = $factory;
         $this->container = $container;
         $this->security = $security;
         $this->entityManager = $entityManager;
-        $this->authChecker = $authChecker;
     }
 
     /**
@@ -116,6 +107,7 @@ class MenuBuilder
      * Меню админки (версия для разработки)
      *
      * @param RequestStack $requestStack
+     *
      * @return ItemInterface
      */
     public function createAdminMenu(RequestStack $requestStack): ItemInterface
@@ -132,27 +124,18 @@ class MenuBuilder
                 'label' => 'Управление пользователями',
             ]
         )->setAttribute('class', 'sublist');
-
-        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
-            $menu['users']->addChild(
-                'authUserList', [
-                    'label' => 'Пользователи',
-                    'route' => 'auth_user_list'
-                ]
-            );
-            $menu['users']->addChild(
-                'adminManagerList', [
-                    'label' => 'Менеджеры',
-                    'route' => 'admin_manager_list'
-                ]
-            );
-            $menu['users']->addChild(
-                'roleList', [
-                    'label' => 'Роли',
-                    'route' => 'role_list'
-                ]
-            );
-        }
+        $menu['users']->addChild(
+            'authUserList', [
+                'label' => 'Пользователи',
+                'route' => 'auth_user_list'
+            ]
+        );
+        $menu['users']->addChild(
+            'roleList', [
+                'label' => 'Роли',
+                'route' => 'role_list'
+            ]
+        );
         $menu['users']->addChild(
             'patientsList', [
                 'label' => 'Пациенты',
@@ -247,28 +230,24 @@ class MenuBuilder
                 'route' => 'diagnosis_list'
             ]
         );
-        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
-            $menu['medical_guides']->addChild(
-                'medicineList', [
-                    'label' => 'Препараты',
-                    'route' => 'medicine_list'
-                ]
-            );
-        }
         $menu['medical_guides']->addChild(
-            'clinicalDiagnosisList', [
+            'medicineList', [
+                'label' => 'Препараты',
+                'route' => 'medicine_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'diagnosisList', [
                 'label' => 'Клинические диагнозы',
                 'route' => 'clinical_diagnosis_list',
             ]
         );
-        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
-            $menu['medical_guides']->addChild(
-                'receptionMethodList', [
-                    'label' => 'Способы приема',
-                    'route' => 'reception_method_list'
-                ]
-            );
-        }
+        $menu['medical_guides']->addChild(
+            'receptionMethodList', [
+                'label' => 'Способы приема',
+                'route' => 'reception_method_list'
+            ]
+        );
         $menu['medical_guides']->addChild(
             'appointmentTypeList', [
                 'label' => 'Виды приема',
@@ -311,36 +290,30 @@ class MenuBuilder
                 'route' => 'measure_list'
             ]
         );
-        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
-            $menu['medical_guides']->addChild(
-                'complaintList', [
-                    'label' => 'Жалобы',
-                    'route' => 'complaint_list'
-                ]
-            );
-        }
-        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
-            $menu['medical_guides']->addChild(
-                'timeRangeList', [
-                    'label' => 'Временные диапазоны',
-                    'route' => 'time_range_list'
-                ]
-            );
-        }
+        $menu['medical_guides']->addChild(
+            'complaintList', [
+                'label' => 'Жалобы',
+                'route' => 'complaint_list'
+            ]
+        );
+        $menu['medical_guides']->addChild(
+            'timeRangeList', [
+                'label' => 'Временные диапазоны',
+                'route' => 'time_range_list'
+            ]
+        );
         $menu['medical_guides']->addChild(
             'templates', [
                 'label' => 'Шаблоны',
                 'route' => 'template_list'
             ]
         );
-        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
-            $menu['medical_guides']->addChild(
-                'templatesTypes', [
-                    'label' => 'Типы шаблонов',
-                    'route' => 'template_type_list'
-                ]
-            );
-        }
+        $menu['medical_guides']->addChild(
+            'templatesTypes', [
+                'label' => 'Типы шаблонов',
+                'route' => 'template_type_list'
+            ]
+        );
         $menu['medical_guides']->addChild(
             'templatesParametres', [
                 'label' => 'Параметры шаблонов',
@@ -364,20 +337,18 @@ class MenuBuilder
                 'label' => 'Управление локациями',
             ]
         )->setAttribute('class', 'sublist');
-        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
-            $menu['locations']->addChild(
-                'countriesList', [
-                    'label' => 'Страны',
-                    'route' => 'country_list'
-                ]
-            );
-            $menu['locations']->addChild(
-                'regionsList', [
-                    'label' => 'Регионы',
-                    'route' => 'region_list'
-                ]
-            );
-        }
+        $menu['locations']->addChild(
+            'countriesList', [
+                'label' => 'Страны',
+                'route' => 'country_list'
+            ]
+        );
+        $menu['locations']->addChild(
+            'regionsList', [
+                'label' => 'Регионы',
+                'route' => 'region_list'
+            ]
+        );
         $menu['locations']->addChild(
             'districtList', [
                 'label' => 'Районы',
@@ -396,25 +367,23 @@ class MenuBuilder
                 'route' => 'hospital_list'
             ]
         );
-        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
-            $menu->addChild(
-                'log', [
-                    'label' => 'Логи',
-                ]
-            )->setAttribute('class', 'sublist');
-            $menu['log']->addChild(
-                'log', [
-                    'label' => 'Лог',
-                    'route' => 'log_list'
-                ]
-            );
-            $menu['log']->addChild(
-                'logAction', [
-                    'label' => 'Типы логов',
-                    'route' => 'log_action_list'
-                ]
-            );
-        }
+        $menu->addChild(
+            'log', [
+                'label' => 'Логи',
+            ]
+        )->setAttribute('class', 'sublist');
+        $menu['log']->addChild(
+            'log', [
+                'label' => 'Лог',
+                'route' => 'log_list'
+            ]
+        );
+        $menu['log']->addChild(
+            'logAction', [
+                'label' => 'Типы логов',
+                'route' => 'log_action_list'
+            ]
+        );
         $menu->addChild(
             'sms', [
                 'label' => 'Принятые SMS',
@@ -471,13 +440,13 @@ class MenuBuilder
         );
         $patientId = $this->getEntityId(self::PATIENT_QUERY_PARAMETER);
         if ($this->isMenuForEntity(Patient::class, 'id')) {
-            $menu->addChild(
-                'create_doctor_notification', [
-                    'label' => 'Сообщение пациенту',
-                    'route' => 'doctor_create_notification',
-                    'routeParameters' => ['id' => $patientId]
-                ]
-            );
+        $menu->addChild(
+            'create_doctor_notification', [
+                'label' => 'Сообщение пациенту',
+                'route' => 'doctor_create_notification',
+                'routeParameters' => ['id' => $patientId]
+            ]
+        );
         }
         return $menu;
     }
@@ -702,7 +671,7 @@ class MenuBuilder
     private function getLabelWithNotificationNumber(string $label, int $number, string $customClasses = ""): string
     {
         return $number
-            ? $label . '<div class="notificationNumber ' . $customClasses . '">' . $number . '</div>'
+            ? $label . '<div class="notificationNumber '.$customClasses.'">' . $number . '</div>'
             : $label;
     }
 

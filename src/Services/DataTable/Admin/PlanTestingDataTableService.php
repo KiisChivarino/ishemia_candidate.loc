@@ -49,15 +49,13 @@ class PlanTestingDataTableService extends AdminDatatableService
             ->add(
                 'timeRange', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('timeRange'),
-                    'render' => function (string $data, PlanTesting $planTesting) use ($listTemplateItem) {
+                    'render' => function (string $data, PlanTesting $planTesting) {
                         /** @var TimeRange $timeRange */
                         $timeRange = $planTesting->getTimeRange();
-
-                        return $this->adminOrManagerReturn(
-                            $this->getLink($timeRange->getTitle(), $timeRange->getId(), 'time_range_show'),
-                            $timeRange->getTitle(),
-                            $listTemplateItem->getContentValue('empty')
-                        );
+                        return
+                            $timeRange ?
+                                $this->getLink($timeRange->getTitle(), $timeRange->getId(), 'time_range_show')
+                                : '';
                     }
                 ]
             )

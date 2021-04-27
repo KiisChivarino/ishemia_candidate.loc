@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * Class DistrictController
  * @Route("/admin/district")
- * @IsGranted("ROLE_MANAGER")
+ * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
  */
@@ -34,21 +33,11 @@ class DistrictController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(
-        Environment $twig,
-        RouterInterface $router,
-        TranslatorInterface $translator,
-        AuthorizationCheckerInterface $authorizationChecker
-    )
+    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
         parent::__construct($translator);
-        $this->templateService = new DistrictTemplate(
-            $router->getRouteCollection(),
-            get_class($this),
-            $authorizationChecker
-        );
+        $this->templateService = new DistrictTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
     }
 
@@ -70,7 +59,6 @@ class DistrictController extends AdminAbstractController
     /**
      * Новый район
      * @Route("/new", name="district_new", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      *
@@ -99,7 +87,6 @@ class DistrictController extends AdminAbstractController
     /**
      * Редактирование района
      * @Route("/{id}/edit", name="district_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param District $district
@@ -115,7 +102,6 @@ class DistrictController extends AdminAbstractController
     /**
      * Удаление района
      * @Route("/{id}", name="district_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
      *
      * @param Request $request
      * @param District $district

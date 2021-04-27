@@ -47,21 +47,12 @@ class AppFixtures extends Fixture
     private $dataSowing;
 
     /**
-     * @var array
-     * yaml:config/services/user_data.yaml
-     */
-    private $userData;
-
-
-    /**
      * AppFixtures constructor.
      * @param DataSowing $dataSowing
-     * @param array $userData
      */
-    public function __construct(DataSowing $dataSowing, array $userData)
+    public function __construct(DataSowing $dataSowing)
     {
         $this->dataSowing = $dataSowing;
-        $this->userData = $userData;
     }
 
     /**
@@ -87,7 +78,6 @@ class AppFixtures extends Fixture
         /** @var Position $positionDoctor */
         $positionDoctor = $manager->getRepository(Position::class)->findOneBy(['name' => 'Врач']);
         $manager->getRepository(Staff::class)->addStaffFromFixtures('0000000000', 'Максим', 'Хруслов', 'ROLE_DOCTOR_CONSULTANT', '111111', true, $positionDoctor);
-        $manager->getRepository(AuthUser::class)->addUserFromFixtures($this->userData['manager_user_data']['manager_phone'], $this->userData['manager_user_data']['manager_first_name'], $this->userData['manager_user_data']['manager_last_name'], $this->userData['manager_user_data']['manager_role'], $this->userData['manager_user_data']['manager_password'], true);
         /** end Пользователи */
 
         /** begin Точки отсчета */

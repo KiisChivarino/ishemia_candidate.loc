@@ -47,15 +47,13 @@ class TemplateDataTableService extends AdminDatatableService
             ->add(
                 'templateType', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('templateType'),
-                    'render' => function (string $data, Template $template) use ($listTemplateItem) {
+                    'render' => function (string $data, Template $template) {
                         /** @var TemplateType $templateType */
                         $templateType = $template->getTemplateType();
-
-                        return $this->adminOrManagerReturn(
-                            $this->getLink($templateType->getName(), $templateType->getId(), 'template_type_show'),
-                            $templateType->getName(),
-                            $listTemplateItem->getContentValue('empty')
-                        );
+                        return
+                            $templateType ?
+                                $this->getLink($templateType->getName(), $templateType->getId(), 'template_type_show')
+                                : '';
                     }
                 ]
             );
