@@ -26,7 +26,7 @@ class PatientAppointment
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalRecord::class, inversedBy="patientAppointments", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $medicalRecord;
 

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Пациент
@@ -17,12 +18,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     ignoreNull="true",
  *     message="Такой СНИЛС уже существует!"
  * )
- * * @UniqueEntity(
+ * @UniqueEntity(
  *     fields={"passport"},
  *     ignoreNull="true",
  *     message="Такие паспортные данные уже существуют!"
  * )
- * * * @UniqueEntity(
+ * @UniqueEntity(
  *     fields={"insuranceNumber"},
  *     ignoreNull="true",
  *     message="Такой номер страхового полиса уже существует!"
@@ -85,6 +86,10 @@ class Patient
      *     nullable=true,
      *     columnDefinition="INTEGER CHECK (weight >= 28)", options={"comment"="Вес"}
      *     )
+     * @Assert\GreaterThan(
+     *     value="28",
+     *     message="Поле «Вес» должно быть больше 28"
+     * )
      */
     private $weight;
 
@@ -94,6 +99,10 @@ class Patient
      *     nullable=true,
      *     columnDefinition="INTEGER CHECK (height >= 48)", options={"comment"="Рост"}
      *     )
+     * @Assert\GreaterThan(
+     *     value="48",
+     *     message="Поле «Вес» должно быть больше 48"
+     * )
      */
     private $height;
 

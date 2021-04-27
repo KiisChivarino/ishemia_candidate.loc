@@ -10,9 +10,11 @@ use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\DataTableState;
 
 /**
  * Class StaffDataTableService
@@ -41,6 +43,24 @@ class StaffDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
+                'lastName', TextColumn::class, [
+                    'visible' => false,
+                    'field' => 'upper(aU.lastName)',
+                ]
+            )
+            ->add(
+                'firstName', TextColumn::class, [
+                    'visible' => false,
+                    'field' => 'upper(aU.firstName)',
+                ]
+            )
+            ->add(
+                'patronymicName', TextColumn::class, [
+                    'visible' => false,
+                    'field' => 'upper(aU.patronymicName)',
+                ]
+            )
+            ->add(
                 'hospital', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('hospital'),
                     'render' => function (string $data, Staff $staff) use ($listTemplateItem) {
@@ -56,6 +76,8 @@ class StaffDataTableService extends AdminDatatableService
             ->add(
                 'position', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('position'),
+                    'searchable' => false,
+                    'orderable' => false,
                     'render' => function (string $data, Staff $staff) {
                         /** @var Position $position */
                         $position = $staff->getPosition();
@@ -74,8 +96,15 @@ class StaffDataTableService extends AdminDatatableService
                     'query' => function (QueryBuilder $builder) {
                         $builder
                             ->select('s')
-                            ->from(Staff::class, 's');
+                            ->from(Staff::class, 's')
+                            ->leftJoin('s.AuthUser', 'aU');
                     },
+                    'criteria' => [
+                        function (QueryBuilder $queryBuilder, DataTableState $state) {
+                            $state->setGlobalSearch(mb_strtoupper($state->getGlobalSearch()));
+                        },
+                        new SearchCriteriaProvider(),
+                    ],
                 ]
             );
     }

@@ -5,12 +5,15 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Пользователь
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ORM\Table(options={"comment":"Пользователь"});
+ * @ORM\Table(options={"comment":"Пользователь"})
+ * @UniqueEntity(fields={"phone"}, message="Такой номер телефона уже занят!")
  */
 class AuthUser implements UserInterface
 {
@@ -38,7 +41,13 @@ class AuthUser implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=10, unique=true, options={"comment"="Телефон пользователя"}, columnDefinition="CHAR(10) CHECK (LENGTH(phone) = 10)")
+     * @ORM\Column(type="string", length=10, unique=true, options={"comment"="Телефон пользователя"})
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 10,
+     *      minMessage = "Номер телефона должен быть не менее {{ limit }} цифр!",
+     *      maxMessage = "Номер телефона должен быть не более {{ limit }} цифр!"
+     * )
      */
     private $phone;
 

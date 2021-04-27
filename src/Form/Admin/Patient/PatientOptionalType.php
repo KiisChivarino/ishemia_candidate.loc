@@ -81,8 +81,16 @@ class PatientOptionalType extends AbstractType
                         'required' => false,
                     ]
                 )
-                ->add('weight', null, ['label' => $templateItem->getContentValue('weight')])
-                ->add('height', null, ['label' => $templateItem->getContentValue('height')])
+                ->add('weight', null, [
+                        'label' => $templateItem->getContentValue('weight'),
+                        'attr' => ['min' => '29']
+                    ]
+                )
+                ->add('height', null, [
+                        'label' => $templateItem->getContentValue('height'),
+                        'attr' => ['min' => '49']
+                    ]
+                )
                 ->add(
                     'district', EntityType::class, [
                         'label' => $templateItem->getContentValue('district'),

@@ -82,7 +82,7 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
             ->add(
                 'plannedDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('plannedDate'),
-                    'format' => 'd.m.Y H:m',
+                    'format' => 'd.m.Y',
                     'searchable' => false,
                     'nullValue' => $listTemplateItem->getContentValue('falseValue')
                 ]
