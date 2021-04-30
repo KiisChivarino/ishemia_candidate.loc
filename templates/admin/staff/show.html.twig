@@ -1,6 +1,18 @@
 {% extends template.commonTemplatePath~'show.html.twig' %}
 {% block show_content %}
     <li>
+        <span class="title">{{ template.items.show.content.lastName }}</span>
+        <p>{{ entity.authUser.lastName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.firstName }}</span>
+        <p>{{ entity.authUser.firstName }}</p>
+    </li>
+    <li>
+        <span class="title">{{ template.items.show.content.patronymicName }}</span>
+        <p>{{ entity.authUser.patronymicName ? entity.authUser.patronymicName : template.items.show.content.empty }}</p>
+    </li>
+    <li>
         <span class="title">{{ template.items.show.content.hospital }}</span>
         <p>
             {% if entity.hospital %}
@@ -13,18 +25,6 @@
     <li>
         <span class="title">{{ template.items.show.content.phone }}</span>
         <p>{{ entity.authUser.phone }}</p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.lastName }}</span>
-        <p>{{ entity.authUser.lastName }}</p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.firstName }}</span>
-        <p>{{ entity.authUser.firstName }}</p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.patronymicName }}</span>
-        <p>{{ entity.authUser.patronymicName ? entity.authUser.patronymicName : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.region }}</span>
