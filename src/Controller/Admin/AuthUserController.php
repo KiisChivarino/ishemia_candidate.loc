@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -132,20 +131,5 @@ class AuthUserController extends AdminAbstractController
                 }
             }
         );
-    }
-
-    /**
-     * Delete user
-     * @Route("/{id}", name="auth_user_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-     *
-     * @param Request $request
-     * @param AuthUser $authUser
-     *
-     * @return Response
-     * @throws Exception
-     */
-    public function delete(Request $request, AuthUser $authUser): Response
-    {
-        return $this->responseDelete($request, $authUser);
     }
 }
