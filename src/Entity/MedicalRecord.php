@@ -26,7 +26,7 @@ class MedicalRecord
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="medicalRecords")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $medicalHistory;
 
