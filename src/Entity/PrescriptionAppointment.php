@@ -21,7 +21,7 @@ class PrescriptionAppointment
 
     /**
      * @ORM\ManyToOne(targetEntity=Prescription::class, inversedBy="prescriptionAppointments")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $prescription;
 
