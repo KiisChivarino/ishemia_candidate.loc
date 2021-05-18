@@ -3,14 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\MedicalHistory;
-use App\Entity\PatientDischargeEpicrisis;
 use App\Form\Admin\MedicalHistory\AnamnesOfLifeType;
 use App\Form\Admin\MedicalHistory\DiseaseHistoryType;
 use App\Form\Admin\MedicalHistory\EditMedicalHistoryType;
 use App\Form\Admin\MedicalHistory\EnabledType;
 use App\Form\Admin\MedicalHistoryType;
-use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
-use App\Form\Admin\Patient\PatientMKBCodeType;
+use App\Form\Patient\PatientClinicalDiagnosisTextType;
+use App\Form\Patient\PatientMKBCodeType;
 use App\Form\DischargeEpicrisisType;
 use App\Repository\PatientTestingFileRepository;
 use App\Repository\PrescriptionRepository;
@@ -146,7 +145,7 @@ class MedicalHistoryController extends AdminAbstractController
                         MedicalHistory::class
                     ),
                 'allPrescriptionsCompleted' =>
-                    $prescriptionRepository->findNotCompletedPrescription($medicalHistory) ? false : true,
+                    !$prescriptionRepository->findNotCompletedPrescription($medicalHistory),
                 'notificationFilterName' =>
                     $filterService->generateFilterName(
                         'notification_list',
@@ -176,12 +175,6 @@ class MedicalHistoryController extends AdminAbstractController
         FileService $fileService
     ): Response
     {
-        $patientDischargeEpicrisis = $medicalHistory->getPatientDischargeEpicrisis()
-            ? $medicalHistory->getPatientDischargeEpicrisis()
-            : new PatientDischargeEpicrisis();
-        $medicalHistory->setPatientDischargeEpicrisis($patientDischargeEpicrisis);
-        $this->getDoctrine()->getManager()->persist($patientDischargeEpicrisis);
-        $this->getDoctrine()->getManager()->flush();
         $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
         return $this->responseEditMultiForm(
             $request,
@@ -193,7 +186,7 @@ class MedicalHistoryController extends AdminAbstractController
                 new FormData(AnamnesOfLifeType::class, $medicalHistory),
                 new FormData(DiseaseHistoryType::class, $medicalHistory),
                 new FormData(EditMedicalHistoryType::class, $medicalHistory),
-                new FormData(DischargeEpicrisisType::class, $patientDischargeEpicrisis),
+                new FormData(DischargeEpicrisisType::class, $medicalHistory->getPatientDischargeEpicrisis()),
                 new FormData(EnabledType::class, $medicalHistory),
             ],
             function (EntityActions $actions) use ($patientTestingFileRepository, $fileService) {

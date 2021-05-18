@@ -5,14 +5,14 @@ namespace App\Controller;
 use App\Controller\Admin\MedicalHistoryController;
 use App\Controller\Admin\PrescriptionController;
 use App\Entity\MedicalHistory;
+use App\Entity\Patient;
 use App\Entity\Prescription;
+use App\Repository\MedicalHistoryRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\EntityActions\Core\Builder\EntityActionsBuilder;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
-use App\Services\EntityActions\Core\AbstractCreatorService;
-use App\Services\EntityActions\Core\AbstractEditorService;
 use App\Services\EntityActions\Core\EntityActionsInterface;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\FormData;
@@ -60,7 +60,8 @@ abstract class AppAbstractController extends AbstractController
         'TEMPLATE_TYPE' => 'templateType',
         'TEMPLATE_PARAMETER' => 'templateParameter',
         'LOG_ACTION' => 'logAction',
-        'NOTIFICATION' => 'notification'
+        'NOTIFICATION' => 'notification',
+        'CHANNEL_TYPE' => 'channelType'
     ];
 
     /** @var string Label of form option for adding formTemplateItem in form */
@@ -96,6 +97,7 @@ abstract class AppAbstractController extends AbstractController
      * @param FilterLabels|null $filterLabels
      * @param array|null $options
      * @param Closure|null $listActions
+     * @param array|null $renderParameters
      * @return Response
      */
     public function responseList(
@@ -103,7 +105,8 @@ abstract class AppAbstractController extends AbstractController
         $dataTableService,
         ?FilterLabels $filterLabels = null,
         ?array $options = [],
-        ?Closure $listActions = null
+        ?Closure $listActions = null,
+        ?array $renderParameters = []
     ): Response
     {
         $template = $this->templateService->list($filterLabels ? $filterLabels->getFilterService() : null);
@@ -125,10 +128,13 @@ abstract class AppAbstractController extends AbstractController
         }
         return $this->render(
             $template->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getPath() . 'list.html.twig',
-            [
-                'datatable' => $table,
-                'filters' => $template->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
-            ]
+            array_merge(
+                [
+                    'datatable' => $table,
+                    'filters' => $template->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getFiltersViews(),
+                ],
+                $renderParameters
+            )
         );
     }
 
@@ -329,9 +335,10 @@ abstract class AppAbstractController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
             try {
                 $entityManager = $this->getDoctrine()->getManager();
+                $entityId = $entity->getId();
                 $entityManager->remove($entity);
+                $this->setLogDelete($entityName, $entityId);
                 $entityManager->flush();
-                $this->setLogDelete($entityName, $entity);
             } catch (DBALException $e) {
                 if ($e->getPrevious()->getCode() == self::FOREIGN_KEY_ERROR) {
                     $this->addFlash(
@@ -374,7 +381,7 @@ abstract class AppAbstractController extends AbstractController
     {
         $renderForm = $this->renderForm($formName, $this->getRenderFormParameters($form, ['entity' => $entity]));
         if (!$this->handleRequest($request, $form)) {
-            return $renderForm;
+            return $this->redirectToCurrentRoute($request);
         }
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
@@ -388,15 +395,13 @@ abstract class AppAbstractController extends AbstractController
             $entityManager->persist($entity);
             $this->setFormLog($type, $entity);
             if (!$this->flush()) {
-                return $renderForm;
+                return $this->redirectToCurrentRoute($request);
             }
             $this->setDefaultRedirectRouteParameters($entity);
             return $this->redirectSubmitted();
         }
         if ($form->isSubmitted() && !$form->isValid()) {
-            foreach ($form->getErrors(true) as $value) {
-                $this->addFlash('error', $value->getMessage());
-            }
+            return $this->redirectInvalidForm($form, $request);
         }
         return $renderForm;
     }
@@ -465,64 +470,65 @@ abstract class AppAbstractController extends AbstractController
     }
 
     /**
+     * Response template of edit form using form builder and entity actions service
      * @param Request $request
-     * @param EditorEntityActionsBuilder[] $editorEntityActionsBuilderArray
-     * @param array $formDataArray
-     * @param string $templateEditName
+     * @param EditorEntityActionsBuilder[] $editorEntityActionsBuilderArray - array of objects EditorEntityActionsBuilder
+     * @param array $formDataArray - array of objects FormDataArray
+     * @param null $defaultEntity - default entity for redirect and others, if null will be checked entity of first item from EntityActionsBuilderArray
+     * @param string $templateEditName - name of twig template
      * @return RedirectResponse|Response
-     * @throws Exception
+     * @throws \ReflectionException
      */
     protected function responseEditMultiFormWithActions(
         Request $request,
         array $editorEntityActionsBuilderArray,
         array $formDataArray,
+        $defaultEntity = null,
         string $templateEditName = self::RESPONSE_FORM_TYPE_EDIT
     )
     {
-        $this->templateService->edit();
-        foreach ($editorEntityActionsBuilderArray as $entityActionsBuilder) {
-            if (!is_a($entityActionsBuilder->getEntityActionsService(), AbstractEditorService::class)) {
-                throw new Exception('EntityActionsBuilder must contains AbstractEditorService');
-            }
+        $this->templateService->edit(
+            $defaultEntity ?: $editorEntityActionsBuilderArray[0]->getEntityActionsService()->getEntity()
+        );
+        foreach ($editorEntityActionsBuilderArray as $editorEntityActionsBuilder) {
+            $editorEntityActionsBuilder->getEntityActionsService()->before($editorEntityActionsBuilder->getBeforeOptions());
         }
         return $this->responseMultiFormWithActions(
             $request,
             $editorEntityActionsBuilderArray,
             $formDataArray,
             $templateEditName,
-            self::RESPONSE_FORM_TYPE_EDIT
+            self::RESPONSE_FORM_TYPE_EDIT,
+            $defaultEntity
         );
     }
 
     /**
      * Response several forms for creating using service of actions with entity
      * @param Request $request
-     * @param array $creatorEntityActionsBuilderArray
-     * @param array $formDataArray
-     * @param string $templateName
+     * @param array $creatorEntityActionsBuilderArray - array of EntityActionsBuilders: EntityActionsCreator, options for it before and after submit form
+     * @param array $formDataArray - array of form data: name of form class, entity object for form, form options and others
+     * @param null $defaultEntity - default entity for redirect and others, if null will be checked entity of first item from EntityActionsBuilderArray
+     * @param string $templateName - special name of twig template
      * @return RedirectResponse|Response
      * @throws ReflectionException
-     * @throws Exception
      */
     protected function responseNewMultiFormWithActions(
         Request $request,
         array $creatorEntityActionsBuilderArray,
         array $formDataArray,
+        $defaultEntity = null,
         string $templateName = self::RESPONSE_FORM_TYPE_NEW
     )
     {
         $this->templateService->new();
-        foreach ($creatorEntityActionsBuilderArray as $entityActionsBuilder) {
-            if (!is_a($entityActionsBuilder->getEntityActionsService(), AbstractCreatorService::class)) {
-                throw new Exception('EntityActionsBuilder must contains AbstractCreatorService');
-            }
-        }
         return $this->responseMultiFormWithActions(
             $request,
             $creatorEntityActionsBuilderArray,
             $formDataArray,
             $templateName,
-            self::RESPONSE_FORM_TYPE_NEW
+            self::RESPONSE_FORM_TYPE_NEW,
+            $defaultEntity
         );
     }
 
@@ -533,7 +539,7 @@ abstract class AppAbstractController extends AbstractController
      * @param array $formDataArray
      * @param string $templateName
      * @param string $type
-     * @param null $defaultEntity
+     * @param null $defaultEntity - default entity for redirect and others, if null will be checked entity of first item from EntityActionsBuilderArray
      * @return RedirectResponse|Response
      * @throws ReflectionException
      * @throws Exception
@@ -565,7 +571,7 @@ abstract class AppAbstractController extends AbstractController
         );
         $formRender = $this->renderForm($templateName, $renderParameters);
         if (!$this->handleRequest($request, $form)) {
-            return $formRender;
+            return $this->redirectToCurrentRoute($request);
         }
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($entityActionsBuilderArray as $entityActionsBuilder) {
@@ -575,16 +581,43 @@ abstract class AppAbstractController extends AbstractController
                     $this->getAfterEntityActionsOptions($entityActionsBuilder->getAfterOptions(), $entityActionsService)
                 );
             }
-            if (!$this->flush()) {
-                return $formRender;
-            }
             foreach ($entityActionsBuilderArray as $entityActionsBuilder) {
                 $this->setFormLog($type, $entityActionsBuilder->getEntityActionsService()->getEntity());
+            }
+            if (!$this->flush()) {
+                return $formRender;
             }
             $this->setDefaultRedirectRouteParameters($defaultEntity);
             return $this->redirectSubmitted();
         }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            return $this->redirectInvalidForm($form, $request);
+        }
         return $formRender;
+    }
+
+    /**
+     * Redirect with flash messages when form is not valid
+     * @param FormInterface $form
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    protected function redirectInvalidForm(FormInterface $form, Request $request): RedirectResponse
+    {
+        foreach ($form->getErrors(true) as $value) {
+            $this->addFlash('error', $value->getMessage());
+        }
+        return $this->redirectToCurrentRoute($request);
+    }
+
+    /**
+     * Returns RedirectResponse of current page
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    protected function redirectToCurrentRoute(Request $request): RedirectResponse
+    {
+        return $this->redirect($request->headers->get('referer'));
     }
 
     /**
@@ -622,18 +655,21 @@ abstract class AppAbstractController extends AbstractController
         $renderParameters = $this->getRenderFormParameters($form);
         $formRender = $this->renderForm($templateName, $renderParameters);
         if (!$this->handleRequest($request, $form)) {
-            return $formRender;
+            return $this->redirectToCurrentRoute($request);
         }
         if ($form->isSubmitted() && $form->isValid()) {
             $entityActionsService->after(
                 $this->getAfterEntityActionsOptions($entityActionsBuilder->getAfterOptions(), $entityActionsService)
             );
-            if (!$this->flush()) {
-                return $formRender;
-            }
             $this->setFormLog($type, $defaultEntity);
+            if (!$this->flush()) {
+                return $this->redirectToCurrentRoute($request);
+            }
             $this->setDefaultRedirectRouteParameters($defaultEntity);
             return $this->redirectSubmitted();
+        }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            return $this->redirectInvalidForm($form, $request);
         }
         return $formRender;
     }
@@ -766,7 +802,7 @@ abstract class AppAbstractController extends AbstractController
      * @param string $entityName
      * @param $entity
      */
-    protected function setLogDelete(string $entityName, $entity): void
+    protected function setLogDelete(string $entityName, int $entityId): void
     {
         $entityManager = $this->getDoctrine()->getManager();
         /** @noinspection PhpParamsInspection */
@@ -777,7 +813,7 @@ abstract class AppAbstractController extends AbstractController
                     'log.delete.entity',
                     [
                         '%entity%' => $entityName,
-                        '%id%' => $entity->getId(),
+                        '%id%' => $entityId,
                     ]
                 )
             )
@@ -849,6 +885,7 @@ abstract class AppAbstractController extends AbstractController
     /**
      * Sets default route parameters if they haven`t been added before
      * @param $entity
+     * @throws Exception
      */
     protected function setDefaultRedirectRouteParameters($entity): void
     {
@@ -873,7 +910,7 @@ abstract class AppAbstractController extends AbstractController
         if ($parameter = $request->query->get($parameterKey)) {
             return $parameter;
         } else {
-            throw new Exception($this->translator->trans('app_controller.error.parameter_not_found'));
+            return false;
         }
     }
 
@@ -881,14 +918,14 @@ abstract class AppAbstractController extends AbstractController
      * Returns entity by id
      * @param $entityClass
      * @param int $parameter
-     * @return object|RedirectResponse
+     * @return mixed
      * @throws Exception
      */
     protected function getEntityById($entityClass, int $parameter)
     {
         $entity = $this->getDoctrine()->getManager()->getRepository($entityClass)->find($parameter);
         if ($entity === null || !is_a($entity, $entityClass)) {
-            throw new Exception($this->translator->trans('app_controller.error.parameter_not_found'));
+            return false;
         }
         return $entity;
     }
@@ -896,33 +933,47 @@ abstract class AppAbstractController extends AbstractController
     /**
      * Returns MedicalHistory entity by GET parameter
      * @param Request $request
-     * @return MedicalHistory|object|RedirectResponse
+     * @return MedicalHistory|bool
      * @throws Exception
      * @todo сделать нормальные рауты в админке и убрать этот дебильный метод!!!
      */
-    protected function getMedicalHistoryByParameter(Request $request): MedicalHistory
+    protected function getMedicalHistoryByParameter(Request $request)
     {
-        /** @var MedicalHistory $medicalHistory */
-        return $this->getEntityById(
-            MedicalHistory::class,
-            $this->getGETParameter($request, MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)
-        );
+        if (!$medicalHistory =
+            $this->getEntityById(
+                MedicalHistory::class,
+                $this->getGETParameter($request, MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)
+            )
+        ) {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('app_controller.error.parameter_not_found')
+            );
+            return false;
+        }
+        return $medicalHistory;
     }
 
     /**
      * Returns Prescription entity by GET parameter
      * @param Request $request
-     * @return Prescription|object|RedirectResponse
+     * @return Prescription|false
      * @throws Exception
      * @todo сделать нормальные рауты в админке и убрать этот дебильный метод!!!
      */
-    protected function getPrescriptionByParameter(Request $request): Prescription
+    protected function getPrescriptionByParameter(Request $request)
     {
-        /** @var Prescription $prescription */
-        return $this->getEntityById(
+        if (!$prescription = $this->getEntityById(
             Prescription::class,
             $this->getGETParameter($request, PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY)
-        );
+        )) {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('app_controller.error.parameter_not_found')
+            );
+            return false;
+        }
+        return $prescription;
     }
 
     /**
@@ -977,7 +1028,27 @@ abstract class AppAbstractController extends AbstractController
     private function getAfterEntityActionsOptions(
         ?Closure $afterOptions,
         EntityActionsInterface $entityActionsService
-    ): array{
+    ): array
+    {
         return ($afterOptions !== null) ? $afterOptions($entityActionsService) : [];
+    }
+
+    /**
+     * Returns current medical history or adds flash message if current medical history is not found
+     * @param Patient $patient
+     * @param MedicalHistoryRepository $medicalHistoryRepository
+     * @return MedicalHistory|false
+     * @throws Exception
+     */
+    protected function getCurrentMedicalHistory(Patient $patient, MedicalHistoryRepository $medicalHistoryRepository)
+    {
+        if (!$medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient)) {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('app_controller.error.current_medical_history_not_found')
+            );
+            return false;
+        }
+        return $medicalHistory;
     }
 }

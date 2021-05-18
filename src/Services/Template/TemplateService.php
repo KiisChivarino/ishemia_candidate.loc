@@ -43,6 +43,7 @@ class TemplateService
      * @param string $className
      * @param string $commonTemplatePath
      * @param string $redirectRouteName
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className, string $commonTemplatePath, string $redirectRouteName)
     {
@@ -196,10 +197,11 @@ class TemplateService
      * @param string $redirectRouteName
      * @param array $redirectRouteParameters
      * @return TemplateService
+     * @throws Exception
      */
     public function setRedirectRoute(string $redirectRouteName, array $redirectRouteParameters = []): self
     {
-        $this->redirectRouteParameters = $redirectRouteParameters;
+        $this->setRedirectRouteParameters($redirectRouteParameters);
         $this->redirectRouteName = $redirectRouteName;
 
         return $this;
@@ -245,9 +247,16 @@ class TemplateService
 
     /**
      * Sets redirect route parameters
+     * $redirectRouteParameters =
+     * [
+     * 'paramName' => (int) 'entityId'
+     * ]
      * @param array $redirectRouteParameters
+     * @throws Exception
      */
-    public function setRedirectRouteParameters(array $redirectRouteParameters){
+    public function setRedirectRouteParameters(array $redirectRouteParameters)
+    {
+        array_walk($redirectRouteParameters, function (int $arrayValue) {});
         $this->redirectRouteParameters = $redirectRouteParameters;
     }
 }

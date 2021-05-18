@@ -32,7 +32,7 @@ class PatientAppointment
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientAppointments", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $medicalHistory;
 

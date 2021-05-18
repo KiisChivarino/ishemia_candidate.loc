@@ -15,10 +15,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use function get_class;
 
 /**
+ * Class UserRepository
  * @method AuthUser|null find($id, $lockMode = null, $lockVersion = null)
  * @method AuthUser|null findOneBy(array $criteria, array $orderBy = null)
  * @method AuthUser[]    findAll()
  * @method AuthUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class UserRepository extends AppRepository implements PasswordUpgraderInterface
 {
@@ -125,7 +127,6 @@ class UserRepository extends AppRepository implements PasswordUpgraderInterface
             ->andWhere('u.phone = :val')
             ->setParameter('val', $this->SYSTEM_USER_PHONE)
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getOneOrNullResult();
     }
 }

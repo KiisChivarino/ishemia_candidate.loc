@@ -3,6 +3,8 @@
 namespace App\Services\InfoService;
 
 use App\Entity\PatientAppointment;
+use App\Entity\Prescription;
+use App\Repository\PrescriptionAppointmentRepository;
 
 /**
  * Class PatientAppointmentInfoService
@@ -44,5 +46,19 @@ class PatientAppointmentInfoService
                 $patientInfo . ', ' . $staffInfo . ', ' . $plannedDateTimeString
                 :
                 $patientInfo . ', ' . $staffInfo . ', ' . $appointmentTimeString;
+    }
+
+    /**
+     * Checks count of appointments for prescription and returns true if count is equal to 0
+     * @param Prescription $prescription
+     * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
+     * @return bool
+     */
+    public static function isAppointmentNotExists(
+        Prescription $prescription,
+        PrescriptionAppointmentRepository $prescriptionAppointmentRepository
+    ): bool
+    {
+        return $prescriptionAppointmentRepository->countPrescriptionAppointmentsByPrescription($prescription) == 0;
     }
 }

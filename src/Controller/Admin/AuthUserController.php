@@ -9,12 +9,12 @@ use App\Form\AuthUser\AuthUserRequiredType;
 use App\Form\AuthUser\AuthUserRoleType;
 use App\Form\AuthUser\AuthUserPasswordType;
 use App\Repository\UserRepository;
-use App\Services\Creator\AuthUserCreatorService;
 use App\Services\DataTable\Admin\AuthUserDataTableService;
+use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
+use App\Services\EntityActions\Editor\AuthUserEditorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\AuthUserTemplate;
 use Exception;
-use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,6 +41,7 @@ class AuthUserController extends AdminAbstractController
      *
      * @param Environment $twig
      * @param RouterInterface $router
+     * @param TranslatorInterface $translator
      */
     public function __construct(
         Environment $twig,
@@ -95,20 +96,27 @@ class AuthUserController extends AdminAbstractController
      *
      * @param Request $request
      * @param AuthUser $authUser
-     * @param AuthUserCreatorService $authUserCreatorService
+     * @param UserPasswordEncoderInterface $passwordEncoder
      * @return Response
-     * @throws ReflectionException
+     * @throws Exception
      */
     public function edit(
         Request $request,
         AuthUser $authUser,
-        AuthUserCreatorService $authUserCreatorService
+        UserPasswordEncoderInterface $passwordEncoder
     ): Response
     {
         $oldPassword = $authUser->getPassword();
-        return $this->responseEditMultiForm(
+        return $this->responseEditMultiFormWithActions(
             $request,
-            $authUser,
+            [
+                new EditorEntityActionsBuilder(
+                    new AuthUserEditorService($this->getDoctrine()->getManager(), $authUser, $passwordEncoder),
+                    [
+                        AuthUserEditorService::OLD_PASSWORD_OPTION => $oldPassword,
+                    ]
+                )
+            ],
             [
                 new FormData(AuthUserRequiredType::class, $authUser),
                 new FormData(AuthUserEmailType::class, $authUser),
@@ -119,18 +127,7 @@ class AuthUserController extends AdminAbstractController
                     [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false]
                 ),
                 new FormData(AuthUserRoleType::class, $authUser, [], false),
-            ],
-            function ()
-            use ($oldPassword, $authUser, $authUserCreatorService) {
-                try {
-                    $authUserCreatorService->updateAuthUser($authUser, $oldPassword);
-                } catch (Exception $e) {
-                    $this->addFlash(
-                        'error',
-                        'Пользователь не добавлен!'
-                    );
-                }
-            }
+            ]
         );
     }
 

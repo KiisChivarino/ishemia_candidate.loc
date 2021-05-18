@@ -11,7 +11,6 @@ use App\Entity\Role;
  */
 class AuthUserInfoService
 {
-
     /**
      * ФИО пользователя
      *
@@ -104,7 +103,7 @@ class AuthUserInfoService
      * @param AuthUser $authUser
      * @return bool
      */
-    public function isDoctorConsultant(AuthUser $authUser): bool
+    public static function isDoctorConsultant(AuthUser $authUser): bool
     {
         return in_array('ROLE_DOCTOR_CONSULTANT', $authUser->getRoles());
     }
@@ -115,8 +114,21 @@ class AuthUserInfoService
      * @param AuthUser $authUser
      * @return bool
      */
-    public function isDoctorHospital(AuthUser $authUser): bool
+    public static function isDoctorHospital(AuthUser $authUser): bool
     {
         return in_array('ROLE_DOCTOR_HOSPITAL', $authUser->getRoles());
+    }
+
+    /**
+     * Check if user is doctor
+     * @param AuthUser $authUser
+     * @return bool
+     */
+    public static function isDoctor(AuthUser  $authUser): bool
+    {
+        return
+            in_array('ROLE_DOCTOR_HOSPITAL', $authUser->getRoles())
+            ||
+            in_array('ROLE_DOCTOR_CONSULTANT', $authUser->getRoles());
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Services\DataTable\Admin;
 
-use App\Entity\MedicalHistory;
 use App\Entity\PatientMedicine;
 use App\Entity\Prescription;
 use App\Services\InfoService\AuthUserInfoService;
@@ -35,20 +34,21 @@ class PatientMedicineDataTableService extends AdminDatatableService
                 'patient', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('patient'),
                     'render' => function (string $data, PatientMedicine $patientMedicine) use ($listTemplateItem) {
-                        $patient = null;
-                        $prescriptionMedicine = $patientMedicine->getPrescriptionMedicine();
-                            if($prescriptionMedicine) {
-                                $prescription = $prescriptionMedicine->getPrescription();
-                                if ($prescription) {
-                                    $patient = $prescription->getMedicalHistory()->getPatient();
+                        $content = $listTemplateItem->getContentValue('empty');
+                        if ($prescriptionMedicine = $patientMedicine->getPrescriptionMedicine()) {
+                            if ($prescription = $prescriptionMedicine->getPrescription()) {
+                                if ($medicalHistory = $prescription->getMedicalHistory()) {
+                                    if ($patient = $medicalHistory->getPatient()) {
+                                        $content = $this->getLink(
+                                            AuthUserInfoService::getFIO($patient->getAuthUser(), true),
+                                            $medicalHistory->getId(),
+                                            'medical_history_show'
+                                        );
+                                    }
                                 }
                             }
-                        return $patient ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($patient->getAuthUser(), true),
-                            $this->entityManager->getRepository(MedicalHistory::class)
-                                ->getCurrentMedicalHistory($patient)->getId(),
-                            'medical_history_show'
-                        ) : $listTemplateItem->getContentValue('empty');
+                        }
+                        return $content;
                     }
                 ]
             )
@@ -59,13 +59,13 @@ class PatientMedicineDataTableService extends AdminDatatableService
                         $prescriptionMedicine = $patientMedicine->getPrescriptionMedicine();
                         return $prescriptionMedicine ?
                             $this->getLinkMultiParam(
-                            'Назначение лекарств от ' . $prescriptionMedicine->getInclusionTime()->format('d.m.Y'),
-                            [
-                                'prescriptionMedicine' => $prescriptionMedicine->getId(),
-                                'prescription' => $prescriptionMedicine->getPrescription()->getId()
-                            ],
-                            'prescription_medicine_show'
-                        ) : $listTemplateItem->getContentValue('empty');
+                                'Назначение лекарств от ' . $prescriptionMedicine->getInclusionTime()->format('d.m.Y'),
+                                [
+                                    'prescriptionMedicine' => $prescriptionMedicine->getId(),
+                                    'prescription' => $prescriptionMedicine->getPrescription()->getId()
+                                ],
+                                'prescription_medicine_show'
+                            ) : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             )

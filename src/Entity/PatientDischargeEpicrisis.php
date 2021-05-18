@@ -22,7 +22,7 @@ class PatientDischargeEpicrisis
 
     /**
      * @ORM\OneToOne(targetEntity=MedicalHistory::class, inversedBy="patientDischargeEpicrisis", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $medicalHistory;
 

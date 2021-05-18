@@ -108,7 +108,7 @@ class PatientAppointmentDataTableService extends AdminDatatableService
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
         /** @var MedicalHistory $medicalHistory */
-        $medicalHistory = isset($filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']]) ? $filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']] : null;
+        $medicalHistory = $filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']] ?? null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
@@ -117,8 +117,7 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                         $builder
                             ->select('pa')
                             ->from(PatientAppointment::class, 'pa')
-                            ->innerJoin('pa.prescriptionAppointment', 'pra')
-                        ;
+                            ->leftJoin('pa.prescriptionAppointment', 'pra');
                         if ($medicalHistory) {
                             $builder
                                 ->andWhere('pa.medicalHistory = :medicalHistory')

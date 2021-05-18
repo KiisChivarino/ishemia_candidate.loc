@@ -111,9 +111,10 @@ class InitialExaminationController extends DoctorOfficeAbstractController
         MedicalHistoryRepository $medicalHistoryRepository
     )
     {
-        $firstAppointment = $patientAppointmentRepository->getFirstAppointment(
-            $medicalHistoryRepository->getCurrentMedicalHistory($patient)
-        );
+        if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
+            $this->redirectToMedicalHistory($patient);
+        }
+        $firstAppointment = $patientAppointmentRepository->getFirstAppointment($medicalHistory);
         $this->setRedirectMedicalHistoryRoute($patient->getId());
         $objectiveStatus = $firstAppointment->getObjectiveStatus();
         return $this->responseEditMultiForm(
@@ -123,7 +124,9 @@ class InitialExaminationController extends DoctorOfficeAbstractController
                 new FormData(
                     PatientAppointmentType::class,
                     $firstAppointment,
-                    [PatientAppointmentType::OBJECTIVE_STATUS_TEXT_OPTION_NAME => $objectiveStatus]
+                    [
+                        PatientAppointmentType::OBJECTIVE_STATUS_TEXT_OPTION_NAME => $objectiveStatus
+                    ]
                 ),
                 new FormData(
                     AnamnesOfLifeType::class,
@@ -153,6 +156,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      * @param TextTemplateService $textTemplateService
      * @return RedirectResponse|Response
      * @throws NonUniqueResultException
+     * @throws Exception
      * @Route("/{id}/medical_history/edit_initial_examination_data/objective_status_using_constructor",
      *     name="doctor_edit_initial_examination_data_objective_status_using_constructor",
      *     methods={"GET","POST"})
@@ -167,9 +171,10 @@ class InitialExaminationController extends DoctorOfficeAbstractController
         TextTemplateService $textTemplateService
     )
     {
-        $firstAppointment = $patientAppointmentRepository->getFirstAppointment(
-            $medicalHistoryRepository->getCurrentMedicalHistory($patient)
-        );
+        if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
+            $this->redirectToMedicalHistory($patient);
+        }
+        $firstAppointment = $patientAppointmentRepository->getFirstAppointment($medicalHistory);
         $templateType = $templateTypeRepository->getTemplateTypeWithObjectiveStatusId();
         $parameters = $templateParameterRepository->getTemplateParameterByTemplateType($templateType);
         if ($firstAppointment->getObjectiveStatus()) {
@@ -228,9 +233,10 @@ class InitialExaminationController extends DoctorOfficeAbstractController
         MedicalHistoryRepository $medicalHistoryRepository
     )
     {
-        $firstAppointment = $patientAppointmentRepository->getFirstAppointment(
-            $medicalHistoryRepository->getCurrentMedicalHistory($patient)
-        );
+        if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
+            $this->redirectToMedicalHistory($patient);
+        }
+        $firstAppointment = $patientAppointmentRepository->getFirstAppointment($medicalHistory);
         /** @var TemplateType $templateType */
         $templateType = $templateTypeRepository->getTemplateTypeWithObjectiveStatusId();
         if ($firstAppointment->getObjectiveStatus()) {
@@ -274,9 +280,8 @@ class InitialExaminationController extends DoctorOfficeAbstractController
      * @param TemplateParameterRepository $templateParameterRepository
      * @param TextTemplateService $textTemplateService
      * @param MedicalHistoryRepository $medicalHistoryRepository
-     * @param PatientAppointmentRepository $patientAppointmentRepository
      * @return RedirectResponse|Response
-     * @throws NonUniqueResultException
+     * @throws Exception
      * @Route(
      *     "/{id}/medical_history/edit_initial_examination_data/anamnesis_of_life_using_constructor",
      *     name="doctor_edit_initial_examination_data_anamnesis_of_life_using_constructor",
@@ -299,7 +304,9 @@ class InitialExaminationController extends DoctorOfficeAbstractController
                 'id' => $patient->getId(),
             ]
         );
-        $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
+        if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
+            $this->redirectToMedicalHistory($patient);
+        }
         $templateType = $templateTypeRepository->getTemplateTypeWithAmnamnesisOfLifeId();
         $parameters = $templateParameterRepository->getTemplateParameterByTemplateType($templateType);
         $textByTemplate = $this->getTextByTemplate($medicalHistory, $templateType);
@@ -344,7 +351,9 @@ class InitialExaminationController extends DoctorOfficeAbstractController
         TextTemplateService $textTemplateService
     )
     {
-        $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
+        if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
+            $this->redirectToMedicalHistory($patient);
+        }
         $templateType = $templateTypeRepository->getTemplateTypeWithAmnamnesisOfLifeId();
         $textByTemplate = $this->getTextByTemplate($medicalHistory, $templateType);
         $this->setRedirectAnamnesticDataRoute($patient->getId());
@@ -455,6 +464,6 @@ class InitialExaminationController extends DoctorOfficeAbstractController
             $textByTemplate->setTemplateType($templateType);
             $medicalHistory->setLifeHistory($textByTemplate);
         }
-    return $textByTemplate;
+        return $textByTemplate;
     }
 }

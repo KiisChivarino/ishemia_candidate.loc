@@ -62,7 +62,7 @@ class NotificationController extends DoctorOfficeAbstractController
         StaffRepository $staffRepository
     ): Response
     {
-        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
+        if (AuthUserInfoService::isDoctorHospital($this->getUser())) {
             $options['hospital'] = $staffRepository->getStaff($this->getUser())->getHospital();
         }
         return $this->responseList(

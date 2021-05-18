@@ -4,10 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
-use App\Form\Admin\PatientTesting\PatientTestingRequiredType;
+use App\Form\PatientTesting\PatientTestingNotRequiredType;
+use App\Form\PatientTesting\PatientTestingRequiredType;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\Creator\PatientTestingCreatorService;
 use App\Services\DataTable\Admin\PatientTestingDataTableService;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FileService\FileService;
@@ -121,7 +120,6 @@ class PatientTestingController extends AdminAbstractController
      * @param PatientTesting $patientTesting
      *
      * @param FileService $fileService
-     * @param PatientTestingCreatorService $patientTestingCreator
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -129,8 +127,7 @@ class PatientTestingController extends AdminAbstractController
     public function edit(
         Request $request,
         PatientTesting $patientTesting,
-        FileService $fileService,
-        PatientTestingCreatorService $patientTestingCreator
+        FileService $fileService
     ): Response
     {
         return $this->responseEditMultiForm(
@@ -140,8 +137,7 @@ class PatientTestingController extends AdminAbstractController
                 new FormData(PatientTestingRequiredType::class, $patientTesting),
                 new FormData(PatientTestingNotRequiredType::class, $patientTesting),
             ],
-            function (EntityActions $actions) use ($patientTesting, $fileService, $patientTestingCreator) {
-                $patientTestingCreator->checkAndPersistRegularPatientTesting($patientTesting);
+            function (EntityActions $actions) use ($patientTesting, $fileService) {
                 $fileService->prepareFiles($actions->getForm()
                     ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
                     ->get(self::FILES_COLLECTION_PROPERTY_NAME));

@@ -9,10 +9,12 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class PrescriptionRepository
  * @method Prescription|null find($id, $lockMode = null, $lockVersion = null)
  * @method Prescription|null findOneBy(array $criteria, array $orderBy = null)
  * @method Prescription[]    findAll()
  * @method Prescription[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class PrescriptionRepository extends AppRepository
 {
@@ -29,9 +31,9 @@ class PrescriptionRepository extends AppRepository
     /**
      * Gets patients with opened prescriptions count
      * @param Hospital|null $hospital
-     * @return int|mixed|string
+     * @return int
      */
-    public function getOpenedPrescriptionsCount(?Hospital $hospital)
+    public function getOpenedPrescriptionsCount(?Hospital $hospital): int
     {
         $qb = $this->generateBuilder()
             ->andWhere('pr.isCompleted = false');

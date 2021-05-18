@@ -56,9 +56,7 @@ class WebNotificationDataTableService extends AdminDatatableService
                 'isRead', BoolColumn::class, [
                     'label' => $listTemplateItem->getContentValue('isRead'),
                 ]
-            )
-            ;
-
+            );
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
@@ -68,8 +66,7 @@ class WebNotificationDataTableService extends AdminDatatableService
                             ->select('w')
                             ->from(WebNotification::class, 'w')
                             ->leftJoin('w.notification', 'notification')
-                            ->orderBy('w.id', 'desc')
-                        ;
+                            ->orderBy('w.id', 'desc');
                     },
                 ]
             );

@@ -7,10 +7,12 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class NotificationReceiverTypeRepository
  * @method NotificationReceiverType|null find($id, $lockMode = null, $lockVersion = null)
  * @method NotificationReceiverType|null findOneBy(array $criteria, array $orderBy = null)
  * @method NotificationReceiverType[]    findAll()
  * @method NotificationReceiverType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class NotificationReceiverTypeRepository extends AppRepository
 {
@@ -29,12 +31,12 @@ class NotificationReceiverTypeRepository extends AppRepository
      * @return NotificationReceiverType|null
      * @throws NonUniqueResultException
      */
-    public function findByName(string $name): ?NotificationReceiverType {
+    public function findByName(string $name): ?NotificationReceiverType
+    {
         return $this->createQueryBuilder('n')
             ->andWhere('n.name = :name')
             ->setParameter('name', $name)
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getOneOrNullResult();
     }
 }

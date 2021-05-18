@@ -9,6 +9,10 @@ use App\Entity\Patient;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ObjectManager;
 
+/**
+ * Class NotificationData
+ * @package App\Services\Notification
+ */
 class NotificationData
 {
     /** @var Patient */

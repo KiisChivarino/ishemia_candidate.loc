@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services\Notification\Services;
 
 use App\Entity\ChannelType;
@@ -71,7 +70,6 @@ class EmailNotificationService extends NotificationService
         $emailNotification->setChannelType(
             $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
         );
-
         try {
             $this->channel
                 ->setPatient($this->notificationData->getPatientReceiver())
@@ -96,7 +94,6 @@ class EmailNotificationService extends NotificationService
                 ->setDescription($e->getMessage() . '      ' . $e->getTraceAsString())
                 ->logErrorEvent();
         }
-
         $notification->setEmailNotification($emailNotification);
         $this->em->persist($notification);
         $this->logSuccessNotificationCreation($notification);

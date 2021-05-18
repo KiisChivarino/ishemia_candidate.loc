@@ -154,6 +154,10 @@ class NotificationTemplate
         return $this->notificationTemplateTexts;
     }
 
+    /**
+     * @param NotificationTemplateText $notificationTemplateText
+     * @return $this
+     */
     public function addNotificationTemplateText(NotificationTemplateText $notificationTemplateText): self
     {
         if (!$this->notificationTemplateTexts->contains($notificationTemplateText)) {
@@ -164,6 +168,10 @@ class NotificationTemplate
         return $this;
     }
 
+    /**
+     * @param NotificationTemplateText $notificationTemplateText
+     * @return $this
+     */
     public function removeNotificationTemplateText(NotificationTemplateText $notificationTemplateText): self
     {
         if ($this->notificationTemplateTexts->removeElement($notificationTemplateText)) {

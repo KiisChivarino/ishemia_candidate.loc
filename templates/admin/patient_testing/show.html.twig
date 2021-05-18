@@ -16,7 +16,7 @@
         <span class="title">{{ template.items.show.content.prescriptionTesting }}</span>
         <p>
             {% if entity.prescriptionTesting %}
-                <a href="{{ path('prescription_testing_show', {'id': entity.prescriptionTesting.id}) }}">
+                <a href="{{ path('admin_prescription_testing_show', {'id': entity.prescriptionTesting.id}) }}">
                     {{ prescriptionTestingTitle(entity.prescriptionTesting) }}
                 </a>
             {% else %}
@@ -29,7 +29,7 @@
         <p>{{ entity.analysisDate ? entity.analysisDate|date('d.m.Y') : template.items.show.content.falseValue }}</p>
     </li>
     <li>
-        <span class="title">{{ template.items.show.content.processed }}</span>
+        <span class="title">{{ template.items.show.content.isProcessedByStaff }}</span>
         <p>{{ entity.isProcessedByStaff ?
             template.items.show.content.trueValue :
             template.items.show.content.falseValue }}

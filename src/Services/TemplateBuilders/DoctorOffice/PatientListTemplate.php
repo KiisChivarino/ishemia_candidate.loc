@@ -9,7 +9,6 @@ use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
-use App\Services\TemplateItems\ListTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -43,23 +42,6 @@ class PatientListTemplate extends DoctorOfficeTemplateBuilder
         'status' => 'Статус'
     ];
 
-    /** @var string[] Common NEW_CONTENT */
-    protected const NEW_CONTENT = [
-        'h1' => 'Новая запись',
-        'title' => 'Новая запись',
-    ];
-
-    /** @var string[] Common SHOW_CONTENT */
-    protected const SHOW_CONTENT = [
-        'h1' => 'Просмотр записи',
-        'title' => 'Просмотр записи',
-    ];
-
-    /** @var string[] Common EDIT_CONTENT */
-    protected const EDIT_CONTENT = [
-        'h1' => 'Редактирование записи',
-        'title' => 'Редактирование записи',
-    ];
     /** @var string[] Common FILTER_CONTENT */
     protected const FILTER_CONTENT = [
         'label' => 'Фильтр по пациенту',

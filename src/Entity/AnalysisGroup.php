@@ -39,56 +39,83 @@ class AnalysisGroup
      */
     private $analyses;
 
+    /**
+     * AnalysisGroup constructor.
+     */
     public function __construct()
     {
         $this->analyses = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @param int $id
+     * @return $this
+     */
     public function setId(int $id): self
     {
         $this->id = $id;
-
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getFullName(): ?string
     {
         return $this->fullName;
     }
 
+    /**
+     * @param string|null $fullName
+     * @return $this
+     */
     public function setFullName(?string $fullName): self
     {
         $this->fullName = $fullName;
-
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 
@@ -97,19 +124,30 @@ class AnalysisGroup
      */
     public function getAnalyses(): Collection
     {
-        return $this->analyses;
+        return $this->analyses->filter(
+            function(Analysis $analysis) {
+                return $analysis->getEnabled();
+            }
+        );
     }
 
+    /**
+     * @param Analysis $analysis
+     * @return $this
+     */
     public function addAnalysis(Analysis $analysis): self
     {
         if (!$this->analyses->contains($analysis)) {
             $this->analyses[] = $analysis;
             $analysis->setAnalysisGroup($this);
         }
-
         return $this;
     }
 
+    /**
+     * @param Analysis $analysis
+     * @return $this
+     */
     public function removeAnalysis(Analysis $analysis): self
     {
         if ($this->analyses->contains($analysis)) {
@@ -119,7 +157,6 @@ class AnalysisGroup
                 $analysis->setAnalysisGroup(null);
             }
         }
-
         return $this;
     }
 }

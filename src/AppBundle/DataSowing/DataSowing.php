@@ -129,7 +129,7 @@ class DataSowing
     public function addRoles()
     {
         $const = Yaml::parseFile('config/services/roles.yaml');
-        foreach ($const['parameters'] as $roleData) {
+        foreach ($const['parameters']['roles'] as $roleData) {
             unset($roleData['route']);
             $this->entityManager->getRepository(AuthUser::class)->setEntityData(
                 $roleData,

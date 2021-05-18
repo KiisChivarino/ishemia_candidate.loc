@@ -1,0 +1,111 @@
+{% set dataName = 'data-datatable_prescription' %}
+{% extends 'doctorOffice/index.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
+{% block content %}
+    <div>
+        <h2>{{ template.items.show.content.h2 }}</h2>
+        {{ include('flashmessages.html.twig') }}
+    </div>
+    <div class="buttons">
+        <button class="button main-button"
+                onclick="location.href='{{ path(
+                    'adding_testing_by_doctor',
+                    {
+                        'patient': patient.id,
+                        'prescription': prescription.id
+                    }
+                ) }}';">
+            Добавление обследования
+        </button>
+        <button class="button main-button"
+                onclick="location.href='{{ path(
+                    'prescription_patient_medicine_new',
+                    {
+                        'patient': patient.id,
+                        'prescription' : prescription.id
+                    }
+                ) }}';">
+            Добавление лекарства
+        </button>
+        {% if isAppointmentNotExists(prescription) %}
+            <button class="button main-button"
+                    onclick="location.href='{{ path(
+                        'adding_reception_by_doctor',
+                        {
+                            'patient': patient.id,
+                            'prescription' : prescription.id
+                        }
+                    ) }}';">
+                Добавление приема
+            </button>
+        {% endif %}
+    </div>
+    <div>
+    </div>
+    <div id="prescriptionInfo">
+        <div id="prescriptionDate">
+            <div>{{ template.items.show.content.createdTime }}</div>
+            {{ prescription.createdTime ? prescription.createdTime|date('Y-m-d') : '' }}
+        </div>
+        <div id="prescriptionStaff">
+            <div>{{ template.items.show.content.doctor }}</div>
+            {{ fio(prescription.staff.AuthUser) }}
+        </div>
+    </div>
+
+    {{ include(
+        'show_table.html.twig',
+        {
+            'tableId': 'prescriptionTestingList',
+            'table' : prescriptionTestingTable,
+            'data_name': dataName
+        }
+    ) }}
+
+    {{ include(
+        'show_table.html.twig',
+        {
+            'tableId': 'prescriptionAppointment',
+            'table' : prescriptionAppointmentTable,
+            'data_name': dataName
+        }
+    ) }}
+
+    {{ include(
+        'show_table.html.twig',
+        {
+            'tableId': 'prescriptionMedicine',
+            'table' : prescriptionMedicineTable,
+            'data_name': dataName
+        }
+    ) }}
+
+    <div class="buttons">
+        <button class="button main-button"
+                onclick="location.href='{{ path(
+                    'doctor_medical_history',
+                    {
+                        'id': patient.id,
+                    }
+                ) }}';">
+            Выйти
+        </button>
+        {% if(countPrescriptionChildren(prescription)>0) %}
+            <button class="button main-button"
+                    onclick="location.href='{{ path(
+                        'complete_prescription',
+                        {
+                            'patient': patient.id,
+                            'prescription' : prescription.id
+                        }
+                    ) }}';">
+                Завершить назначение
+            </button>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('initPrescriptionDatatables') }}
+{% endblock %}

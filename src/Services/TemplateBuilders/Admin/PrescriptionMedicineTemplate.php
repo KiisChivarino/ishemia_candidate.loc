@@ -9,7 +9,10 @@ use App\Services\FilterService\FilterService;
 use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateBuilders\DoctorOffice\DoctorOfficeTemplateBuilder;
+use App\Services\TemplateBuilders\DoctorOffice\PatientMedicineTemplate;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
@@ -35,7 +38,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
         'h1' => 'Назначенные лекарства',
-        'title' => 'Список назначенных лекарст',
+        'title' => 'Список назначенных лекарств',
     ];
 
     /** @var string[] Common NEW_CONTENT */
@@ -77,6 +80,8 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
         'entity' => 'Назначение лекарства',
+        'startingMedicationDate' => self::COMMON_CONTENT['startingMedicationDate'],
+        'endMedicationDate' => self::COMMON_CONTENT['endMedicationDate'],
     ];
 
     /**
@@ -99,6 +104,18 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
             self::FILTER_CONTENT,
             self::ENTITY_CONTENT
         );
+    }
+
+    /**
+     * @param FilterService|null $filterService
+     *
+     * @return $this|DoctorOfficeTemplateBuilder
+     */
+    public function new(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::new($filterService);
+        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
+        return $this;
     }
 
     /**

@@ -4,7 +4,7 @@ namespace App\Controller\DoctorOffice;
 
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
-use App\Form\Admin\PatientTesting\PatientTestingNotRequiredType;
+use App\Form\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTestingResultType;
 use App\Form\PatientTestingFileType;
 use App\Repository\PatientTestingResultRepository;
@@ -21,6 +21,7 @@ use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\TemplateBuilders\DoctorOffice\PatientTestingListTemplate;
 use App\Services\TemplateItems\ListTemplateItem;
+use Exception;
 use ReflectionException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -202,6 +203,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     * @throws Exception
      */
     public function patientTestingsPlannedList(
         Patient $patient,

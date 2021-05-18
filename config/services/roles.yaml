@@ -1,26 +1,27 @@
 parameters:
-  0:
-    name: Админ
-    techName: ROLE_ADMIN
-    route: admin
-    description: Администратор сайта
-  1:
-    name: Врач-консультант
-    techName: ROLE_DOCTOR_CONSULTANT
-    route: patients_list
-    description: Врач-консультант
-  2:
-    name: Врач ЛПУ
-    techName: ROLE_DOCTOR_HOSPITAL
-    route: patients_list
-    description: Врач ЛПУ
-  3:
-    name: Пациент
-    techName: ROLE_PATIENT
-    route: patient_office_main
-    description: Пациент
-  9:
-    name: Система
-    techName: ROLE_SYSTEM
-    route: admin
-    description: Системный пользователь
+  roles:
+    0:
+      name: Админ
+      techName: ROLE_ADMIN
+      route: admin
+      description: Администратор сайта
+    1:
+      name: Врач-консультант
+      techName: ROLE_DOCTOR_CONSULTANT
+      route: patients_list
+      description: Врач-консультант
+    2:
+      name: Врач ЛПУ
+      techName: ROLE_DOCTOR_HOSPITAL
+      route: patients_list
+      description: Врач ЛПУ
+    3:
+      name: Пациент
+      techName: ROLE_PATIENT
+      route: patient_office_main
+      description: Пациент
+    9:
+      name: Система
+      techName: ROLE_SYSTEM
+      route: admin
+      description: Системный пользователь

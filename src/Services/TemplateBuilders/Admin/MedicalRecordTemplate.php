@@ -69,7 +69,7 @@ class MedicalRecordTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
-        'entity' => 'История болезни',
+        'entity' => 'Запись в историю болезни',
     ];
 
     /**

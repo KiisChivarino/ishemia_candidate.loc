@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\PlanAppointment;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,6 +17,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PlanAppointmentRepository extends AppRepository
 {
+    //time range count for first testings
+    private const FIRST_APPOINTMENT_TIME_RANGE_COUNT = 0;
+
     /**
      * PlanAppointmentRepository constructor.
      *
@@ -40,5 +44,23 @@ class PlanAppointmentRepository extends AppRepository
             ->setParameter('timeRangeCount', 0)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Get plan of first testings
+     * Получить план начальных обследований
+     * @return int|mixed|string
+     * @throws NonUniqueResultException
+     */
+    public function getPlanOfFirstAppointment()
+    {
+        return $this->createQueryBuilder('pa')
+            ->andWhere('pa.enabled = :enabledValue')
+            ->andWhere('pa.timeRangeCount = :timeRangeCount')
+            ->setParameter('enabledValue', true)
+            ->setParameter('timeRangeCount', self::FIRST_APPOINTMENT_TIME_RANGE_COUNT)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

@@ -72,82 +72,6 @@ class PrescriptionTesting
     }
 
     /**
-     * @return DateTimeInterface|null
-     */
-    public function getInclusionTime(): ?\DateTimeInterface
-    {
-        return $this->inclusionTime;
-    }
-
-    /**
-     * @param DateTimeInterface $inclusionTime
-     * @return $this
-     */
-    public function setInclusionTime(\DateTimeInterface $inclusionTime): self
-    {
-        $this->inclusionTime = $inclusionTime;
-
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getEnabled(): ?bool
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * @param bool $enabled
-     * @return $this
-     */
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getConfirmedByStaff(): ?bool
-    {
-        return $this->confirmedByStaff;
-    }
-
-    /**
-     * @param bool $confirmedByStaff
-     * @return $this
-     */
-    public function setConfirmedByStaff(bool $confirmedByStaff): self
-    {
-        $this->confirmedByStaff = $confirmedByStaff;
-
-        return $this;
-    }
-
-    /**
-     * @return DateTimeInterface|null
-     */
-    public function getPlannedDate(): ?\DateTimeInterface
-    {
-        return $this->plannedDate;
-    }
-
-    /**
-     * @param DateTimeInterface $plannedDate
-     * @return $this
-     */
-    public function setPlannedDate(\DateTimeInterface $plannedDate): self
-    {
-        $this->plannedDate = $plannedDate;
-
-        return $this;
-    }
-
-    /**
      * @return Prescription|null
      */
     public function getPrescription(): ?Prescription
@@ -157,12 +81,12 @@ class PrescriptionTesting
 
     /**
      * @param Prescription|null $prescription
+     *
      * @return $this
      */
     public function setPrescription(?Prescription $prescription): self
     {
         $this->prescription = $prescription;
-
         return $this;
     }
 
@@ -176,12 +100,12 @@ class PrescriptionTesting
 
     /**
      * @param PatientTesting $patientTesting
+     *
      * @return $this
      */
     public function setPatientTesting(PatientTesting $patientTesting): self
     {
         $this->patientTesting = $patientTesting;
-
         return $this;
     }
 
@@ -195,12 +119,68 @@ class PrescriptionTesting
 
     /**
      * @param Staff|null $staff
+     *
      * @return $this
      */
     public function setStaff(?Staff $staff): self
     {
         $this->staff = $staff;
+        return $this;
+    }
 
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getInclusionTime(): ?DateTimeInterface
+    {
+        return $this->inclusionTime;
+    }
+
+    /**
+     * @param DateTimeInterface $inclusionTime
+     *
+     * @return $this
+     */
+    public function setInclusionTime(DateTimeInterface $inclusionTime): self
+    {
+        $this->inclusionTime = $inclusionTime;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setEnabled(bool $enabled): self
+    {
+        $this->enabled = $enabled;
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getPlannedDate(): ?DateTimeInterface
+    {
+        return $this->plannedDate;
+    }
+
+    /**
+     * @param DateTimeInterface $plannedDate
+     * @return $this
+     */
+    public function setPlannedDate(DateTimeInterface $plannedDate): self
+    {
+        $this->plannedDate = $plannedDate;
         return $this;
     }
 
@@ -219,7 +199,24 @@ class PrescriptionTesting
     public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
     {
         $this->notificationConfirm = $notificationConfirm;
+        return $this;
+    }
 
+    /**
+     * @return bool|null
+     */
+    public function getConfirmedByStaff(): ?bool
+    {
+        return $this->confirmedByStaff;
+    }
+
+    /**
+     * @param bool $confirmedByStaff
+     * @return $this
+     */
+    public function setConfirmedByStaff(bool $confirmedByStaff): self
+    {
+        $this->confirmedByStaff = $confirmedByStaff;
         return $this;
     }
 }

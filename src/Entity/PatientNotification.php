@@ -131,11 +131,18 @@ class PatientNotification
         return $this;
     }
 
+    /**
+     * @return NotificationConfirm|null
+     */
     public function getNotificationConfirm(): ?NotificationConfirm
     {
         return $this->notificationConfirm;
     }
 
+    /**
+     * @param NotificationConfirm|null $notificationConfirm
+     * @return $this
+     */
     public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
     {
         $this->notificationConfirm = $notificationConfirm;

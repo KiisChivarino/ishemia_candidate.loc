@@ -21,7 +21,7 @@ class PrescriptionMedicine
 
     /**
      * @ORM\ManyToOne(targetEntity=Prescription::class, inversedBy="prescriptionMedicines")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $prescription;
 
@@ -43,11 +43,6 @@ class PrescriptionMedicine
     private $notificationConfirm;
 
     /**
-     * @ORM\OneToOne(targetEntity=PatientMedicine::class, mappedBy="prescriptionMedicine", cascade={"persist", "remove"})
-     */
-    private $patientMedicine;
-
-    /**
      * @ORM\Column(type="date", options={"comment"="Дата начала приема лекарства"})
      */
     private $startingMedicationDate;
@@ -61,6 +56,11 @@ class PrescriptionMedicine
      * @ORM\Column(type="boolean", options={"comment"="Ограничение использования", "default"=true})
      */
     private $enabled;
+
+    /**
+     * @ORM\OneToOne(targetEntity=PatientMedicine::class, inversedBy="prescriptionMedicine", cascade={"persist", "remove"})
+     */
+    private $patientMedicine;
 
     /**
      * @return int|null
@@ -165,23 +165,6 @@ class PrescriptionMedicine
         return $this;
     }
 
-    public function getPatientMedicine(): ?PatientMedicine
-    {
-        return $this->patientMedicine;
-    }
-
-    public function setPatientMedicine(PatientMedicine $patientMedicine): self
-    {
-        // set the owning side of the relation if necessary
-        if ($patientMedicine->getPrescriptionMedicine() !== $this) {
-            $patientMedicine->setPrescriptionMedicine($this);
-        }
-
-        $this->patientMedicine = $patientMedicine;
-
-        return $this;
-    }
-
     /**
      * @return DateTimeInterface|null
      */
@@ -217,6 +200,24 @@ class PrescriptionMedicine
     {
         $this->startingMedicationDate = $startingMedicationDate;
 
+        return $this;
+    }
+
+    /**
+     * @return PatientMedicine|null
+     */
+    public function getPatientMedicine(): ?PatientMedicine
+    {
+        return $this->patientMedicine;
+    }
+
+    /**
+     * @param PatientMedicine $patientMedicine
+     * @return $this
+     */
+    public function setPatientMedicine(PatientMedicine $patientMedicine): self
+    {
+        $this->patientMedicine = $patientMedicine;
         return $this;
     }
 

@@ -125,7 +125,6 @@ class EmailChannelService
 
         $this->subject = self::DEFAULT_EMAIL_SUBJECT;
         $this->sender = $this->EMAIL_PARAMETERS['account_name'];
-
         $this->mailBody = $this->twig->render(
             self::DEFAULT_EMAIL_TEMPLATE,
             $params

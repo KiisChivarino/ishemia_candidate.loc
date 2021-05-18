@@ -2,30 +2,33 @@
 
 namespace App\Controller\DoctorOffice;
 
-use App\Entity\ClinicalDiagnosis;
 use App\Form\AuthUser\AuthUserRequiredType;
-use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
-use App\Form\Admin\Patient\PatientMKBCodeType;
-use App\Form\Admin\Patient\PatientRequiredType;
+use App\Form\Patient\PatientClinicalDiagnosisTextType;
+use App\Form\Patient\PatientLocationRequiredType;
+use App\Form\Patient\PatientMKBCodeType;
+use App\Form\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
-use App\Repository\StaffRepository;
-use App\Services\ControllerGetters\EntityActions;
-use App\Services\Creator\AuthUserCreatorService;
-use App\Services\Creator\MedicalHistoryCreatorService;
-use App\Services\Creator\PatientAppointmentCreatorService;
-use App\Services\Creator\PatientCreatorService;
-use App\Services\InfoService\AuthUserInfoService;
+use App\Repository\PatientRepository;
+use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Creator\ByDoctorFirstPatientAppointmentCreatorService;
+use App\Services\EntityActions\Creator\ByDoctorHospitalPatientCreatorService;
+use App\Services\EntityActions\Creator\PatientCreatorService;
+use App\Services\EntityActions\Factory\AbstractCreatingPatientServicesFactory;
+use App\Services\EntityActions\Factory\ByDoctorConsultantCreatingPatientServicesFactory;
+use App\Services\EntityActions\Factory\ByDoctorHospitalCreatingPatientServicesFactory;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
+use Doctrine\ORM\NonUniqueResultException;
+use Exception;
+use ReflectionException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
-use Exception;
 
 /**
  * Class MedicalHistoryController
@@ -38,9 +41,6 @@ class AddPatientController extends DoctorOfficeAbstractController
 {
     /** @var string Path to custom template directory */
     const TEMPLATE_PATH = 'doctorOffice/create_patient/';
-
-    /** @var string array key name */
-    const IS_DOCTOR_HOSPITAL = 'isDoctorHospital';
 
     /**
      * PatientsListController constructor.
@@ -61,80 +61,129 @@ class AddPatientController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Add newPatient
-     * @Route("/create_patient", name="adding_patient_by_doctor", methods={"GET","POST"})
-     *
+     * Add new patient by doctor of hospital
+     * @Route("/create_patient_by_hospital_doctor", name="adding_patient_by_hospital_doctor", methods={"GET","POST"})
      * @param Request $request
-     * @param StaffRepository $staffRepository
-     * @param AuthUserCreatorService $authUserCreatorService
-     * @param MedicalHistoryCreatorService $medicalHistoryCreatorService
-     * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
-     * @param PatientCreatorService $patientCreator
-     * @return Response
+     * @param ByDoctorHospitalCreatingPatientServicesFactory $patientCreatingFactory
+     * @param PatientRepository $patientRepository
+     * @return RedirectResponse|Response
+     * @throws ReflectionException
+     * @throws NonUniqueResultException
      * @throws Exception
      */
-    public function createNew(
+    public function createNewByDoctorHospital(
         Request $request,
-        StaffRepository $staffRepository,
-        AuthUserCreatorService $authUserCreatorService,
-        MedicalHistoryCreatorService $medicalHistoryCreatorService,
-        PatientAppointmentCreatorService $patientAppointmentCreatorService,
-        PatientCreatorService $patientCreator
-    ): Response
+        ByDoctorHospitalCreatingPatientServicesFactory $patientCreatingFactory,
+        PatientRepository $patientRepository
+    )
     {
-        $staff = $staffRepository->getStaff($this->getUser());
-        $patientAuthUser = $authUserCreatorService->createAuthUser();
-        $patient = $patientCreator->createPatient();
-        if ((new AuthUserInfoService())->isDoctorHospital($this->getUser())) {
-            $staff = $staffRepository->getStaff($this->getUser());
-            $patient
-                ->setHospital($staff->getHospital())
-                ->setCity($staff->getHospital()->getCity());
-            $isDoctorHospital = true;
-        }
-
-        $clinicalDiagnosis = new ClinicalDiagnosis();
-        $medicalHistory = $medicalHistoryCreatorService->createMedicalHistory()->setClinicalDiagnosis($clinicalDiagnosis);
-        $firstPatientAppointment = $patientAppointmentCreatorService->createPatientAppointment($medicalHistory);
-        $clinicalDiagnosis->setEnabled(true);
-        return $this->responseNewMultiForm(
-            $request,
-            $patient,
+        $clinicalDiagnosis = $patientCreatingFactory->getClinicalDiagnosis();
+        $this->templateService->setRedirectRoute(
+            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
             [
-                new FormData(AuthUserRequiredType::class, $patientAuthUser),
-                new FormData(PatientRequiredType::class, $patient, [self::IS_DOCTOR_HOSPITAL => $isDoctorHospital ?? null]),
+                'id' => $patientRepository->getNextEntityId(),
+            ]
+        );
+        return $this->responseNewMultiFormWithActions(
+            $request,
+            $this->getCreatorEntityActionsBuilderArray($patientCreatingFactory),
+            [
+                new FormData(AuthUserRequiredType::class, $patientCreatingFactory->getAuthUser()),
+                new FormData(PatientRequiredType::class, $patientCreatingFactory->getPatient()),
                 new FormData(PatientClinicalDiagnosisTextType::class, $clinicalDiagnosis),
                 new FormData(PatientMKBCodeType::class, $clinicalDiagnosis),
-                new FormData(AppointmentTypeType::class, $firstPatientAppointment),
-
-            ],
-            function (EntityActions $actions)
-            use (
-                $patientAuthUser,
-                $patient,
-                $medicalHistory,
-                $firstPatientAppointment,
-                $staff,
-                $patientCreator,
-                $authUserCreatorService,
-                $clinicalDiagnosis
-            ) {
-                $em = $actions->getEntityManager();
-                $em->getConnection()->beginTransaction();
-                try {
-                    $authUserCreatorService->persistNewPatientAuthUser($patientAuthUser);
-                    $em->flush();
-                    $patientCreator
-                        ->persistNewPatient($patient, $patientAuthUser, $medicalHistory, $firstPatientAppointment, $staff);
-                    $em->persist($clinicalDiagnosis);
-                    $em->flush();
-                    $em->getConnection()->commit();
-                } catch (Exception $e) {
-                    $em->getConnection()->rollBack();
-                    throw $e;
-                }
-                $this->setRedirectMedicalHistoryRoute($patient->getId());
-            }
+                new FormData(AppointmentTypeType::class, $patientCreatingFactory->getPatientAppointment()),
+            ]
         );
+    }
+
+    /**
+     * Add new patient by doctor consultant
+     * @Route("/create_patient_by_doctor_consultant", name="adding_patient_by_doctor_consultant", methods={"GET","POST"})
+     *
+     * @param Request $request
+     * @param ByDoctorConsultantCreatingPatientServicesFactory $patientCreatingFactory
+     * @param PatientRepository $patientRepository
+     * @return Response
+     * @throws NonUniqueResultException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function createNewByDoctorConsultant(
+        Request $request,
+        ByDoctorConsultantCreatingPatientServicesFactory $patientCreatingFactory,
+        PatientRepository $patientRepository
+    ): Response
+    {
+        $clinicalDiagnosis = $patientCreatingFactory->getClinicalDiagnosis();
+        $patient = $patientCreatingFactory->getPatient();
+        $this->templateService->setRedirectRoute(
+            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
+            [
+                'id' => $patientRepository->getNextEntityId(),
+            ]);
+        return $this->responseNewMultiFormWithActions(
+            $request,
+            [
+                new CreatorEntityActionsBuilder($patientCreatingFactory->getAuthUserCreator()),
+                new CreatorEntityActionsBuilder($patientCreatingFactory->getPatientCreator()),
+                new CreatorEntityActionsBuilder($patientCreatingFactory->getMedicalHistoryCreator()),
+                new CreatorEntityActionsBuilder(
+                    $patientCreatingFactory->getPatientAppointmentCreator(),
+                    [],
+                    function ()
+                    use ($patientCreatingFactory) {
+                        return
+                            [
+                                ByDoctorFirstPatientAppointmentCreatorService::STAFF_OPTION =>
+                                    $this->getStaff($patientCreatingFactory->getPatientCreator()->getEntity())
+                            ];
+                    }
+                ),
+            ],
+            [
+                new FormData(AuthUserRequiredType::class, $patientCreatingFactory->getAuthUser()),
+                new FormData(PatientRequiredType::class, $patient),
+                new FormData(PatientLocationRequiredType::class, $patient),
+                new FormData(PatientClinicalDiagnosisTextType::class, $clinicalDiagnosis),
+                new FormData(PatientMKBCodeType::class, $clinicalDiagnosis),
+                new FormData(AppointmentTypeType::class, $patientCreatingFactory->getPatientAppointment()),
+            ]
+        );
+    }
+
+    /**
+     * @param AbstractCreatingPatientServicesFactory $patientCreatingFactory
+     * @return CreatorEntityActionsBuilder[]
+     */
+    private function getCreatorEntityActionsBuilderArray(AbstractCreatingPatientServicesFactory $patientCreatingFactory): array
+    {
+        return [
+            new CreatorEntityActionsBuilder($patientCreatingFactory->getAuthUserCreator()),
+            new CreatorEntityActionsBuilder(
+                $patientCreatingFactory->getPatientCreator(),
+                [],
+                function (PatientCreatorService $byDoctorHospitalPatientCreator) {
+                    return
+                        [
+                            ByDoctorHospitalPatientCreatorService::STAFF_OPTION =>
+                                $this->getStaff($byDoctorHospitalPatientCreator->getEntity())
+                        ];
+                }
+            ),
+            new CreatorEntityActionsBuilder($patientCreatingFactory->getMedicalHistoryCreator()),
+            new CreatorEntityActionsBuilder(
+                $patientCreatingFactory->getPatientAppointmentCreator(),
+                [],
+                function ()
+                use ($patientCreatingFactory) {
+                    return
+                        [
+                            ByDoctorFirstPatientAppointmentCreatorService::STAFF_OPTION =>
+                                $this->getStaff($patientCreatingFactory->getPatientCreator()->getEntity())
+                        ];
+                }
+            ),
+        ];
     }
 }

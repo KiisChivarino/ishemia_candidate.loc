@@ -27,7 +27,7 @@ class EditPatientTestingTemplate extends DoctorOfficeTemplateBuilder
     /** @var array Common form content for form templates */
     protected const FORM_CONTENT = [
         'analysisDate' => PatientTestingTemplate::COMMON_CONTENT['analysisDate'],
-        'processed' => PatientTestingTemplate::COMMON_CONTENT['processed'],
+        'isProcessedByStaff' => PatientTestingTemplate::COMMON_CONTENT['isProcessedByStaff'],
     ];
 
     /** @var array Common content for form and edit templates */
