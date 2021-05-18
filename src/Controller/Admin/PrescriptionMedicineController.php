@@ -8,7 +8,6 @@ use App\Form\PatientMedicineType\PatientMedicineType;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineStaffType;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineType;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineTypeEnabled;
-use App\Repository\PrescriptionMedicineRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionMedicineDataTableService;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
@@ -19,7 +18,6 @@ use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
-use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
@@ -96,34 +94,25 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param Prescription $prescription
      * @param PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
-     * @param PrescriptionMedicineRepository $prescriptionMedicineRepository
      * @return Response
      * @throws ReflectionException
-     * @throws NonUniqueResultException
      * @throws Exception
      */
     public function new(
         Request $request,
         Prescription $prescription,
         PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService,
-        PatientMedicineCreatorService $patientMedicineCreatorService,
-        PrescriptionMedicineRepository $prescriptionMedicineRepository
+        PatientMedicineCreatorService $patientMedicineCreatorService
     ): Response
     {
         $patientMedicine = $patientMedicineCreatorService->execute()->getEntity();
-        $prescriptionMedicineCreatorService->before(
+        $prescriptionMedicine = $prescriptionMedicineCreatorService->before(
             [
                 PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
                 PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
             ]
         )->getEntity();
-        $this->templateService->setRedirectRouteParameters(
-            [
-                'prescription' => $prescription->getId(),
-                'prescriptionMedicine' => $prescriptionMedicineRepository->getNextEntityId()
-            ]
-        );
-        return $this->responseNewMultiFormWithActions(
+        $response = $this->responseNewMultiFormWithActions(
             $request,
             [
                 new CreatorEntityActionsBuilder(
@@ -143,6 +132,13 @@ class PrescriptionMedicineController extends AdminAbstractController
                 new FormData(PatientMedicineType::class, $patientMedicineCreatorService->getEntity()),
             ]
         );
+        $this->templateService->setRedirectRouteParameters(
+            [
+                'prescription' => $prescription->getId(),
+                'prescriptionMedicine' => $prescriptionMedicine->getId(),
+            ]
+        );
+        return $response;
     }
 
     /**
