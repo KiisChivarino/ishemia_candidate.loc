@@ -8,7 +8,6 @@ use App\Form\Patient\PatientLocationRequiredType;
 use App\Form\Patient\PatientMKBCodeType;
 use App\Form\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
-use App\Repository\PatientRepository;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\ByDoctorFirstPatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\ByDoctorHospitalPatientCreatorService;
@@ -18,7 +17,6 @@ use App\Services\EntityActions\Factory\ByDoctorConsultantCreatingPatientServices
 use App\Services\EntityActions\Factory\ByDoctorHospitalCreatingPatientServicesFactory;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\CreateNewPatientTemplate;
-use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -65,26 +63,17 @@ class AddPatientController extends DoctorOfficeAbstractController
      * @Route("/create_patient_by_hospital_doctor", name="adding_patient_by_hospital_doctor", methods={"GET","POST"})
      * @param Request $request
      * @param ByDoctorHospitalCreatingPatientServicesFactory $patientCreatingFactory
-     * @param PatientRepository $patientRepository
      * @return RedirectResponse|Response
      * @throws ReflectionException
-     * @throws NonUniqueResultException
      * @throws Exception
      */
     public function createNewByDoctorHospital(
         Request $request,
-        ByDoctorHospitalCreatingPatientServicesFactory $patientCreatingFactory,
-        PatientRepository $patientRepository
+        ByDoctorHospitalCreatingPatientServicesFactory $patientCreatingFactory
     )
     {
         $clinicalDiagnosis = $patientCreatingFactory->getClinicalDiagnosis();
-        $this->templateService->setRedirectRoute(
-            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
-            [
-                'id' => $patientRepository->getNextEntityId(),
-            ]
-        );
-        return $this->responseNewMultiFormWithActions(
+        $response = $this->responseNewMultiFormWithActions(
             $request,
             $this->getCreatorEntityActionsBuilderArray($patientCreatingFactory),
             [
@@ -95,6 +84,13 @@ class AddPatientController extends DoctorOfficeAbstractController
                 new FormData(AppointmentTypeType::class, $patientCreatingFactory->getPatientAppointment()),
             ]
         );
+        $this->templateService->setRedirectRoute(
+            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
+            [
+                'id' => $patientCreatingFactory->getPatient()->getId(),
+            ]
+        );
+        return $response;
     }
 
     /**
@@ -103,26 +99,18 @@ class AddPatientController extends DoctorOfficeAbstractController
      *
      * @param Request $request
      * @param ByDoctorConsultantCreatingPatientServicesFactory $patientCreatingFactory
-     * @param PatientRepository $patientRepository
      * @return Response
-     * @throws NonUniqueResultException
      * @throws ReflectionException
      * @throws Exception
      */
     public function createNewByDoctorConsultant(
         Request $request,
-        ByDoctorConsultantCreatingPatientServicesFactory $patientCreatingFactory,
-        PatientRepository $patientRepository
+        ByDoctorConsultantCreatingPatientServicesFactory $patientCreatingFactory
     ): Response
     {
         $clinicalDiagnosis = $patientCreatingFactory->getClinicalDiagnosis();
         $patient = $patientCreatingFactory->getPatient();
-        $this->templateService->setRedirectRoute(
-            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
-            [
-                'id' => $patientRepository->getNextEntityId(),
-            ]);
-        return $this->responseNewMultiFormWithActions(
+        $response = $this->responseNewMultiFormWithActions(
             $request,
             [
                 new CreatorEntityActionsBuilder($patientCreatingFactory->getAuthUserCreator()),
@@ -150,6 +138,13 @@ class AddPatientController extends DoctorOfficeAbstractController
                 new FormData(AppointmentTypeType::class, $patientCreatingFactory->getPatientAppointment()),
             ]
         );
+        $this->templateService->setRedirectRoute(
+            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
+            [
+                'id' => $patientCreatingFactory->getPatient()->getId(),
+            ]
+        );
+        return $response;
     }
 
     /**
