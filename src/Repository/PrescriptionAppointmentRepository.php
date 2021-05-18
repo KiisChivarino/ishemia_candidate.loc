@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,5 +23,20 @@ class PrescriptionAppointmentRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PrescriptionAppointment::class);
+    }
+
+    /**
+     * Returns count of appointments
+     * @param Prescription $prescription
+     * @return int
+     */
+    public function countPrescriptionAppointmentsByPrescription(Prescription $prescription): int
+    {
+        return $this->count(
+            [
+                'prescription' => $prescription,
+                'enabled' => true,
+            ]
+        );
     }
 }

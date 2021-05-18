@@ -35,8 +35,8 @@ class PatientListDataTableService extends DoctorOfficeDatatableService
      *
      * @param DataTableFactory $dataTableFactory
      * @param UrlGeneratorInterface $router
-     * @param EntityManagerInterface $em
      * @param AuthUserInfoService $authUserInfoService
+     * @param EntityManagerInterface $em
      */
     public function __construct(
         DataTableFactory $dataTableFactory,
@@ -75,13 +75,12 @@ class PatientListDataTableService extends DoctorOfficeDatatableService
                     'field' => 'u.lastName',
                     'render' => function (string $data, Patient $patient) {
                         return
-                            $patient
-                                ? $this->getLink(
-                                $this->authUserInfoService->getFIO($patient->getAuthUser()),
-                                $patient->getId(),
-                                'doctor_medical_history'
-                            )
-                                : '';
+                            '<a href="' . $this->router->generate(
+                                'doctor_medical_history',
+                                [
+                                    'id' => $patient->getId()
+                                ]
+                            ) . '">' . $this->authUserInfoService->getFIO($patient->getAuthUser()) . '</a>';
                     },
                     'orderable' => true,
                     'orderField' => 'u.lastName',

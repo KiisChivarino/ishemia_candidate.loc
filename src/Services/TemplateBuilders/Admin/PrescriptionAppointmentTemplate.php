@@ -21,15 +21,15 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
 {
-
     /** @var string[] Common content for District templates */
-    protected const COMMON_CONTENT = [
+    public const COMMON_CONTENT = [
         'prescription' => 'Назначение',
         'patientAppointment' => 'Прием',
         'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
         'plannedDateTime' => 'Дата и время приема по плану',
         'inclusionTime' => 'Дата и время включения назначения на прием в назначение',
         'confirmedByStaff' => 'Подтверждено врачом',
+        'appointmentType' => 'Вид приёма'
     ];
 
     /** @var string[] Common LIST_CONTENT */

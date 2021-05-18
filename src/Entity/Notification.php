@@ -28,7 +28,7 @@ class Notification
 
     /**
      * @ORM\ManyToOne(targetEntity=AuthUser::class, inversedBy="notifications")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=true, onDelete="cascade")
      */
     private $authUserSender;
 

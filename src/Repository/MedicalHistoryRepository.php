@@ -6,7 +6,6 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * Class MedicalHistoryRepository
@@ -19,12 +18,13 @@ use Symfony\Component\Security\Core\Security;
  */
 class MedicalHistoryRepository extends AppRepository
 {
-    private $security;
-
-    public function __construct(ManagerRegistry $registry, Security $security)
+    /**
+     * MedicalHistoryRepository constructor.
+     * @param ManagerRegistry $registry
+     */
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, MedicalHistory::class);
-        $this->security = $security;
     }
 
     /**
@@ -32,10 +32,10 @@ class MedicalHistoryRepository extends AppRepository
      *
      * @param Patient $patient
      *
-     * @return MedicalHistory
+     * @return MedicalHistory|false
      * @throws Exception
      */
-    public function getCurrentMedicalHistory(Patient $patient): MedicalHistory
+    public function getCurrentMedicalHistory(Patient $patient)
     {
         /** @var MedicalHistory $medicalHistory */
         $medicalHistory = $this->findOneBy(
@@ -46,7 +46,7 @@ class MedicalHistoryRepository extends AppRepository
             ]
         );
         if (!$medicalHistory) {
-            throw new Exception('История болезни не найдена!');
+            return false;
         }
         return $medicalHistory;
     }

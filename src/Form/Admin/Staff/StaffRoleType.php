@@ -66,7 +66,10 @@ class StaffRoleType extends AbstractType
                     'attr' => ['data-form_staf_role_id'=>''],
                 ];
                 if ($authUser) {
-                    $roleName = (new AuthUserInfoService())->getRoleNames($this->entityManager->getRepository(AuthUser::class)->getRoles($authUser), true);
+                    $roleName = AuthUserInfoService::getRoleNames(
+                        $this->entityManager->getRepository(AuthUser::class)->getRoles($authUser),
+                        true
+                    );
                     $form
                         ->add(
                             'roles',

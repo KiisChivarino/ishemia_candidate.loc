@@ -70,7 +70,6 @@ class ChannelType
     public function setId(int $id): self
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -97,7 +96,6 @@ class ChannelType
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -119,7 +117,6 @@ class ChannelType
             $this->notification[] = $notification;
             $notification->setChannelType($this);
         }
-
         return $this;
     }
 
@@ -135,7 +132,6 @@ class ChannelType
                 $notification->setChannelType(null);
             }
         }
-
         return $this;
     }
 
@@ -157,7 +153,6 @@ class ChannelType
             $this->smsNotification[] = $smsNotification;
             $smsNotification->setChannelType($this);
         }
-
         return $this;
     }
 
@@ -173,7 +168,6 @@ class ChannelType
                 $smsNotification->setChannelType(null);
             }
         }
-
         return $this;
     }
 
@@ -195,7 +189,6 @@ class ChannelType
             $this->emailNotification[] = $emailNotification;
             $emailNotification->setChannelType($this);
         }
-
         return $this;
     }
 
@@ -211,7 +204,6 @@ class ChannelType
                 $emailNotification->setChannelType(null);
             }
         }
-
         return $this;
     }
 
@@ -233,7 +225,6 @@ class ChannelType
             $this->webNotification[] = $webNotification;
             $webNotification->setChannelType($this);
         }
-
         return $this;
     }
 
@@ -249,7 +240,6 @@ class ChannelType
                 $webNotification->setChannelType(null);
             }
         }
-
         return $this;
     }
 
@@ -271,7 +261,6 @@ class ChannelType
             $this->notificationTemplateTexts[] = $notificationTemplateText;
             $notificationTemplateText->setChannelType($this);
         }
-
         return $this;
     }
 
@@ -287,7 +276,6 @@ class ChannelType
                 $notificationTemplateText->setChannelType(null);
             }
         }
-
         return $this;
     }
 }

@@ -8,10 +8,12 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class NotificationTemplateTextRepository
  * @method NotificationTemplateText|null find($id, $lockMode = null, $lockVersion = null)
  * @method NotificationTemplateText|null findOneBy(array $criteria, array $orderBy = null)
  * @method NotificationTemplateText[]    findAll()
  * @method NotificationTemplateText[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class NotificationTemplateTextRepository extends AppRepository
 {
@@ -33,7 +35,8 @@ class NotificationTemplateTextRepository extends AppRepository
      */
     public function findForChannel(
         string $channel, NotificationTemplate $notificationTemplate
-    ): ?NotificationTemplateText {
+    ): ?NotificationTemplateText
+    {
         return $this->createQueryBuilder('n')
             ->leftJoin('n.channelType', 'cT')
             ->andWhere('cT.name = :channel')
@@ -42,7 +45,6 @@ class NotificationTemplateTextRepository extends AppRepository
             ->setParameter('notificationTemplate', $notificationTemplate)
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getOneOrNullResult();
     }
 }

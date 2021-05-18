@@ -3,9 +3,11 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppAbstractController;
+use App\Entity\Patient;
 use App\Services\ControllerGetters\EntityActions;
 use Closure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class AppAbstractController
@@ -23,8 +25,24 @@ abstract class AdminAbstractController extends AppAbstractController
     public function setNextEntityIdFunction(): Closure
     {
         return function (EntityActions $actions) {
-            $actions->getEntity()->setId($actions->getEntityManager()->getRepository(get_class($actions->getEntity()))
-                ->getNextEntityId());
+            $actions
+                ->getEntity()
+                ->setId(
+                    $actions
+                        ->getEntityManager()
+                        ->getRepository(get_class($actions->getEntity()))
+                        ->getNextEntityId()
+                );
         };
+    }
+
+    /**
+     * Redirect to show patient page
+     * @param Patient $patient
+     * @return RedirectResponse
+     */
+    protected function redirectToPatient(Patient $patient): RedirectResponse
+    {
+        return $this->redirectToRoute('patient_show', ['id' => $patient->getId()]);
     }
 }

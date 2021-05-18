@@ -3,8 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\PatientMedicine;
-use App\Form\Admin\PatientMedicineType;
-use App\Form\Admin\PatientMedicineTypeEnabled;
+use App\Form\PatientMedicineType\PatientMedicineType;
+use App\Form\PatientMedicineType\PatientMedicineTypeEnabled;
 use App\Services\DataTable\Admin\PatientMedicineDataTableService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PatientMedicineTemplate;
@@ -87,8 +87,8 @@ class PatientMedicineController extends AdminAbstractController
             $request,
             $patientMedicine,
             [
-                new FormData($patientMedicine, PatientMedicineType::class),
-                new FormData($patientMedicine, PatientMedicineTypeEnabled::class),
+                new FormData(PatientMedicineType::class, $patientMedicine),
+                new FormData(PatientMedicineTypeEnabled::class, $patientMedicine),
             ]
         );
     }

@@ -9,6 +9,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
+use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -97,6 +98,18 @@ class PatientNotificationsTemplate extends DoctorOfficeTemplateBuilder
             self::FILTER_CONTENT,
             self::ENTITY_CONTENT
         );
+    }
+
+    /**
+     * @param FilterService|null $filterService
+     * @return AppTemplateBuilder
+     */
+    public function new(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::new($filterService);
+        $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
+            ->setPath($this->getTemplatePath());
+        return $this;
     }
 
     /**

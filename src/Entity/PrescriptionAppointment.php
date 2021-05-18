@@ -74,7 +74,7 @@ class PrescriptionAppointment
     /**
      * @return DateTimeInterface|null
      */
-    public function getInclusionTime(): ?\DateTimeInterface
+    public function getInclusionTime(): ?DateTimeInterface
     {
         return $this->inclusionTime;
     }
@@ -83,10 +83,9 @@ class PrescriptionAppointment
      * @param DateTimeInterface $inclusionTime
      * @return $this
      */
-    public function setInclusionTime(\DateTimeInterface $inclusionTime): self
+    public function setInclusionTime(DateTimeInterface $inclusionTime): self
     {
         $this->inclusionTime = $inclusionTime;
-
         return $this;
     }
 
@@ -105,7 +104,6 @@ class PrescriptionAppointment
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 
@@ -124,14 +122,13 @@ class PrescriptionAppointment
     public function setConfirmedByStaff(bool $confirmedByStaff): self
     {
         $this->confirmedByStaff = $confirmedByStaff;
-
         return $this;
     }
 
     /**
      * @return DateTimeInterface|null
      */
-    public function getPlannedDateTime(): ?\DateTimeInterface
+    public function getPlannedDateTime(): ?DateTimeInterface
     {
         return $this->plannedDateTime;
     }
@@ -140,10 +137,9 @@ class PrescriptionAppointment
      * @param DateTimeInterface $plannedDateTime
      * @return $this
      */
-    public function setPlannedDateTime(\DateTimeInterface $plannedDateTime): self
+    public function setPlannedDateTime(DateTimeInterface $plannedDateTime): self
     {
         $this->plannedDateTime = $plannedDateTime;
-
         return $this;
     }
 
@@ -219,7 +215,6 @@ class PrescriptionAppointment
     public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
     {
         $this->notificationConfirm = $notificationConfirm;
-
         return $this;
     }
 }

@@ -11,8 +11,10 @@ use App\Form\AuthUser\AuthUserRequiredType;
 use App\Form\Admin\Staff\StaffRoleType;
 use App\Form\Admin\StaffType;
 use App\Services\ControllerGetters\EntityActions;
-use App\Services\Creator\AuthUserCreatorService;
+use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
 use App\Services\DataTable\Admin\StaffDataTableService;
+use App\Services\EntityActions\Editor\AuthUserEditorService;
+use App\Services\EntityActions\Editor\StaffEditorService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
@@ -163,7 +165,10 @@ class StaffController extends AdminAbstractController
     {
         return $this->responseShow(
             self::TEMPLATE_PATH, $staff, [
-                'prescriptionFilterName' => $filterService->generateFilterName('prescription_list', Staff::class),
+                'prescriptionFilterName' => $filterService->generateFilterName(
+                    'prescription_list',
+                    Staff::class
+                ),
             ]
         );
     }
@@ -182,10 +187,18 @@ class StaffController extends AdminAbstractController
     public function edit(Request $request, Staff $staff): Response
     {
         $authUser = $staff->getAuthUser();
-        $oldPassword = $authUser->getPassword();
-        return $this->responseEditMultiForm(
+        $entityManager = $this->getDoctrine()->getManager();
+        return $this->responseEditMultiFormWithActions(
             $request,
-            $staff,
+            [
+                new EditorEntityActionsBuilder(
+                    new AuthUserEditorService($entityManager, $authUser, $this->passwordEncoder),
+                    [
+                        AuthUserEditorService::OLD_PASSWORD_OPTION => $authUser->getPassword(),
+                    ]
+                ),
+                new EditorEntityActionsBuilder(new StaffEditorService($entityManager, $staff))
+            ],
             [
                 new FormData(AuthUserRequiredType::class, $authUser),
                 new FormData(AuthUserEmailType::class, $authUser),
@@ -198,10 +211,7 @@ class StaffController extends AdminAbstractController
                 new FormData(StaffRoleType::class, $authUser, []),
                 new FormData(StaffType::class, $staff),
             ],
-            function () use ($authUser, $oldPassword, $staff) {
-                AuthUserCreatorService::updatePassword($this->passwordEncoder, $authUser, $oldPassword);
-                $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
-            }
+            $staff
         );
     }
 

@@ -82,7 +82,7 @@
                         </a>
                     </li>
                     <li class="sublist__item">
-                        <a href="{{ path('prescription_testing_new',{(prescriptionParameterKey) : entity.id}) }}">
+                        <a href="{{ path('admin_prescription_testing_new',{(prescriptionParameterKey) : entity.id}) }}">
                             {{ template.items.show.content.addPrescriptionTesting }}
                         </a>
                     </li>
@@ -103,7 +103,7 @@
                     </a>
                 </li>
                 <li class="sublist__item">
-                    <a href="{{ path('prescription_testing_list', {(prescriptionTestingFilterName) : entity.id}) }}">
+                    <a href="{{ path('admin_prescription_testing_list', {(prescriptionTestingFilterName) : entity.id}) }}">
                         {{ template.items.show.content.prescriptionTestings }}
                     </a>
                 </li>

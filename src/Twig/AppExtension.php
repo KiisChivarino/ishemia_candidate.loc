@@ -8,15 +8,20 @@ use App\Entity\Patient;
 use App\Entity\PatientTesting;
 use App\Entity\PatientTestingResult;
 use App\Entity\PlanTesting;
+use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
+use App\Repository\PrescriptionAppointmentRepository;
 use App\Services\InfoService\AnalysisRateInfoService;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Services\InfoService\PatientAppointmentInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\InfoService\PlanTestingInfoService;
+use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\InfoService\PrescriptionTestingInfoService;
 use App\Services\MultiFormService\MultiFormService;
 use Doctrine\ORM\EntityManagerInterface;
+use ReflectionException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -35,6 +40,10 @@ class AppExtension extends AbstractExtension
 
     /** @var array */
     private $projectInfo;
+    /**
+     * @var PrescriptionAppointmentRepository
+     */
+    private $prescriptionAppointmentRepository;
 
     /**
      * AppExtension constructor.
@@ -42,12 +51,19 @@ class AppExtension extends AbstractExtension
      * @param EntityManagerInterface $entityManager
      * @param $projectInfo
      * @param $defaultTimeFormats
+     * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
      */
-    public function __construct(EntityManagerInterface $entityManager, $projectInfo, $defaultTimeFormats)
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        $projectInfo,
+        $defaultTimeFormats,
+        PrescriptionAppointmentRepository $prescriptionAppointmentRepository
+    )
     {
         $this->entityManager = $entityManager;
         $this->defaultTimeFormats = $defaultTimeFormats;
         $this->projectInfo = $projectInfo;
+        $this->prescriptionAppointmentRepository = $prescriptionAppointmentRepository;
     }
 
     /**
@@ -128,16 +144,28 @@ class AppExtension extends AbstractExtension
                     'isPatientTestingResultsExists'
                 ]
             ),
-             new TwigFunction(
-                 'globals', [
-                     $this,
-                     'globals'
-                 ]
-             ),
+            new TwigFunction(
+                'globals', [
+                    $this,
+                    'globals'
+                ]
+            ),
             new TwigFunction(
                 'formName', [
                     $this,
                     'getFormName'
+                ]
+            ),
+            new TwigFunction(
+                'isAppointmentNotExists', [
+                    $this,
+                    'isAppointmentNotExists'
+                ]
+            ),
+            new TwigFunction(
+                'countPrescriptionChildren', [
+                    $this,
+                    'countPrescriptionChildren'
                 ]
             ),
         ];
@@ -196,9 +224,7 @@ class AppExtension extends AbstractExtension
 
     /**
      * Returns patient testing title
-     *
      * @param PatientTesting $patientTesting
-     *
      * @return string
      */
     public function getPatientTestingTitle(PatientTesting $patientTesting): string
@@ -210,7 +236,6 @@ class AppExtension extends AbstractExtension
      * Returns a string describing the unit of reference values
      *
      * @param AnalysisRate $analysisRate
-     *
      * @return string
      */
     public function getAnalysisRate(AnalysisRate $analysisRate): string
@@ -222,7 +247,6 @@ class AppExtension extends AbstractExtension
      * Returns enabled patient testing results by testing
      *
      * @param PatientTesting $testing
-     *
      * @return array
      */
     public function getEnabledTestingResults(PatientTesting $testing): array
@@ -232,9 +256,7 @@ class AppExtension extends AbstractExtension
 
     /**
      * Returns info string of plan testing
-     *
      * @param PlanTesting $planTesting
-     *
      * @return string
      */
     public function getPlanTestingTitle(PlanTesting $planTesting): string
@@ -244,9 +266,7 @@ class AppExtension extends AbstractExtension
 
     /**
      * Get prescription testing info string
-     *
      * @param PrescriptionTesting $prescriptionTesting
-     *
      * @return string
      */
     public function getPrescriptionTestingTitle(PrescriptionTesting $prescriptionTesting): string
@@ -256,9 +276,7 @@ class AppExtension extends AbstractExtension
 
     /**
      * Get analysis rate info string
-     *
      * @param AnalysisRate $analysisRate
-     *
      * @return string
      */
     public function getAnalysisRateTitle(AnalysisRate $analysisRate): string
@@ -268,9 +286,7 @@ class AppExtension extends AbstractExtension
 
     /**
      * Check for empty all patient testing results
-     *
      * @param PatientTesting $patientTesting
-     *
      * @return bool
      */
     public function isEmptyPatientTestingResults(PatientTesting $patientTesting): bool
@@ -302,15 +318,41 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * Check for empty Appointment
+     * @param Prescription $prescription
+     * @return bool
+     */
+    public function isAppointmentNotExists(
+        Prescription $prescription
+    ): bool
+    {
+        return PatientAppointmentInfoService::isAppointmentNotExists(
+            $prescription,
+            $this->prescriptionAppointmentRepository
+        );
+    }
+
+    /**
+     * Returns count of prescription children
+     * @param Prescription $prescription
+     * @return int
+     */
+    public function countPrescriptionChildren(Prescription $prescription): int
+    {
+        return PrescriptionInfoService::countChildren($prescription);
+    }
+
+    /**
      * Returns form name by class name
      *
      * @param string $formClassName
      *
      * @return string|string[]
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function getFormName(string $formClassName): string{
+    public function getFormName(string $formClassName): string
+    {
         return MultiFormService::getFormName($formClassName);
     }
 }

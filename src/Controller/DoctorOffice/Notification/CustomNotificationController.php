@@ -14,7 +14,6 @@ use App\Services\Notification\NotifierService;
 use App\Services\TemplateBuilders\DoctorOffice\CustomNotificationTemplate;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -120,15 +119,12 @@ class CustomNotificationController extends DoctorOfficeAbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $entityManager = $this->getDoctrine()->getManager();
+                if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
+                    return $this->redirectToMedicalHistory($patient);
+                }
                 $notificationServiceBuilder = $this->notificationServiceBuilder
                     ->makeCustomMessageNotification(
-                        (
-                        new NotificationData(
-                            $this->getDoctrine()->getManager(),
-                            $patient,
-                            $medicalHistoryRepository->getCurrentMedicalHistory($patient)
-                        )
-                        ),
+                        new NotificationData($entityManager, $patient, $medicalHistory),
                         $request->request->get('custom_notification')['text']
                     );
 
@@ -151,15 +147,6 @@ class CustomNotificationController extends DoctorOfficeAbstractController
                     )
                     ->logCreateEvent();
                 $entityManager->flush();
-            } catch (DBALException $e) {
-                $this->addFlash('error', $this->translator->trans('app_controller.error.post_dbal_exception'));
-                return $this->render(
-                    $this->templateService->getCommonTemplatePath() . $formName . '.html.twig',
-                    [
-                        'entity' => $entity,
-                        'form' => $form->createView(),
-                    ]
-                );
             } catch (Exception $e) {
                 $this->addFlash('error', $this->translator->trans('app_controller.error.exception'));
                 return $this->render(

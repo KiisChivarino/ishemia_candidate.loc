@@ -49,7 +49,7 @@ class PlanAppointmentType extends AbstractType
                 'timeRangeCount', IntegerType::class,
                 [
                     'label' => $templateItem->getContentValue('timeRangeCount'),
-                    'attr' => ['min' => '1']
+                    'attr' => ['min' => '0']
                 ]
             )
             ->add(

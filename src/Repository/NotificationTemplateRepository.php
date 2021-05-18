@@ -7,10 +7,12 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class NotificationTemplateRepository
  * @method NotificationTemplate|null find($id, $lockMode = null, $lockVersion = null)
  * @method NotificationTemplate|null findOneBy(array $criteria, array $orderBy = null)
  * @method NotificationTemplate[]    findAll()
  * @method NotificationTemplate[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @package App\Repository
  */
 class NotificationTemplateRepository extends AppRepository
 {
@@ -34,7 +36,6 @@ class NotificationTemplateRepository extends AppRepository
             ->andWhere('nt.name = :name')
             ->setParameter('name', $name)
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getOneOrNullResult();
     }
 }

@@ -36,13 +36,4 @@
         <span class="title">{{ template.items.show.content.plannedDateTime }}</span>
         <p>{{ entity.plannedDateTime ? entity.plannedDateTime|date('Y-m-d H:i:s') : '' }}</p>
     </li>
-    {% if entity.confirmedByStaff is defined %}
-        <li>
-            <span class="title">{{ template.items.show.content.confirmedByStaff }}</span>
-            <p>{{ entity.confirmedByStaff ?
-                template.items.show.content.trueValue :
-                template.items.show.content.falseValue }}
-            </p>
-        </li>
-    {% endif %}
 {% endblock %}

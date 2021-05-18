@@ -2,8 +2,6 @@
 
 namespace App\Services\EntityActions\Core;
 
-use App\Services\EntityActions\Core\AbstractEntityActionsService;
-use App\Services\EntityActions\Core\EntityActionsInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 

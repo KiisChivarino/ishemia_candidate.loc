@@ -168,7 +168,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         }
         $roleTechName = $authUserInfoService->getRoleNames($userRepository->getRoles($authUser), true);
         $roles = Yaml::parseFile('..//config/services/roles.yaml');
-        foreach ($roles['parameters'] as $roleData) {
+        foreach ($roles['parameters']['roles'] as $roleData) {
             if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {
                 return new RedirectResponse($this->urlGenerator->generate($roleData['route']));
             } elseif (array_search($roleData['techName'], $authUser->getRoles()) !== false) {

@@ -4,17 +4,17 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
-use App\Form\Admin\Patient\PatientOptionalType;
-use App\Form\Admin\Patient\PatientRequiredType;
+use App\Form\Patient\PatientOptionalType;
+use App\Form\Patient\PatientRequiredType;
 use App\Form\AuthUser\AuthUserEmailType;
 use App\Form\AuthUser\AuthUserRequiredType;
-use App\Services\Creator\AuthUserCreatorService;
-use App\Services\InfoService\AuthUserInfoService;
+use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
+use App\Services\EntityActions\Editor\AuthUserEditorService;
+use App\Services\EntityActions\Editor\PatientEditorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PersonalDataTemplate;
-use ReflectionException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -66,10 +66,8 @@ class PersonalDataController extends DoctorOfficeAbstractController
      *     )
      * @param Request $request
      * @param Patient $patient
-     *
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return Response
-     * @throws ReflectionException
      * @throws Exception
      */
     public function edit(
@@ -80,20 +78,28 @@ class PersonalDataController extends DoctorOfficeAbstractController
     {
         $authUser = $patient->getAuthUser();
         $oldPassword = $authUser->getPassword();
+        $entityManager = $this->getDoctrine()->getManager();
         $this->setRedirectMedicalHistoryRoute($patient->getId());
-        return $this->responseEditMultiForm(
+        return $this->responseEditMultiFormWithActions(
             $request,
-            $patient,
+            [
+                new EditorEntityActionsBuilder(
+                    new PatientEditorService($entityManager, $patient)
+                ),
+                new EditorEntityActionsBuilder(
+                    new AuthUserEditorService($entityManager, $authUser, $passwordEncoder),
+                    [
+                        AuthUserEditorService::OLD_PASSWORD_OPTION => $oldPassword,
+                    ]
+                ),
+            ],
             [
                 new FormData(AuthUserRequiredType::class, $authUser),
                 new FormData(AuthUserEmailType::class, $authUser),
                 new FormData(PatientRequiredType::class, $patient),
                 new FormData(PatientOptionalType::class, $patient),
             ],
-            function () use ($authUser, $oldPassword, $passwordEncoder) {
-                AuthUserCreatorService::updatePassword($passwordEncoder, $authUser, $oldPassword);
-                $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
-            },
+            $patient,
             self::EDIT_PERSONAL_DATA_TEMPLATE_NAME
         );
     }

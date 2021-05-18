@@ -9,7 +9,6 @@ use App\Form\Admin\PatientAppointment\EnabledType;
 use App\Form\Admin\PatientAppointment\StaffType;
 use App\Form\Admin\PatientAppointmentType;
 use App\Services\ControllerGetters\FilterLabels;
-use App\Services\Creator\PatientAppointmentCreatorService;
 use App\Services\DataTable\Admin\PatientAppointmentDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
@@ -111,15 +110,12 @@ class PatientAppointmentController extends AdminAbstractController
      * @param Request $request
      * @param PatientAppointment $patientAppointment
      *
-     * @param PatientAppointmentCreatorService $patientAppointmentCreator
      * @return Response
      * @throws ReflectionException
-     * @throws Exception
      */
     public function edit(
         Request $request,
-        PatientAppointment $patientAppointment,
-        PatientAppointmentCreatorService $patientAppointmentCreator
+        PatientAppointment $patientAppointment
     ): Response
     {
         return $this->responseEditMultiForm(
@@ -131,10 +127,7 @@ class PatientAppointmentController extends AdminAbstractController
                 new FormData(AppointmentTypeType::class, $patientAppointment),
                 new FormData(ConfirmedType::class, $patientAppointment),
                 new FormData(EnabledType::class, $patientAppointment),
-            ],
-            function () use ($patientAppointment, $patientAppointmentCreator) {
-                $patientAppointmentCreator->checkAndPersistRegularPatientAppointment($patientAppointment);
-            }
+            ]
         );
     }
 

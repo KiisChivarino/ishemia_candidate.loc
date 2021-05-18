@@ -148,7 +148,6 @@ class NotificationConfirm
             $this->patientNotification[] = $patientNotification;
             $patientNotification->setNotificationConfirm($this);
         }
-
         return $this;
     }
 
@@ -164,7 +163,6 @@ class NotificationConfirm
                 $patientNotification->setNotificationConfirm(null);
             }
         }
-
         return $this;
     }
 

@@ -77,7 +77,7 @@ class PatientTestingDataTableService extends AdminDatatableService
             )
             ->add(
                 'isProcessedByStaff', BoolColumn::class, [
-                    'label' => $listTemplateItem->getContentValue('processed'),
+                    'label' => $listTemplateItem->getContentValue('isProcessedByStaff'),
                     'trueValue' => $listTemplateItem->getContentValue('trueValue'),
                     'falseValue' => $listTemplateItem->getContentValue('falseValue'),
                     'searchable' => false,
@@ -86,9 +86,9 @@ class PatientTestingDataTableService extends AdminDatatableService
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
         /** @var Patient $patient */
-        $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']]) ? $filters[AppAbstractController::FILTER_LABELS['PATIENT']] : null;
+        $patient = $filters[AppAbstractController::FILTER_LABELS['PATIENT']] ?? null;
         /** @var MedicalHistory $patient */
-        $medicalHistory = isset($filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']]) ? $filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']] : null;
+        $medicalHistory = $filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']] ?? null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

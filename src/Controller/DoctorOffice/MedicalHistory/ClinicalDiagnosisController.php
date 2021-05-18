@@ -5,8 +5,8 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Form\Admin\MedicalHistoryType;
-use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
-use App\Form\Admin\Patient\PatientMKBCodeType;
+use App\Form\Patient\PatientClinicalDiagnosisTextType;
+use App\Form\Patient\PatientMKBCodeType;
 use App\Repository\MedicalHistoryRepository;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\ClinicalDiagnosisTemplate;
@@ -76,7 +76,9 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
         MedicalHistoryRepository $medicalHistoryRepository
     )
     {
-        $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
+        if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)){
+            return $this->redirectToMedicalHistory($patient);
+        }
         $lifeHistory = $medicalHistory->getLifeHistory();
         $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
         $lifeAnamnesisText = $lifeHistory ? $lifeHistory->getText() : null;

@@ -61,7 +61,7 @@ class MedicalRecord
     private $prescriptions;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalRecord")
+     * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalRecord", orphanRemoval=true, cascade={"persist"})
      */
     private $patientNotifications;
 
