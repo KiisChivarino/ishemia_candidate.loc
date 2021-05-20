@@ -73,7 +73,8 @@ class AddPatientController extends DoctorOfficeAbstractController
     )
     {
         $clinicalDiagnosis = $patientCreatingFactory->getClinicalDiagnosis();
-        $response = $this->responseNewMultiFormWithActions(
+        $this->setRedirectMedicalHistoryRoute($patientCreatingFactory->getPatient());
+        return $this->responseNewMultiFormWithActions(
             $request,
             $this->getCreatorEntityActionsBuilderArray($patientCreatingFactory),
             [
@@ -84,13 +85,6 @@ class AddPatientController extends DoctorOfficeAbstractController
                 new FormData(AppointmentTypeType::class, $patientCreatingFactory->getPatientAppointment()),
             ]
         );
-        $this->templateService->setRedirectRoute(
-            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
-            [
-                'id' => $patientCreatingFactory->getPatient()->getId(),
-            ]
-        );
-        return $response;
     }
 
     /**
@@ -110,7 +104,8 @@ class AddPatientController extends DoctorOfficeAbstractController
     {
         $clinicalDiagnosis = $patientCreatingFactory->getClinicalDiagnosis();
         $patient = $patientCreatingFactory->getPatient();
-        $response = $this->responseNewMultiFormWithActions(
+        $this->setRedirectMedicalHistoryRoute($patient);
+        return $this->responseNewMultiFormWithActions(
             $request,
             [
                 new CreatorEntityActionsBuilder($patientCreatingFactory->getAuthUserCreator()),
@@ -138,13 +133,6 @@ class AddPatientController extends DoctorOfficeAbstractController
                 new FormData(AppointmentTypeType::class, $patientCreatingFactory->getPatientAppointment()),
             ]
         );
-        $this->templateService->setRedirectRoute(
-            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
-            [
-                'id' => $patientCreatingFactory->getPatient()->getId(),
-            ]
-        );
-        return $response;
     }
 
     /**

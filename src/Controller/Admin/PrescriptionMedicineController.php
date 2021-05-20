@@ -112,7 +112,13 @@ class PrescriptionMedicineController extends AdminAbstractController
                 PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
             ]
         )->getEntity();
-        $response = $this->responseNewMultiFormWithActions(
+        $this->templateService->setRedirectRouteParameters(
+            [
+                'prescription' => $prescription->getId(),
+                'prescriptionMedicine' => $prescriptionMedicine,
+            ]
+        );
+        return $this->responseNewMultiFormWithActions(
             $request,
             [
                 new CreatorEntityActionsBuilder(
@@ -132,13 +138,6 @@ class PrescriptionMedicineController extends AdminAbstractController
                 new FormData(PatientMedicineType::class, $patientMedicineCreatorService->getEntity()),
             ]
         );
-        $this->templateService->setRedirectRouteParameters(
-            [
-                'prescription' => $prescription->getId(),
-                'prescriptionMedicine' => $prescriptionMedicine->getId(),
-            ]
-        );
-        return $response;
     }
 
     /**
