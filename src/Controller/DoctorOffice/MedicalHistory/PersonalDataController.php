@@ -79,7 +79,7 @@ class PersonalDataController extends DoctorOfficeAbstractController
         $authUser = $patient->getAuthUser();
         $oldPassword = $authUser->getPassword();
         $entityManager = $this->getDoctrine()->getManager();
-        $this->setRedirectMedicalHistoryRoute($patient->getId());
+        $this->setRedirectMedicalHistoryRoute($patient);
         return $this->responseEditMultiFormWithActions(
             $request,
             [

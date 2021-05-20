@@ -82,7 +82,7 @@ class ClinicalDiagnosisController extends DoctorOfficeAbstractController
         $lifeHistory = $medicalHistory->getLifeHistory();
         $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
         $lifeAnamnesisText = $lifeHistory ? $lifeHistory->getText() : null;
-        $this->setRedirectMedicalHistoryRoute($patient->getId());
+        $this->setRedirectMedicalHistoryRoute($patient);
         return $this->responseEditMultiForm(
             $request,
             $patient,

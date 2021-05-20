@@ -185,6 +185,7 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
      * @param PatientTestingResultRepository $patientTestingResultRepository
      * @return RedirectResponse|Response
      * @throws ReflectionException
+     * @throws Exception
      */
     private function edit(
         Request $request,
@@ -193,7 +194,7 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
         PatientTestingResultRepository $patientTestingResultRepository
     )
     {
-        $this->setRedirectMedicalHistoryRoute($patientTesting->getMedicalHistory()->getPatient()->getId());
+        $this->setRedirectMedicalHistoryRoute($patientTesting->getMedicalHistory()->getPatient());
         $this->templateService->setCommonTemplatePath(self::TEMPLATE_PATH);
         $enabledTestingResults = $patientTestingResultRepository->getEnabledTestingResults($patientTesting);
         $patientTestingResultsFormData = [];

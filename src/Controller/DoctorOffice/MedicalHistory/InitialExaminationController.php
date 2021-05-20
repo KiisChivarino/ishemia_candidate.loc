@@ -115,7 +115,7 @@ class InitialExaminationController extends DoctorOfficeAbstractController
             $this->redirectToMedicalHistory($patient);
         }
         $firstAppointment = $patientAppointmentRepository->getFirstAppointment($medicalHistory);
-        $this->setRedirectMedicalHistoryRoute($patient->getId());
+        $this->setRedirectMedicalHistoryRoute($patient);
         $objectiveStatus = $firstAppointment->getObjectiveStatus();
         return $this->responseEditMultiForm(
             $request,
@@ -374,22 +374,9 @@ class InitialExaminationController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Set redirect to "doctor_medical_history" when form controller successfully finishes work
-     * @param int $entityId
-     */
-    protected function setRedirectMedicalHistoryRoute(int $entityId): void
-    {
-        $this->templateService->setRedirectRoute(
-            self::DOCTOR_MEDICAL_HISTORY_ROUTE,
-            [
-                self::DOCTOR_MEDICAL_HISTORY_ROUTE_ID_PARAMETER => $entityId
-            ]
-        );
-    }
-
-    /**
      * Set redirect to "doctor_edit_anamnestic_data" when form controller successfully finishes work
      * @param int $entityId
+     * @throws Exception
      */
     protected function setRedirectAnamnesticDataRoute(int $entityId): void
     {

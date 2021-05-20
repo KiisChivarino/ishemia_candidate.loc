@@ -81,7 +81,7 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
         if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
             return $this->redirectToMedicalHistory($patient);
         }
-        $this->setRedirectMedicalHistoryRoute($patient->getId());
+        $this->setRedirectMedicalHistoryRoute($patient);
         return $this->responseNew(
             $request,
             (new PatientDischargeEpicrisis())->setMedicalHistory($medicalHistory),
@@ -118,7 +118,7 @@ class DischargeEpicrisisController extends DoctorOfficeAbstractController
         FileService $fileService
     )
     {
-        $this->setRedirectMedicalHistoryRoute($dischargeEpicrisis->getMedicalHistory()->getPatient()->getId());
+        $this->setRedirectMedicalHistoryRoute($dischargeEpicrisis->getMedicalHistory()->getPatient());
         return $this->responseEdit(
             $request,
             $dischargeEpicrisis,
