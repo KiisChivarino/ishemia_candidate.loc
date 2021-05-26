@@ -7,7 +7,11 @@
                 {{ form_widget(filesForm.vars.prototype) }}
                 {% do filesForm.setRendered %}
             </div>
+            {% if(filesForm.vars.prototype is defined) %}
+                {{ form_help(filesForm.vars.prototype|first) }}
+            {% endif %}
             {% for doc in filesForm %}
+
                 <div class="jsFile" data-pos="{{ pos }}">
                     <div id="jsView{{ pos }}">
                         <span id="jsName{{ pos }}">
@@ -28,6 +32,7 @@
         </div>
     </li>
     {{ recursive_form_macro.recursiveForm(form) }}
+
 </ul>
 
 <div class="buttons">
