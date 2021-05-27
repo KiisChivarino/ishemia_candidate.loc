@@ -5,6 +5,7 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
@@ -85,7 +86,15 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                                 : $showTemplateItem->getContentValue('empty');
                     }
                 ]
-            );
+            )
+            ->add(
+                'staff', TextColumn::class, [
+                'label' => $showTemplateItem->getContentValue('doctor'),
+                'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) use ($showTemplateItem) {
+                    $staff = $prescriptionMedicine->getStaff();
+                    return AuthUserInfoService::getFIO($staff->getAuthUser());
+                },
+            ]);
 
         $this->addOperations($renderOperationsFunction, $showTemplateItem);
 
@@ -97,8 +106,7 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                         $builder
                             ->select('pm')
                             ->from(self::ENTITY_CLASS, 'pm')
-                            ->join('pm.patientMedicine', 'pma')
-                        ;
+                            ->join('pm.patientMedicine', 'pma');
                         if ($prescription) {
                             $builder
                                 ->andWhere('pm.prescription = :prescription')

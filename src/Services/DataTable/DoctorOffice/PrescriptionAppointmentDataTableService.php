@@ -5,6 +5,7 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
@@ -47,6 +48,15 @@ class PrescriptionAppointmentDataTableService extends AdminDatatableService
                     'label' => $showTemplateItem->getContentValue('plannedDateTime'),
                     'format' => 'd.m.Y',
                     'searchable' => false
+                ]
+            )
+            ->add(
+                'staff', TextColumn::class, [
+                    'label' => $showTemplateItem->getContentValue('doctor'),
+                    'render' => function (string $data, PrescriptionAppointment $prescriptionAppointment) use ($showTemplateItem) {
+                    $staff = $prescriptionAppointment->getStaff();
+                        return AuthUserInfoService::getFIO($staff->getAuthUser());
+                    },
                 ]
             )
             ->add('appointmentType', TextColumn::class, [

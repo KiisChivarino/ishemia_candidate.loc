@@ -6,6 +6,7 @@ use App\Entity\AnalysisGroup;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
 use App\Services\DataTable\Admin\AdminDatatableService;
+use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Closure;
 use Doctrine\ORM\QueryBuilder;
@@ -59,7 +60,15 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                     'format' => 'd.m.Y H:m',
                     'searchable' => false
                 ]
-            );
+            )
+            ->add(
+                'staff', TextColumn::class, [
+                'label' => $showTemplateItem->getContentValue('doctor'),
+                'render' => function (string $data, PrescriptionTesting $prescriptionTesting) use ($showTemplateItem) {
+                    $staff = $prescriptionTesting->getStaff();
+                    return AuthUserInfoService::getFIO($staff->getAuthUser());
+                },
+            ]);
         $this->addOperations($renderOperationsFunction, $showTemplateItem);
         return $this->dataTable
             ->createAdapter(
