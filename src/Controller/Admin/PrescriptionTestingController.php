@@ -92,16 +92,12 @@ class PrescriptionTestingController extends AdminAbstractController
      *     )
      *
      * @param Request $request
-     * @param Prescription $prescription
-     * @param PrescriptionTestingCreatorService $prescriptionTestingCreatorService
-     * @param SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
      * @param PrescriptionRepository $prescriptionRepository
+     * @param Prescription $prescription
      * @param PrescriptionTestingCreatorService $prescriptionTestingCreatorService
      * @param SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
      * @return Response
      * @throws ReflectionException
-     * @throws ReflectionException
-     * @throws Exception
      */
     public function new(
         Request $request,
