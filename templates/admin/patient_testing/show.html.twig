@@ -15,9 +15,9 @@
     <li>
         <span class="title">{{ template.items.show.content.prescriptionTesting }}</span>
         <p>
-            {% if entity.prescriptionTesting %}
-                <a href="{{ path('admin_prescription_testing_show', {'id': entity.prescriptionTesting.id}) }}">
-                    {{ prescriptionTestingTitle(entity.prescriptionTesting) }}
+            {% if prescriptionTesting %}
+                <a href="{{ path('admin_prescription_testing_show', {'id': prescriptionTesting.id}) }}">
+                    {{ template.items.show.content.prescriptionTesting }}
                 </a>
             {% else %}
                 {{ template.items.show.content.empty }}

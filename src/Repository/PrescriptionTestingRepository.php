@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\PatientTesting;
 use App\Entity\PrescriptionTesting;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,5 +24,20 @@ class PrescriptionTestingRepository extends AppRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PrescriptionTesting::class);
+    }
+
+    /**
+     * Get prescription testing for patient testing
+     * @param PatientTesting $patientTesting
+     * @return int|mixed|string|null
+     * @throws NonUniqueResultException
+     */
+    public function getPrescriptionTestingForPatientTesting(PatientTesting $patientTesting){
+        return $this->createQueryBuilder('pa')
+            ->where('pa.patientTesting = :prescriptionTesting')
+            ->setParameter('prescriptionTesting', $patientTesting)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
