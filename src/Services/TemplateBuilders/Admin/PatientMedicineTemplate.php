@@ -16,7 +16,7 @@ use Symfony\Component\Routing\RouteCollection;
 class PatientMedicineTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common content for analysis templates */
-    protected const COMMON_CONTENT = [
+    public const COMMON_CONTENT = [
         'prescriptionMedicine' => PrescriptionMedicineTemplate::ENTITY_CONTENT['entity'],
         'medicine' => 'Название лекарства',
         'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
