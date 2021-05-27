@@ -32,6 +32,11 @@ class PrescriptionAppointmentRepository extends AppRepository
      */
     public function countPrescriptionAppointmentsByPrescription(Prescription $prescription): int
     {
-        return $this->count(['prescription' => $prescription, 'enabled' => true]);
+        return $this->count(
+            [
+                'prescription' => $prescription,
+                'enabled' => true,
+            ]
+        );
     }
 }

@@ -21,7 +21,7 @@ class PrescriptionMedicine
 
     /**
      * @ORM\ManyToOne(targetEntity=Prescription::class, inversedBy="prescriptionMedicines")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $prescription;
 
@@ -59,7 +59,6 @@ class PrescriptionMedicine
 
     /**
      * @ORM\OneToOne(targetEntity=PatientMedicine::class, inversedBy="prescriptionMedicine", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $patientMedicine;
 
@@ -204,15 +203,21 @@ class PrescriptionMedicine
         return $this;
     }
 
+    /**
+     * @return PatientMedicine|null
+     */
     public function getPatientMedicine(): ?PatientMedicine
     {
         return $this->patientMedicine;
     }
 
+    /**
+     * @param PatientMedicine $patientMedicine
+     * @return $this
+     */
     public function setPatientMedicine(PatientMedicine $patientMedicine): self
     {
         $this->patientMedicine = $patientMedicine;
-
         return $this;
     }
 

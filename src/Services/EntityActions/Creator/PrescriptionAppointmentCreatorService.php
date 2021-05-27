@@ -36,9 +36,7 @@ class PrescriptionAppointmentCreatorService extends AbstractCreatorService
      * @param EntityManagerInterface $entityManager
      * @throws Exception
      */
-    public function __construct(
-        EntityManagerInterface $entityManager
-    )
+    public function __construct(EntityManagerInterface $entityManager)
     {
         parent::__construct($entityManager, PrescriptionAppointment::class);
     }

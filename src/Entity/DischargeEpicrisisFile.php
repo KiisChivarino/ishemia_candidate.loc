@@ -31,7 +31,7 @@ class DischargeEpicrisisFile
      *     inversedBy="dischargeEpicrisisFiles",
      *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $patientDischargeEpicrisis;
 

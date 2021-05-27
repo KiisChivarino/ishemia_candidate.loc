@@ -9,7 +9,7 @@ use App\Entity\PatientAppointment;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -42,13 +42,11 @@ class PatientAppointmentType extends AbstractType
                 ]
             )
             ->add(
-                'appointmentTime', DateTimeType::class, [
+                'appointmentTime', DateType::class, [
                     'label' => $templateItem->getContentValue('appointmentTime'),
-                    'date_widget' => 'single_text',
-                    'date_label' => $templateItem->getContentValue('appointmentTimeDateLabel'),
-                    'time_widget' => 'single_text',
-                    'time_label' => $templateItem->getContentValue('appointmentTimeTimeLabel'),
-                    'required' => false,
+                    'widget' => 'single_text',
+                    'format' => 'yyyy-MM-dd',
+                    'required' => true,
                     'empty_data' => null,
                     'by_reference' => true,
                 ]

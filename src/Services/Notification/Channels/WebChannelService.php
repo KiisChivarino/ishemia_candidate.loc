@@ -29,8 +29,8 @@ class WebChannelService
 
     /**
      * Creates new WebNotification
-     * @param $patientReceiver
-     * @param $channel
+     * @param Patient $patientReceiver
+     * @param ChannelType $channel
      * @return WebNotification
      */
     public function createWebNotification(Patient $patientReceiver, ChannelType $channel): WebNotification
@@ -38,7 +38,6 @@ class WebChannelService
         $webNotification = (new WebNotification())
             ->setReceiverString((new AuthUserInfoService())->getFIO($patientReceiver->getAuthUser()))
             ->setChannelType($channel);
-
         $this->em->persist($webNotification);
         return $webNotification;
     }

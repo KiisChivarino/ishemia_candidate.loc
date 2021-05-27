@@ -28,7 +28,7 @@ class PrescriptionTestingTemplate extends AdminTemplateBuilder
         'patientTesting' => 'Обследование',
         'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
         'plannedDate' => 'Запланировано',
-        'analysisGroup' => 'Группа анализов',
+        'analysisGroup' => AnalysisGroupTemplate::ENTITY_CONTENT['entity'],
         'confirmedByStaff' => 'Подтверждено врачом'
     ];
     /** @var string[] FORM_SHOW_CONTENT */

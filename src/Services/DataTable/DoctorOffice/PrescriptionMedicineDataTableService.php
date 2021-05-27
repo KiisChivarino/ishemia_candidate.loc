@@ -52,7 +52,7 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
             ->add(
                 'endMedicationDate', DateTimeColumn::class, [
                     'label' => $showTemplateItem->getContentValue('endMedicationDate'),
-                    'format' => 'd.m.Y h:m',
+                    'format' => 'd.m.Y',
                     'searchable' => false,
                     'render' => function (string $data) use ($showTemplateItem) {
                         return
@@ -79,24 +79,26 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                     'field' => 'pma.instruction',
                     'searchable' => true,
                     'render' => function (string $data) use ($showTemplateItem) {
-                    return
+                        return
                             $data
                                 ? htmlspecialchars_decode($data)
                                 : $showTemplateItem->getContentValue('empty');
                     }
                 ]
             );
+
         $this->addOperations($renderOperationsFunction, $showTemplateItem);
+
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
                     'entity' => self::ENTITY_CLASS,
                     'query' => function (QueryBuilder $builder) use ($prescription) {
-                            $builder
-                                ->select('pm')
-                                ->from(self::ENTITY_CLASS, 'pm')
-                                ->join('pm.patientMedicine', 'pma')
-                            ;
+                        $builder
+                            ->select('pm')
+                            ->from(self::ENTITY_CLASS, 'pm')
+                            ->join('pm.patientMedicine', 'pma')
+                        ;
                         if ($prescription) {
                             $builder
                                 ->andWhere('pm.prescription = :prescription')

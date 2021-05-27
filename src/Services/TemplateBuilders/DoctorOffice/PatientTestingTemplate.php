@@ -3,6 +3,8 @@
 namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
+use App\Services\TemplateBuilders\Admin\StaffTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
@@ -19,9 +21,9 @@ class PatientTestingTemplate extends DoctorOfficeTemplateBuilder
 
     /** @var string[] Common content for PatientTesting templates */
     public const COMMON_CONTENT = [
-        'analysisGroup' => 'Группа анализов',
+        'analysisGroup' => AnalysisGroupTemplate::ENTITY_CONTENT['entity'],
         'plannedDate' => 'Запланировано',
-        'staff' => 'Врач'
+        'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
     ];
 
     /** @var string[] Common NEW_CONTENT */
@@ -43,6 +45,7 @@ class PatientTestingTemplate extends DoctorOfficeTemplateBuilder
         'inclusion_time' => 'Дата и время включения в назначение',
         'staff' => 'Врач создавший назначение'
     ];
+
     /**
      * PatientTestingTemplate constructor.
      *

@@ -23,7 +23,7 @@ class MedicalHistory
 
     /**
      * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="medicalHistories")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $patient;
 
@@ -74,8 +74,8 @@ class MedicalHistory
     private $patientAppointments;
 
     /**
-     * @ORM\OneToOne(targetEntity=PatientDischargeEpicrisis::class, mappedBy="medicalHistory", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\OneToOne(targetEntity=PatientDischargeEpicrisis::class, mappedBy="medicalHistory",cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $patientDischargeEpicrisis;
 

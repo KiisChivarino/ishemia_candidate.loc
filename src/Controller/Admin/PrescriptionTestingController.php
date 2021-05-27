@@ -5,9 +5,10 @@ namespace App\Controller\Admin;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
+use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
-use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\PatientTestingCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
@@ -94,11 +95,17 @@ class PrescriptionTestingController extends AdminAbstractController
      * @param Prescription $prescription
      * @param PrescriptionTestingCreatorService $prescriptionTestingCreatorService
      * @param SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
+     * @param PrescriptionRepository $prescriptionRepository
+     * @param PrescriptionTestingCreatorService $prescriptionTestingCreatorService
+     * @param SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
      * @return Response
      * @throws ReflectionException
+     * @throws ReflectionException
+     * @throws Exception
      */
     public function new(
         Request $request,
+        PrescriptionRepository $prescriptionRepository,
         Prescription $prescription,
         PrescriptionTestingCreatorService $prescriptionTestingCreatorService,
         SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
@@ -107,7 +114,7 @@ class PrescriptionTestingController extends AdminAbstractController
         /** @var PatientTesting $patientTesting */
         $patientTesting = $specialPatientTestingCreatorService->execute(
             [
-                PatientTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
+                PatientTestingCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
             ]
         )->getEntity();
         $prescriptionTestingCreatorService->before(
@@ -144,8 +151,7 @@ class PrescriptionTestingController extends AdminAbstractController
  * @return Response
  * @throws Exception
  */
-public
-function show(PrescriptionTesting $prescriptionTesting): Response
+public function show(PrescriptionTesting $prescriptionTesting): Response
 {
     return $this->responseShow(
         self::TEMPLATE_PATH,
@@ -161,60 +167,58 @@ function show(PrescriptionTesting $prescriptionTesting): Response
     );
 }
 
-/**
- * Edit testing prescription
- * @Route("/{id}/edit", name="admin_prescription_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
- *
- * @param Request $request
- * @param PrescriptionTesting $prescriptionTesting
- *
- * @return Response
- * @throws Exception
- */
-public
-function edit(
-    Request $request,
-    PrescriptionTesting $prescriptionTesting
-): Response
-{
+    /**
+     * Edit testing prescription
+     * @Route("/{id}/edit", name="admin_prescription_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     *
+     * @param Request $request
+     * @param PrescriptionTesting $prescriptionTesting
+     *
+     * @return Response
+     * @throws Exception
+     */
+    public function edit(
+        Request $request,
+        PrescriptionTesting $prescriptionTesting
+    ): Response
+    {
 
-    return $this->responseEditMultiForm(
-        $request,
-        $prescriptionTesting,
-        [
-            new FormData(
-                PrescriptionTestingType\PrescriptionTestingStaff::class,
-                $prescriptionTesting
-            ),
-            new FormData(
-                PatientTestingRequiredType::class,
-                $prescriptionTesting->getPatientTesting()
-            ),
-            new FormData(
-                PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
-                $prescriptionTesting
-            ),
-            new FormData(
-                PrescriptionTestingType\PrescriptionTestingConfirmedEnableType::class,
-                $prescriptionTesting
-            ),
-        ]
-    );
-}
+        return $this->responseEditMultiForm(
+            $request,
+            $prescriptionTesting,
+            [
+                new FormData(
+                    PrescriptionTestingType\PrescriptionTestingStaff::class,
+                    $prescriptionTesting
+                ),
+                new FormData(
+                    PatientTestingRequiredType::class,
+                    $prescriptionTesting->getPatientTesting()
+                ),
+                new FormData(
+                    PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
+                    $prescriptionTesting
+                ),
+                new FormData(
+                    PrescriptionTestingType\PrescriptionTestingConfirmedEnableType::class,
+                    $prescriptionTesting
+                ),
+            ]
+        );
+    }
 
-/**
- * Delete testing prescription
- * @Route("/{id}", name="admin_prescription_testing_delete", methods={"DELETE"}, requirements={"prescriptionTesting"="\d+"})
- *
- * @param Request $request
- * @param PrescriptionTesting $prescriptionTesting
- *
- * @return Response
- * @throws Exception
- */
-public
-function delete(Request $request, PrescriptionTesting $prescriptionTesting): Response
-{
-    return $this->responseDelete($request, $prescriptionTesting);
-}
+    /**
+     * Delete testing prescription
+     * @Route("/{id}", name="admin_prescription_testing_delete", methods={"DELETE"}, requirements={"prescriptionTesting"="\d+"})
+     *
+     * @param Request $request
+     * @param PrescriptionTesting $prescriptionTesting
+     *
+     * @return Response
+     * @throws Exception
+     */
+    public function delete(Request $request, PrescriptionTesting $prescriptionTesting): Response
+    {
+        return $this->responseDelete($request, $prescriptionTesting);
+    }
 }

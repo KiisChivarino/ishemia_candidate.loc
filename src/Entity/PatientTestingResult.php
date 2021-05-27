@@ -22,7 +22,7 @@ class PatientTestingResult
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PatientTesting", inversedBy="patientTestingResults", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $patientTesting;
 

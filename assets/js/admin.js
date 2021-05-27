@@ -9,7 +9,7 @@ import './mask';
 import './hospitalByCity';
 import './fileUpload';
 import './menu';
-import './datatables/initDefaultDatatables';
+import './datatables/initAdminDatatables';
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
 require('../images/operation-icon-3.svg');

@@ -4,6 +4,8 @@ namespace App\Services\TemplateBuilders\DoctorOffice;
 
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
+use App\Services\TemplateBuilders\Admin\PatientAppointmentTemplate;
+use App\Services\TemplateBuilders\Admin\PatientMedicineTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionAppointmentTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionMedicineTemplate;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
@@ -11,6 +13,7 @@ use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\ListTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
+use App\Services\TemplateItems\DeleteTemplateItem;
 
 /**
  * Class AddPatientPrescriptionTemplate
@@ -18,12 +21,14 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
 {
+    /** @var string[]  */
     protected const FORM_CONTENT = [
         'medicineName' => 'Название лекарства',
         'instruction' => 'Инструкция по применению',
         'dateBegin' => 'Планируемая дата начала приема лекарства',
     ];
 
+    /** @var array */
     protected const SHOW_CONTENT = [
         'title' => 'Просмотр назначения',
         'h2' => 'Просмотр назначения',
@@ -44,7 +49,6 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
         'instruction' => PatientMedicineTemplate::COMMON_CONTENT['instruction'],
         'inclusionTime' => PrescriptionTestingTemplate::FORM_SHOW_CONTENT['inclusionTime'],
     ];
-
 
     /**
      * AddPatientPrescriptionTemplate constructor.
@@ -67,4 +71,25 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
         );
     }
 
+    /**
+     * @param FilterService|null $filterService
+     * @return AppTemplateBuilder
+     */
+    public function new(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::new($filterService);
+        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     * @return AppTemplateBuilder
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show($entity);
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
+        return $this;
+    }
 }

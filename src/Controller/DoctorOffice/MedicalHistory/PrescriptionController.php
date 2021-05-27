@@ -3,11 +3,10 @@
 namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
-use App\Controller\DoctorOffice\MedicalHistoryController;
-use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
+use App\Repository\MedicalHistoryRepository;
 use App\Services\DataTable\DataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionAppointmentDataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionMedicineDataTableService;
@@ -23,6 +22,7 @@ use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
 use App\Services\TemplateItems\ShowTemplateItem;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Omines\DataTablesBundle\DataTable;
 use ReflectionClass;
@@ -118,27 +118,30 @@ class PrescriptionController extends DoctorOfficeAbstractController
      *
      * @param Patient $patient
      * @param DoctorOfficePrescriptionService $prescriptionCreatorService
+     * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return Response
      * @throws Exception
      */
     public function new(
         Patient $patient,
-        DoctorOfficePrescriptionService $prescriptionCreatorService
+        DoctorOfficePrescriptionService $prescriptionCreatorService,
+        MedicalHistoryRepository $medicalHistoryRepository
     ): Response
     {
         $this->templateService->new();
-        $entityManager = $this->getDoctrine()->getManager();
+        if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
+            return $this->redirectToMedicalHistory($patient);
+        }
         $prescriptionCreatorService->execute(
             [
-                PrescriptionCreatorService::MEDICAL_HISTORY_OPTION =>
-                    $entityManager->getRepository(MedicalHistory::class)->getCurrentMedicalHistory($patient),
+                PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
                 PrescriptionCreatorService::STAFF_OPTION => $this->getStaff($patient),
             ]
         );
+        $this->setLogCreate($prescriptionCreatorService->getEntity());
         if (!$this->flush()) {
             $this->redirectToMedicalHistory($patient);
         }
-        $this->setLogCreate($prescriptionCreatorService->getEntity());
         return $this->redirectToRoute(
             'add_prescription_show', [
                 'patient' => $patient->getId(),
@@ -163,6 +166,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @param PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService
      * @return Response
      * @throws ReflectionException
+     * @throws Exception
      */
     public function show(
         Patient $patient,
@@ -174,12 +178,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
     ): Response
     {
         if ($prescription->getIsCompleted()) {
-            return $this->redirectToRoute(
-                MedicalHistoryController::DOCTOR_MEDICAL_HISTORY_ROUTE,
-                [
-                    'id' => $prescription->getMedicalHistory()->getPatient()->getId()
-                ]
-            );
+            return $this->redirectToMedicalHistory($patient);
         }
         $this->templateService->show($patient);
         $prescriptionTestingTable = $this->generatePrescriptionTestingDataTable(
@@ -266,23 +265,21 @@ class PrescriptionController extends DoctorOfficeAbstractController
      *     requirements={"patient"="\d+", "prescription"="\d+"}
      * )
      * @param Prescription $prescription
+     * @param MedicalRecordCreatorService $medicalRecordCreatorService
      * @return RedirectResponse
+     * @throws NonUniqueResultException
      * @throws Exception
      */
     public function completePrescription(
-        Prescription $prescription
+        Prescription $prescription,
+        MedicalRecordCreatorService $medicalRecordCreatorService
     ): RedirectResponse
     {
         if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription) && !$prescription->getIsCompleted()) {
             $entityManager = $this->getDoctrine()->getManager();
             (new PrescriptionEditorService($entityManager, $prescription))->before()->completePrescription()->after(
                 [
-                    PrescriptionEditorService::MEDICAL_RECORD_OPTION_NAME =>
-                        (new MedicalRecordCreatorService($entityManager))->execute(
-                            [
-                                MedicalRecordCreatorService::MEDICAL_HISTORY_OPTION_NAME => $prescription->getMedicalHistory(),
-                            ]
-                        )->getEntity()
+                    PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $medicalRecordCreatorService
                 ]
             );
             foreach ($prescription->getPrescriptionTestings() as $prescriptionTesting) {
@@ -304,7 +301,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
                 );
                 $entityManager->flush();
             }
-            foreach ($prescription->getPrescriptionAppointments() as $prescriptionAppointment){
+            foreach ($prescription->getPrescriptionAppointments() as $prescriptionAppointment) {
                 $notificationServiceBuilder = $this->notificationServiceBuilder
                     ->makeDoctorAppointmentNotification(
                         new NotificationData(
@@ -346,6 +343,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
+        $this->templateService
+            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionTestingDataTableService,
@@ -374,6 +373,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
+        $this->templateService
+            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionAppointmentDataTableService,
@@ -402,6 +403,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
+        $this->templateService
+            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionMedicineDataTableService,
@@ -422,8 +425,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @param Prescription $prescription
      * @param string $entityClassName
      * @param string|null $editRouteName
-     * @param string|null $deleteRouteName
-     * @param string|null $showRouteName
      * @return mixed
      * @throws ReflectionException
      */

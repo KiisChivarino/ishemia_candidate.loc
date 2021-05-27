@@ -2,8 +2,8 @@
 
 namespace App\Services\EntityActions\Creator;
 
+use App\Entity\MedicalHistory;
 use App\Entity\PatientTesting;
-use App\Entity\Prescription;
 use App\Services\EntityActions\Core\AbstractCreatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,7 +15,7 @@ use Exception;
 abstract class PatientTestingCreatorService extends AbstractCreatorService
 {
     /** @var string Name of Prescription option */
-    public const PRESCRIPTION_OPTION = 'prescription';
+    public const MEDICAL_HISTORY_OPTION = 'medicalHistory';
 
     /**
      * PatientTestingCreatorService constructor.
@@ -31,14 +31,16 @@ abstract class PatientTestingCreatorService extends AbstractCreatorService
 
     protected function prepare(): void
     {
+        /** @var PatientTesting $patientTesting */
         $patientTesting = $this->getEntity();
         $patientTesting
+            ->setHasResult(false)
             ->setIsProcessedByStaff(false)
-            ->setMedicalHistory($this->options[self::PRESCRIPTION_OPTION]->getMedicalHistory());
+            ->setMedicalHistory($this->options[self::MEDICAL_HISTORY_OPTION]);
     }
 
     protected function configureOptions(): void
     {
-        $this->addOptionCheck(Prescription::class, self::PRESCRIPTION_OPTION);
+        $this->addOptionCheck(MedicalHistory::class, self::MEDICAL_HISTORY_OPTION);
     }
 }

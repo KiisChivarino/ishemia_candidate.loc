@@ -7,6 +7,7 @@ namespace App\Form\PrescriptionTestingType;
 use App\Controller\AppAbstractController;
 use App\Entity\PrescriptionTesting;
 use App\Services\TemplateItems\FormTemplateItem;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;

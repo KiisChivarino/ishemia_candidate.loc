@@ -55,7 +55,7 @@ class PrescriptionMedicineController extends AdminAbstractController
     }
 
     /**
-     * PrescriptionMedicineType list
+     * PrescriptionMedicine list
      * @Route("/prescription_medicine", name="prescription_medicine_list", methods={"GET","POST"})
      *
      * @param Request $request
@@ -96,6 +96,7 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
      * @return Response
      * @throws ReflectionException
+     * @throws Exception
      */
     public function new(
         Request $request,
@@ -104,56 +105,37 @@ class PrescriptionMedicineController extends AdminAbstractController
         PatientMedicineCreatorService $patientMedicineCreatorService
     ): Response
     {
-        $patientMedicine = $patientMedicineCreatorService->execute(
+        $patientMedicine = $patientMedicineCreatorService->execute()->getEntity();
+        $prescriptionMedicine = $prescriptionMedicineCreatorService->before(
             [
                 PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
+                PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
             ]
         )->getEntity();
-
-        $prescriptionMedicineCreatorService->before([
-            PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
-            PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
-        ]);
-
         $this->templateService->setRedirectRouteParameters(
             [
-                'prescription' => $prescription,
-                'prescriptionMedicine' => $prescriptionMedicineCreatorService->getEntity()
+                'prescription' => $prescription->getId(),
+                'prescriptionMedicine' => $prescriptionMedicine,
             ]
         );
-
         return $this->responseNewMultiFormWithActions(
             $request,
             [
                 new CreatorEntityActionsBuilder(
                     $prescriptionMedicineCreatorService,
-                    [
-                        PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
-                    ],
-                    function (PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService) use (
-                        $patientMedicine,
-                        $prescription,
-                        $patientMedicineCreatorService
-                    ): array {
-                        return [
-                            PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine,
-                        ];
+                    [],
+                    function () use ($patientMedicine): array {
+                        return
+                            [
+                                PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine,
+                            ];
                     }
                 )
             ],
             [
-                new FormData(
-                    PrescriptionMedicineType::class,
-                    $prescriptionMedicineCreatorService->getEntity()
-                ),
-                new FormData(
-                    PrescriptionMedicineStaffType::class,
-                    $prescriptionMedicineCreatorService->getEntity()
-                ),
-                new FormData(
-                    PatientMedicineType::class,
-                    $patientMedicineCreatorService->getEntity()
-                ),
+                new FormData(PrescriptionMedicineType::class, $prescriptionMedicine),
+                new FormData(PrescriptionMedicineStaffType::class, $prescriptionMedicine),
+                new FormData(PatientMedicineType::class, $patientMedicine),
             ]
         );
     }
@@ -208,11 +190,10 @@ class PrescriptionMedicineController extends AdminAbstractController
 
         $this->templateService->setRedirectRouteParameters(
             [
-                'prescription' => $prescriptionMedicine->getPrescription(),
-                'prescriptionMedicine' => $prescriptionMedicine
+                'prescription' => $prescriptionMedicine->getPrescription()->getId(),
+                'prescriptionMedicine' => $prescriptionMedicine->getId()
             ]
         );
-
         return $this->responseEditMultiForm(
             $request,
             $prescriptionMedicine,

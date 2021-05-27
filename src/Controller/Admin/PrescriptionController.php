@@ -7,8 +7,8 @@ use App\Form\Admin\Prescription\PrescriptionEditType;
 use App\Form\Admin\PrescriptionType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
-use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
-use App\Services\EntityActions\Builder\EditorEntityActionsBuilder;
+use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\EntityActions\Editor\PrescriptionEditorService;
@@ -97,19 +97,16 @@ class PrescriptionController extends AdminAbstractController
         Request $request
     ): Response
     {
-        $prescriptionCreatorService = new PrescriptionCreatorService($this->getDoctrine()->getManager());
+        if (!$medicalHistory = $this->getMedicalHistoryByParameter($request)) {
+            return $this->redirectToRoute('prescription_list');
+        }
         return $this->responseNewWithActions(
             $request,
             new CreatorEntityActionsBuilder(
-                $prescriptionCreatorService,
+                new PrescriptionCreatorService($this->getDoctrine()->getManager()),
                 [
-                    PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $this->getMedicalHistoryByParameter($request),
-                ]//,
-//                function (PrescriptionCreatorService $prescriptionCreatorService): array {
-//                    return [
-//                        PrescriptionCreatorService::STAFF_OPTION => $prescriptionCreatorService->getEntity()->getStaff(),
-//                    ];
-//                }
+                    PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
+                ]
             ),
             new FormData(PrescriptionType::class)
         );
@@ -163,12 +160,14 @@ class PrescriptionController extends AdminAbstractController
      * @param Request $request
      * @param Prescription $prescription
      *
+     * @param MedicalRecordCreatorService $medicalRecordCreator
      * @return Response
      * @throws Exception
      */
     public function edit(
         Request $request,
-        Prescription $prescription
+        Prescription $prescription,
+        MedicalRecordCreatorService $medicalRecordCreator
     ): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -179,16 +178,10 @@ class PrescriptionController extends AdminAbstractController
                 new EditorEntityActionsBuilder(
                     $prescriptionEditorService,
                     [],
-                    function (PrescriptionEditorService $prescriptionEditorService) use ($entityManager): array {
+                    function () use ($medicalRecordCreator): array {
                         return
                             [
-                                PrescriptionEditorService::MEDICAL_RECORD_OPTION_NAME =>
-                                    (new MedicalRecordCreatorService($entityManager))->execute(
-                                        [
-                                            MedicalRecordCreatorService::MEDICAL_HISTORY_OPTION_NAME =>
-                                                $prescriptionEditorService->getEntity()->getMedicalHistory(),
-                                        ]
-                                    )->getEntity()
+                                PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $medicalRecordCreator,
                             ];
                     }
                 ),

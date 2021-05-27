@@ -3,6 +3,7 @@ import './select2entity';
 import '../css/select2.min.css'
 import './hospitalByCity';
 import '../css/doctorOffice.css';
+import './datatables/initDoctorOfficeDatatables';
 import './datatables/initDefaultDatatables';
 import './fileUpload';
 import './app';
@@ -101,7 +102,7 @@ $(document).ready(function () {
 // Функция уменьшающая количество уведомлений в меню на 1 для СМС пациента
 function changeMenuPatientSmsCount() {
     let patientSMSCountEl = $('.patientSMSCount');
-    let currentMessagesCount = parseInt($('.patientSMSCount').html());
+    let currentMessagesCount = parseInt(patientSMSCountEl.html());
     if (currentMessagesCount > 1) {
         patientSMSCountEl.html(currentMessagesCount - 1);
     } else if (currentMessagesCount === 1) {

@@ -64,7 +64,7 @@ class PatientTesting
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientTestings")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $medicalHistory;
 

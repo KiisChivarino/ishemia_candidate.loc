@@ -8,6 +8,7 @@ use App\Repository\MedicalHistoryRepository;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\Template\TemplateFilter;
+use App\Services\TemplateBuilders\Admin\MedicalRecordTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
@@ -15,6 +16,7 @@ use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
+use App\Services\TemplateBuilders\Admin\MedicalHistoryTemplate;
 
 /**
  * Class PatientAppointmentTemplate
@@ -25,7 +27,7 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common content for analysis templates */
     public const COMMON_CONTENT = [
-        'medicalRecord' => 'Запись в историю',
+        'medicalRecord' => MedicalRecordTemplate::ENTITY_CONTENT['entity'],
         'appointmentTime' => 'Дата приема',
         'inclusion_time' => 'Дата и время включения в назначение',
         'isConfirmed' => 'Подтверждено',
@@ -50,7 +52,7 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
         'complaintsComment' => 'Комментарий к жалобам',
         'objectiveStatus' => 'Объективный статус',
         'therapy' => 'Терапия',
-        'medicalHistory' => 'История болезни',
+        'medicalHistory' => MedicalHistoryTemplate::ENTITY_CONTENT['entity'],
         'plannedTimeDateLabel' => 'Дата приема',
         'plannedTimeTimeLabel' => 'Время приема'
     ];
@@ -152,8 +154,6 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
             );
         return $this;
     }
-
-
     /**
      * @param object|null $entity
      * @return $this|AppTemplateBuilder

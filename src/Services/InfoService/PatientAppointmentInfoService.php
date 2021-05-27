@@ -5,7 +5,6 @@ namespace App\Services\InfoService;
 use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
 use App\Repository\PrescriptionAppointmentRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class PatientAppointmentInfoService
@@ -15,15 +14,6 @@ class PatientAppointmentInfoService
 {
     /** @var string Format of patient appointment time */
     public const APPOINTMENT_TIME_FORMAT = 'd.m.Y';
-
-    /**
-     * PatientAppointmentInfoService constructor.
-     * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
 
     /**
      * Get patient appointment info string
@@ -59,6 +49,7 @@ class PatientAppointmentInfoService
     }
 
     /**
+     * Checks count of appointments for prescription and returns true if count is equal to 0
      * @param Prescription $prescription
      * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
      * @return bool

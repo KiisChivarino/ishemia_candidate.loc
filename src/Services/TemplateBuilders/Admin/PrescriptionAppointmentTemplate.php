@@ -21,7 +21,6 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
 {
-
     /** @var string[] Common content for District templates */
     public const COMMON_CONTENT = [
         'prescription' => 'Назначение',

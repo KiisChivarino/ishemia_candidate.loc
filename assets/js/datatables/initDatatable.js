@@ -11,7 +11,7 @@ export function initCustomDataTables(datatableElement, searching = true, paging 
             paging: paging,
             drawCallback: function (settings) {
                 this.api().rows({page: 'current'}).column(0, {
-                    search: 'removed',
+                    search: 'applied',
                     order: 'applied'
                 }).nodes().each(function (cell, i) {
                     cell.innerHTML = settings._iDisplayStart + i + 1;

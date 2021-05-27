@@ -8,14 +8,16 @@ use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
 use App\Form\PatientTesting\PatientTestingRequiredType;
 use App\Form\PrescriptionTestingType;
-use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
-use App\Services\EntityActions\Creator\DoctorOfficePrescriptionTestingService;
+use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Creator\DoctorOfficePrescriptionTestingCreatorService;
+use App\Services\EntityActions\Creator\PatientTestingCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientTestingTemplate;
 use Exception;
+use ReflectionException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -61,29 +63,30 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
      * @param Request $request
      * @param Prescription $prescription
      * @param Patient $patient
-     * @param DoctorOfficePrescriptionTestingService $prescriptionTestingCreatorService
+     * @param DoctorOfficePrescriptionTestingCreatorService $prescriptionTestingCreatorService
      * @param SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
      * @return Response
-     * @throws \ReflectionException
+     * @throws ReflectionException
+     * @throws Exception
      */
     public function new(
         Request $request,
         Prescription $prescription,
         Patient $patient,
-        DoctorOfficePrescriptionTestingService $prescriptionTestingCreatorService,
+        DoctorOfficePrescriptionTestingCreatorService $prescriptionTestingCreatorService,
         SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
     ): Response
     {
         $patientTesting = $specialPatientTestingCreatorService->execute(
-        [
-            PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription
-        ])->getEntity();
+            [
+                PatientTestingCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
+            ]
+        )->getEntity();
 
         $prescriptionTestingCreatorService->before([
             PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
             PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting
         ]);
-
         $this->templateService->setRedirectRoute(
             'add_prescription_show',
             [
@@ -91,27 +94,24 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
                 'prescription' => $prescription
             ]
         );
-
         return $this->responseNewMultiFormWithActions(
             $request,
             [
-            new CreatorEntityActionsBuilder(
-                $prescriptionTestingCreatorService,
-                [
-                    PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
-                ],
-                function (PrescriptionTestingCreatorService $prescriptionTestingCreatorService) use (
-                    $patientTesting,
-                    $prescription,
-                    $specialPatientTestingCreatorService,
-                    $patient
-                ): array {
-                    return [
-                        PrescriptionTestingCreatorService::STAFF_OPTION => $this->getStaff($patient),
-                        PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting
-                    ];
-                }
-            )
+                new CreatorEntityActionsBuilder(
+                    $prescriptionTestingCreatorService,
+                    [
+                        PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
+                    ],
+                    function () use (
+                        $patientTesting,
+                        $patient
+                    ): array {
+                        return [
+                            DoctorOfficePrescriptionTestingCreatorService::STAFF_OPTION => $this->getStaff($patient),
+                            PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting
+                        ];
+                    }
+                )
             ],
             [
                 new FormData(
@@ -119,6 +119,47 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
                     $prescriptionTestingCreatorService->getEntity()
                 ),
                 new FormData(PatientTestingRequiredType::class, $patientTesting),
+            ]
+        );
+    }
+
+    /**
+     * Edit prescription testing
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/edit/",
+     *     name="edit_prescription_testing_by_doctor",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"})
+     *     )
+     * @param Request $request
+     * @param PrescriptionTesting $prescriptionTesting
+     * @return Response
+     * @throws Exception
+     */
+    public function edit(
+        Request $request,
+        PrescriptionTesting $prescriptionTesting
+    ): Response
+    {
+        $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $prescriptionTesting->getPrescription()->getMedicalHistory()->getPatient(),
+                'prescription' => $prescriptionTesting->getPrescription()
+            ]
+        );
+        return $this->responseEditMultiForm(
+            $request,
+            $prescriptionTesting,
+            [
+                new FormData(
+                    PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
+                    $prescriptionTesting
+                ),
+                new FormData(
+                    PatientTestingRequiredType::class,
+                    $prescriptionTesting->getPatientTesting()
+                ),
             ]
         );
     }
@@ -153,48 +194,6 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
             ]
         );
     }
-
-    /**
-     * Edit prescription appointment
-     * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/edit/",
-     *     name="edit_prescription_testing_by_doctor",
-     *     methods={"GET","POST"}
-     *     )
-     * @param Request $request
-     * @param PrescriptionTesting $prescriptionTesting
-     * @return Response
-     * @throws \Exception
-     */
-    public function edit(
-        Request $request,
-        PrescriptionTesting $prescriptionTesting
-    ): Response
-    {
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $prescriptionTesting->getPrescription()->getMedicalHistory()->getPatient(),
-                'prescription' => $prescriptionTesting->getPrescription()
-            ]
-        );
-
-        return $this->responseEditMultiForm(
-            $request,
-            $prescriptionTesting,
-            [
-                new FormData(
-                    PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
-                    $prescriptionTesting
-                ),
-                new FormData(
-                    PatientTestingRequiredType::class,
-                    $prescriptionTesting->getPatientTesting()
-                ),
-            ]
-        );
-    }
-
 
     /**
      * Delete prescription testing

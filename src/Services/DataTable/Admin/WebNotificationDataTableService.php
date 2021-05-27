@@ -57,7 +57,6 @@ class WebNotificationDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('isRead'),
                 ]
             );
-
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

@@ -2,6 +2,7 @@
 
 namespace App\Services\EntityActions\Creator;
 
+use App\Entity\PrescriptionMedicine;
 use App\Entity\Staff;
 use Exception;
 
@@ -18,10 +19,9 @@ class DoctorOfficePrescriptionMedicineCreatorService extends PrescriptionMedicin
     protected function prepare(): void
     {
         parent::prepare();
-        /** Executes without form */
-        if (!$this->getEntity()->getStaff()) {
-            $this->getEntity()->setStaff($this->options[self::STAFF_OPTION]);
-        }
+        /** @var PrescriptionMedicine $prescriptionMedicine */
+        $prescriptionMedicine = $this->getEntity();
+        $prescriptionMedicine->setStaff($this->options[self::STAFF_OPTION]);
     }
 
     /**

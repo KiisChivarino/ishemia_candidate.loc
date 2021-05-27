@@ -9,7 +9,7 @@ use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
-use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionAppointmentCreatorService;
@@ -103,7 +103,6 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
             ]
         )->getEntity();
-
         $this->templateService->setRedirectRoute(
             'add_prescription_show',
             [
@@ -111,7 +110,6 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 'prescription' => $prescription
             ]
         );
-
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -129,37 +127,6 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
             [
                 new FormData(PrescriptionAppointmentPlannedDateType::class, $prescriptionAppointment),
                 new FormData(PatientAppointmentType::class, $patientAppointment),
-            ]
-        );
-    }
-
-    /**
-     * Show prescription testing
-     * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/show/",
-     *     name="show_prescription_appointment_by_doctor",
-     *     )
-     * @param PrescriptionAppointment $prescriptionAppointment
-     * @return Response
-     * @throws Exception
-     */
-    public function show(
-        PrescriptionAppointment $prescriptionAppointment
-    ): Response
-    {
-        return $this->responseShow(
-            self::TEMPLATE_PATH,
-            $prescriptionAppointment, [
-                'staffTitle' =>
-                    AuthUserInfoService::getFIO($prescriptionAppointment->getStaff()->getAuthUser()),
-                'backRouteName' => 'add_prescription_show',
-                'editRouteName' => 'edit_prescription_testing_by_doctor',
-                'deleteRouteName' => 'delete_prescription_testing_by_doctor',
-                'routParam' => [
-                    'patient' => $prescriptionAppointment->getPatientAppointment()->getMedicalHistory()->getPatient()->getId(),
-                    'prescription' => $prescriptionAppointment->getPrescription()->getId(),
-                    'prescriptionTesting' => $prescriptionAppointment->getId()
-                ]
             ]
         );
     }
@@ -201,6 +168,37 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
     }
 
     /**
+     * Show prescription testing
+     * @Route(
+     *     "/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/show/",
+     *     name="show_prescription_appointment_by_doctor",
+     *     )
+     * @param PrescriptionAppointment $prescriptionAppointment
+     * @return Response
+     * @throws Exception
+     */
+    public function show(
+        PrescriptionAppointment $prescriptionAppointment
+    ): Response
+    {
+        return $this->responseShow(
+            self::TEMPLATE_PATH,
+            $prescriptionAppointment, [
+                'staffTitle' =>
+                    AuthUserInfoService::getFIO($prescriptionAppointment->getStaff()->getAuthUser()),
+                'backRouteName' => 'add_prescription_show',
+                'editRouteName' => 'edit_prescription_testing_by_doctor',
+                'deleteRouteName' => 'delete_prescription_testing_by_doctor',
+                'routParam' => [
+                    'patient' => $prescriptionAppointment->getPatientAppointment()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $prescriptionAppointment->getPrescription()->getId(),
+                    'prescriptionTesting' => $prescriptionAppointment->getId()
+                ]
+            ]
+        );
+    }
+
+    /**
      * Delete prescription appointment
      * @Route(
      *     "/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/delete",
@@ -231,4 +229,5 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
         );
         return $this->responseDelete($request, $prescriptionAppointment);
     }
+
 }

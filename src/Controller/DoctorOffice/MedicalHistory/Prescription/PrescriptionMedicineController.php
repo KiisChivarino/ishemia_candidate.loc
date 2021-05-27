@@ -7,12 +7,13 @@ use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Form\PatientMedicineType\PatientMedicineType;
-use App\Form\PrescriptionMedicineType\PrescriptionMedicineType;
 use App\Services\EntityActions\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionMedicineCreatorService;
 use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Form\PrescriptionMedicineType\PrescriptionMedicineType;
+use App\Form\PrescriptionMedicineType\PrescriptionMedicineTypeEnabled;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientMedicineTemplate;
 use Exception;
@@ -68,6 +69,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
      * @return Response
      * @throws ReflectionException
+     * @throws Exception
      */
     public function new(
         Request $request,
@@ -77,17 +79,13 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
         PatientMedicineCreatorService $patientMedicineCreatorService
     ): Response
     {
-        $patientMedicine = $patientMedicineCreatorService->execute(
+        $patientMedicine = $patientMedicineCreatorService->execute()->getEntity();
+        $prescriptionMedicineCreatorService->before(
             [
                 PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
+                PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
             ]
-        )->getEntity();
-
-        $prescriptionMedicineCreatorService->before([
-            PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
-            PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
-        ]);
-
+        );
         $this->templateService->setRedirectRoute(
             'add_prescription_show',
             [
@@ -95,21 +93,13 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                 'prescription' => $prescription
             ]
         );
-
         return $this->responseNewMultiFormWithActions(
             $request,
             [
                 new CreatorEntityActionsBuilder(
                     $prescriptionMedicineCreatorService,
-                    [
-                        PrescriptionMedicineCreatorService::PRESCRIPTION_OPTION => $prescription,
-                    ],
-                    function (PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService) use (
-                        $patientMedicine,
-                        $prescription,
-                        $patientMedicineCreatorService,
-                        $patient
-                    ): array {
+                    [],
+                    function () use ($patientMedicine, $patient): array {
                         return [
                             PrescriptionMedicineCreatorService::STAFF_OPTION => $this->getStaff($patient),
                             PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine,
@@ -118,14 +108,8 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                 )
             ],
             [
-                new FormData(
-                    PrescriptionMedicineType::class,
-                    $prescriptionMedicineCreatorService->getEntity()
-                ),
-                new FormData(
-                    PatientMedicineType::class,
-                    $patientMedicineCreatorService->getEntity()
-                ),
+                new FormData(PrescriptionMedicineType::class, $prescriptionMedicineCreatorService->getEntity()),
+                new FormData(PatientMedicineType::class, $patientMedicine),
             ]
         );
     }
@@ -192,6 +176,10 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
             [
                 new FormData(
                     PrescriptionMedicineType::class,
+                    $prescriptionMedicine
+                ),
+                new FormData(
+                    PrescriptionMedicineTypeEnabled::class,
                     $prescriptionMedicine
                 ),
                 new FormData(

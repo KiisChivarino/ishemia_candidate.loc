@@ -42,7 +42,7 @@ class PrescriptionEditType extends AbstractType
             function (FormEvent $event) use ($templateItem) {
                 /** @var Prescription $prescription */
                 $prescription = $event->getData();
-                if ((new PrescriptionInfoService())->countChildren($prescription)) {
+                if (PrescriptionInfoService::countChildren($prescription)) {
                     $form = $event->getForm();
                     $form->add(
                         'isCompleted', CheckboxType::class, [

@@ -50,7 +50,8 @@ class NotificationTemplate extends AdminTemplateBuilder
 
     public const FILTER_CONTENT = [
         'channelTypeFilter' => 'Канал доставки',
-        'hospitalFilter' => 'Больница'
+        'hospitalFilter' => 'Больница',
+        'patientFilter' => 'Пациент',
     ];
 
     /** @var string[] Common ENTITY CONTENT */

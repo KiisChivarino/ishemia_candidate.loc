@@ -2,6 +2,7 @@
 
 namespace App\Services\EntityActions\Core;
 
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -20,7 +21,7 @@ abstract class AbstractEditorService extends AbstractEntityActionsService
     public function __construct(EntityManagerInterface $entityManager, $entity)
     {
         parent::__construct($entityManager);
-        $this->setEntityClass(get_class($entity));
+        $this->setEntityClass(ClassUtils::getClass($entity));
         $this->setEntity($entity);
     }
 }

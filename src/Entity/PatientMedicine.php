@@ -47,7 +47,6 @@ class PatientMedicine
 
     /**
      * @ORM\OneToOne(targetEntity=PrescriptionMedicine::class, mappedBy="patientMedicine", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $prescriptionMedicine;
 
@@ -150,7 +149,6 @@ class PatientMedicine
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 
@@ -162,7 +160,6 @@ class PatientMedicine
     public function setPrescriptionMedicine(PrescriptionMedicine $prescriptionMedicine): self
     {
         $this->prescriptionMedicine = $prescriptionMedicine;
-
         return $this;
     }
 }

@@ -26,7 +26,7 @@ class MedicalRecord
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="medicalRecords")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $medicalHistory;
 
@@ -61,7 +61,7 @@ class MedicalRecord
     private $prescriptions;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalRecord", orphanRemoval=true,cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalRecord", orphanRemoval=true, cascade={"persist"})
      */
     private $patientNotifications;
 

@@ -2,27 +2,26 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\ClinicalDiagnosis;
 use App\Form\AuthUser\AuthUserEmailType;
 use App\Form\AuthUser\AuthUserEnabledType;
 use App\Form\AuthUser\AuthUserPasswordType;
 use App\Form\AuthUser\AuthUserRequiredType;
-use App\Form\Admin\Patient\PatientClinicalDiagnosisTextType;
-use App\Form\Admin\Patient\PatientMKBCodeType;
-use App\Form\Admin\Patient\PatientOptionalType;
-use App\Form\Admin\Patient\PatientRequiredType;
+use App\Form\Patient\PatientClinicalDiagnosisTextType;
+use App\Form\Patient\PatientLocationRequiredType;
+use App\Form\Patient\PatientMKBCodeType;
+use App\Form\Patient\PatientOptionalType;
+use App\Form\Patient\PatientRequiredType;
 use App\Form\Admin\PatientAppointment\AppointmentTypeType;
 use App\Form\Admin\PatientAppointment\StaffType;
 use App\Repository\MedicalHistoryRepository;
-use App\Services\ControllerGetters\EntityActions;
-use App\Services\EntityActions\Creator\AuthUserCreatorService;
-use App\Services\EntityActions\Creator\MedicalHistoryCreatorService;
-use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
-use App\Services\EntityActions\Creator\PatientCreatorService;
+use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
+use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
 use App\Services\DataTable\Admin\PatientDataTableService;
 use App\Entity\Patient;
+use App\Services\EntityActions\Editor\AuthUserEditorService;
+use App\Services\EntityActions\Editor\PatientEditorService;
+use App\Services\EntityActions\Factory\ByAdminCreatingPatientServicesFactory;
 use App\Services\FilterService\FilterService;
-use App\Services\InfoService\AuthUserInfoService;
 use App\Services\InfoService\PatientInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PatientTemplate;
@@ -89,30 +88,27 @@ class PatientController extends AdminAbstractController
      * @Route("/new", name="patient_new", methods={"GET","POST"})
      *
      * @param Request $request
-     *
-     * @param AuthUserCreatorService $authUserCreatorService
-     * @param MedicalHistoryCreatorService $medicalHistoryCreatorService
-     * @param PatientAppointmentCreatorService $patientAppointmentCreatorService
-     * @param PatientCreatorService $patientCreator
+     * @param ByAdminCreatingPatientServicesFactory $patientCreatingFactory
      * @return Response
-     * @throws Exception
+     * @throws ReflectionException
      */
     public function new(
         Request $request,
-        AuthUserCreatorService $authUserCreatorService,
-        MedicalHistoryCreatorService $medicalHistoryCreatorService,
-        PatientAppointmentCreatorService $patientAppointmentCreatorService,
-        PatientCreatorService $patientCreator
+        ByAdminCreatingPatientServicesFactory $patientCreatingFactory
     ): Response
     {
-        $clinicalDiagnosis = new ClinicalDiagnosis();
-        $authUser = $authUserCreatorService->createAuthUser();
-        $patient = $patientCreator->createPatient();
-        $medicalHistory = $medicalHistoryCreatorService->createMedicalHistory()->setClinicalDiagnosis($clinicalDiagnosis);
-        $patientAppointment = $patientAppointmentCreatorService->createPatientAppointment($medicalHistory);
-        return $this->responseNewMultiForm(
+        $authUser = $patientCreatingFactory->getAuthUser();
+        $patient = $patientCreatingFactory->getPatient();
+        $clinicalDiagnosis = $patientCreatingFactory->getClinicalDiagnosis();
+        $patientAppointment = $patientCreatingFactory->getPatientAppointment();
+        return $this->responseNewMultiFormWithActions(
             $request,
-            $patient,
+            [
+                new CreatorEntityActionsBuilder($patientCreatingFactory->getAuthUserCreator()),
+                new CreatorEntityActionsBuilder($patientCreatingFactory->getPatientCreator()),
+                new CreatorEntityActionsBuilder($patientCreatingFactory->getMedicalHistoryCreator()),
+                new CreatorEntityActionsBuilder($patientCreatingFactory->getPatientAppointmentCreator()),
+            ],
             [
                 new FormData(AuthUserRequiredType::class, $authUser),
                 new FormData(AuthUserEmailType::class, $authUser),
@@ -120,43 +116,19 @@ class PatientController extends AdminAbstractController
                 new FormData(
                     AuthUserPasswordType::class,
                     $authUser,
-                    [AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false]
+                    [
+                        AuthUserPasswordType::IS_PASSWORD_REQUIRED_OPTION_LABEL => false,
+                    ]
                 ),
                 new FormData(PatientRequiredType::class, $patient),
+                new FormData(PatientLocationRequiredType::class, $patient),
                 new FormData(PatientOptionalType::class, $patient),
                 new FormData(PatientClinicalDiagnosisTextType::class, $clinicalDiagnosis),
                 new FormData(PatientMKBCodeType::class, $clinicalDiagnosis),
                 new FormData(StaffType::class, $patientAppointment),
                 new FormData(AppointmentTypeType::class, $patientAppointment),
             ],
-            function (EntityActions $actions)
-            use (
-                $authUser,
-                $patient,
-                $medicalHistory,
-                $patientAppointment,
-                $patientCreator,
-                $authUserCreatorService,
-                $clinicalDiagnosis
-            ) {
-                $em = $actions->getEntityManager();
-                $em->getConnection()->beginTransaction();
-                try {
-                    $authUserCreatorService->persistNewPatientAuthUser($authUser);
-                    $em->flush();
-                    $patientCreator
-                        ->persistNewPatient(
-                            $patient, $authUser, $medicalHistory, $patientAppointment, $patientAppointment->getStaff()
-                        );
-                    $clinicalDiagnosis->setEnabled(true);
-                    $em->persist($clinicalDiagnosis);
-                    $em->flush();
-                    $em->getConnection()->commit();
-                } catch (Exception $e) {
-                    $em->getConnection()->rollBack();
-                    throw $e;
-                }
-            }
+            $patient
         );
     }
 
@@ -192,6 +164,7 @@ class PatientController extends AdminAbstractController
      * @param MedicalHistoryRepository $medicalHistoryRepository
      * @return Response
      * @throws ReflectionException
+     * @throws Exception
      */
     public function edit(
         Request $request,
@@ -199,13 +172,23 @@ class PatientController extends AdminAbstractController
         MedicalHistoryRepository $medicalHistoryRepository
     ): Response
     {
-        $medicalHistory = $medicalHistoryRepository->getCurrentMedicalHistory($patient);
+        if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
+            return $this->redirectToPatient($patient);
+        }
         $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
+        $entityManager = $this->getDoctrine()->getManager();
         $authUser = $patient->getAuthUser();
-        $oldPassword = $authUser->getPassword();
-        return $this->responseEditMultiForm(
+        return $this->responseEditMultiFormWithActions(
             $request,
-            $patient,
+            [
+                new EditorEntityActionsBuilder(new PatientEditorService($entityManager, $patient)),
+                new EditorEntityActionsBuilder(
+                    new AuthUserEditorService($entityManager, $authUser, $this->passwordEncoder),
+                    [
+                        AuthUserEditorService::OLD_PASSWORD_OPTION => $authUser->getPassword(),
+                    ]
+                ),
+            ],
             [
                 new FormData(AuthUserRequiredType::class, $authUser),
                 new FormData(AuthUserEmailType::class, $authUser),
@@ -215,11 +198,7 @@ class PatientController extends AdminAbstractController
                 new FormData(PatientOptionalType::class, $patient),
                 new FormData(PatientMKBCodeType::class, $clinicalDiagnosis),
                 new FormData(PatientClinicalDiagnosisTextType::class, $clinicalDiagnosis),
-            ],
-            function () use ($authUser, $oldPassword, $patient, $clinicalDiagnosis) {
-                AuthUserCreatorService::updatePassword($this->passwordEncoder, $authUser, $oldPassword);
-                $authUser->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
-            }
+            ]
         );
     }
 

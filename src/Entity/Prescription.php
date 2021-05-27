@@ -23,7 +23,7 @@ class Prescription
 
     /**
      * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="prescriptions")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $medicalHistory;
 

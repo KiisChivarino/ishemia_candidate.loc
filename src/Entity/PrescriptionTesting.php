@@ -21,7 +21,7 @@ class PrescriptionTesting
 
     /**
      * @ORM\ManyToOne(targetEntity=Prescription::class, inversedBy="prescriptionTestings")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $prescription;
 

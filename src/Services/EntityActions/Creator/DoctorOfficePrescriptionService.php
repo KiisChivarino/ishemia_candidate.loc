@@ -1,9 +1,8 @@
 <?php
 
-
 namespace App\Services\EntityActions\Creator;
 
-
+use App\Entity\Prescription;
 use App\Entity\Staff;
 use Exception;
 
@@ -19,10 +18,9 @@ class DoctorOfficePrescriptionService extends PrescriptionCreatorService
     protected function prepare(): void
     {
         parent::prepare();
-        /** Executes without form */
-        if (!$this->getEntity()->getStaff()) {
-            $this->getEntity()->setStaff($this->options[self::STAFF_OPTION]);
-        }
+        /** @var Prescription $prescription */
+        $prescription = $this->getEntity();
+        $prescription->setStaff($this->options[self::STAFF_OPTION]);
     }
 
     /**
@@ -34,5 +32,4 @@ class DoctorOfficePrescriptionService extends PrescriptionCreatorService
         parent::configureOptions();
         $this->addOptionCheck(Staff::class, self::STAFF_OPTION);
     }
-
 }

@@ -26,13 +26,14 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
 
     /**
      * Set redirect to "doctor_medical_history" when form controller successfully finishes work
-     * @param int $entityId
+     * @param Patient $patient
+     * @throws Exception
      */
-    protected function setRedirectMedicalHistoryRoute(int $entityId): void
+    protected function setRedirectMedicalHistoryRoute(Patient $patient): void
     {
         $this->templateService->setRedirectRoute(
             self::DOCTOR_MEDICAL_HISTORY_ROUTE,
-            [self::DOCTOR_MEDICAL_HISTORY_ROUTE_ID_PARAMETER => $entityId]
+            [self::DOCTOR_MEDICAL_HISTORY_ROUTE_ID_PARAMETER => $patient]
         );
     }
 
@@ -65,7 +66,8 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
     protected function redirectToMedicalHistory(Patient $patient): RedirectResponse
     {
         return $this->redirectToRoute(
-            'doctor_medical_history', [
+            MedicalHistoryController::DOCTOR_MEDICAL_HISTORY_ROUTE,
+            [
                 'id' => $patient->getId(),
             ]
         );

@@ -1,40 +1,26 @@
 <?php
 
-namespace App\Form\Admin\Patient;
+namespace App\Form\Patient;
 
 use App\Controller\AppAbstractController;
 use App\Entity\City;
 use App\Entity\Hospital;
 use App\Entity\Patient;
 use App\Services\TemplateItems\FormTemplateItem;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 /**
- * Class PatientType
- *
- * @package App\Form\Admin\Patient
+ * Class PatientLocationRequiredType
+ * form items for input hospital and city or other geographic fields for patient
+ * if doctor`s role is DOCTOR_HOSPITAL don`t add this form: add hospital and city of hospital doctor
+ * @package App\Form\Patient
  */
-class PatientRequiredType extends AbstractType
+class PatientLocationRequiredType extends AbstractType
 {
-    /** @var EntityManagerInterface $entityManager */
-    private $entityManager;
-
-    /**
-     * PatientType constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -45,17 +31,6 @@ class PatientRequiredType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add(
-                'dateBirth',
-                DateType::class,
-                [
-                    'label' => $templateItem->getContentValue('dateBirth'),
-                    'widget' => 'single_text',
-                    'format' => 'yyyy-MM-dd',
-                    'required' => true,
-                ]
-            )
-            ->add('address', null, ['label' => $templateItem->getContentValue('address')])
             ->add(
                 'city', Select2EntityType::class, [
                     'label' => $templateItem->getContentValue('city'),
@@ -91,16 +66,6 @@ class PatientRequiredType extends AbstractType
                     'remote_params' => ['city' => '0'],
                     'required' => true,
                 ]
-            )
-            ->add(
-                'heartAttackDate',
-                DateType::class,
-                [
-                    'label' => $templateItem->getContentValue('heartAttackDate'),
-                    'widget' => 'single_text',
-                    'format' => 'yyyy-MM-dd',
-                    'required' => true,
-                ]
             );
     }
 
@@ -110,7 +75,7 @@ class PatientRequiredType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['data_class' => Patient::class, 'isDoctorHospital' => null])
+            ->setDefaults(['data_class' => Patient::class,])
             ->setDefined(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE)
             ->setAllowedTypes(AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE, [FormTemplateItem::class]);
     }

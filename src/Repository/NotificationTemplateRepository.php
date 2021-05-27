@@ -36,7 +36,6 @@ class NotificationTemplateRepository extends AppRepository
             ->andWhere('nt.name = :name')
             ->setParameter('name', $name)
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getOneOrNullResult();
     }
 }

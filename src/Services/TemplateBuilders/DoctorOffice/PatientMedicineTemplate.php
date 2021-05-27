@@ -18,7 +18,6 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
 {
-
     /** @var string[] Common content for PatientTesting templates */
     public const COMMON_CONTENT = [
         'medicineName' => 'Название лекарства',
@@ -88,7 +87,6 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);
         return $this;
     }
-
 
     /**
      * @param object|null $entity

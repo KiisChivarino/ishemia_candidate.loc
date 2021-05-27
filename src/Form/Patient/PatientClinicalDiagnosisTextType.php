@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Admin\Patient;
+namespace App\Form\Patient;
 
 use App\Controller\AppAbstractController;
 use App\Entity\ClinicalDiagnosis;

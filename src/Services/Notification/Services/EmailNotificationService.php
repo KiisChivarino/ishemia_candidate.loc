@@ -70,7 +70,6 @@ class EmailNotificationService extends NotificationService
         $emailNotification->setChannelType(
             $this->em->getRepository(ChannelType::class)->findByName($this->channelType)
         );
-
         try {
             $this->channel
                 ->setPatient($this->notificationData->getPatientReceiver())

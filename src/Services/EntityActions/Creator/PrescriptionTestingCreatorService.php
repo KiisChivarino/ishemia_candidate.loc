@@ -19,11 +19,6 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
     /**
      * @const string
      */
-    public const STAFF_OPTION = 'staff';
-
-    /**
-     * @const string
-     */
     public const PRESCRIPTION_OPTION = 'prescription';
 
     /**

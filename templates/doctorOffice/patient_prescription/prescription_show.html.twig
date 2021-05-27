@@ -44,11 +44,11 @@
     </div>
     <div id="prescriptionInfo">
         <div id="prescriptionDate">
-            <b>{{ template.items.show.content.createdTime }}</b><br>
-            {{ prescription.createdTime ? prescription.createdTime|date('d.m.Y H:i') : '' }}
+            <div><strong>{{ template.items.show.content.createdTime }}</strong></div>
+            {{ prescription.createdTime ? prescription.createdTime|date('Y-m-d') : '' }}
         </div>
         <div id="prescriptionStaff">
-            <b>{{ template.items.show.content.doctor }}</b><br>
+            <div><strong>{{ template.items.show.content.doctor }}</strong></div>
             {{ fio(prescription.staff.AuthUser) }}
         </div>
     </div>
@@ -84,6 +84,7 @@
             }
         ) }}
     </div>
+
     <div class="buttons">
         <button class="button main-button"
                 onclick="location.href='{{ path(

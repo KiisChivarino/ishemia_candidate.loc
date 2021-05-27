@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\AuthUser;
+use App\Repository\UserRepository;
 use App\Services\InfoService\AuthUserInfoService;
 use LogicException;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,18 +20,17 @@ class SecurityController extends AbstractController
     /**
      * @Route("/login", name="app_login")
      * @param AuthenticationUtils $authenticationUtils
+     * @param UserRepository $userRepository
      * @return Response
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, UserRepository $userRepository): Response
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
         if ($this->getUser()) {
-            $roleTechName = AuthUserInfoService::getRoleNames(
-                $this->getDoctrine()->getManager()->getRepository(AuthUser::class)->getRoles($this->getUser()),
-                true);
+            $roleTechName = AuthUserInfoService::getRoleNames($userRepository->getRoles($this->getUser()), true);
             $roles = Yaml::parseFile('..//config/services/roles.yaml');
             foreach ($roles['parameters']['roles'] as $roleData) {
                 if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {
