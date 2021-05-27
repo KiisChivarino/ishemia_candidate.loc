@@ -201,7 +201,6 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
      *     "/prescriptionTesting/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/delete",
      *     name="delete_prescription_testing_by_doctor",
      *     methods={"DELETE"},
-     *     requirements={"id"="\d+"}
      *     )
      * @param Request $request
      * @param PrescriptionTesting $prescriptionTesting
@@ -220,8 +219,8 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         $this->templateService->setRedirectRoute(
             'add_prescription_show',
             [
-                'patient' => $patient->getId(),
-                'prescription' => $prescription->getId(),
+                'patient' => $patient,
+                'prescription' => $prescription
             ]
         );
 

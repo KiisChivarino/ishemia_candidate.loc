@@ -13,7 +13,6 @@ use App\Services\TemplateBuilders\Admin\PrescriptionTestingTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\ListTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
-use App\Services\TemplateItems\DeleteTemplateItem;
 
 /**
  * Class AddPatientPrescriptionTemplate
@@ -79,17 +78,6 @@ class AddPatientPrescriptionTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::new($filterService);
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
-        return $this;
-    }
-
-    /**
-     * @param object|null $entity
-     * @return AppTemplateBuilder
-     */
-    public function show(?object $entity = null): AppTemplateBuilder
-    {
-        parent::show($entity);
-        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
         return $this;
     }
 }

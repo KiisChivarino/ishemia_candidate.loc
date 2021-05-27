@@ -204,7 +204,6 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      *     "/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/delete",
      *     name="delete_prescription_appointment_by_doctor",
      *     methods={"DELETE"},
-     *     requirements={"id"="\d+"}
      *     )
      * @param Request $request
      * @param PrescriptionAppointment $prescriptionAppointment

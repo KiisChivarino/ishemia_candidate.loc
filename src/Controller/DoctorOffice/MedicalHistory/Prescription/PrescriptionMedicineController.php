@@ -196,7 +196,6 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/delete",
      *     name="delete_prescription_medicine_by_doctor",
      *     methods={"DELETE"},
-     *     requirements={"id"="\d+"}
      *     )
      * @param Request $request
      * @param PrescriptionMedicine $prescriptionMedicine
@@ -216,7 +215,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
             'add_prescription_show',
             [
                 'patient' => $patient->getId(),
-                'prescription' => $prescription->getId(),
+                'prescription' => $prescription->getId()
             ]
         );
         return $this->responseDelete($request, $prescriptionMedicine);
