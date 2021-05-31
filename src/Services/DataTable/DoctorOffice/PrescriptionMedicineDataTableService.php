@@ -46,7 +46,7 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
             ->add(
                 'startingMedicationDate', DateTimeColumn::class, [
                     'label' => $showTemplateItem->getContentValue('startingMedicationDate'),
-                    'format' => 'd.m.Y h:m',
+                    'format' => 'd.m.Y',
                     'searchable' => false
                 ]
             )
