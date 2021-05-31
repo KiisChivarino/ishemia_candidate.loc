@@ -45,7 +45,7 @@
     <div id="prescriptionInfo">
         <div id="prescriptionDate">
             <div><strong>{{ template.items.show.content.createdTime }}</strong></div>
-            {{ prescription.createdTime ? prescription.createdTime|date('Y-m-d') : '' }}
+            {{ prescription.createdTime ? prescription.createdTime|date('Y-m-d H:i') : '' }}
         </div>
         <div id="prescriptionStaff">
             <div><strong>{{ template.items.show.content.doctor }}</strong></div>

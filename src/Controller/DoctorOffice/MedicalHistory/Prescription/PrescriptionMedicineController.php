@@ -13,7 +13,6 @@ use App\Services\EntityActions\Creator\PatientMedicineCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionMedicineCreatorService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineType;
-use App\Form\PrescriptionMedicineType\PrescriptionMedicineTypeEnabled;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientMedicineTemplate;
 use Exception;
@@ -176,10 +175,6 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
             [
                 new FormData(
                     PrescriptionMedicineType::class,
-                    $prescriptionMedicine
-                ),
-                new FormData(
-                    PrescriptionMedicineTypeEnabled::class,
                     $prescriptionMedicine
                 ),
                 new FormData(
