@@ -17,6 +17,16 @@
                 ) }}';">
             Добавление обследования
         </button>
+        <button class="button main-button"
+                onclick="location.href='{{ path(
+                    'prescription_patient_medicine_new',
+                    {
+                        'patient': patient.id,
+                        'prescription' : prescription.id
+                    }
+                ) }}';">
+            Добавление лекарства
+        </button>
         {% if isAppointmentNotExists(prescription) %}
             <button class="button main-button"
                     onclick="location.href='{{ path(
@@ -29,16 +39,6 @@
                 Добавление приема
             </button>
         {% endif %}
-        <button class="button main-button"
-                onclick="location.href='{{ path(
-                    'prescription_patient_medicine_new',
-                    {
-                        'patient': patient.id,
-                        'prescription' : prescription.id
-                    }
-                ) }}';">
-            Добавление лекарства
-        </button>
     </div>
     <div>
     </div>
@@ -64,22 +64,22 @@
             }
         ) }}
 
-        <h3 class="labelSeparating">{{ template.items.show.content.PrescriptionAppointment }}</h3>
-        {{ include(
-            'show_table.html.twig',
-            {
-                'tableId': 'prescriptionAppointment',
-                'table' : prescriptionAppointmentTable,
-                'data_name': dataName
-            }
-        ) }}
-
         <h3 class="labelSeparating">{{ template.items.show.content.PrescriptionMedicine }}</h3>
         {{ include(
             'show_table.html.twig',
             {
                 'tableId': 'prescriptionMedicine',
                 'table' : prescriptionMedicineTable,
+                'data_name': dataName
+            }
+        ) }}
+
+        <h3 class="labelSeparating">{{ template.items.show.content.PrescriptionAppointment }}</h3>
+        {{ include(
+            'show_table.html.twig',
+            {
+                'tableId': 'prescriptionAppointment',
+                'table' : prescriptionAppointmentTable,
                 'data_name': dataName
             }
         ) }}
