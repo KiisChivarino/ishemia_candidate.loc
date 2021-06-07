@@ -13,7 +13,8 @@ class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common FORM_CONTENT */
     protected const FORM_CONTENT = [
-        "text" => "Текст сообщения"
+        "text" => "Текст сообщения",
+        'formButtonLabel' => 'Отправить',
     ];
 
     /** @var string[] Common EDIT_CONTENT */
