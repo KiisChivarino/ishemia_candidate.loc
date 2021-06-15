@@ -5,7 +5,6 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Entity\Prescription;
-use App\Entity\PrescriptionTesting;
 use App\Repository\MedicalHistoryRepository;
 use App\Services\DataTable\DataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionAppointmentDataTableService;
@@ -224,39 +223,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
     }
 
     /**
-     * Delete testing prescription
-     * @Route(
-     *     "patient/{patient}/prescription/{prescription}/prescription_testing/{prescriptionTesting}/delete",
-     *     name="prescription_testing_delete",
-     *     methods={"DELETE"},
-     *     requirements={"patient"="\d+", "prescription"="\d+"}
-     *     )
-     *
-     * @param Request $request
-     * @param PrescriptionTesting $prescriptionTesting
-     * @param Patient $patient
-     * @param Prescription $prescription
-     * @return Response
-     * @throws Exception
-     */
-    public function delete(
-        Request $request,
-        Patient $patient,
-        Prescription $prescription,
-        PrescriptionTesting $prescriptionTesting
-    ): Response
-    {
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $patient->getId(),
-                'prescription' => $prescription->getId()
-            ]
-        );
-        return $this->responseDelete($request, $prescriptionTesting);
-    }
-
-    /**
      * Sets prescription completed and redirects to medical history page
      * @Route(
      *     "patient/{patient}/prescription/{prescription}/complete",
@@ -343,8 +309,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
-        $this->templateService
-            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionTestingDataTableService,
@@ -373,8 +337,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
-        $this->templateService
-            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionAppointmentDataTableService,
@@ -403,8 +365,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): DataTable
     {
-        $this->templateService
-            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->setIsEnabled(false);
         return $this->generateSpecialPrescriptionDatatable(
             $request,
             $prescriptionMedicineDataTableService,
@@ -425,6 +385,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @param Prescription $prescription
      * @param string $entityClassName
      * @param string|null $editRouteName
+     * @param string|null $deleteRouteName
+     * @param string|null $showRouteName
      * @return mixed
      * @throws ReflectionException
      */

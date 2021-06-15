@@ -6,7 +6,7 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.instruction }}</span>
-        <p>{{ entity.patientMedicine.instruction
+        <p>{{ entity.patientMedicine.instruction|raw
             ?: template.items.show.content.empty }}</p>
     </li>
     <li>

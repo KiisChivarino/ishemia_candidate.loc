@@ -187,12 +187,12 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 'staffTitle' =>
                     AuthUserInfoService::getFIO($prescriptionAppointment->getStaff()->getAuthUser()),
                 'backRouteName' => 'add_prescription_show',
-                'editRouteName' => 'edit_prescription_testing_by_doctor',
-                'deleteRouteName' => 'delete_prescription_testing_by_doctor',
+                'editRouteName' => 'edit_prescription_appointment_by_doctor',
+                'deleteRouteName' => 'delete_prescription_appointment_by_doctor',
                 'routParam' => [
                     'patient' => $prescriptionAppointment->getPatientAppointment()->getMedicalHistory()->getPatient()->getId(),
                     'prescription' => $prescriptionAppointment->getPrescription()->getId(),
-                    'prescriptionTesting' => $prescriptionAppointment->getId()
+                    'prescriptionAppointment' => $prescriptionAppointment->getId()
                 ]
             ]
         );
