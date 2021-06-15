@@ -35,6 +35,12 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
         'title' => 'Добавление лекарства',
     ];
 
+    /** @var string[] Common NEW_CONTENT */
+    protected const SHOW_CONTENT = [
+        'h1' => 'Просмотр лекарства',
+        'title' => 'Просмотр лекарства',
+    ];
+
     /** @var string[] Common EDIT_CONTENT */
     protected const EDIT_CONTENT = [
         'h1' => 'Редактирование лекарства',
