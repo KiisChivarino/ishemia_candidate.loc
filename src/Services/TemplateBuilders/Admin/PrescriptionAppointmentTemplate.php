@@ -26,7 +26,7 @@ class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
         'prescription' => 'Назначение',
         'patientAppointment' => 'Прием',
         'staff' => StaffTemplate::ENTITY_CONTENT['entity'],
-        'plannedDateTime' => 'Дата и время приема по плану',
+        'plannedDateTime' => 'Дата приема по плану',
         'inclusionTime' => 'Дата и время включения назначения на прием в назначение',
         'confirmedByStaff' => 'Подтверждено врачом',
         'appointmentType' => 'Вид приёма'

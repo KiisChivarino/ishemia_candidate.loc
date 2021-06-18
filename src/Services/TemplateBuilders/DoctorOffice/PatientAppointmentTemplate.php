@@ -33,14 +33,13 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
         'isConfirmed' => 'Подтверждено',
         'staff' => 'Врач создавший назначение',
         'appointmentType' => 'Вид приема',
-        'plannedDateTime' => 'Дата и время приема'
+        'plannedDateTime' => 'Дата приема по плану'
     ];
 
     /** @var string[] Common LIST_CONTENT */
     protected const LIST_CONTENT = [
         'h1' => 'Приемы пациентов',
         'title' => 'Список приема пациентов',
-        'plannedDateTime' => 'Дата приема по плану',
     ];
 
     /** @var string[]  FORM_SHOW COMMON CONTENT */
