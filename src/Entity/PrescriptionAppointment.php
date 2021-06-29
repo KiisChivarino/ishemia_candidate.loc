@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\PrescriptionAppointmentRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PrescriptionAppointmentRepository::class)
  * @ORM\Table(options={"comment":"Назначение на прием"});
+ * @ORM\HasLifecycleCallbacks();
  */
 class PrescriptionAppointment
 {
@@ -216,5 +218,13 @@ class PrescriptionAppointment
     {
         $this->notificationConfirm = $notificationConfirm;
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function PrePersist(): void
+    {
+      $this->inclusionTime = new DateTime();
     }
 }

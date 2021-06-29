@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MedicalHistoryRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=MedicalHistoryRepository::class)
  * @ORM\Table(options={"comment":"История болезни"});
+ * @ORM\HasLifecycleCallbacks();
  */
 class MedicalHistory
 {
@@ -455,5 +457,13 @@ class MedicalHistory
     {
         $this->clinicalDiagnosis = $clinicalDiagnosis;
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function PrePersist(): void
+    {
+        $this->dateBegin = new DateTime();
     }
 }

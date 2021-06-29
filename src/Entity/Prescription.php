@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PrescriptionRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=PrescriptionRepository::class)
  * @ORM\Table(options={"comment":"Назначение"});
+ * @ORM\HasLifecycleCallbacks();
  */
 class Prescription
 {
@@ -387,5 +389,13 @@ class Prescription
         }
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function PrePersist(): void
+    {
+        $this->createdTime = new DateTime();
     }
 }

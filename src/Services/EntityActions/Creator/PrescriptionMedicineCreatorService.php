@@ -6,7 +6,6 @@ use App\Entity\PatientMedicine;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Services\EntityActions\Core\AbstractCreatorService;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -46,7 +45,6 @@ class PrescriptionMedicineCreatorService extends AbstractCreatorService
         /** @var PrescriptionMedicine $prescriptionMedicine */
         $prescriptionMedicine = $this->getEntity();
         $prescriptionMedicine
-            ->setInclusionTime(new DateTime())
             ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
             ->setPatientMedicine($this->options[self::PATIENT_MEDICINE_OPTION]);
     }

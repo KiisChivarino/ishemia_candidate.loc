@@ -6,7 +6,6 @@ use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use App\Services\EntityActions\Core\AbstractCreatorService;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -46,7 +45,6 @@ class PrescriptionAppointmentCreatorService extends AbstractCreatorService
         /** @var PrescriptionAppointment $prescriptionAppointment */
         $prescriptionAppointment = $this->getEntity();
         $prescriptionAppointment
-            ->setInclusionTime(new DateTime())
             ->setConfirmedByStaff(false)
             ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
             ->setPatientAppointment($this->options[self::PATIENT_APPOINTMENT_OPTION]);

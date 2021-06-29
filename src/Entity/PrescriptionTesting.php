@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\PrescriptionTestingRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PrescriptionTestingRepository::class)
  * @ORM\Table(options={"comment":"Назначение обследования"});
+ * @ORM\HasLifecycleCallbacks();
  */
 class PrescriptionTesting
 {
@@ -218,5 +220,13 @@ class PrescriptionTesting
     {
         $this->confirmedByStaff = $confirmedByStaff;
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function PrePersist(): void
+    {
+        $this->inclusionTime = new DateTime();
     }
 }
