@@ -84,7 +84,7 @@ class AjaxController extends AbstractController
     {
         return $this->responseAjaxResult(
             $diagnosisRepository->findDiagnoses(
-                $request->query->get(self::JSON_PARAMETER_KEY)
+                str_replace(' ', '', $request->query->get(self::JSON_PARAMETER_KEY))
             ),
             "Code"
         );
