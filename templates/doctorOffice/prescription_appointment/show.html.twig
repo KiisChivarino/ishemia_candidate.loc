@@ -7,7 +7,7 @@
     <li>
         <span class="title">{{ template.items.show.content.plannedDateTime }}</span>
         <p>{{ entity.plannedDateTime
-            ? entity.plannedDateTime|date('Y-m-d H:i:s')
+            ? entity.plannedDateTime|date('Y-m-d')
             : template.items.show.content.empty }}</p>
     </li>
     <li>
