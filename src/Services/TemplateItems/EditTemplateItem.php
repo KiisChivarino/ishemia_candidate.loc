@@ -18,5 +18,6 @@ class EditTemplateItem extends TemplateItem
     {
         parent::__construct($templateService);
         $this->setName(self::TEMPLATE_ITEM_EDIT_NAME);
+        $this->setItemRouteName(self::TEMPLATE_ITEM_EDIT_NAME);
     }
 }

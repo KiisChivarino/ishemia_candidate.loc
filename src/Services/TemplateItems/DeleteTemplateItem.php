@@ -31,5 +31,6 @@ class DeleteTemplateItem extends TemplateItem
         parent::__construct($templateService);
         $this->addContentArray(self::DEFAULT_CONTENT);
         $this->setName(self::TEMPLATE_ITEM_DELETE_NAME);
+        $this->setItemRouteName(self::TEMPLATE_ITEM_DELETE_NAME);
     }
 }

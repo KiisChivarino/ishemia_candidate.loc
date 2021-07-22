@@ -129,17 +129,10 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     {
         return $this->responseShow(
             self::TEMPLATE_PATH,
-            $prescriptionMedicine, [
+            $prescriptionMedicine,
+            [
                 'staffTitle' =>
                     AuthUserInfoService::getFIO($prescriptionMedicine->getStaff()->getAuthUser()),
-                'backRouteName' => 'add_prescription_show',
-                'editRouteName' => 'edit_prescription_medicine_by_doctor',
-                'deleteRouteName' => 'delete_prescription_medicine_by_doctor',
-                'routParam' => [
-                    'patient' => $prescriptionMedicine->getPrescription()->getMedicalHistory()->getPatient()->getId(),
-                    'prescription' => $prescriptionMedicine->getPrescription()->getId(),
-                    'prescriptionMedicine' => $prescriptionMedicine->getId()
-                ]
             ]
         );
     }
@@ -155,6 +148,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      * @param PrescriptionMedicine $prescriptionMedicine
      * @return Response
      * @throws ReflectionException
+     * @throws Exception
      */
     public function edit(
         Request $request,
@@ -168,7 +162,6 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                 'prescription' => $prescriptionMedicine->getPrescription()
             ]
         );
-
         return $this->responseEditMultiForm(
             $request,
             $prescriptionMedicine,

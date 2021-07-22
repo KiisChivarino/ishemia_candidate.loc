@@ -5,8 +5,8 @@
         <ul>
             {% if template.items.list.isEnabled %}
                 <a href="{{ path(
-                    (backRouteName is defined ? backRouteName : template.routes.list),
-                    routParam is defined ? routParam : []
+                    template.items.list.templateItemRoute.routeName,
+                    template.items.list.templateItemRoute.routeParams
                 ) }}"
                    class="back-page">{{ template.items.show.content.toList }}</a>
             {% endif %}

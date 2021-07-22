@@ -5,6 +5,7 @@ namespace App\Services\TemplateBuilders\DoctorOffice;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
+use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use Exception;
@@ -78,6 +79,42 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::new($filterService);
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->setIsEnabled(false);
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     * @return AppTemplateBuilder
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show($entity);
+        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getTemplateItemRoute()
+            ->setRouteName('add_prescription_show')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPrescription()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                ]
+            );
+        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->getTemplateItemRoute()
+            ->setRouteName('edit_prescription_medicine_by_doctor')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPrescription()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                    'prescriptionMedicine' => $entity->getId()
+                ]
+            );
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->getTemplateItemRoute()
+            ->setRouteName('delete_prescription_medicine_by_doctor')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPrescription()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                    'prescriptionMedicine' => $entity->getId()
+                ]
+            );
         return $this;
     }
 

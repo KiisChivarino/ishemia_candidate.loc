@@ -6,8 +6,9 @@
         <button class="btn btn--edit">
             <a style="text-decoration: none; color: inherit; display:block;"
                href="{{ path(
-                   (editRouteName is defined ? editRouteName : template.routes.edit),
-               routParam is defined ? routParam : {'id': entity.id}) }}">{{ template.items.show.content.toEdit }}</a>
+                   template.items.edit.templateItemRoute.routeName ,
+                   template.items.edit.templateItemRoute.routeParams
+               ) }}">{{ template.items.show.content.toEdit }}</a>
         </button>
     {% endif %}
 </div>

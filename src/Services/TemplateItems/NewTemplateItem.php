@@ -23,5 +23,6 @@ class NewTemplateItem extends TemplateItem
     {
         parent::__construct($templateService);
         $this->setName(self::TEMPLATE_ITEM_NEW_NAME);
+        $this->setItemRouteName(self::TEMPLATE_ITEM_NEW_NAME);
     }
 }

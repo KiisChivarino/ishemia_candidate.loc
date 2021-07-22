@@ -33,6 +33,9 @@ abstract class TemplateItem
     /** @var FilterData[] entity, form and filter objects for every filter */
     private $filterData;
 
+    /** @var TemplateItemRoute  */
+    protected $templateItemRoute;
+
     /** @var TemplateService $templateService */
     protected $templateService;
 
@@ -42,9 +45,11 @@ abstract class TemplateItem
      */
     public function __construct(TemplateService $templateService)
     {
+        $this->templateService = $templateService;
         $this->content = $this->getContentFromYaml();
         $this->setIsEnabled(true);
         $this->path = $templateService->getCommonTemplatePath();
+        $this->templateItemRoute = new TemplateItemRoute();
     }
 
     /**
@@ -278,5 +283,30 @@ abstract class TemplateItem
             $this->setContent($key, $value);
         }
         return $this;
+    }
+
+    /**
+     * @return TemplateItemRoute
+     */
+    public function getTemplateItemRoute(): TemplateItemRoute
+    {
+        return $this->templateItemRoute;
+    }
+
+    /**
+     * @param TemplateItemRoute $templateItemRoute
+     */
+    public function setTemplateItemRoute(TemplateItemRoute $templateItemRoute): void
+    {
+        $this->templateItemRoute = $templateItemRoute;
+    }
+
+    /**
+     * @param string $itemName
+     */
+    protected function setItemRouteName(string $itemName){
+        if(array_key_exists($itemName, $this->templateService->getRoutes())){
+            $this->templateItemRoute->setRouteName($itemName);
+        }
     }
 }

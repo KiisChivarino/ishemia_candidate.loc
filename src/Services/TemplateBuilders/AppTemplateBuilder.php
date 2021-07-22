@@ -13,6 +13,7 @@ use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
 use App\Services\TemplateItems\TemplateItemsFactory;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -99,6 +100,7 @@ class AppTemplateBuilder extends TemplateService
      * @param string $className
      * @param string $defaultCommonTemplatePath
      * @param string $defaultRedirectRouteName
+     * @throws Exception
      */
     public function __construct(
         RouteCollection $routeCollection,
@@ -161,7 +163,21 @@ class AppTemplateBuilder extends TemplateService
             ->addContentArray($this->formShowContent)
             ->addContentArray($this->showContent)
             ->addContentArray($this->entityContent);
+        if ($this->isMethodGetIdExists($entity)) {
+            $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+                ->getTemplateItemRoute()->setRouteParams($entity->getId());
+        }
         return $this;
+    }
+
+    /**
+     * Check is method getId exists for entity
+     * @param object|null $entity
+     * @return bool
+     */
+    public function isMethodGetIdExists(?object $entity = null): bool
+    {
+        return is_object($entity && method_exists($entity, 'getId'));
     }
 
     /**
@@ -210,11 +226,9 @@ class AppTemplateBuilder extends TemplateService
     /**
      * Builds Delete template settings
      *
-     * @param FilterService|null $filterService
-     *
      * @return $this
      */
-    public function delete(?FilterService $filterService = null): self
+    public function delete(): self
     {
         $this->setTemplateItems($this->templateItemsFactory->getDeleteTemplateItems());
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)

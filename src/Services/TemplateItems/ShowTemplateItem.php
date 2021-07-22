@@ -32,5 +32,6 @@ class ShowTemplateItem extends TemplateItem
         parent::__construct($templateService);
         $this->addContentArray(self::DEFAULT_CONTENT);
         $this->setName(self::TEMPLATE_ITEM_SHOW_NAME);
+        $this->setItemRouteName(self::TEMPLATE_ITEM_SHOW_NAME);
     }
 }

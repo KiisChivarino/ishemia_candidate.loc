@@ -2,8 +2,8 @@
         class="btn btn--delete"
         method="post"
         action="{{ path(
-            (deleteRouteName is defined ? deleteRouteName : template.routes.delete),
-        routParam is defined ? routParam : {'id': entity.id}
+            template.items.delete.templateItemRoute.routeName,
+            template.items.delete.templateItemRoute.routeParams
         ) }}"
         onsubmit="return confirm('{{ template.items.delete.content.deleteConfirm }}');"
 >
