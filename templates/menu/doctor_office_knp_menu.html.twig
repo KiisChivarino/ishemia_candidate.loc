@@ -1,0 +1,34 @@
+{% extends 'custom_knp_menu.html.twig' %}
+{% block item %}
+    {% import "knp_menu.html.twig" as macros %}
+    {% if item.displayed %}
+        <li {% if item.attribute('class') == 'sublist' %} class="sublist" style="cursor: pointer;"{% endif %}>
+            {{ block('linkElement') }}
+            {# render the list of children#}
+            {{ block('list') }}
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block linkElement %}
+    <a href="{{ item.uri }}" {% if item.attribute('class') == 'sublist' %} style="pointer-events: none;"{% endif %}
+            {% if item.current %}class = "active" {% endif %}
+    >
+        {% if item.attribute('icon') is not empty %}
+            <i class="{{ item.attribute('icon') }}"></i>
+        {% endif %}
+        {{ block('label') }}
+    </a>
+{% endblock %}
+
+{% block list %}
+    {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
+        {% import _self as knp_menu %}
+        <ul
+                {{ knp_menu.attributes(listAttributes) }}
+                {% if item.getLevel==0 %} class="sidebar__list" {% endif %}
+        >
+            {{ block('children') }}
+        </ul>
+    {% endif %}
+{% endblock %}

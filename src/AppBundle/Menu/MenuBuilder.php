@@ -116,6 +116,7 @@ class MenuBuilder
     public function createAdminMenu(RequestStack $requestStack): ItemInterface
     {
         $menu = $this->factory->createItem('root');
+        $menu->setAttribute('templateName', 'admin_knp_menu.html.twig');
         $menu->addChild(
             'index', [
                 'label' => 'Главная',
@@ -425,6 +426,7 @@ class MenuBuilder
     public function createDoctorOfficeHeaderMenu(): ItemInterface
     {
         $menu = $this->factory->createItem('root');
+        $menu->setAttribute('templateName', 'doctor_office_knp_menu.html.twig');
         $menu->setChildrenAttribute('class', 'main-nav__list');
         $authUser = $this->security->getUser();
         if (AuthUserInfoService::isDoctorHospital($authUser)) {
@@ -474,6 +476,7 @@ class MenuBuilder
     {
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'main-nav__list');
+        $menu->setAttribute('templateName', 'admin_knp_menu.html.twig');
         $menu->addChild(
             'logout', [
                 'label' => 'Выйти',
@@ -503,6 +506,7 @@ class MenuBuilder
             : null;
         $menu = $this->factory->createItem('root');
         $menu->setAttribute('class', 'sidebar__list');
+        $menu->setAttribute('templateName', 'doctor_office_knp_menu.html.twig');
         $patientsNoResultsTestingsCount = $patientTestingCounterRepository->getNoResultsTestingsCount($hospital);
         $patientsNoProcessedTestingsCount = $patientTestingCounterRepository->getNoProcessedTestingsCount($hospital);
         $patientsOpenedPrescriptionsCount = $prescriptionRepository->getOpenedPrescriptionsCount($hospital);
