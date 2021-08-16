@@ -1,0 +1,21 @@
+<div class="pacient-aside">
+    <div class="main-header__logo"><a href="#">
+            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" width="6" height="25" fill="white"/>
+                <rect y="15" width="6" height="25" transform="rotate(-90 0 15)" fill="white"/>
+            </svg>
+            <span>Медицина</span></a></div>
+    <div class="pacient-aside__info">
+        <div class="pacient-aside__picture"><img src="{{ asset('build/images/user-logo.png') }}" alt=""></div>
+        <div class="pacient-aside__name"><div>{{ fio(app.user, true) }}</div></div>
+    </div>
+    <div class="burger"><img src="{{ asset('build/images/burger.svg') }}" alt=""></div>
+    <nav class="pacient-aside__nav">
+        {{ knp_menu_render('patientOfficeSidebar') }}
+    </nav>
+</div>
+<div class="sidebar__show sidebar__show--green" hidden>
+    <div class="sidebar__nav sidebar__list">
+        {{ knp_menu_render('patientOfficeSidebar') }}
+    </div>
+</div>

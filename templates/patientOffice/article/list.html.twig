@@ -1,0 +1,53 @@
+{% extends 'patientOffice/index.html.twig' %}
+{% block title %}{{ template.items.list.content.title }}{% endblock %}
+{% block content %}
+    <div class="pacient-content__header">
+        <div class="pacient-content__header-col">
+            <div class="pacient-content__title-name">{{ template.items.list.content.h1 }}</div>
+        </div>
+    </div>
+    <div class="pacient-information">
+        <ul class="pacient-information__list">
+            <li class="item">
+                <div class="picture"><img src="{{ asset('build/images/bag.png') }}" alt=""></div>
+                <div class="pacient-information__content"><h3>Сумка в роддом</h3>
+                    <p>Документы (паспорт + копия, мед.полис + копия, свидетельство пенсионного страхования + копия,
+                        обменная карта, контракт с роддомом).</p>
+                    <a href="{{ path('patient_office_article_show', {'article': 1}) }}" class="read-more">
+                        {{ template.items.list.content.read }}
+                    </a>
+                </div>
+            </li>
+            <li class="item">
+                <div class="picture"><img src="{{ asset('build/images/bag.png') }}" alt=""></div>
+                <div class="pacient-information__content"><h3>Сумка в роддом</h3>
+                    <p>Документы (паспорт + копия, мед.полис + копия, свидетельство пенсионного страхования + копия,
+                        обменная карта, контракт с роддомом).</p>
+                    <a href="{{ path('patient_office_article_show', {'article': 1}) }}" class="read-more">
+                        {{ template.items.list.content.read }}
+                    </a>
+                </div>
+            </li>
+            <li class="item">
+                <div class="picture"><img src="{{ asset('build/images/bag.png') }}" alt=""></div>
+                <div class="pacient-information__content"><h3>Сумка в роддом</h3>
+                    <p>Документы (паспорт + копия, мед.полис + копия, свидетельство пенсионного страхования + копия,
+                        обменная карта, контракт с роддомом).</p>
+                    <a href="{{ path('patient_office_article_show', {'article': 1}) }}" class="read-more">
+                        {{ template.items.list.content.read }}
+                    </a>
+                </div>
+            </li>
+            <li class="item">
+                <div class="picture"><img src="{{ asset('build/images/bag.png') }}" alt=""></div>
+                <div class="pacient-information__content"><h3>Сумка в роддом</h3>
+                    <p>Документы (паспорт + копия, мед.полис + копия, свидетельство пенсионного страхования + копия,
+                        обменная карта, контракт с роддомом).</p>
+                    <a href="{{ path('patient_office_article_show', {'article': 1}) }}" class="read-more">
+                        {{ template.items.list.content.read }}
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

@@ -1,0 +1,52 @@
+/* Выделяем жирным активный пункт меню */
+.pacient-aside .pacient-aside__nav li.active, .pacient-aside .pacient-aside__nav li:hover {
+    font-weight: bold;
+}
+
+.burger {
+    cursor: pointer;
+}
+
+.modal {
+    z-index: 200;
+}
+
+.overlay {
+    z-index: 150;
+    cursor: pointer;
+}
+
+/* Делаем кнопку отправки результатов шириной в контент, а не в весь блок */
+.button-confirm {
+    display: inline-flex;
+    margin-top: 20px
+}
+
+/* Убираем отступ у плиток уведомлений на главной странице */
+.main_page_notification {
+    margin-bottom: 0;
+}
+
+/* Фикс имени пациента на старых телефонах */
+@media (max-width: 400px) {
+    .pacient-aside__name div {
+        max-width: 105px;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100%;
+        display: block;
+        text-overflow: ellipsis;
+    }
+}
+
+
+/* Фикс пояснений для календаря на моб. устройствах */
+@media (max-width: 800px) {
+    .pacient-content-date__footer {
+        flex-direction: column
+    }
+
+    .pacient-content-date__footer-col {
+        margin-bottom: 10px
+    }
+}

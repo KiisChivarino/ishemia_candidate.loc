@@ -1,0 +1,43 @@
+{% extends 'patientOffice/index.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
+{% block content %}
+    <div class="pacient-content__header">
+        <div class="pacient-content__header-col">
+            <div class="pacient-content__title-name">{{ fio(app.user, true) }}</div>
+        </div>
+        <div class="pacient-content__header-col">
+            <a
+                    class="main-button main-button--green js-open-modal"
+                    data-modal="2">{{ template.items.show.content.applicationConsultationButton }}
+            </a>
+        </div>
+    </div>
+    <div class="pacient-content__inner">
+        {% include 'patientOffice/main/item/prescription.html.twig' %}
+
+        {% include 'patientOffice/main/item/notification.html.twig' %}
+
+        {% include 'patientOffice/main/item/widget.html.twig' %}
+
+        {% include 'patientOffice/main/item/calendar.html.twig' %}
+
+        {% include 'patientOffice/main/item/article.html.twig' %}
+    </div>
+
+    <div class="modal-consultation modal" data-modal="2">
+        <h3>{{ template.items.show.content.applicationConsultationTitle }}</h3>
+        <form method="get">
+            <ul>
+                <li><label for=""> <span>{{ template.items.show.content.applicationConsultationReason }}</span></label>
+                    <label>
+                        <input type="text" placeholder="{{ template.items.show.content.applicationConsultationPlaceholder }}">
+                    </label>
+                </li>
+                <hr>
+                <li class="buttons"><input class="js-modal-close" type="button" value="Отмена">
+                    <input type="submit" value="Готово">
+                </li>
+            </ul>
+        </form>
+    </div>
+{% endblock %}
