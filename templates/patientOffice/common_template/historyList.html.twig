@@ -1,0 +1,12 @@
+{% extends 'patientOffice/common_template/listForPatient.html.twig' %}
+{% block title %}{{ template.items.historyList.content.title }}{% endblock %}
+{% block h1 %}{{ template.items.historyList.content.h1 }}{% endblock %}
+{% block tabs %}
+    <li><a href="{% block news_list_url %}#{% endblock %}">{{ template.items.newsList.content.toNewsLink }}</a></li>
+    <li>
+        <a
+                class="active"
+                href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"
+        >{{ template.items.historyList.content.toHistoryLink }}</a>
+    </li>
+{% endblock %}

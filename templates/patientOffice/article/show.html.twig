@@ -1,0 +1,56 @@
+{% extends 'patientOffice/index.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
+{% block content %}
+
+    <div class="pacient-content__header">
+        <div class="pacient-content__title-name">{{ template.items.show.content.h1 }}</div>
+        <a class="button" href="{{ path('patient_office_article') }}">{{ template.items.show.content.toList }}</a>
+    </div>
+
+    <div class="pacient-information__article">
+        <div class="inner-content"><p class="pacient-information__title">Сумка в роддом</p>
+            <p class="pacient-information__date">{{ template.items.show.content.publishedAt }}: 22.02.2021</p><img
+                    src="{{ asset('build/images/bag.png') }}"
+                    alt="">
+            <p class="pacient-information__main-text">Как&nbsp;уже&nbsp;неоднократно упомянуто, сторонники тоталитаризма
+                в&nbsp;науке набирают популярность среди определённых слоёв населения, а&nbsp;значит, должны быть в&nbsp;равной
+                степени предоставлены сами себе. В&nbsp;частности, понимание сути ресурсосберегающих технологий не&nbsp;даёт
+                нам&nbsp;иного выбора, кроме определения кластеризации усилий. </p>
+            <p class="pacient-information__text">С&nbsp;другой стороны, консультация с&nbsp;широким активом требует от&nbsp;нас&nbsp;анализа
+                приоритизации разума над&nbsp;эмоциями. Банальные, но&nbsp;неопровержимые выводы, а&nbsp;также
+                тщательные исследования конкурентов освещают чрезвычайно интересные особенности картины в&nbsp;целом,
+                однако конкретные выводы, разумеется, превращены в&nbsp;посмешище, хотя&nbsp;само их&nbsp;существование
+                приносит несомненную пользу обществу. Банальные, но&nbsp;неопровержимые выводы, а&nbsp;также диаграммы
+                связей, инициированные исключительно синтетически, рассмотрены исключительно в&nbsp;разрезе
+                маркетинговых и&nbsp;финансовых предпосылок. </p></div>
+    </div>
+
+    <div class="pacient-content__header">
+        <div class="pacient-content__title-name">{{ template.items.show.content.readMore }}</div>
+    </div>
+
+    <div class="pacient-information">
+        <ul class="pacient-information__list">
+            <li class="item">
+                <div class="picture"><img src="{{ asset('build/images/bag.png') }}" alt=""></div>
+                <div class="pacient-information__content"><h3>Сумка в роддом</h3>
+                    <p>Документы (паспорт + копия, мед.полис + копия, свидетельство пенсионного страхования + копия,
+                        обменная карта, контракт с роддомом).</p>
+                    <a class="read-more" href="{{ path('patient_office_article_show', {'article': 1}) }}">
+                        {{ template.items.show.content.read }}
+                    </a>
+                </div>
+            </li>
+            <li class="item">
+                <div class="picture"><img src="{{ asset('build/images/bag.png') }}" alt=""></div>
+                <div class="pacient-information__content"><h3>Сумка в роддом</h3>
+                    <p>Документы (паспорт + копия, мед.полис + копия, свидетельство пенсионного страхования + копия,
+                        обменная карта, контракт с роддомом).</p>
+                    <a class="read-more" href="{{ path('patient_office_article_show', {'article': 1}) }}">
+                        {{ template.items.show.content.read }}
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

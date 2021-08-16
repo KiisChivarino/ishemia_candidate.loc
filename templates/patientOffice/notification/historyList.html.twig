@@ -1,0 +1,6 @@
+{% extends 'patientOffice/common_template/historyList.html.twig' %}
+{% block news_list_url %}{{ path('patient_office_notification_news') }}{% endblock %}
+{% block list %}
+    {% include 'patientOffice/notification/item/history.html.twig' %}
+    {% include 'patientOffice/notification/item/history.html.twig' %}
+{% endblock %}

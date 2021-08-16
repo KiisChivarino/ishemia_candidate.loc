@@ -13,6 +13,7 @@ use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
 use App\Services\TemplateItems\TemplateItemsFactory;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -99,6 +100,7 @@ class AppTemplateBuilder extends TemplateService
      * @param string $className
      * @param string $defaultCommonTemplatePath
      * @param string $defaultRedirectRouteName
+     * @throws Exception
      */
     public function __construct(
         RouteCollection $routeCollection,

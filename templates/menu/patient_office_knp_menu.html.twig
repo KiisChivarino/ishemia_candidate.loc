@@ -1,0 +1,30 @@
+{% extends 'custom_knp_menu.html.twig' %}
+{% block item %}
+    {% import "knp_menu.html.twig" as macros %}
+    {% if item.displayed %}
+        <li {% if item.current %}class = "active" {% endif %}>
+            {{ block('linkElement') }}
+            {{ block('list') }}
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block linkElement %}
+    <a href="{{ item.uri }}">
+        {% if item.attribute('icon') is not empty %}
+            <i class="{{ item.attribute('icon') }}"></i>
+        {% endif %}
+        {{ block('label') }}
+    </a>
+{% endblock %}
+
+{% block list %}
+    {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
+        {% import _self as knp_menu %}
+        <ul
+                {{ knp_menu.attributes(listAttributes) }}
+        >
+            {{ block('children') }}
+        </ul>
+    {% endif %}
+{% endblock %}
