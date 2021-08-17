@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\AuthUser;
 use App\Entity\Patient;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,4 +26,22 @@ class PatientRepository extends AppRepository
     {
         parent::__construct($registry, Patient::class);
     }
+
+    /**
+     * Gets patient by auth user
+     *
+     * @param AuthUser $authUser
+     * @return Patient|null
+     * @throws NonUniqueResultException
+     */
+    public function getPatientByAuthUser(AuthUser $authUser): ?Patient
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.AuthUser = :authUser')
+            ->setParameter('authUser', $authUser)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }

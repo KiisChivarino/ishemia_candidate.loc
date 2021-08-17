@@ -3,6 +3,8 @@
 namespace App\Services\TemplateItems;
 
 use App\Services\Template\TemplateService;
+use App\Services\TemplateItems\PatientOfficeItems\HistoryListTemplateItem;
+use App\Services\TemplateItems\PatientOfficeItems\NewsListTemplateItem;
 
 /**
  * Class TemplateItemsFactory
@@ -96,6 +98,28 @@ class TemplateItemsFactory
     {
         return [
             new DeleteTemplateItem($this->templateService),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getHistoryListTemplateItems(): array
+    {
+        return [
+            new HistoryListTemplateItem($this->templateService),
+            new NewsListTemplateItem($this->templateService),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getNewsListTemplateItems(): array
+    {
+        return [
+            new HistoryListTemplateItem($this->templateService),
+            new NewsListTemplateItem($this->templateService),
         ];
     }
 }

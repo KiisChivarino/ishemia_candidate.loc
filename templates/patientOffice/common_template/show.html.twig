@@ -1,0 +1,11 @@
+{% extends 'patientOffice/index.html.twig' %}
+{% block content %}
+    <div class="pacient-content__header">
+        <div class="pacient-content__header-col">
+            <div class="pacient-content__title-name">{% block h1 %}{% endblock %}</div>
+        </div>
+    </div>
+    <div class="appaintment-new">
+        {% block content %}{% endblock %}
+    </div>
+{% endblock %}

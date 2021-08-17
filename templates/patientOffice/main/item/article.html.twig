@@ -1,0 +1,13 @@
+<div class="element-grid pacient-content-bag">
+    <div class="pacient-content-bag__picture">
+        <div class="picture">
+            <img src="{{ asset('build/images/bag-desctop.png') }}" alt=""></div>
+    </div>
+    <div class="pacient-content-bag__footer"><h3>Сумка в роддом</h3>
+        <p>Документы (паспорт + копия, мед.полис + копия, свидетельство пенсионного страхования + копия, обменная карта,
+            контракт с роддомом). </p>
+        <a class="read-more" href="{{ path('patient_office_article_show', {'article': 1}) }}">
+            {{ template.items.show.content.read }}
+        </a>
+    </div>
+</div>

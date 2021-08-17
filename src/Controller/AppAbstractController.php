@@ -144,11 +144,13 @@ abstract class AppAbstractController extends AbstractController
      * @param string $templatePath
      * @param object $entity
      * @param array $parameters
-     *
      * @return Response
-     * @throws Exception
      */
-    public function responseShow(string $templatePath, object $entity, array $parameters = []): Response
+    public function responseShow(
+        string $templatePath,
+        object $entity,
+        array $parameters = []
+    ): Response
     {
         $this->templateService->show($entity);
         $parameters['entity'] = $entity;

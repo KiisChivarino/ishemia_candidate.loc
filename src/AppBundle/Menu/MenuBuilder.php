@@ -14,6 +14,7 @@ use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Class MenuBuilder
@@ -116,6 +117,7 @@ class MenuBuilder
     public function createAdminMenu(RequestStack $requestStack): ItemInterface
     {
         $menu = $this->factory->createItem('root');
+        $menu->setAttribute('templateName', 'admin_knp_menu.html.twig');
         $menu->addChild(
             'index', [
                 'label' => 'Главная',
@@ -424,7 +426,9 @@ class MenuBuilder
     public function createDoctorOfficeHeaderMenu(): ItemInterface
     {
         $menu = $this->factory->createItem('root');
+        $menu->setAttribute('templateName', 'doctor_office_knp_menu.html.twig');
         $menu->setChildrenAttribute('class', 'main-nav__list');
+        /** @var AuthUser $authUser */
         $authUser = $this->security->getUser();
         if (AuthUserInfoService::isDoctorHospital($authUser)) {
             $menu->addChild(
@@ -473,6 +477,7 @@ class MenuBuilder
     {
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'main-nav__list');
+        $menu->setAttribute('templateName', 'admin_knp_menu.html.twig');
         $menu->addChild(
             'logout', [
                 'label' => 'Выйти',
@@ -496,12 +501,14 @@ class MenuBuilder
         PrescriptionRepository $prescriptionRepository
     ): ItemInterface
     {
+        /** @var AuthUser $authUser */
         $authUser = $this->security->getUser();
         $hospital = AuthUserInfoService::isDoctorHospital($authUser)
             ? $this->entityManager->getRepository(Staff::class)->getStaff($authUser)->getHospital()
             : null;
         $menu = $this->factory->createItem('root');
         $menu->setAttribute('class', 'sidebar__list');
+        $menu->setAttribute('templateName', 'doctor_office_knp_menu.html.twig');
         $patientsNoResultsTestingsCount = $patientTestingCounterRepository->getNoResultsTestingsCount($hospital);
         $patientsNoProcessedTestingsCount = $patientTestingCounterRepository->getNoProcessedTestingsCount($hospital);
         $patientsOpenedPrescriptionsCount = $prescriptionRepository->getOpenedPrescriptionsCount($hospital);
@@ -665,6 +672,60 @@ class MenuBuilder
     }
 
     /**
+     * Меню кабинета пациента
+     *
+     * @param RequestStack $requestStack
+     * @return ItemInterface
+     */
+    public function createPatientOfficeSidebarMenu(
+        RequestStack $requestStack
+    ): ItemInterface
+    {
+        $menu = $this->factory->createItem('root');
+        $menu->setAttribute('templateName', 'patient_office_knp_menu.html.twig');
+        $menu->setAttribute('sidebar_disable', true);
+        $menu->addChild(
+            'patient_office_main', [
+                'label' => 'Главная',
+                'route' => 'patient_office_main'
+            ]
+        );
+        $menu->addChild(
+            'patient_office_prescription', [
+                'label' => 'Назначения',
+                'route' => 'patient_office_prescription'
+            ]
+        );
+        $menu->addChild(
+            'patient_office_notification_news', [
+                'label' => 'Уведомления',
+                'route' => 'patient_office_notification_news'
+            ]
+        );
+        $menu->addChild(
+            'patient_office_testing', [
+                'label' => 'Обследования',
+                'route' => 'patient_office_testing'
+            ]
+        );
+        $menu->addChild(
+            'patient_office_information', [
+                'label' => 'Информация',
+                'route' => 'patient_office_article'
+            ]
+        );
+        $menu->addChild(
+            'logout_from_app', [
+                'label' => 'Выйти',
+                'route' => 'logout_from_app'
+            ]
+        );
+        $this->activateStoringSelectedMenuItemPatientOffice($menu, $requestStack);
+        return $menu;
+    }
+
+
+    /**
      * @param string $label
      * @param int $number
      * @param string|null $customClasses
@@ -720,11 +781,11 @@ class MenuBuilder
 
     /**
      * Activates storing the selected menu item
-     * @param $menu
-     * @param $requestStack
+     * @param ItemInterface $menu
+     * @param RequestStack $requestStack
      * @return void
      */
-    private function activateStoringSelectedMenuItem($menu, $requestStack): void
+    private function activateStoringSelectedMenuItem(ItemInterface $menu, RequestStack $requestStack): void
     {
         foreach ($menu->getChildren() as $item) {
             foreach ($item->getChildren() as $childrenItem) {
@@ -736,10 +797,33 @@ class MenuBuilder
                         $requestStack->getCurrentRequest()->getRequestUri()
                     ) == $childrenItem->getUri()
                 ) {
-
                     $childrenItem->setCurrent(true);
                 }
             }
         }
     }
+
+    /**
+     * Activates storing the selected menu item
+     * @param ItemInterface $menu
+     * @param RequestStack $requestStack
+     * @return void
+     */
+    private function activateStoringSelectedMenuItemPatientOffice(ItemInterface $menu, RequestStack $requestStack): void
+    {
+        foreach ($menu->getChildren() as $item) {
+            $uri = str_replace('news', '', $item->getUri());
+            $RequestUri = $requestStack->getCurrentRequest()->getRequestUri();
+            if ($uri == $RequestUri
+                || preg_replace(
+                    '/(history|news|\d+)\/?(\?.+=.+)?(&.+=.+)*$/',
+                    "",
+                    $RequestUri
+                ) == $uri
+            ) {
+                $item->setCurrent(true);
+            }
+        }
+    }
+
 }

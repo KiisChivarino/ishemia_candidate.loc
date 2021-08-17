@@ -7,6 +7,9 @@
 /public/bundles/
 /var/
 /vendor/
+/.docker/log/
+/.docker/conf/postgres/db-data
+/.docker/conf/postgres/pgadmin
 ###< symfony/framework-bundle ###
 
 ###> symfony/webpack-encore-bundle ###
