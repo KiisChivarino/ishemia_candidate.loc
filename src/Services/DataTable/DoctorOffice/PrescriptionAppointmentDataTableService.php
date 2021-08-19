@@ -4,7 +4,6 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Closure;
@@ -20,7 +19,7 @@ use Omines\DataTablesBundle\DataTable;
  * settings for display only one prescription for an appointment in doctor office
  * @package App\Services\DataTable\DoctorOffice
  */
-class PrescriptionAppointmentDataTableService extends AdminDatatableService
+class PrescriptionAppointmentDataTableService extends DoctorOfficeDatatableService
 {
     /** @var string class of main entity */
     public const ENTITY_CLASS = PrescriptionAppointment::class;

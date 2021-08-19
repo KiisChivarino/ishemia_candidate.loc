@@ -5,7 +5,6 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Entity\AnalysisGroup;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Closure;
@@ -20,7 +19,7 @@ use Omines\DataTablesBundle\DataTable;
  * Class PrescriptionTestingDataTableService
  * @package App\Services\DataTable\DoctorOffice
  */
-class PrescriptionTestingDataTableService extends AdminDatatableService
+class PrescriptionTestingDataTableService extends DoctorOfficeDatatableService
 {
     /** @var string */
     public const DATATABLE_NAME = 'PrescriptionTestingDataTable';

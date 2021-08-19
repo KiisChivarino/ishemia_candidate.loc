@@ -142,14 +142,15 @@ class PrescriptionController extends DoctorOfficeAbstractController
                 PrescriptionCreatorService::STAFF_OPTION => $this->getStaff($patient),
             ]
         );
-        $this->setLogCreate($prescriptionCreatorService->getEntity());
+        $prescriptionEntity = $prescriptionCreatorService->getEntity();
+        $this->setLogCreate($prescriptionEntity);
         if (!$this->flush()) {
             $this->redirectToMedicalHistory($patient);
         }
         return $this->redirectToRoute(
             'add_prescription_show', [
                 'patient' => $patient->getId(),
-                'prescription' => $prescriptionCreatorService->getEntity()->getId()
+                'prescription' => $prescriptionEntity->getId()
             ]
         );
     }
@@ -384,20 +385,22 @@ class PrescriptionController extends DoctorOfficeAbstractController
     {
         if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription) && !$prescription->getIsCompleted()) {
             $entityManager = $this->getDoctrine()->getManager();
-            (new PrescriptionEditorService($entityManager, $prescription))->before()->completePrescription()->after(
+            (new PrescriptionEditorService($entityManager, $prescription))->before()->after(
                 [
                     PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $medicalRecordCreatorService
                 ]
             );
+            $medicalHistory = $prescription->getMedicalHistory();
+            $notificationData = new NotificationData(
+                $this->getDoctrine()->getManager(),
+                $medicalHistory->getPatient(),
+                $medicalHistory,
+                $prescription->getMedicalRecord()
+            );
             foreach ($prescription->getPrescriptionTestings() as $prescriptionTesting) {
                 $notificationServiceBuilder = $this->notificationServiceBuilder
                     ->makeTestingAppointmentNotification(
-                        new NotificationData(
-                            $this->getDoctrine()->getManager(),
-                            $prescription->getMedicalHistory()->getPatient(),
-                            $prescription->getMedicalHistory(),
-                            $prescription->getMedicalRecord()
-                        ),
+                        $notificationData,
                         $prescriptionTesting->getPatientTesting()->getAnalysisGroup()->getName(),
                         $prescriptionTesting->getPlannedDate()->format('d.m.Y')
                     );
@@ -406,30 +409,24 @@ class PrescriptionController extends DoctorOfficeAbstractController
                     $notificationServiceBuilder->getSMSNotificationService(),
                     $notificationServiceBuilder->getEmailNotificationService()
                 );
-                $entityManager->flush();
             }
             foreach ($prescription->getPrescriptionAppointments() as $prescriptionAppointment) {
                 $notificationServiceBuilder = $this->notificationServiceBuilder
                     ->makeDoctorAppointmentNotification(
-                        new NotificationData(
-                            $this->getDoctrine()->getManager(),
-                            $prescription->getMedicalHistory()->getPatient(),
-                            $prescription->getMedicalHistory(),
-                            $prescription->getMedicalRecord()
-                        ),
+                        $notificationData,
                         AuthUserInfoService::getFIO(
                             $prescriptionAppointment->getPatientAppointment()->getStaff()->getAuthUser(),
                             true
                         ),
-                        $prescriptionAppointment->getPlannedDateTime()->format('d.m.Y i:s')
+                        $prescriptionAppointment->getPlannedDateTime()
                     );
                 $this->notifier->notifyPatient(
                     $notificationServiceBuilder->getWebNotificationService(),
                     $notificationServiceBuilder->getSMSNotificationService(),
                     $notificationServiceBuilder->getEmailNotificationService()
                 );
-                $entityManager->flush();
             }
+            $entityManager->flush();
         }
         return $this->redirectToMedicalHistory($prescription->getMedicalHistory()->getPatient());
     }

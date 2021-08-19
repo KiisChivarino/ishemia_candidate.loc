@@ -210,14 +210,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): Response
     {
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $patient,
-                'prescription' => $prescription
-            ]
-        );
-
+        $this->redirectToAddPrescriptionPage($patient, $prescription);
         return $this->responseDelete($request, $prescriptionTesting);
     }
 }

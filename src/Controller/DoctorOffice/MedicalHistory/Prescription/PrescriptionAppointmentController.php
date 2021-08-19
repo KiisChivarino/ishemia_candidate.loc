@@ -214,13 +214,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
         Prescription            $prescription
     ): Response
     {
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $patient->getId(),
-                'prescription' => $prescription->getId()
-            ]
-        );
+        $this->redirectToAddPrescriptionPage($patient, $prescription);
         return $this->responseDelete($request, $prescriptionAppointment);
     }
 

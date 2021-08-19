@@ -1,17 +1,6 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block title %}{{ template.items.show.content.title }}{% endblock %}
 {% block content %}
-    <div class="content-wrapper__top">
-        <ul>
-            {% if template.items.list.isEnabled %}
-                <a href="{{ path(
-                    template.items.list.templateItemRoute.routeName,
-                    template.items.list.templateItemRoute.routeParams
-                ) }}"
-                   class="back-page">{{ template.items.show.content.toList }}</a>
-            {% endif %}
-        </ul>
-    </div>
     <div class="adm-users-edit adm-users-view">
         <h2>{{ template.items.show.content.h1 }}</h2>
         {{ include('flashmessages.html.twig') }}

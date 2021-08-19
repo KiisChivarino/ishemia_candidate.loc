@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
-use App\Repository\PrescriptionRepository;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
@@ -92,16 +91,15 @@ class PrescriptionTestingController extends AdminAbstractController
      *     )
      *
      * @param Request $request
-     * @param PrescriptionRepository $prescriptionRepository
      * @param Prescription $prescription
      * @param PrescriptionTestingCreatorService $prescriptionTestingCreatorService
      * @param SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
      * @return Response
      * @throws ReflectionException
+     * @throws Exception
      */
     public function new(
         Request $request,
-        PrescriptionRepository $prescriptionRepository,
         Prescription $prescription,
         PrescriptionTestingCreatorService $prescriptionTestingCreatorService,
         SpecialPatientTestingCreatorService $specialPatientTestingCreatorService

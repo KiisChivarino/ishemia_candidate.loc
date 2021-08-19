@@ -4,7 +4,6 @@ namespace App\Services\DataTable\DoctorOffice;
 
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
-use App\Services\DataTable\Admin\AdminDatatableService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Closure;
@@ -19,7 +18,7 @@ use Omines\DataTablesBundle\DataTable;
  * Class PrescriptionMedicineDataTableService
  * @package App\Services\DataTable\DoctorOffice
  */
-class PrescriptionMedicineDataTableService extends AdminDatatableService
+class PrescriptionMedicineDataTableService extends DoctorOfficeDatatableService
 {
     /** @var string class of main entity */
     public const ENTITY_CLASS = PrescriptionMedicine::class;
