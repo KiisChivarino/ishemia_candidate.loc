@@ -143,6 +143,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      * @return Response
      * @throws ReflectionException
      * @throws Exception
+     * @throws Exception
      */
     public function edit(
         Request $request,
