@@ -87,13 +87,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
             PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
             PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting
         ]);
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $patient,
-                'prescription' => $prescription
-            ]
-        );
+        $this->redirectToAddPrescriptionPage($patient, $prescription);
         return $this->responseNewMultiFormWithActions(
             $request,
             [

@@ -9,6 +9,7 @@ use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
+use App\Repository\PrescriptionAppointmentRepository;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
 use App\Services\EntityActions\Creator\PatientAppointmentCreatorService;
@@ -43,8 +44,8 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @param TranslatorInterface $translator
      */
     public function __construct(
-        Environment $twig,
-        RouterInterface $router,
+        Environment         $twig,
+        RouterInterface     $router,
         TranslatorInterface $translator
     )
     {
@@ -69,15 +70,15 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @throws Exception
      */
     public function new(
-        Request $request,
-        Prescription $prescription,
-        Patient $patient,
+        Request                                    $request,
+        Prescription                               $prescription,
+        Patient                                    $patient,
         DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreator,
-        SpecialPatientAppointmentCreatorService $patientAppointmentCreator
+        SpecialPatientAppointmentCreatorService    $patientAppointmentCreator,
+        PrescriptionAppointmentRepository          $prescriptionAppointmentRepository
     ): Response
     {
-        $countPrescriptionAppointment = $this->getDoctrine()
-            ->getRepository(PrescriptionAppointment::class)
+        $countPrescriptionAppointment = $prescriptionAppointmentRepository
             ->countPrescriptionAppointmentsByPrescription($prescription);
         if ($countPrescriptionAppointment !== 0) {
             return $this->redirectToRoute('add_prescription_show',
@@ -103,13 +104,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
             ]
         )->getEntity();
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $patient,
-                'prescription' => $prescription
-            ]
-        );
+        $this->redirectToAddPrescriptionPage($patient, $prescription);
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -145,7 +140,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @throws Exception
      */
     public function edit(
-        Request $request,
+        Request                 $request,
         PrescriptionAppointment $prescriptionAppointment
     ): Response
     {
@@ -213,10 +208,10 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @throws Exception
      */
     public function delete(
-        Request $request,
+        Request                 $request,
         PrescriptionAppointment $prescriptionAppointment,
-        Patient $patient,
-        Prescription $prescription
+        Patient                 $patient,
+        Prescription            $prescription
     ): Response
     {
         $this->templateService->setRedirectRoute(

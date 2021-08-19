@@ -85,13 +85,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                 PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
             ]
         );
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $patient,
-                'prescription' => $prescription
-            ]
-        );
+        $this->redirectToAddPrescriptionPage($patient, $prescription);
         return $this->responseNewMultiFormWithActions(
             $request,
             [

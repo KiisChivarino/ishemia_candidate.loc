@@ -3,8 +3,10 @@
 namespace App\Controller\DoctorOffice;
 
 use App\Entity\Patient;
+use App\Entity\Prescription;
 use App\Entity\Staff;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Services\Template\TemplateService;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Controller\AppAbstractController;
@@ -69,6 +71,24 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
             MedicalHistoryController::DOCTOR_MEDICAL_HISTORY_ROUTE,
             [
                 'id' => $patient->getId(),
+            ]
+        );
+    }
+
+    /**
+     * Redirect to add prescription page
+     * @param Patient $patient
+     * @param Prescription $prescription
+     * @return TemplateService
+     * @throws Exception
+     */
+    protected function redirectToAddPrescriptionPage(Patient $patient, Prescription $prescription): TemplateService
+    {
+        return $this->templateService->setRedirectRoute(
+            'add_prescription_show',
+            [
+                'patient' => $patient,
+                'prescription' => $prescription
             ]
         );
     }
