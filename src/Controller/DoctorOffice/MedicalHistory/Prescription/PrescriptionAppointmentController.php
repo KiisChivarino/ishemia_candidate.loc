@@ -65,6 +65,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      * @param Patient $patient
      * @param DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreator
      * @param SpecialPatientAppointmentCreatorService $patientAppointmentCreator
+     * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
      * @return Response
      * @throws ReflectionException
      * @throws Exception
