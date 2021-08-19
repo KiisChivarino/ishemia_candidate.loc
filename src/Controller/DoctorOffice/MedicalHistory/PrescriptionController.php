@@ -5,6 +5,9 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
 use App\Entity\Prescription;
+use App\Entity\PrescriptionAppointment;
+use App\Entity\PrescriptionMedicine;
+use App\Entity\PrescriptionTesting;
 use App\Repository\MedicalHistoryRepository;
 use App\Services\DataTable\DataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionAppointmentDataTableService;
@@ -20,6 +23,8 @@ use App\Services\Notification\NotificationData;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
+use App\Services\TemplateItems\DeleteTemplateItem;
+use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -179,11 +184,10 @@ class PrescriptionController extends DoctorOfficeAbstractController
         if ($prescription->getIsCompleted()) {
             return $this->redirectToMedicalHistory($patient);
         }
-        $this->templateService->show($patient);
+        $this->templateService->show($prescription);
         $prescriptionTestingTable = $this->generatePrescriptionTestingDataTable(
             $request,
             $prescriptionTestingDataTableService,
-            $patient,
             $prescription
         );
         if ($prescriptionTestingTable->isCallback()) {
@@ -192,7 +196,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
         $prescriptionAppointmentTable = $this->generatePrescriptionAppointmentDataTable(
             $request,
             $prescriptionAppointmentDataTableService,
-            $patient,
             $prescription
         );
         if ($prescriptionAppointmentTable->isCallback()) {
@@ -202,7 +205,6 @@ class PrescriptionController extends DoctorOfficeAbstractController
         $prescriptionMedicineTable = $this->generatePrescriptionMedicineDataTable(
             $request,
             $prescriptionMedicineDataTableService,
-            $patient,
             $prescription
         );
 
@@ -220,6 +222,145 @@ class PrescriptionController extends DoctorOfficeAbstractController
                 'prescription' => $prescription
             ]
         );
+    }
+
+    /**
+     * Generates and handles datatable of prescription testing list
+     * @param Request $request
+     * @param PrescriptionTestingDataTableService $prescriptionTestingDataTableService
+     * @param Prescription $prescription
+     * @return DataTable
+     * @throws ReflectionException
+     */
+    public function generatePrescriptionTestingDataTable(
+        Request $request,
+        PrescriptionTestingDataTableService $prescriptionTestingDataTableService,
+        Prescription $prescription
+    ): DataTable
+    {
+        return $this->generateSpecialPrescriptionDatatable(
+            $request,
+            $prescriptionTestingDataTableService,
+            $prescription,
+            PrescriptionTesting::class,
+            self::SHOW_PRESCRIPTION_TESTING_ROUTE_NAME,
+            self::EDIT_PRESCRIPTION_TESTING_ROUTE_NAME,
+            self::DELETE_PRESCRIPTION_TESTING_ROUTE_NAME
+        );
+    }
+
+    /**
+     * Generates and handles datatable of one prescription appointment
+     * @param Request $request
+     * @param PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService
+     * @param Prescription $prescription
+     * @return DataTable
+     * @throws ReflectionException
+     */
+    public function generatePrescriptionAppointmentDataTable(
+        Request $request,
+        PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService,
+        Prescription $prescription
+    ): DataTable
+    {
+        return $this->generateSpecialPrescriptionDatatable(
+            $request,
+            $prescriptionAppointmentDataTableService,
+            $prescription,
+            PrescriptionAppointment::class,
+            self::SHOW_PRESCRIPTION_APPOINTMENT_ROUTE_NAME,
+            self::EDIT_PRESCRIPTION_APPOINTMENT_ROUTE_NAME,
+            self::DELETE_PRESCRIPTION_APPOINTMENT_ROUTE_NAME
+        );
+    }
+
+    /**
+     * Generates and handles datatable of one prescription medicine
+     * @param Request $request
+     * @param PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService
+     * @param Prescription $prescription
+     * @return DataTable
+     * @throws ReflectionException
+     */
+    public function generatePrescriptionMedicineDataTable(
+        Request $request,
+        PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService,
+        Prescription $prescription
+    ): DataTable
+    {
+        return $this->generateSpecialPrescriptionDatatable(
+            $request,
+            $prescriptionMedicineDataTableService,
+            $prescription,
+            PrescriptionMedicine::class,
+            self::SHOW_PRESCRIPTION_MEDICINE_ROUTE_NAME,
+            self::EDIT_PRESCRIPTION_MEDICINE_ROUTE_NAME,
+            self::DELETE_PRESCRIPTION_MEDICINE_ROUTE_NAME
+        );
+    }
+
+    /**
+     * Generates and handles datatable of special prescription
+     * @param Request $request
+     * @param DataTableService $specialPrescriptionDatatableService
+     * @param Prescription $prescription
+     * @param string $entityClassName
+     * @param string $showRouteName
+     * @param string $editRouteName
+     * @param string $deleteRouteName
+     * @return DataTable
+     * @throws ReflectionException
+     */
+    public function generateSpecialPrescriptionDatatable(
+        Request $request,
+        DataTableService $specialPrescriptionDatatableService,
+        Prescription $prescription,
+        string $entityClassName,
+        string $showRouteName,
+        string $editRouteName,
+        string $deleteRouteName
+    ): DataTable
+    {
+         return $specialPrescriptionDatatableService->getTable(
+            function (string $id, $entity)
+            use ($entityClassName, $prescription, $showRouteName, $editRouteName, $deleteRouteName)
+            {
+                $routeParams = [
+                    'patient' => $prescription->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $prescription->getId(),
+                    $this->getShortClassName($entityClassName) => $entity->getId()
+                ];
+                $this->templateService->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)->getTemplateItemRoute()
+                    ->setRouteName($showRouteName)
+                    ->setRouteParams($routeParams);
+                $this->templateService->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->getTemplateItemRoute()
+                    ->setRouteName($editRouteName)
+                    ->setRouteParams($routeParams);
+                $this->templateService->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->getTemplateItemRoute()
+                    ->setRouteName($deleteRouteName)
+                    ->setRouteParams($routeParams);
+                return $this->render(
+                    $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
+                    [
+                        'template' => $this->templateService,
+                        'id' => $id,
+                    ]
+                )->getContent();
+            },
+            $this->templateService->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME),
+            $prescription
+        )->handleRequest($request);
+    }
+
+    /**
+     * Returns short name of class with lower case first letter
+     * @param string $className
+     * @return string
+     * @throws ReflectionException
+     */
+    public function getShortClassName(string $className): string
+    {
+        return lcfirst((new ReflectionClass($className))->getShortName());
     }
 
     /**
@@ -291,150 +432,5 @@ class PrescriptionController extends DoctorOfficeAbstractController
             }
         }
         return $this->redirectToMedicalHistory($prescription->getMedicalHistory()->getPatient());
-    }
-
-    /**
-     * Generates and handles datatable of prescription testing list
-     * @param Request $request
-     * @param PrescriptionTestingDataTableService $prescriptionTestingDataTableService
-     * @param Prescription $prescription
-     * @param Patient $patient
-     * @return DataTable
-     * @throws Exception
-     */
-    public function generatePrescriptionTestingDataTable(
-        Request $request,
-        PrescriptionTestingDataTableService $prescriptionTestingDataTableService,
-        Patient $patient,
-        Prescription $prescription
-    ): DataTable
-    {
-        return $this->generateSpecialPrescriptionDatatable(
-            $request,
-            $prescriptionTestingDataTableService,
-            $patient,
-            $prescription,
-            $prescriptionTestingDataTableService::ENTITY_CLASS,
-            self::EDIT_PRESCRIPTION_TESTING_ROUTE_NAME,
-            self::DELETE_PRESCRIPTION_TESTING_ROUTE_NAME,
-            self::SHOW_PRESCRIPTION_TESTING_ROUTE_NAME
-        );
-    }
-
-    /**
-     * Generates and handles datatable of one prescription appointment
-     * @param Request $request
-     * @param PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService
-     * @param Patient $patient
-     * @param Prescription $prescription
-     * @return DataTable
-     * @throws Exception
-     */
-    public function generatePrescriptionAppointmentDataTable(
-        Request $request,
-        PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService,
-        Patient $patient,
-        Prescription $prescription
-    ): DataTable
-    {
-        return $this->generateSpecialPrescriptionDatatable(
-            $request,
-            $prescriptionAppointmentDataTableService,
-            $patient,
-            $prescription,
-            $prescriptionAppointmentDataTableService::ENTITY_CLASS,
-            self::EDIT_PRESCRIPTION_APPOINTMENT_ROUTE_NAME,
-            self::DELETE_PRESCRIPTION_APPOINTMENT_ROUTE_NAME,
-            self::SHOW_PRESCRIPTION_APPOINTMENT_ROUTE_NAME
-        );
-    }
-
-    /**
-     * Generates and handles datatable of one prescription medicine
-     * @param Request $request
-     * @param PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService
-     * @param Patient $patient
-     * @param Prescription $prescription
-     * @return DataTable
-     * @throws ReflectionException
-     */
-    public function generatePrescriptionMedicineDataTable(
-        Request $request,
-        PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService,
-        Patient $patient,
-        Prescription $prescription
-    ): DataTable
-    {
-        return $this->generateSpecialPrescriptionDatatable(
-            $request,
-            $prescriptionMedicineDataTableService,
-            $patient,
-            $prescription,
-            $prescriptionMedicineDataTableService::ENTITY_CLASS,
-            self::EDIT_PRESCRIPTION_MEDICINE_ROUTE_NAME,
-            self::DELETE_PRESCRIPTION_MEDICINE_ROUTE_NAME,
-            self::SHOW_PRESCRIPTION_MEDICINE_ROUTE_NAME
-        );
-    }
-
-    /**
-     * Generates and handles datatable of special prescription
-     * @param Request $request
-     * @param DataTableService $specialPrescriptionDatatableService
-     * @param Patient $patient
-     * @param Prescription $prescription
-     * @param string $entityClassName
-     * @param string|null $editRouteName
-     * @param string|null $deleteRouteName
-     * @param string|null $showRouteName
-     * @return mixed
-     * @throws ReflectionException
-     */
-    public function generateSpecialPrescriptionDatatable(
-        Request $request,
-        DataTableService $specialPrescriptionDatatableService,
-        Patient $patient,
-        Prescription $prescription,
-        string $entityClassName,
-        string $editRouteName = null,
-        string $deleteRouteName = null,
-        string $showRouteName = null
-    )
-    {
-        return $specialPrescriptionDatatableService->getTable(
-            function (
-                string $id,
-                $entity
-            ) use ($showRouteName, $editRouteName, $prescription, $patient, $entityClassName, $deleteRouteName) {
-                return $this->render(
-                    $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
-                    [
-                        'template' => $this->templateService,
-                        'route' => $editRouteName,
-                        'routeDelete' => $deleteRouteName,
-                        'routeShow' => $showRouteName,
-                        'parameters' => [
-                            'patient' => $patient->getId(),
-                            'prescription' => $prescription->getId(),
-                            $this->getShortClassName($entityClassName) => $entity->getId(),
-                            'id' => $entity->getId()
-                        ]
-                    ]
-                )->getContent();
-            },
-            $this->templateService->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME),
-            $prescription
-        )->handleRequest($request);
-    }
-
-    /**
-     * Returns short name of class with lower case first letter
-     * @param string $className
-     * @return string
-     * @throws ReflectionException
-     */
-    public function getShortClassName(string $className): string
-    {
-        return lcfirst((new ReflectionClass($className))->getShortName());
     }
 }
