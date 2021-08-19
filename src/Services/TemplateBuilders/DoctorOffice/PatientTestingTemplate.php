@@ -7,6 +7,7 @@ use App\Services\TemplateBuilders\Admin\AnalysisGroupTemplate;
 use App\Services\TemplateBuilders\Admin\StaffTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
+use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -88,6 +89,42 @@ class PatientTestingTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::edit();
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     * @return AppTemplateBuilder
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show($entity);
+        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getTemplateItemRoute()
+            ->setRouteName('add_prescription_show')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPatientTesting()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                ]
+            );
+        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->getTemplateItemRoute()
+            ->setRouteName('edit_prescription_testing_by_doctor')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPrescription()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                    'prescriptionTesting' => $entity->getId()
+                ]
+            );
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->getTemplateItemRoute()
+            ->setRouteName('delete_prescription_testing_by_doctor')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPatientTesting()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                    'prescriptionTesting' => $entity->getId()
+                ]
+            );
         return $this;
     }
 }

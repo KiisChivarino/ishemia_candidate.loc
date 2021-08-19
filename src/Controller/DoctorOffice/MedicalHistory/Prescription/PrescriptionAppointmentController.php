@@ -181,16 +181,8 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
             self::TEMPLATE_PATH,
             $prescriptionAppointment, [
                 'staffTitle' =>
-                    AuthUserInfoService::getFIO($prescriptionAppointment->getStaff()->getAuthUser()),
-                'backRouteName' => 'add_prescription_show',
-                'editRouteName' => 'edit_prescription_appointment_by_doctor',
-                'deleteRouteName' => 'delete_prescription_appointment_by_doctor',
-                'routParam' => [
-                    'patient' => $prescriptionAppointment->getPatientAppointment()->getMedicalHistory()->getPatient()->getId(),
-                    'prescription' => $prescriptionAppointment->getPrescription()->getId(),
-                    'prescriptionAppointment' => $prescriptionAppointment->getId()
+                    AuthUserInfoService::getFIO($prescriptionAppointment->getStaff()->getAuthUser())
                 ]
-            ]
         );
     }
 

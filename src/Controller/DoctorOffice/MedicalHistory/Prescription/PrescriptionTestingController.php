@@ -177,14 +177,6 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
             $prescriptionTesting, [
                 'staffTitle' =>
                     AuthUserInfoService::getFIO($prescriptionTesting->getStaff()->getAuthUser()),
-                'backRouteName' => 'add_prescription_show',
-                'editRouteName' => 'edit_prescription_testing_by_doctor',
-                'deleteRouteName' => 'delete_prescription_testing_by_doctor',
-                'routParam' => [
-                    'patient' => $prescriptionTesting->getPatientTesting()->getMedicalHistory()->getPatient()->getId(),
-                    'prescription' => $prescriptionTesting->getPrescription()->getId(),
-                    'prescriptionTesting' => $prescriptionTesting->getId()
-                ]
             ]
         );
     }

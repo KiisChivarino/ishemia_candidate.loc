@@ -11,6 +11,7 @@ use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\Admin\MedicalRecordTemplate;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
+use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
@@ -161,6 +162,38 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
     {
         parent::edit();
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
+        return $this;
+    }
+
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show($entity);
+        $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)->getTemplateItemRoute()
+            ->setRouteName('add_prescription_show')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPatientAppointment()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                ]
+            );
+        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->getTemplateItemRoute()
+            ->setRouteName('edit_prescription_appointment_by_doctor')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPatientAppointment()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                    'prescriptionAppointment' => $entity->getId()
+                ]
+            );
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->getTemplateItemRoute()
+            ->setRouteName('delete_prescription_appointment_by_doctor')
+            ->setRouteParams(
+                [
+                    'patient' => $entity->getPatientAppointment()->getMedicalHistory()->getPatient()->getId(),
+                    'prescription' => $entity->getPrescription()->getId(),
+                    'prescriptionAppointment' => $entity->getId()
+                ]
+            );
         return $this;
     }
 }
