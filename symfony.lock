@@ -123,6 +123,9 @@
     "michelf/php-markdown": {
         "version": "1.9.0"
     },
+    "nesbot/carbon": {
+        "version": "2.52.0"
+    },
     "nikic/php-parser": {
         "version": "v4.6.0"
     },
