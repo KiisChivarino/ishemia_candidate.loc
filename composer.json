@@ -10,6 +10,7 @@
     "doctrine/annotations": "^1.8",
     "knplabs/knp-menu-bundle": "^3.0",
     "michelf/php-markdown": "^1.9",
+    "nesbot/carbon": "^2.52",
     "omines/datatables-bundle": "^0.5.1",
     "sensio/framework-extra-bundle": "^5.5",
     "spatie/image-optimizer": "^1.2",
