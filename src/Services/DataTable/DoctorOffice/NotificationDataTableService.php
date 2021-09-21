@@ -92,7 +92,7 @@ class NotificationDataTableService extends DoctorOfficeDatatableService
                                         $patientNotification->getPatient()->getAuthUser(), true
                                     ),
                                     $patientNotification->getPatient()->getId(),
-                                    'patient_show'
+                                    'doctor_medical_history'
                                 ) : $listTemplateItem->getContentValue('empty');
                             case 'staff':
                             default:
