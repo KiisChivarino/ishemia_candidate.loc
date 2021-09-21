@@ -29,8 +29,14 @@ class MeasureType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add('nameRu', null, ['label' => $templateItem->getContentValue('nameRu')])
-            ->add('nameEn', null, ['label' => $templateItem->getContentValue('nameEn')])
+            ->add('nameRu', null, [
+                'label' => $templateItem->getContentValue('nameRu'),
+                'help' => $templateItem->getContentValue('onlyRuss')
+            ])
+            ->add('nameEn', null, [
+                'label' => $templateItem->getContentValue('nameEn'),
+                'help' => $templateItem->getContentValue('onlyEng')
+            ])
             ->add('title', null, ['label' => $templateItem->getContentValue('measureTitle')])
             ->add(
                 'enabled', CheckboxType::class, [
