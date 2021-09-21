@@ -16,6 +16,12 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.description }}</span>
-        <p>{{ entity.description }}</p>
+        <p>
+            {% if entity.description %}
+                {{ entity.description }}
+            {% else %}
+                {{ template.items.list.content.empty }}
+            {% endif %}
+        </p>
     </li>
 {% endblock %}
