@@ -47,12 +47,17 @@ class AnalysisDataTableService extends AdminDatatableService
             ->add(
                 'description', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('description'),
+                    'render' => function (string $data, Analysis $analysis) use ($listTemplateItem) {
+                        return
+                            $analysis->getDescription() ? $analysis->getDescription()
+                                : $listTemplateItem->getContentValue('empty');
+                    }
                 ]
             )
             ->add(
                 'analysisGroup', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisGroup'),
-                    'render' => function (string $data, Analysis $analysis) {
+                    'render' => function (string $data, Analysis $analysis) use ($listTemplateItem) {
                         /** @var AnalysisGroup $analysisGroup */
                         $analysisGroup = $analysis->getAnalysisGroup();
                         return
@@ -61,7 +66,7 @@ class AnalysisDataTableService extends AdminDatatableService
                                     $analysisGroup->getName(), $analysisGroup->getId(),
                                     'analysis_group_show'
                                 )
-                                : '';
+                                : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             );

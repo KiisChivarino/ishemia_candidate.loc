@@ -40,6 +40,11 @@ class AnalysisGroupDataTableService extends AdminDatatableService
             ->add(
                 'fullName', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('fullName'),
+                    'render' => function (string $data, AnalysisGroup $analysisGroup) use ($listTemplateItem) {
+                        return
+                            $analysisGroup->getFullName() ? $analysisGroup->getFullName()
+                                : $listTemplateItem->getContentValue('empty');
+                    }
                 ]
             );
         $this->addEnabled($listTemplateItem);

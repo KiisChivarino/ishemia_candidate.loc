@@ -37,7 +37,7 @@ class ClinicalDiagnosisDataTableService extends AdminDatatableService
             ->add(
                 'MKBCode', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('MKBCode'),
-                    'render' => function (string $data, ClinicalDiagnosis $clinicalDiagnosis) {
+                    'render' => function (string $data, ClinicalDiagnosis $clinicalDiagnosis) use ($listTemplateItem) {
                         /** @var Diagnosis $diagnosis */
                         $diagnosis = $clinicalDiagnosis->getMKBCode();
                         return
@@ -45,7 +45,7 @@ class ClinicalDiagnosisDataTableService extends AdminDatatableService
                                 $diagnosis->getCode(),
                                 $diagnosis->getId(),
                                 'diagnosis_show'
-                            ) : '';
+                            ) : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             );
