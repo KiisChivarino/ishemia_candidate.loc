@@ -2,6 +2,10 @@
 
 namespace App\Services\TemplateBuilders\Admin;
 
+use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\DeleteTemplateItem;
+use App\Services\TemplateItems\NewTemplateItem;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -77,5 +81,42 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
             self::FILTER_CONTENT,
             self::ENTITY_CONTENT
         );
+    }
+
+    /**
+     * @param FilterService|null $filterService
+     * @return $this
+     */
+    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    {
+        parent::list();
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
+        $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);
+
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     * @return $this
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show();
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
+
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     * @return $this
+     */
+    public function edit(?object $entity = null): AppTemplateBuilder
+    {
+        parent::edit();
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
+
+        return $this;
     }
 }
