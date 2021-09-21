@@ -15,7 +15,9 @@ class MeasureTemplate extends AdminTemplateBuilder
     protected const COMMON_CONTENT = [
         'nameRu' => 'Русское название',
         'nameEn' => 'Междунар. название',
-        'measureTitle' => 'Описание'
+        'measureTitle' => 'Описание',
+        'onlyRuss' => 'Только русские символы',
+        'onlyEng' => 'Только английские символы',
     ];
 
     /** @var string[] Common LIST_CONTENT */

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Единица измерения
@@ -19,11 +20,19 @@ class Measure
 
     /**
      * @ORM\Column(type="string", length=10, options={"comment"="Русское название единицы измерения"})
+     * @Assert\Regex(
+     *     pattern="/^[^A-z]+$/",
+     *     message="Поле «Русское название» не может содержать англоязычные символы"
+     * )
      */
     private $nameRu;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true, options={"comment"="Английское название единицы измерения"})
+     * @Assert\Regex(
+     *     pattern="/^[^А-я]+$/",
+     *     message="Поле «Английское название» не может содержать русскоязычные символы"
+     * )
      */
     private $nameEn;
 
