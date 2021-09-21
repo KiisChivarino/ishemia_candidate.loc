@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\PatientTestingResult as CustomAssert;
 
 /**
  * Class PatientTestingResult
@@ -34,6 +35,8 @@ class PatientTestingResult
 
     /**
      * @ORM\Column(type="float", options={"comment"="Результат анализа"}, nullable=true)
+     * @CustomAssert\PatientTestingResult
+     *
      */
     private $result;
 
