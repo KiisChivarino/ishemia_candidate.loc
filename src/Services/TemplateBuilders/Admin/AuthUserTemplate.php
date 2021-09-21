@@ -5,6 +5,7 @@ namespace App\Services\TemplateBuilders\Admin;
 use App\Services\FilterService\FilterService;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
@@ -108,6 +109,8 @@ class AuthUserTemplate extends AdminTemplateBuilder
         parent::list($filterService);
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
             ->setIsEnabled(false);
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->setIsEnabled(false);
         return $this;
     }
 
@@ -124,6 +127,8 @@ class AuthUserTemplate extends AdminTemplateBuilder
         $authUserInfoService = new AuthUserInfoService();
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
             ->setContent('h1', 'Просмотр данных пользователя: '.$authUserInfoService->getFIO($entity, true));
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->setIsEnabled(false);
         return $this;
     }
 
@@ -142,6 +147,8 @@ class AuthUserTemplate extends AdminTemplateBuilder
             ->setContent('h1', 'Редактирование пользователя: '.$authUserInfoService->getFIO($entity, true));
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
             ->setPath($this->getTemplatePath());
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->setIsEnabled(false);
         return $this;
     }
 }
