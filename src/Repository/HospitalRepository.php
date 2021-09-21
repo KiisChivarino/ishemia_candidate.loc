@@ -39,8 +39,11 @@ class HospitalRepository extends AppRepository
         /** @var City $city */
         $city = $this->_em->getRepository(City::class)->find((int)$city_id);
         $qb = $this->createQueryBuilder('h')
-            ->andWhere('h.enabled = :valEnabled')
-            ->setParameter('valEnabled', true);
+            ->where('h.enabled = :valEnabled')
+            ->andWhere('LOWER(h.name) LIKE LOWER(:hospital)')
+            ->setParameter('valEnabled', true)
+            ->setParameter('hospital', '%'.$value.'%');
+
 
         if (is_a($city, City::class)) {
             $qb->andWhere('h.city = :valCity')
