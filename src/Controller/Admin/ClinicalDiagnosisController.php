@@ -55,25 +55,6 @@ class ClinicalDiagnosisController extends AdminAbstractController
     }
 
     /**
-     * New clinical diagnosis
-     * @Route("/new", name="clinical_diagnosis_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function new(Request $request): Response
-    {
-        $clinicalDiagnosis = new ClinicalDiagnosis();
-        return $this->responseNewMultiForm(
-            $request,
-            $clinicalDiagnosis,
-            [
-                new FormData(ClinicalDiagnosisType::class, $clinicalDiagnosis),
-                new FormData(DiseasesType::class, $clinicalDiagnosis),
-            ]);
-    }
-
-    /**
      * Show clinical diagnosis info
      * @Route("/{id}", name="clinical_diagnosis_show", methods={"GET"}, requirements={"id"="\d+"})
      * @param ClinicalDiagnosis $clinicalDiagnosi
@@ -102,18 +83,5 @@ class ClinicalDiagnosisController extends AdminAbstractController
                 new FormData(ClinicalDiagnosisType::class, $clinicalDiagnosis),
                 new FormData(DiseasesType::class, $clinicalDiagnosis),
             ]);
-    }
-
-    /**
-     * Delete clinical diagnosis
-     * @Route("/{id}", name="clinical_diagnosis_delete", methods={"DELETE"})
-     * @param Request $request
-     * @param ClinicalDiagnosis $clinicalDiagnosis
-     * @return Response
-     * @throws Exception
-     */
-    public function delete(Request $request, ClinicalDiagnosis $clinicalDiagnosis): Response
-    {
-        return $this->responseDelete($request, $clinicalDiagnosis);
     }
 }
