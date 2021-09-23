@@ -55,6 +55,11 @@ class WebNotificationDataTableService extends AdminDatatableService
             ->add(
                 'isRead', BoolColumn::class, [
                     'label' => $listTemplateItem->getContentValue('isRead'),
+                    'render' => function (string $data) use ($listTemplateItem) {
+                       return ((boolean)$data == 'true')
+                           ? $listTemplateItem->getContentValue('isReadFalse')
+                           : $listTemplateItem->getContentValue('isReadTrue') ;
+                    }
                 ]
             );
         return $this->dataTable

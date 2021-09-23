@@ -19,8 +19,8 @@ class WebNotificationTemplate extends AdminTemplateBuilder
 {
     /** @var string[] Common list content for staff templates */
     protected const LIST_CONTENT = [
-        'h1' => 'Список уведомлений e-mail',
-        'title' => 'E-mail уведомления',
+        'h1' => 'Список Web уведомлений',
+        'title' => 'Список Web уведомлений',
         'notification' => 'Уведомление',
         'receiver' => 'Получатель',
         'isRead' => 'Просмотрено'
@@ -29,6 +29,8 @@ class WebNotificationTemplate extends AdminTemplateBuilder
     /** @var string[] Common ENTITY CONTENT */
     public const ENTITY_CONTENT = [
         'entity' => 'Email уведомление',
+        'isReadTrue' => 'Да',
+        'isReadFalse' => 'Нет',
     ];
 
     /**
