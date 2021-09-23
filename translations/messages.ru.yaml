@@ -8,6 +8,8 @@ message:
   fail:
     provider.error: SMS Уведомление (id:%id%) не доставлено (ошибка на стороне провайдера).
     wrong.number: SMS Уведомление (id:%id%) не доставлено (неверный номер).
+  validate:
+    message.error: Поле «Текст сообщения» должно быть заполнено
 app_controller:
   error:
       invalid_handle_request : Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...
