@@ -83,6 +83,7 @@ class PatientTestingListPlannedDataTableService extends DoctorOfficeDatatableSer
                         $this->patientTestingDatatableRepository
                             ->getPatientTestingsPlannedForDatatable($builder, $options['patientId'], $analysisGroup);
                     },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }

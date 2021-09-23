@@ -8,9 +8,12 @@ use App\Services\InfoService\PatientTestingInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTableFactory;
+use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -63,7 +66,7 @@ abstract class DoctorOfficeDatatableService extends DataTableService
             ->add(
                 'analysisGroup', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisGroup'),
-                    'field' => 'aG.name',
+                    'field' => 'upper(aG.name)',
                     'render' => function (string $data, PatientTesting $patientTesting) {
                         return
                             $patientTesting
@@ -98,5 +101,23 @@ abstract class DoctorOfficeDatatableService extends DataTableService
                     );
             }
         );
+    }
+
+    /**
+     * Реализация регистронезависимого поиска по дататейблу. Нужно добавить в createAdapter параметр
+     * 'criteria' => $this->criteriaSearch(). Далее к поля для поиска нужно добавить следующие параметры:
+     * 'field' => 'upper(Название столба в БД с алиасом)',
+     * 'searchable' => true,
+     *
+     * @return array
+     */
+    protected function criteriaSearch(): array
+    {
+        return  [
+            function (QueryBuilder $queryBuilder, DataTableState $state) {
+                $state->setGlobalSearch(mb_strtoupper($state->getGlobalSearch()));
+            },
+            new SearchCriteriaProvider(),
+        ];
     }
 }

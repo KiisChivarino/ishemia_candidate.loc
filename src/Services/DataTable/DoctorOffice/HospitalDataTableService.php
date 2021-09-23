@@ -52,7 +52,8 @@ class HospitalDataTableService extends DoctorOfficeDatatableService
                                 ]
                             ) . '">' . $hospital->getName() . '</a>';
                     },
-                    'field' => 'h.name',
+                    'field' => 'upper(h.name)',
+                    'searchable' => true,
                     'orderable' => true,
                     'orderField' => 'h.name'
                 ]
@@ -65,7 +66,8 @@ class HospitalDataTableService extends DoctorOfficeDatatableService
                         $city = $hospital->getCity();
                         return $city ? $city->getName() : '';
                     },
-                    'field' => 'c.name',
+                    'field' => 'upper(c.name)',
+                    'searchable' => true,
                     'orderable' => true,
                     'orderField' => 'c.name'
                 ]
@@ -82,6 +84,7 @@ class HospitalDataTableService extends DoctorOfficeDatatableService
                             ->andWhere('h.enabled = true')
                             ->leftJoin('h.city', 'c');
                     },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }

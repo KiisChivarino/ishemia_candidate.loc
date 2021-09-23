@@ -87,6 +87,27 @@ class PatientWithNoProcessedListDataTableService extends DoctorOfficeDatatableSe
                 ]
             )
             ->add(
+                'firstName', TextColumn::class, [
+                    'field' => 'upper(u.firstName)',
+                    'searchable' => true,
+                    'visible' => false
+                ]
+            )
+            ->add(
+                'lastName', TextColumn::class, [
+                    'field' => 'upper(u.lastName)',
+                    'searchable' => true,
+                    'visible' => false
+                ]
+            )
+            ->add(
+                'patronymicName', TextColumn::class, [
+                    'field' => 'upper(u.patronymicName)',
+                    'searchable' => true,
+                    'visible' => false
+                ]
+            )
+            ->add(
                 'dateOfBirth', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('dateOfBirth'),
                     'data' => function (Patient $patient) {
@@ -145,6 +166,8 @@ class PatientWithNoProcessedListDataTableService extends DoctorOfficeDatatableSe
                         $builder
                             ->select('p')
                             ->from(Patient::class, 'p')
+                            ->leftJoin('p.AuthUser', 'u')
+                            ->leftJoin('p.hospital', 'h')
                             ->andWhere('p.id IN (:patients)')
                             ->setParameter(
                                 'patients',
@@ -159,6 +182,7 @@ class PatientWithNoProcessedListDataTableService extends DoctorOfficeDatatableSe
                                 ->setParameter('valHospital', $hospital);
                         }
                     },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }

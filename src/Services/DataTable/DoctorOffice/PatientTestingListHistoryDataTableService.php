@@ -83,6 +83,7 @@ class PatientTestingListHistoryDataTableService extends DoctorOfficeDatatableSer
                         $this->patientTestingDatatableRepository
                             ->getPatientTestingsHistoryForDatatable($builder, $options['patientId'], $analysisGroup);
                     },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }
