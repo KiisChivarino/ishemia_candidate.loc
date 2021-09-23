@@ -6,11 +6,15 @@ use App\Entity\Notification;
 use App\Entity\SMSNotification;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\DataTableFactory;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DataTableService
@@ -19,6 +23,26 @@ use Omines\DataTablesBundle\DataTable;
  */
 class SMSNotificationDataTableService extends AdminDatatableService
 {
+    /** @var TranslatorInterface */
+    private $translator;
+
+    /**
+     * SMSNotificationDataTableService constructor.
+     * @param DataTableFactory $dataTableFactory
+     * @param UrlGeneratorInterface $router
+     * @param TranslatorInterface $translator
+     * @param EntityManagerInterface|null $entityManager
+     */
+    public function __construct(
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        TranslatorInterface $translator,
+        EntityManagerInterface $entityManager = null)
+    {
+        parent::__construct($dataTableFactory, $router, $entityManager);
+        $this->translator = $translator;
+    }
+
     /**
      * Таблица sms уведомлений
      * @param Closure $renderOperationsFunction
@@ -26,7 +50,10 @@ class SMSNotificationDataTableService extends AdminDatatableService
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
@@ -58,6 +85,9 @@ class SMSNotificationDataTableService extends AdminDatatableService
             ->add(
                 'status', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('status'),
+                    'render' => function (string $data) {
+                        return $this->translator->trans("sms_type.".$data);
+                    }
                 ]
             )
             ->add(
