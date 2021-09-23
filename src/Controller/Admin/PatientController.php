@@ -192,6 +192,7 @@ class PatientController extends AdminAbstractController
             [
                 new FormData(AuthUserRequiredType::class, $authUser),
                 new FormData(AuthUserEmailType::class, $authUser),
+                new FormData(PatientLocationRequiredType::class, $patient),
                 new FormData(AuthUserEnabledType::class, $authUser),
                 new FormData(AuthUserPasswordType::class, $authUser, ['isPasswordRequired' => false]),
                 new FormData(PatientRequiredType::class, $patient),
