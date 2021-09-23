@@ -9,6 +9,7 @@ use App\Entity\MedicalRecord;
 use App\Entity\PatientAppointment;
 use App\Entity\Staff;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\InfoService\MedicalRecordInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
@@ -41,7 +42,8 @@ class PatientAppointmentDataTableService extends AdminDatatableService
             ->add(
                 'medicalRecord', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('medicalRecord'),
-                    'render' => function (string $dataString, PatientAppointment $patientAppointment) use ($listTemplateItem): string {
+                    'render' => function (string $dataString, PatientAppointment $patientAppointment)
+                    use ($listTemplateItem): string {
                         /** @var MedicalRecord $medicalRecord */
                         $medicalRecord = $patientAppointment->getMedicalRecord();
                         return $medicalRecord ? $this->getLink(
@@ -55,7 +57,8 @@ class PatientAppointmentDataTableService extends AdminDatatableService
             ->add(
                 'staff', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staff'),
-                    'render' => function (string $dataString, PatientAppointment $patientAppointment) use ($listTemplateItem): string {
+                    'render' => function (string $dataString, PatientAppointment $patientAppointment)
+                    use ($listTemplateItem): string {
                         /** @var Staff $staff */
                         $staff = $patientAppointment->getStaff();
                         return $staff ? $this->getLink(
@@ -69,7 +72,8 @@ class PatientAppointmentDataTableService extends AdminDatatableService
             ->add(
                 'appointmentType', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('appointmentType'),
-                    'render' => function (string $dataString, PatientAppointment $patientAppointment) use ($listTemplateItem): string {
+                    'render' => function (string $dataString, PatientAppointment $patientAppointment)
+                    use ($listTemplateItem): string {
                         /** @var AppointmentType $appointmentType */
                         $appointmentType = $patientAppointment->getAppointmentType();
                         return $appointmentType ? $this->getLink(
@@ -98,6 +102,22 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
+                'medicalHistory', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('medicalHistory'),
+                    'searchable' => false,
+                    'render' => function (string $dataString, PatientAppointment $patientAppointment)
+                    use ($listTemplateItem): string {
+                        $medicalHistory = $patientAppointment->getMedicalHistory();
+                        return $medicalHistory
+                            ? $this->getLink(
+                                MedicalHistoryInfoService::getMedicalHistoryTitle($medicalHistory),
+                                $medicalHistory->getId(),
+                            'medical_history_show')
+                            : $listTemplateItem->getContentValue('empty');
+                    },
+                ]
+            )
+            ->add(
                 'isConfirmed', BoolColumn::class, [
                     'label' => $listTemplateItem->getContentValue('isConfirmed'),
                     'trueValue' => $listTemplateItem->getContentValue('trueValue'),
@@ -117,7 +137,7 @@ class PatientAppointmentDataTableService extends AdminDatatableService
                         $builder
                             ->select('pa')
                             ->from(PatientAppointment::class, 'pa')
-                            ->leftJoin('pa.prescriptionAppointment', 'pra');
+                            ->innerJoin('pa.prescriptionAppointment', 'pra');
                         if ($medicalHistory) {
                             $builder
                                 ->andWhere('pa.medicalHistory = :medicalHistory')
