@@ -40,6 +40,7 @@ prescription_appointment_controller:
 form:
   error:
     mime_type_message_error: Изображение должно быть в формате «jpeg» или «png»
+    min_max_analysis_rate: Минимальное знаение не может быть больше максимального
 hospital_controller:
   error:
     delete: Больницу, к которой привязаны пациенты и/или врачи, удалить нельзя!
