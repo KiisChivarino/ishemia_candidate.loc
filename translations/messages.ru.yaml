@@ -4,6 +4,11 @@ log:
   delete.entity: Запись - %entity% (id:%id%) уадлена.
 command:
   success: Команда %command% успешно выполнена.
+sms_type:
+  wait: Ожидается
+  not_delivered: Не доставлено
+  delivered: Доставлено
+  failed: Ошибка
 message:
   fail:
     provider.error: SMS Уведомление (id:%id%) не доставлено (ошибка на стороне провайдера).
