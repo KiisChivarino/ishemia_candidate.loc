@@ -6,11 +6,14 @@ use App\Services\DataTable\DataTableService;
 use App\Services\Template\TemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Exception;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
+use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -132,5 +135,37 @@ abstract class AdminDatatableService extends DataTableService
                     'searchable' => false
                 ]
             );
+    }
+
+    /**
+     * Get link
+     *
+     * @param string $value
+     * @param int $id
+     * @param string $route
+     *
+     * @return string
+     */
+    protected function getLink(string $value, int $id, string $route): string
+    {
+        return '<a href="' . $this->router->generate($route, ['id' => $id]) . '">' . $value . '</a>';
+    }
+
+    /**
+     * Реализация регистронезависимого поиска по дататейблу. Нужно добавить в createAdapter параметр
+     * 'criteria' => $this->criteriaSearch(). Далее к поля для поиска нужно добавить следующие параметры:
+     * 'field' => 'upper(Название столба в БД с алиасом)',
+     * 'searchable' => true,
+     *
+     * @return array
+     */
+    protected function criteriaSearch(): array
+    {
+        return  [
+            function (QueryBuilder $queryBuilder, DataTableState $state) {
+                $state->setGlobalSearch(mb_strtoupper($state->getGlobalSearch()));
+            },
+            new SearchCriteriaProvider(),
+        ];
     }
 }

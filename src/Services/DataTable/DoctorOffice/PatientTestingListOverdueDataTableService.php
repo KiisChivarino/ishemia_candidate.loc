@@ -83,6 +83,7 @@ class PatientTestingListOverdueDataTableService extends DoctorOfficeDatatableSer
                         $this->patientTestingDatatableRepository
                             ->getPatientTestingsOverdueForDatatable($builder, $options['patientId'], $analysisGroup);
                     },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }

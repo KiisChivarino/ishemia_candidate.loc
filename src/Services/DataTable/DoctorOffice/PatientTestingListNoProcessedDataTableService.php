@@ -83,6 +83,7 @@ class PatientTestingListNoProcessedDataTableService extends DoctorOfficeDatatabl
                         $this->patientTestingDatatableRepository
                             ->getPatientTestingsNoProcessedForDatatable($builder, $options['patientId'], $analysisGroup);
                     },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }
