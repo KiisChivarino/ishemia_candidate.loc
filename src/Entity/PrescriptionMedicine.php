@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\PrescriptionMedicineRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PrescriptionMedicineRepository::class)
  * @ORM\Table(options={"comment":"Назначение лекарства"});
+ * @ORM\HasLifecycleCallbacks();
  */
 class PrescriptionMedicine
 {
@@ -221,4 +223,11 @@ class PrescriptionMedicine
         return $this;
     }
 
+    /**
+     * @ORM\PrePersist
+     */
+    public function PrePersist(): void
+    {
+        $this->inclusionTime = new DateTime();
+    }
 }
