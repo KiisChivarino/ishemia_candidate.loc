@@ -41,6 +41,18 @@
                 </p>
             </li>
             <li>
+                <span class="title">{{ template.items.show.content.patientMedicine }}</span>
+                <p>
+                    {% if entity.patientMedicine.prescriptionMedicine %}
+                        <a href="{{ path('patient_medicine_show', {'id': entity.patientMedicine.id}) }}">
+                            {{ prescriptionTitle }}
+                        </a>
+                    {% else %}
+                        {{ template.items.list.content.empty }}
+                    {% endif %}
+                </p>
+            </li>
+            <li>
                 <span class="title">{{ template.items.show.content.inclusionTime }}</span>
                 <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
             </li>

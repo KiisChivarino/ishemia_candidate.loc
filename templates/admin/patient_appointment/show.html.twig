@@ -23,6 +23,18 @@
         </p>
     </li>
     <li>
+        <span class="title">{{ template.items.show.content.prescriptionAppointment }}</span>
+        <p>
+            {% if entity.prescriptionAppointment %}
+                <a href="{{ path('prescription_appointment_show', {'id': entity.prescriptionAppointment.id}) }}">
+                    {{ template.items.show.content.prescriptionAppointment }}
+                </a>
+            {% else %}
+                {{ template.items.show.content.empty }}
+            {% endif %}
+        </p>
+    </li>
+    <li>
         <span class="title">{{ template.items.show.content.staffFio }}</span>
         <p>
             {% if entity.staff %}
