@@ -22,7 +22,7 @@ class SMSNotificationTemplate extends AdminTemplateBuilder
         'title' => 'SMS уведомления',
         'notification' => 'Уведомление',
         'smsTo' => 'Получатель',
-        'externalId' => 'Id sms',
+        'externalId' => 'Идентификатор сообщения',
         'status' => 'Статус',
         'attempt' => 'Попытка'
     ];
