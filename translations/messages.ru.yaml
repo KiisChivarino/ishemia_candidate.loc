@@ -24,6 +24,7 @@ app_controller:
       delete_dbal_exception: Ошибка! Запись не удалена. Обратитесь к администратору...
       parameter_not_found: Запись не найдена по параметру!
       current_medical_history_not_found: Текущая история болезни не найдена!
+      double_gender_in_analysis_rate: Референтное значение для данного пола уже создано
   success:
     success_post: Запись успешно сохранена!
     success_delete: Запись успешно удалена!

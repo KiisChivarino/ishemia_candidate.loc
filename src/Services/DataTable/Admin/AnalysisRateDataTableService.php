@@ -12,6 +12,7 @@ use Closure;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 
@@ -22,7 +23,6 @@ use Omines\DataTablesBundle\DataTable;
  */
 class AnalysisRateDataTableService extends AdminDatatableService
 {
-
     /**
      * Таблица референтных значений в админке
      *
@@ -68,20 +68,55 @@ class AnalysisRateDataTableService extends AdminDatatableService
             ->add(
                 'rateMin', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('rateMin'),
-                    'searchable' => false
+                    'searchable' => false,
+                    'render' => function (string $data, AnalysisRate $analysisRate) {
+                        return sprintf(
+                            self::TABLE_EDIT_PATTERN,
+                            $analysisRate->getId(),
+                            $this->router->generate(
+                                'analysis_rate_min_ajax_edit',
+                                ['id' => $analysisRate->getId()]
+                            ),
+                            $analysisRate->getRateMin()
+                        );
+                    },
                 ]
             )
             ->add(
                 'rateMax', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('rateMax'),
-                    'searchable' => false
+                    'searchable' => false,
+                    'render' => function (string $data, AnalysisRate $analysisRate) {
+                        return sprintf(
+                            self::TABLE_EDIT_PATTERN,
+                            $analysisRate->getId(),
+                            $this->router->generate(
+                                'analysis_rate_max_ajax_edit',
+                                ['id' => $analysisRate->getId()]
+                            ),
+                            $analysisRate->getRateMax()
+                        );
+                    },
                 ]
             )
             ->add(
                 'gender', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('gender'),
                     'field' => 'g.name',
-                    'searchable' => true
+                    'searchable' => true,
+                    'render' => function (string $data, AnalysisRate $analysisRate) use ($listTemplateItem) {
+                        $value = ($analysisRate->getGender() !== null)
+                            ? $analysisRate->getGender()->getName() : $listTemplateItem->getContentValue('empty');
+                        return sprintf(
+                            self::TABLE_EDIT_PATTERN,
+                            $analysisRate->getId(),
+                            $this->router->generate(
+                                'analysis_rate_gender_ajax_edit',
+                                ['id' => $analysisRate->getId()]
+                            ),
+                            $value
+                        );
+                    },
                 ]
             )
             ->add(
@@ -94,8 +129,25 @@ class AnalysisRateDataTableService extends AdminDatatableService
                     },
                     'searchable' => true
                 ]
+            )
+            ->add('enabled', BoolColumn::class, [
+                    'trueValue' => $listTemplateItem->getContentValue('trueValue'),
+                    'falseValue' => $listTemplateItem->getContentValue('falseValue'),
+                    'label' => $listTemplateItem->getContentValue('enabled'),
+                    'searchable' => false,
+                    'render' => function (string $data, AnalysisRate $analysisRate) {
+                        return sprintf(
+                            self::TABLE_EDIT_PATTERN,
+                            $analysisRate->getId(),
+                            $this->router->generate(
+                                'analysis_rate_enable_ajax_edit',
+                                ['id' => $analysisRate->getId()]
+                            ),
+                            $data
+                        );
+                    },
+                ]
             );
-        $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
         /** @var AnalysisGroup $analysisGroup */
         $analysisGroup = $filters[AppAbstractController::FILTER_LABELS['ANALYSIS_GROUP']];

@@ -23,4 +23,24 @@ class AnalysisRateRepository extends AppRepository
     {
         parent::__construct($registry, AnalysisRate::class);
     }
+
+    /**
+     * @param AnalysisRate $analysisRate
+     * @return int
+     */
+    public function countAnalysisRateForGender(AnalysisRate $analysisRate): int
+    {
+        $qb = $this->createQueryBuilder('aR')
+            ->andWhere('aR.id != :analysisRate')
+            ->andWhere('aR.gender = :gender')
+            ->andWhere('aR.analysis = :analysis')
+            ->setParameter('analysisRate', $analysisRate)
+            ->setParameter('gender', $analysisRate->getGender())
+            ->setParameter('analysis', $analysisRate->getAnalysis());
+        return
+            count($qb->select('aR.id')
+                ->distinct()
+                ->getQuery()
+                ->getResult());
+    }
 }

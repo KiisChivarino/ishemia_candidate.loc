@@ -9,12 +9,18 @@ import './app';
 import './mask';
 import './menu';
 import swal from 'sweetalert2';
+import { initialDataTableEdit, initialTableEdit } from './tableEdit';
+
 
 require('../images/operation-icon-1.svg');
 require('../images/operation-icon-2.svg');
 require('../images/operation-icon-3.svg');
 require('../images/favicons/doc-fav.ico');
 require('fancybox')($);
+require('../js/tableEdit');
+
+initialDataTableEdit();
+initialTableEdit();
 
 let acc = document.getElementsByClassName("accordion");
 let i;

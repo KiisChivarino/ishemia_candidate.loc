@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnalysisRateRepository")
@@ -28,11 +29,17 @@ class AnalysisRate
 
     /**
      * @ORM\Column(type="float", options={"comment"="Минимальное нормальное значение"})
+     * @Assert\NotNull(
+     *     message = "Поле «Минимальное значение» не должно быть пустым"
+     * )
      */
     private $rateMin;
 
     /**
      * @ORM\Column(type="float", options={"comment"="Максимальное нормальное значение"})
+     * @Assert\NotNull(
+     *     message = "Поле «Максимальное значение» не должно быть пустым"
+     * )
      */
     private $rateMax;
 
@@ -86,11 +93,11 @@ class AnalysisRate
     }
 
     /**
-     * @param float $rateMin
+     * @param float|null $rateMin
      *
      * @return $this
      */
-    public function setRateMin(float $rateMin): self
+    public function setRateMin(?float $rateMin): self
     {
         $this->rateMin = $rateMin;
         return $this;
@@ -105,11 +112,11 @@ class AnalysisRate
     }
 
     /**
-     * @param float $rateMax
+     * @param float|null $rateMax
      *
      * @return $this
      */
-    public function setRateMax(float $rateMax): self
+    public function setRateMax(?float $rateMax): self
     {
         $this->rateMax = $rateMax;
         return $this;

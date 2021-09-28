@@ -24,6 +24,12 @@ abstract class DataTableService
     protected $dataTable;
 
     /**
+     * Паттерн для вывода редактируемой ячейки дататейбла
+     * @var
+     */
+    public const TABLE_EDIT_PATTERN = '<div id="entity%d" data-url="%s" class="xEditable">%s</div>';
+
+    /**
      * DataTableService constructor.
      *
      * @param DataTableFactory $dataTableFactory
