@@ -4,12 +4,18 @@ namespace App\Controller\Admin;
 
 use App\Controller\AppAbstractController;
 use App\Entity\AnalysisRate;
+use App\Form\Admin\AnalysisRate\AnalysisRateGenderAjaxType;
+use App\Form\Admin\AnalysisRate\AnalysisRateRateEnabledAjaxType;
+use App\Form\Admin\AnalysisRate\AnalysisRateRateMaxAjaxType;
+use App\Form\Admin\AnalysisRate\AnalysisRateRateMinAjaxType;
 use App\Form\Admin\AnalysisRate\AnalysisRateType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\AnalysisRateDataTableService;
 use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\Admin\AnalysisRateTemplate;
+use App\Services\TemplateItems\EditTemplateItem;
 use Exception;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -129,5 +135,134 @@ class AnalysisRateController extends AdminAbstractController
     public function delete(Request $request, AnalysisRate $analysisRate): Response
     {
         return $this->responseDelete($request, $analysisRate);
+    }
+
+    /**
+     * Max analysis rate ajax edit
+     * @Route(
+     *     "/{id}/max_edit",
+     *     name="analysis_rate_max_ajax_edit",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     *     )
+     *
+     * @param Request $request
+     * @param AnalysisRate $analysisRate
+     *
+     * @return Response
+     * @throws Exception
+     */
+    public function maxAnalysisRateAjaxEdit(Request $request, AnalysisRate $analysisRate): Response
+    {
+        $this->templateService->edit();
+        return $this->submitFormForAjax(
+            $request,
+            $analysisRate,
+            AnalysisRateRateMaxAjaxType::class,
+            function (FormInterface $form): string{
+                return $form->getData()->getRateMax();
+            }
+        );
+    }
+
+    /**
+     * Max analysis rate ajax edit
+     * @Route(
+     *     "/{id}/min_edit",
+     *     name="analysis_rate_min_ajax_edit",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     *     )
+     *
+     * @param Request $request
+     * @param AnalysisRate $analysisRate
+     *
+     * @return Response
+     * @throws Exception
+     */
+    public function minAnalysisRateAjaxEdit(Request $request, AnalysisRate $analysisRate): Response
+    {
+        //Инициализация темплейта
+        $this->templateService->edit();
+        //Рендер формы/ответа от формы
+        return $this->submitFormForAjax(
+            $request,
+            $analysisRate,
+            AnalysisRateRateMinAjaxType::class,
+            function (FormInterface $form): string{
+                return $form->getData()->getRateMin();
+            }
+        );
+    }
+
+    /**
+     * Max analysis rate ajax edit
+     * @Route(
+     *     "/{id}/enable_edit",
+     *     name="analysis_rate_enable_ajax_edit",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     *     )
+     *
+     * @param Request $request
+     * @param AnalysisRate $analysisRate
+     *
+     * @return Response
+     * @throws Exception
+     */
+    public function enableAnalysisRateAjaxEdit(Request $request, AnalysisRate $analysisRate): Response
+    {
+        //Инициализация темплейта
+        $this->templateService->edit();
+        //Рендер формы/ответа от формы
+        return $this->submitFormForAjax(
+            $request,
+            $analysisRate,
+            AnalysisRateRateEnabledAjaxType::class,
+            function (FormInterface $form): string{
+                $template = $this
+                    ->templateService
+                    ->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME);
+                return ($form->getData()->getEnabled())
+                    ? $template->getContentValue('trueValue')
+                    : $template->getContentValue('falseValue');
+            }
+        );
+    }
+
+    /**
+     * Gender analysis rate ajax edit
+     * @Route(
+     *     "/{id}/gender_edit",
+     *     name="analysis_rate_gender_ajax_edit",
+     *     methods={"GET","POST"},
+     *     requirements={"id"="\d+"}
+     *     )
+     *
+     * @param Request $request
+     * @param AnalysisRate $analysisRate
+     *
+     * @return Response
+     * @throws Exception
+     */
+    public function genderAnalysisRateAjaxEdit(Request $request, AnalysisRate $analysisRate): Response
+    {
+        //Инициализация темплейта
+        $this->templateService->edit();
+        //Рендер формы/ответа от формы
+        return $this->submitFormForAjax(
+            $request,
+            $analysisRate,
+            AnalysisRateGenderAjaxType::class,
+            function (FormInterface $form): ?string{
+                $formData = $form->getData();
+                return $formData->getGender()
+                    ? $formData->getGender()->getName()
+                    : $this
+                        ->templateService
+                        ->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
+                        ->getContentValue('empty');
+            }
+        );
     }
 }

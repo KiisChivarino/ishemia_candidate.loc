@@ -1,0 +1,17 @@
+/* редактирование полей из списка */
+.xEditable {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.xEditable:hover{
+    background-image: url(/build/images/operation-icon-2.fae23651.svg);
+    background-repeat: no-repeat;
+    background-position: calc(100% - 5px) calc(100% - 5px);
+}
