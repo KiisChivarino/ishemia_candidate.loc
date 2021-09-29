@@ -25,13 +25,18 @@
             <div class="main-nav__search">
                 {# <input type="text" name="search" placeholder="Search for a mail"> #}
             </div>
-            <div class="main-nav__avatar avatar">
-                <div class="avatar__name">
+            <div class="dropdown">
+                <div class="main-nav__avatar avatar">
+                    <div class="avatar__name">
                     <span class="avatar__title">{{ fio(app.user, true) }}
                     </span>
-                    <span class="avatar__subtitle">{{ roleTitle(app.user) }}</span>
+                        <span class="avatar__subtitle">{{ roleTitle(app.user) }}</span>
+                    </div>
+                    <div class="avatar__picture"><img src="" alt=""></div>
                 </div>
-                <div class="avatar__picture"><img src="" alt=""></div>
+                <div class="dropdown-content admin-dropdown">
+                    <a href="{{ path('app_logout') }}">Выйти</a>
+                </div>
             </div>
         </nav>
     </header>
