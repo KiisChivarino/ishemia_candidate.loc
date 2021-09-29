@@ -45,6 +45,7 @@ prescription_appointment_controller:
 form:
   error:
     mime_type_message_error: Изображение должно быть в формате «jpeg» или «png»
+    email_notification_without_email: Для информирования по E-mail у пользователя должен быть заполнен E-mail
     min_max_analysis_rate: Минимальное знаение не может быть больше максимального
 hospital_controller:
   error:
