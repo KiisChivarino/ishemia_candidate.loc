@@ -15,6 +15,8 @@ message:
     wrong.number: SMS Уведомление (id:%id%) не доставлено (неверный номер).
   validate:
     message.error: Поле «Текст сообщения» должно быть заполнено
+  success:
+    message_send: Сообщение отправлено
 app_controller:
   error:
       invalid_handle_request : Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...
