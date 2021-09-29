@@ -5,15 +5,17 @@ namespace App\Form\Patient;
 use App\Controller\AppAbstractController;
 use App\Entity\Patient;
 use App\Entity\District;
+use App\EventListener\PatientChangeEventListener;
 use App\Repository\DistrictRepository;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class PatientType
@@ -22,6 +24,20 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  */
 class PatientOptionalType extends AbstractType
 {
+
+    /** @var TranslatorInterface */
+    private $translator;
+
+
+    /**
+     * PatientOptionalType constructor.
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -102,7 +118,8 @@ class PatientOptionalType extends AbstractType
                                 ->where('d.enabled = true');
                         },
                     ]
-                );
+                )
+                ->addEventSubscriber(new PatientChangeEventListener($this->translator));
         } catch (Exception $e) {
         }
     }
