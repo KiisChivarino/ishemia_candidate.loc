@@ -38,7 +38,9 @@
                 {{ knp_menu_render('doctorOfficeSidebar') }}
             </div>
         </aside>
+
         <div class="content-wrapper">
+            {% include 'flashmessages.html.twig' %}
             {% block content %}{% endblock %}
         </div>
     </main>
