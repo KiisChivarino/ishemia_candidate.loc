@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\AnalysisRate as CustomAssert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnalysisRateRepository")
@@ -40,6 +41,7 @@ class AnalysisRate
      * @Assert\NotNull(
      *     message = "Поле «Максимальное значение» не должно быть пустым"
      * )
+     * @CustomAssert\AnalysisRateMinMaxResult()
      */
     private $rateMax;
 
