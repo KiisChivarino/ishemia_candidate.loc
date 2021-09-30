@@ -85,6 +85,23 @@ class PatientNotificationListDataTableService extends DoctorOfficeDatatableServi
                         $authUser = $notification->getAuthUserSender();
                         return (new AuthUserInfoService())->getFIO($authUser, true);
                     },
+                    'searchable' => true,
+                ]
+            )
+            ->add(
+                'first_name', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('staff'),
+                    'field' => 'upper(aU.firstName)',
+                    'searchable' => true,
+                    'visible' => false
+                ]
+            )
+            ->add(
+                'last_name', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('staff'),
+                    'field' => 'upper(aU.lastName)',
+                    'searchable' => true,
+                    'visible' => false
                 ]
             )
             ->add(
@@ -174,6 +191,8 @@ class PatientNotificationListDataTableService extends DoctorOfficeDatatableServi
                                 ->addSelect('pN')
                                 ->innerJoin('n.webNotification', 'wN')
                                 ->addSelect('wN')
+                                ->innerJoin('n.authUserSender', 'aU')
+                                ->addSelect('aU')
                                 ->andWhere('pN.patient = :patient')
                                 ->setParameter('patient', $patient)
                                 ->orderBy('n.notificationTime', 'DESC');
@@ -183,6 +202,7 @@ class PatientNotificationListDataTableService extends DoctorOfficeDatatableServi
                                     ->setParameter('notificationTemplate', $notificationTemplate);
                             }
                         },
+                        'criteria' => $this->criteriaSearch(),
                     ]
                 );
     }

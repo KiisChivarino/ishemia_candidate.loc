@@ -14,7 +14,6 @@ use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Class MenuBuilder
@@ -478,12 +477,6 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'main-nav__list');
         $menu->setAttribute('templateName', 'admin_knp_menu.html.twig');
-        $menu->addChild(
-            'logout', [
-                'label' => 'Выйти',
-                'route' => 'logout_from_app'
-            ]
-        );
         return $menu;
     }
 

@@ -1,5 +1,15 @@
 {% extends template.commonTemplatePath~'new.html.twig' %}
 {% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            {% if template.items.list.isEnabled %}
+                <a href="{{ path(template.routes.list) }}" class="back-page">{{ template.items.new.content.toList }}</a>
+            {% endif %}
+            {{ include('flashmessages.html.twig') }}
+        </ul>
+    </div>
+    <div class="adm-users-edit">
+    <h2>{{ template.items.new.content.h1 }}</h2>
     <div class="adm-users-edit">
         {% if template.items.form.isEnabled %}
             {% set adgasdg = '/admin/staff/' %}

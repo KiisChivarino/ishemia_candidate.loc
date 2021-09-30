@@ -3,9 +3,11 @@
 namespace App\Controller\DoctorOffice;
 
 use App\Entity\PatientTesting;
+use App\Entity\PatientTestingResult;
 use App\Form\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\Admin\PatientTestingResultType;
 use App\Form\PatientTestingFileType;
+use App\Form\PatientTestingResultType\ResultPatientTestingResultAjaxType;
 use App\Repository\PatientTestingResultRepository;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\FileService\FileService;
@@ -15,6 +17,8 @@ use App\Services\TemplateBuilders\DoctorOffice\EditPatientTestingTemplate;
 use Exception;
 use ReflectionException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -176,6 +180,29 @@ class EditPatientTestingController extends DoctorOfficeAbstractController
         return $this->edit($request, $patientTesting, $fileService, $patientTestingResultRepository);
     }
 
+    /**
+     * @Route(
+     *     "/patient_testing_history/{patientTestingResult}/edit_form",
+     *     name="patient_testing_result_edit_from_table",
+     *     methods={"POST"},
+     *     requirements={"patientTestingResult"="\d+"}
+     *     )
+     * @param Request $request
+     * @param PatientTestingResult $patientTestingResult
+     * @return JsonResponse|Response
+     */
+    public function EditPatientTestingFromTable(Request $request, PatientTestingResult $patientTestingResult)
+    {
+        $this->templateService->edit($patientTestingResult->getPatientTesting());
+        return $this->submitFormForAjax(
+            $request,
+            $patientTestingResult,
+            ResultPatientTestingResultAjaxType::class,
+            function (FormInterface $form): ?string{
+                return $form->getData()->getResult();
+            }
+        );
+    }
 
     /**
      * Edit patient testing

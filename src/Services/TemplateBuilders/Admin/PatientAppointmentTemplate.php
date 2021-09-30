@@ -28,6 +28,7 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
         'appointmentType' => AppointmentTypeTemplate::ENTITY_CONTENT['entity'],
         'appointmentTime' => 'Дата приема',
         'isConfirmed' => 'Подтверждено',
+        'medicalHistory' => 'История болезни'
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -46,7 +47,6 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
         'complaintsComment' => 'Комментарий к жалобам',
         'objectiveStatus' => 'Объективный статус',
         'therapy' => 'Терапия',
-        'medicalHistory' => 'История болезни',
     ];
     public const FORM_CONTENT = [
         'complaintsPlaceholder' => 'Выберите жалобы',
@@ -59,11 +59,12 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common SHOW_CONTENT */
     public const SHOW_CONTENT = [
-        'h1' => 'Просмотр приема пациета',
-        'title' => 'Просмотр приема пациета',
+        'h1' => 'Просмотр приема пациента',
+        'title' => 'Просмотр приема пациента',
         'staffFio' => StaffTemplate::ENTITY_CONTENT['staffFio'],
         'isPatientConfirmed' => 'Подтверждено пациентом',
         'complaintsNotFound' => 'Жалобы отсутствуют',
+        'prescriptionAppointment' => 'Назначение на прием',
     ];
 
     /** @var string[] Common EDIT_CONTENT */

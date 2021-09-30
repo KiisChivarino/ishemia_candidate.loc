@@ -27,7 +27,7 @@
     "font-awesome": "^4.7.0",
     "jquery-mask-plugin": "^1.14.16",
     "npm-cdn": "^2.0.0",
-    "sweetalert2": "^10.14.0",
+    "sweetalert2": "^10.16.9",
     "tinymce": "^5.5.1",
     "webpack": "^4.42.0",
     "yarn": "^1.22.10"

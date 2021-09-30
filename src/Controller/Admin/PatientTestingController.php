@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
+use App\Entity\PrescriptionTesting;
 use App\Form\PatientTesting\PatientTestingNotRequiredType;
 use App\Form\PatientTesting\PatientTestingRequiredType;
 use App\Services\ControllerGetters\FilterLabels;
@@ -107,7 +108,12 @@ class PatientTestingController extends AdminAbstractController
                     $filterService->generateFilterName(
                         'patient_testing_result_list',
                         Patient::class
-                    )
+                    ),
+                'prescriptionTesting' =>
+                    $this
+                        ->getDoctrine()
+                        ->getRepository(PrescriptionTesting::class)
+                        ->getPrescriptionTestingForPatientTesting($patientTesting)
             ]
         );
     }

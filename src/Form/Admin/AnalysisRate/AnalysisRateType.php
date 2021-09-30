@@ -17,7 +17,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AnalysisRateType
@@ -27,6 +31,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class AnalysisRateType extends AbstractType
 {
+    /** @var TranslatorInterface */
+    private $translator;
+
+    /**
+     * AnalysisRateType constructor.
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -91,7 +107,13 @@ class AnalysisRateType extends AbstractType
                     'label' => $templateItem->getContentValue('enabled'),
                     'required' => false,
                 ]
-            );
+            )->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                if($event->getData()['rateMin'] >= $event->getData()['rateMax']){
+                    $errorMessage = $this->translator->trans('form.error.min_max_analysis_rate');
+                    $event->getForm()->addError((new FormError($errorMessage)));
+                }
+            });
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

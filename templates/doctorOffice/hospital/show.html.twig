@@ -14,7 +14,13 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.description }}</span>
-        <p>{{ entity.description|raw }}</p>
+        <p>
+            {% if entity.description %}
+                {{ entity.description|raw }}
+            {% else %}
+                {{ template.items.list.content.empty }}
+            {% endif %}
+        </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.code }}</span>

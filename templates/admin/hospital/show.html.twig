@@ -2,7 +2,13 @@
 {% block show_content %}
     <li>
         <span class="title">{{ template.items.show.content.address }}</span>
-        <p>{{ entity.address }}</p>
+        <p>
+            {% if entity.address %}
+                {{ entity.address }}
+            {% else %}
+                {{ template.items.list.content.empty }}
+            {% endif %}
+        </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.name }}</span>
@@ -14,7 +20,13 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.description }}</span>
-        <p>{{ entity.description|raw }}</p>
+        <p>
+            {% if entity.description %}
+                {{ entity.description|raw }}
+            {% else %}
+                {{ template.items.list.content.empty }}
+            {% endif %}
+        </p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.code }}</span>
@@ -29,6 +41,8 @@
         <p>
             {% if entity.city %}
                 <a href="{{ path('city_show', {'id': entity.city.id}) }}">{{ entity.city.name }}</a>
+            {% else %}
+                {{ template.items.list.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -39,6 +53,8 @@
                 <a href="{{ path('region_show', {'id': entity.region.id}) }}">
                     {{ entity.region.name }}
                 </a>
+            {% else %}
+                {{ template.items.list.content.empty }}
             {% endif %}
         </p>
     </li>

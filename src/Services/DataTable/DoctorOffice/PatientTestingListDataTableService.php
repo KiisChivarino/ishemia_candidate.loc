@@ -24,6 +24,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PatientTestingListDataTableService extends DoctorOfficeDatatableService
 {
+    /*** @var AuthUserInfoService */
     private $authUserInfoService;
 
     /** @var PatientTestingDatatableRepository */
@@ -81,7 +82,8 @@ class PatientTestingListDataTableService extends DoctorOfficeDatatableService
                     'query' => function (QueryBuilder $builder) use ($analysisGroup, $options) {
                         $this->patientTestingDatatableRepository
                             ->getPatientTestingsForDatatable($builder, $options['patientId'], $analysisGroup);
-                    }
+                    },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }

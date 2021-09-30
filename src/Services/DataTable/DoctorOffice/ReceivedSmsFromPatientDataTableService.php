@@ -65,8 +65,9 @@ class ReceivedSmsFromPatientDataTableService extends AdminDatatableService
             ->add(
                 'patient', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('patient'),
-                    'field' => 'u.lastName',
+                    'field' => 'aU.lastName',
                     'orderable' => true,
+                    'searchable' => false,
                     'orderField' => 'u.lastName',
                     'render' => function (string $data, PatientSMS $patientSMS) {
                         /** @var Patient $patient */
@@ -91,6 +92,14 @@ class ReceivedSmsFromPatientDataTableService extends AdminDatatableService
             ->add(
                 'text', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('text'),
+                ]
+            )
+            ->add(
+                'textSearch', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('text'),
+                    'field' => 'upper(pS.text)',
+                    'searchable' => true,
+                    'visible' => false
                 ]
             )
             ->add(
@@ -136,9 +145,11 @@ class ReceivedSmsFromPatientDataTableService extends AdminDatatableService
                             ->select('pS')
                             ->from(PatientSMS::class, 'pS')
                             ->leftJoin('pS.patient', 'p')
+                            ->leftJoin('p.AuthUser', 'aU')
                             ->andWhere('p.id = :val')
                             ->setParameter('val', $patientId);
                     },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }

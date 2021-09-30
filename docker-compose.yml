@@ -7,23 +7,22 @@ services:
             - .:/var/www/
             - ./.docker/log/nginx:/var/log/nginx/
         ports:
-            - 8080:8080
+            - 80:80
         restart: always
         depends_on:
             - php
             - ishemia
+        networks:
+            back:
+                ipv4_address: 10.5.0.5
     php:
-        image: php:7.2-fpm-alpine
         build: .docker
         restart: always
         volumes:
             - ./.docker/conf/php/php.ini:/usr/local/etc/php/conf.d/php.ini
             - .:/var/www/
-    composer:
-        image: composer
-        volumes:
-            - .:/app
-        command: install
+        networks:
+            back:
     ishemia:
         image: postgres:10.1
         restart: always
@@ -36,6 +35,8 @@ services:
         volumes:
             - ./.docker/conf/postgres/:/docker-entrypoint-initdb.d/
             - ./.docker/conf/postgres/db-data:/var/lib/postgresql/data
+        networks:
+            back:
     pgadmin4:
         image: dpage/pgadmin4
         depends_on:
@@ -48,14 +49,12 @@ services:
             PGADMIN_DEFAULT_EMAIL: postgres@pg.com
             PGADMIN_DEFAULT_PASSWORD: postgres111111111
         restart: always
-    node:
-        image: "node:16"
-        user: "node"
-        working_dir: /home/node/app
-        environment:
-            - NODE_ENV=production
-        volumes:
-            - ./:/home/node/app
-        expose:
-            - "8081"
-        command: "npm start"
+        networks:
+            back:
+                ipv4_address: 10.5.0.6
+networks:
+    back:
+        ipam:
+            driver: default
+            config:
+                - subnet: 10.5.0.0/10

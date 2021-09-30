@@ -6,7 +6,13 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.fullName }}</span>
-        <p>{{ entity.fullName }}</p>
+        <p>
+            {% if entity.fullName %}
+                {{ entity.fullName }}
+            {% else %}
+                {{ template.items.list.content.empty }}
+            {% endif %}
+        </p>
     </li>
 {% endblock %}
 {% block custom_actions %}

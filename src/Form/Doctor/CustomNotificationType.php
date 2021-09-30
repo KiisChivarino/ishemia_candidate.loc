@@ -9,7 +9,12 @@ use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class PatientPersonalData
@@ -18,6 +23,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CustomNotificationType extends AbstractType
 {
+    /** @var SessionInterface */
+    private $session;
+
+    /** @var TranslatorInterface */
+    private $translator;
+
+    /**
+     * CustomNotificationType constructor.
+     * @param SessionInterface $session
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(SessionInterface $session, TranslatorInterface $translator)
+    {
+        $this->session = $session;
+        $this->translator = $translator;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -32,7 +54,16 @@ class CustomNotificationType extends AbstractType
                     'mapped' => false,
                     'label' => $templateItem->getContentValue('text')
                 ]
-            );
+            )->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                if(trim($event->getData()['text']) == ''){
+                    $errorMessage = $this->translator->trans('message.validate.message.error');
+                    $this->session->getFlashBag()->add(
+                        'error',
+                        $errorMessage
+                    );
+                    $event->getForm()->addError((new FormError($errorMessage)));
+                }
+            });
     }
 
     /**

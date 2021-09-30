@@ -45,7 +45,16 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                             (new PrescriptionInfoService())->getPrescriptionTitle($prescription),
                             $prescription->getId(),
                             'prescription_show'
-                        ) : $listTemplateItem->getContentValue('empty');
+                        ) : '';
+                    }
+                ]
+            )
+            ->add(
+                'medicine', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('medicine'),
+                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) use ($listTemplateItem) {
+                        $medicine = $prescriptionMedicine->getPatientMedicine();
+                        return $medicine->getMedicineName();
                     }
                 ]
             )

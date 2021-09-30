@@ -4,6 +4,7 @@ namespace App\Controller\DoctorOffice\MedicalHistory;
 
 use App\Controller\DoctorOffice\DoctorOfficeAbstractController;
 use App\Entity\Patient;
+use App\Form\Patient\PatientLocationRequiredType;
 use App\Form\Patient\PatientOptionalType;
 use App\Form\Patient\PatientRequiredType;
 use App\Form\AuthUser\AuthUserEmailType;
@@ -97,6 +98,7 @@ class PersonalDataController extends DoctorOfficeAbstractController
                 new FormData(AuthUserRequiredType::class, $authUser),
                 new FormData(AuthUserEmailType::class, $authUser),
                 new FormData(PatientRequiredType::class, $patient),
+                new FormData(PatientLocationRequiredType::class, $patient),
                 new FormData(PatientOptionalType::class, $patient),
             ],
             $patient,

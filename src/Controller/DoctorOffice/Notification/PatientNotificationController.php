@@ -30,7 +30,6 @@ class PatientNotificationController extends DoctorOfficeAbstractController
     /** @var string Путь к папке twig шаблонов */
     const TEMPLATE_PATH = 'doctorOffice/notification/';
 
-
     /**
      * PatientsListController constructor.
      *

@@ -7,7 +7,6 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientDischargeEpicrisis;
 use App\Services\EntityActions\Core\AbstractCreatorService;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -43,7 +42,6 @@ class MedicalHistoryCreatorService extends AbstractCreatorService
         $medicalHistory
             ->setPatient($this->options[self::PATIENT_OPTION])
             ->setEnabled(true)
-            ->setDateBegin(new DateTime())
             ->setClinicalDiagnosis($this->options[self::CLINICAL_DIAGNOSIS_OPTION])
             ->setPatientDischargeEpicrisis($this->options[self::DISCHARGE_EPICRISIS_OPTION]);
     }

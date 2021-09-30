@@ -27,6 +27,7 @@ use Exception;
 use ReflectionException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -1058,5 +1059,74 @@ abstract class AppAbstractController extends AbstractController
             return false;
         }
         return $medicalHistory;
+    }
+
+    /**
+     * Метод для редактирования даных из ячейки таблицы. Документация:
+     * 1. В редактируемом столбце должны лежать данные в формате
+     * (id и class обязательно должны присутствовать + div - обязательный контейнер):
+     * <div id="entity{{ id материала }}"
+     *  data-url="{{Урл до контроллера}}"
+     *  class="xEditable">{{Данные}}</div>
+     *
+     * 2. Готовим форму. В ней должно быть ТОЛЬКО ОДНО редактируемое поле и всё.
+     * К редактируемому полю обязательно добавляем
+     * 'attr' => [
+     * 'class' => 'xEditableField'
+     * ]
+     *
+     * 3. В контроллере прописываем следующие данные
+     * Также мы передаём замыкание, в нём мы указываем какое поле у нас отрендерится в ячейке после редактирования
+     * $this->templateService->edit();
+     * return $this->submitFormForAjax(
+     * $request,
+     * $patientTestingResult,
+     * ResultPatientTestingResultType::class,
+     * function (FormInterface $form): string{
+     * return $form->getData()->getResult();
+     * }
+     * );
+     * @param Request $request
+     * @param $entity
+     * @param $formType
+     * @param Closure $getRenderValue
+     * @return JsonResponse|Response
+     */
+    protected function submitFormForAjax(Request $request, $entity, $formType, Closure $getRenderValue){
+        $form = $this->createForm($formType, $entity,
+            [
+                'label' => false
+            ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $formData = $form->getData();
+            $entityManager->persist($formData);
+            $entityManager->flush();
+            $renderValue = (string) $getRenderValue($form);
+            return new JsonResponse([
+                'code' => 200,
+                'id' => $formData->getId(),
+                'renderValue' => $renderValue,
+                'message' => $this->translator->trans('app_controller.success.success_post')
+            ]);
+        }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $errorList = [];
+            foreach ($form->getErrors(true) as $value) {
+                $errorList[] = $value->getMessage();
+            }
+            return new JsonResponse([
+                'code' => 300,
+                'error' => $errorList,
+                'id' => $entity->getId(),
+                'message' => $this->translator->trans('app_abstract_controller.error.exception')
+            ]);
+        }
+
+        return $this->render('xEditableAjaxForm.html.twig',[
+            'form'=>$form->createView()
+        ]);
     }
 }

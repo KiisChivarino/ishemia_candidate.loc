@@ -28,6 +28,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PatientListDataTableService extends DoctorOfficeDatatableService
 {
+    /** @var AuthUserInfoService */
     private $authUserInfoService;
 
     /**
@@ -84,6 +85,27 @@ class PatientListDataTableService extends DoctorOfficeDatatableService
                     },
                     'orderable' => true,
                     'orderField' => 'u.lastName',
+                ]
+            )
+            ->add(
+                'firstName', TextColumn::class, [
+                    'field' => 'upper(u.firstName)',
+                    'searchable' => true,
+                    'visible' => false
+                ]
+            )
+            ->add(
+                'lastName', TextColumn::class, [
+                    'field' => 'upper(u.lastName)',
+                    'searchable' => true,
+                    'visible' => false
+                ]
+            )
+            ->add(
+                'patronymicName', TextColumn::class, [
+                    'field' => 'upper(u.patronymicName)',
+                    'searchable' => true,
+                    'visible' => false
                 ]
             )
             ->add(
@@ -200,6 +222,7 @@ class PatientListDataTableService extends DoctorOfficeDatatableService
                                 ->setParameter('valHospital', $hospital);
                         }
                     },
+                    'criteria' => $this->criteriaSearch(),
                 ]
             );
     }

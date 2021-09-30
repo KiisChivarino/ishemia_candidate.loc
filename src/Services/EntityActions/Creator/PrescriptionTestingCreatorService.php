@@ -6,7 +6,6 @@ use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
 use App\Services\EntityActions\Core\AbstractCreatorService;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -43,7 +42,6 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
         /** @var PrescriptionTesting $prescriptionTesting */
         $prescriptionTesting = $this->getEntity();
         $prescriptionTesting
-            ->setInclusionTime(new DateTime())
             ->setConfirmedByStaff(false)
             ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
             ->setPatientTesting($this->options[self::PATIENT_TESTING_OPTION]);

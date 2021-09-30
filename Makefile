@@ -36,4 +36,8 @@ yarn:
 build:
 	docker-compose exec php composer install && docker-compose exec php npm install && docker-compose exec php npm rebuild node-sass && docker-compose exec php yarn encore dev && docker-compose exec php php bin/console doctrine:schema:update --dump-sql && docker-compose exec php php bin/console doctrine:schema:update --force
 
+rm:
+	docker-compose down --remove-orphans && docker stop $$(docker ps -qa) && docker network prune -f
 
+host:
+	/bin/bash ./hosts.sh

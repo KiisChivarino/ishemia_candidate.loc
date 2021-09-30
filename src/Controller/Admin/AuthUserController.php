@@ -130,19 +130,4 @@ class AuthUserController extends AdminAbstractController
             ]
         );
     }
-
-    /**
-     * Delete user
-     * @Route("/{id}", name="auth_user_delete", methods={"DELETE"}, requirements={"id"="\d+"})
-     *
-     * @param Request $request
-     * @param AuthUser $authUser
-     *
-     * @return Response
-     * @throws Exception
-     */
-    public function delete(Request $request, AuthUser $authUser): Response
-    {
-        return $this->responseDelete($request, $authUser);
-    }
 }

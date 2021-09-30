@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ComplaintRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ComplaintRepository::class)
@@ -20,6 +21,11 @@ class Complaint
 
     /**
      * @ORM\Column(type="string", length=255, options={"comment"="Название жалобы"})
+     *
+     * @Assert\Length(
+     *      min = 3,
+     *      minMessage = "Название жалобы должно содержать более {{ limit }} символов",
+     * )
      */
     private $name;
 

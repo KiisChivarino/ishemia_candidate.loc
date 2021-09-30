@@ -4,10 +4,19 @@ log:
   delete.entity: Запись - %entity% (id:%id%) уадлена.
 command:
   success: Команда %command% успешно выполнена.
+sms_type:
+  wait: Ожидается
+  not_delivered: Не доставлено
+  delivered: Доставлено
+  failed: Ошибка
 message:
   fail:
     provider.error: SMS Уведомление (id:%id%) не доставлено (ошибка на стороне провайдера).
     wrong.number: SMS Уведомление (id:%id%) не доставлено (неверный номер).
+  validate:
+    message.error: Поле «Текст сообщения» должно быть заполнено
+  success:
+    message_send: Сообщение отправлено
 app_controller:
   error:
       invalid_handle_request : Неизвестная ошибка в данных! Проверьте данные или обратитесь к администратору...
@@ -17,6 +26,7 @@ app_controller:
       delete_dbal_exception: Ошибка! Запись не удалена. Обратитесь к администратору...
       parameter_not_found: Запись не найдена по параметру!
       current_medical_history_not_found: Текущая история болезни не найдена!
+      double_gender_in_analysis_rate: Референтное значение для данного пола уже создано
   success:
     success_post: Запись успешно сохранена!
     success_delete: Запись успешно удалена!
@@ -38,6 +48,8 @@ prescription_appointment_controller:
 form:
   error:
     mime_type_message_error: Изображение должно быть в формате «jpeg» или «png»
+    email_notification_without_email: Для информирования по E-mail у пользователя должен быть заполнен E-mail
+    min_max_analysis_rate: Минимальное знаение не может быть больше максимального
 hospital_controller:
   error:
     delete: Больницу, к которой привязаны пациенты и/или врачи, удалить нельзя!

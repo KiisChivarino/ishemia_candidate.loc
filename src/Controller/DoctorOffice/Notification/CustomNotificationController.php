@@ -157,7 +157,7 @@ class CustomNotificationController extends DoctorOfficeAbstractController
                     ]
                 );
             }
-            $this->addFlash('success', $this->translator->trans('app_controller.success.success_post'));
+            $this->addFlash('success', $this->translator->trans('message.success.message_send'));
             return $this->redirectToRoute(
                 'notifications_list',
                 [

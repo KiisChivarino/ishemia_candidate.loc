@@ -92,14 +92,14 @@
                     </div>
                 </div>
                 <div class="statement__info">
-                    <div class="statement__info-block">
+                    <div class="statement__info-block" style="max-width: initial;">
                         {% if not enabledTestingResults(testing) is empty and not isEmptyPatientTestingResults(testing) %}
                             <div class="table-wrapper table-history">
                                 <table>
                                     <thead>
                                     <tr>
                                         <th>Анализ</th>
-                                        <th>Референсные значения</th>
+                                        <th>Референтные значения</th>
                                         <th>Результат</th>
                                     </tr>
                                     </thead>
@@ -107,7 +107,14 @@
                                         <tr>
                                             <td>{{ result.analysis.name }}</td>
                                             <td>{{ result.analysisRate ? analysisRate(result.analysisRate) : '' }}</td>
-                                            <td>{{ result.result }}</td>
+                                            <td>
+                                                <div id="entity{{ result.id }}"
+                                                     data-url="{{ path(
+                                                         'patient_testing_result_edit_from_table',
+                                                         {'patientTestingResult': result.id})
+                                                     }}"
+                                                     class="xEditable">{{ result.result }}</div>
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                 </table>

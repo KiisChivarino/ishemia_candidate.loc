@@ -8,6 +8,7 @@ use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,7 +30,7 @@ class ComplaintType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add('name', null, ['label' => $templateItem->getContentValue('name')])
+            ->add('name', TextType::class, ['label' => $templateItem->getContentValue('name')])
             ->add(
                 'description', null, [
                     'label' => $templateItem->getContentValue('description'),

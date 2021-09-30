@@ -108,6 +108,10 @@ class Patient
 
     /**
      * @ORM\Column(type="date", options={"comment"="Дата рождения"})
+     * @Assert\LessThan(
+     *     value = "-18 years",
+     *     message="Пациент должен быть старше 18 лет"
+     * )
      */
     private $dateBirth;
 

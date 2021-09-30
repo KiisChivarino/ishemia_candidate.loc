@@ -1,0 +1,6 @@
+{% import "recursive_form_macro.html.twig" as recursive_form_macro %}
+{{ form_start(form) }}
+<ul>
+    {{ recursive_form_macro.recursiveForm(form) }}
+</ul>
+{{ form_end(form) }}

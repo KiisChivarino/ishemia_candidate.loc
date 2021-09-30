@@ -1,6 +1,7 @@
 {% extends 'doctorOffice/index.html.twig' %}
 {% block title %}{{ template.items.edit.content.title }}{% endblock %}
 {% block content %}
+    {{ include('flashmessages.html.twig') }}
     <div class="content-wrapper__top">
         <ul>
             <li>
@@ -14,6 +15,7 @@
             </li>
         </ul>
     </div>
+    {{ include('flashmessages.html.twig') }}
     <div class="adm-users-edit">
         {{ include(template.items.form.path~'_form.html.twig') }}
     </div>
