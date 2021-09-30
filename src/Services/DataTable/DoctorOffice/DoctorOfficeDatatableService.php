@@ -83,7 +83,7 @@ abstract class DoctorOfficeDatatableService extends DataTableService
                 'analysisDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisDate'),
                     'searchable' => false,
-                    'format' => 'd.m.Y H:i',
+                    'format' => 'd.m.Y',
                     'nullValue' => $listTemplateItem->getContentValue('empty')
                 ]
             );
