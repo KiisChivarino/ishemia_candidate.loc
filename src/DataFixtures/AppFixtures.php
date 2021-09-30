@@ -204,7 +204,7 @@ class AppFixtures extends Fixture
                 'phone' => 'phone',
                 'email' => 'email',
                 'lpu' => LPU::class,
-                'enabled' => false,
+                'enabled' => true,
             ]
         );
         $manager->flush();
