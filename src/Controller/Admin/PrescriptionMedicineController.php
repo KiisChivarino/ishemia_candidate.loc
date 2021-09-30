@@ -56,7 +56,7 @@ class PrescriptionMedicineController extends AdminAbstractController
 
     /**
      * PrescriptionMedicine list
-     * @Route("/prescription_medicine", name="prescription_medicine_list", methods={"GET","POST"})
+     * @Route("/prescription_medicine/", name="prescription_medicine_list", methods={"GET","POST"})
      *
      * @param Request $request
      * @param PrescriptionMedicineDataTableService $dataTableService
@@ -143,7 +143,7 @@ class PrescriptionMedicineController extends AdminAbstractController
     /**
      * Show medicine prescription info
      * @Route(
-     *     "/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}",
+     *     "/prescription_medicine/{prescriptionMedicine}",
      *     name="prescription_medicine_show",
      *     methods={"GET"},
      *      requirements={"prescriptionMedicine"="\d+","prescription"="\d+"}
@@ -173,7 +173,7 @@ class PrescriptionMedicineController extends AdminAbstractController
     /**
      * Edit prescription medicine
      * @Route(
-     *     "/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/edit",
+     *     "/prescription_medicine/{prescriptionMedicine}/edit",
      *     name="prescription_medicine_edit",
      *     methods={"GET","POST"},
      *      requirements={"prescriptionMedicine"="\d+", "prescription"="\d+"}
