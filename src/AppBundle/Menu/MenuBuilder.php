@@ -42,6 +42,12 @@ class MenuBuilder
     /** @var string Параметр запроса */
     const PATIENT_QUERY_PARAMETER = 'id';
 
+    /** @var string Флаг админ панели */
+    const ADMIN_FLAG = 'doctorOffice';
+
+    /** @var string Флаг кабинета врача */
+    const DOCTOR_OFFICE_FLAG = 'admin';
+
     /**
      * @param FactoryInterface $factory
      * @param ContainerInterface $container
@@ -414,7 +420,8 @@ class MenuBuilder
                 'route' => 'web_notification_list'
             ]
         );
-        $this->activateStoringSelectedMenuItem($menu, $requestStack);
+        $this->activateStoringSelectedMenuItem($menu, $requestStack, self::ADMIN_FLAG);
+
         return $menu;
     }
 
@@ -653,7 +660,7 @@ class MenuBuilder
                 'route' => 'doctor_office_notification_list'
             ]
         );
-        $this->activateStoringSelectedMenuItem($menu, $requestStack);
+        $this->activateStoringSelectedMenuItem($menu, $requestStack, self::DOCTOR_OFFICE_FLAG);
         if (AuthUserInfoService::isDoctorConsultant($authUser)) {
             $menu->addChild(
                 'hospitalsList', [
@@ -779,15 +786,15 @@ class MenuBuilder
      * @param RequestStack $requestStack
      * @return void
      */
-    private function activateStoringSelectedMenuItem(ItemInterface $menu, RequestStack $requestStack): void
+    private function activateStoringSelectedMenuItem(ItemInterface $menu, RequestStack $requestStack, $flag): void
     {
         foreach ($menu->getChildren() as $item) {
             foreach ($item->getChildren() as $childrenItem) {
                 if (
                     $childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()
                     || preg_replace(
-                        '/\/new|\/\d+\/(edit|show)$/', // Вырезает с конца /число/(edit или show) или /new
-                        "",
+                        '/\/new*(.+)|\/\?.*$|\/\d+(\/(edit|show))?(\?.+\=.+)?/', // Вырезает с конца /число/(edit или show) или /new
+                        ($flag == self::ADMIN_FLAG) ? "/" : "",
                         $requestStack->getCurrentRequest()->getRequestUri()
                     ) == $childrenItem->getUri()
                 ) {
