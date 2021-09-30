@@ -29,6 +29,7 @@ class DischargeEpicrisisFileType extends AbstractType
                 'file', FileType::class, [
                     'mapped' => false,
                     'required' => true,
+                    'help' => 'Доступные форматы: jpeg, pjpeg, msword, pdf, png. Максимальный вес файла: 4.88 мегабайт',
                     'constraints' => [
                         new File(
                             [
