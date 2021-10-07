@@ -56,7 +56,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     /**
      * New medicine prescription
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/new",
+     *     "/patient/{patient}/prescription/{prescription}/medicine/new",
      *     name="prescription_patient_medicine_new",
      *     methods={"GET","POST"},
      *     requirements={"prescription"="\d+"}
@@ -110,7 +110,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     /**
      * Show prescription testing
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/show/",
+     *     "/patient/{patient}/prescription/{prescription}/medicine/{prescriptionMedicine}/show/",
      *     name="show_prescription_medicine_by_doctor",
      *     )
      * @param PrescriptionMedicine $prescriptionMedicine
@@ -134,7 +134,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     /**
      * Edit prescription medicine
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/edit/",
+     *     "/patient/{patient}/prescription/{prescription}/medicine/{prescriptionMedicine}/edit/",
      *     name="edit_prescription_medicine_by_doctor",
      *     methods={"GET","POST"}
      *     )
@@ -175,7 +175,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
     /**
      * Delete prescription appointment
      * @Route(
-     *     "/patient/{patient}/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/delete",
+     *     "/patient/{patient}/prescription/{prescription}/medicine/{prescriptionMedicine}/delete",
      *     name="delete_prescription_medicine_by_doctor",
      *     methods={"DELETE"},
      *     )
