@@ -33,6 +33,17 @@
 **Добавить домены проекта в host файл**
 `make host`
 
+------------------
+# **Тестирование:**
+
+**Обновление тестовой базы**
+`make db-update-tests`
+
+**Загрузка фикстур в тестовую базу**
+`make fixtures-tests`
+
+Для запуска тестов должна быть создана тестовая база с именем `ishemia_test`. Она создастся автоматически только в случае, если мы запускаем докер с пустой(Или отсутствующей) папкой `.docker/conf/postgres/db-data`. В случае отсутствия базы её можно создать через pgAdmin
+
 ---
 # **Адреса:**
 
@@ -48,7 +59,7 @@
 ---
 # **Доступы к БД:**
 
-**PG:** username: `ishemia` | bdPassword: `ishemia` | host: `ishemia` | port `5432` | dbName `ishemia`
+**PG:** username: `ishemia` | bdPassword: `ishemia` | host: `ishemia_pgadmin4_1` | port `5432` | dbName `ishemia`
 
 ---
 

@@ -9,7 +9,7 @@
         <div class="authorization__left">
             <div class="authorization__left-inner">
                 <h2 class="title">Вход</h2>
-                <form method="post">
+                <form id="authForm" method="post">
                     {% if error %}
                         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                     {% endif %}
@@ -42,7 +42,7 @@
                         <label for="remember">Запомнить меня</label>
                     </div>
                     <div class="authorization__btn">
-                        <input class="main-button" type="submit" value="Войти">
+                        <input class="main-button" name="submitButton" type="submit" value="Войти">
                     </div>
                 </form>
             </div>
