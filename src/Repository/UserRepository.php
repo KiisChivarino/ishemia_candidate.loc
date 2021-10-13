@@ -8,7 +8,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,19 +23,15 @@ use function get_class;
  */
 class UserRepository extends AppRepository implements PasswordUpgraderInterface
 {
-    /** @var UserPasswordEncoderInterface $passwordEncoder */
-    private $passwordEncoder;
-
     /**
      * @var string Телефон системного пользователя
      * yaml:config/globals.yaml
      */
     private $SYSTEM_USER_PHONE;
 
-    public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder, string $systemUserPhone)
+    public function __construct(ManagerRegistry $registry, string $systemUserPhone)
     {
         parent::__construct($registry, AuthUser::class);
-        $this->passwordEncoder = $passwordEncoder;
         $this->SYSTEM_USER_PHONE = $systemUserPhone;
     }
 
@@ -57,47 +52,6 @@ class UserRepository extends AppRepository implements PasswordUpgraderInterface
         $user->setPassword($newEncodedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
-    }
-
-    /**
-     * Добавление пользователя
-     *
-     * @param string $phone
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $role
-     * @param string $password
-     * @param bool $enabled
-     *
-     * @return AuthUser|null
-     * @throws ORMException
-     */
-    public function addUserFromFixtures(
-        string $phone,
-        string $firstName,
-        string $lastName,
-        string $role,
-        string $password,
-        bool $enabled
-    ): ?AuthUser
-    {
-
-        $user = (new AuthUser())
-            ->setPhone($phone)
-            ->setEnabled($enabled);
-        $user
-            ->setPassword(
-                $this->passwordEncoder->encodePassword(
-                    $user,
-                    $password
-                )
-            )
-            ->setFirstName($firstName)
-            ->setLastName($lastName)
-            ->setRoles($role);
-        $this->_em->persist($user);
-
-        return $user;
     }
 
     /**

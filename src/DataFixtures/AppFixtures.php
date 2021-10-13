@@ -25,15 +25,15 @@ use App\Entity\PlanTesting;
 use App\Entity\Position;
 use App\Entity\Region;
 use App\Entity\Country;
-use App\Entity\AuthUser;
 use App\Entity\District;
 use App\Entity\Hospital;
-use App\Entity\Staff;
 use App\Entity\StartingPoint;
 use App\Entity\TemplateParameter;
 use App\Entity\TemplateParameterText;
 use App\Entity\TemplateType;
 use App\Entity\TimeRange;
+use App\Services\FixtureService\AddUserFixtureService;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\ORMException;
@@ -46,13 +46,18 @@ class AppFixtures extends Fixture
     /** @var DataSowing $dataSowing */
     private $dataSowing;
 
+    /** @var AddUserFixtureService $addUserFixtureService */
+    private $addUserFixtureService;
+
     /**
      * AppFixtures constructor.
      * @param DataSowing $dataSowing
+     * @param AddUserFixtureService $addUserFixtureService
      */
-    public function __construct(DataSowing $dataSowing)
+    public function __construct(DataSowing $dataSowing, AddUserFixtureService $addUserFixtureService)
     {
         $this->dataSowing = $dataSowing;
+        $this->addUserFixtureService = $addUserFixtureService;
     }
 
     /**
@@ -63,22 +68,13 @@ class AppFixtures extends Fixture
     {
         /** begin Должности */
         echo "Заполнение справочника \"Должности\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager,self::PATH_TO_CSV . 'position.csv', Position::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'position.csv', Position::class, '|', [], ['enabled' => true]);
         /** end Должности */
 
         /** begin Виды приема */
         echo "Заполнение справочника \"Вид приема\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager,self::PATH_TO_CSV . 'appointment_type.csv', AppointmentType::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'appointment_type.csv', AppointmentType::class, '|', [], ['enabled' => true]);
         /** end Виды приема */
-
-        /** begin Пользователи */
-        echo "Добавление пользователей\n";
-        $manager->getRepository(AuthUser::class)->addUserFromFixtures('9999999999', 'System', 'System', 'ROLE_SYSTEM', '111111', true);
-        $manager->getRepository(AuthUser::class)->addUserFromFixtures('8888888888', 'Admin', 'Admin', 'ROLE_ADMIN', '111111', true);
-        /** @var Position $positionDoctor */
-        $positionDoctor = $manager->getRepository(Position::class)->findOneBy(['name' => 'Врач']);
-        $manager->getRepository(Staff::class)->addStaffFromFixtures('0000000000', 'Максим', 'Хруслов', 'ROLE_DOCTOR_CONSULTANT', '111111', true, $positionDoctor);
-        /** end Пользователи */
 
         /** begin Точки отсчета */
         echo "Добавление точек отсчета\n";
@@ -209,6 +205,59 @@ class AppFixtures extends Fixture
         );
         $manager->flush();
         /** end Больницы */
+
+        /** begin Пользователи */
+        echo "Добавление пользователей\n";
+        $this->addUserFixtureService->addSystem(
+            '9999999999',
+            'System',
+            'System',
+            'ROLE_SYSTEM',
+            '111111',
+            true
+        );
+        $this->addUserFixtureService->addAdmin(
+            '8888888888',
+            'Admin',
+            'Admin',
+            'ROLE_ADMIN',
+            '111111',
+            true
+        );
+        $this->addUserFixtureService->addDoctorHospital(
+            '5555555555',
+            'Врач',
+            'LPU',
+            'ROLE_DOCTOR_HOSPITAL',
+            '111111',
+            true,
+            'Врач'
+        );
+        $this->addUserFixtureService->addDoctorConsultant(
+            '0000000000',
+            'Максим',
+            'Хруслов',
+            'ROLE_DOCTOR_CONSULTANT',
+            '111111',
+            true,
+            'Врач'
+        );
+        $this->addUserFixtureService->addPatient(
+            '6666666666',
+            'Пациент',
+            'Пациентов',
+            'ROLE_PATIENT',
+            '111111',
+            true,
+            'НЕФРОСОВЕТ',
+            'Курск',
+            'address',
+            true,
+            true,
+            DateTime::createFromFormat('j-M-Y', '15-Feb-2001'),
+            DateTime::createFromFormat('j-M-Y', '15-Feb-2021')
+        );
+        /** end Пользователи */
 
         /** begin Патологии (диагнозы) */
         echo "Добавление патологий (диагнозов)\n";

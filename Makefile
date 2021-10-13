@@ -41,3 +41,9 @@ rm:
 
 host:
 	/bin/bash ./hosts.sh
+
+db-update-tests:
+	docker-compose exec php php bin/console doctrine:schema:update --env=test --dump-sql && docker-compose exec php php bin/console doctrine:schema:update --force --env=test
+
+fixtures-tests:
+	docker-compose exec php php bin/console doctrine:schema:update --env=test --dump-sql && docker-compose exec php php bin/console doctrine:schema:update --env=test --force && docker-compose exec php php bin/console doctrine:fixtures:load --env=test

@@ -27,13 +27,13 @@ services:
         image: postgres:10.1
         restart: always
         environment:
-            - POSTGRES_DB=ishemia
+            - POSTGRES_MULTIPLE_DATABASES=ishemia,postgres:ishemia_test,postgres
             - POSTGRES_USER=ishemia
             - POSTGRES_PASSWORD=ishemia
         ports:
             - 5433:5432
         volumes:
-            - ./.docker/conf/postgres/:/docker-entrypoint-initdb.d/
+            - ./.docker/conf/postgres/init/create_second_db.sh:/docker-entrypoint-initdb.d/create_second_db.sh
             - ./.docker/conf/postgres/db-data:/var/lib/postgresql/data
         networks:
             back:
@@ -45,6 +45,7 @@ services:
             - 5050:80
         volumes:
             - ./.docker/conf/postgres/pgadmin:/var/lib/pgadmin
+            - ./.docker/conf/postgres/backup:/var/lib/pgadmin/storage/postgres_pg.com
         environment:
             PGADMIN_DEFAULT_EMAIL: postgres@pg.com
             PGADMIN_DEFAULT_PASSWORD: postgres111111111

@@ -5,7 +5,6 @@ namespace App\Services\Template;
 use Exception;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class TemplateService
@@ -15,8 +14,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class TemplateService
 {
-    /** @var string Path to routes config file */
-    private const YAML_ROUTES_PATH = '../config/services/template/routes.yaml';
+    /** @var string */
+    const DEFAULT_ROUTE = 'index';
 
     /** @var array $routes Массив с роутами контроллера */
     private $routes;
@@ -51,7 +50,7 @@ class TemplateService
         $this->templatePath = $className::TEMPLATE_PATH;
         $this->items = [];
         $this->setCommonTemplatePath($commonTemplatePath);
-        $this->setRedirectRoute($this->getRoute($redirectRouteName) ? $this->getRoute($redirectRouteName) : $this->getRoute('index'));
+        $this->setRedirectRoute($this->getRoute($redirectRouteName) ?: $this->getRoute(self::DEFAULT_ROUTE));
     }
 
     /**
@@ -85,10 +84,8 @@ class TemplateService
                 $routes[$routeInfo[1]] = $key;
             }
         }
-        $yaml = Yaml::parseFile(self::YAML_ROUTES_PATH);
-        if (isset($yaml['parameters'])) {
-            $routes['index'] = $yaml['parameters']['index'];
-        }
+
+        $routes[self::DEFAULT_ROUTE] = self::DEFAULT_ROUTE;
         return $routes;
     }
 
