@@ -5,3 +5,4 @@ id,notificationReceiverType,name
 4,1,testingAppointment
 5,1,confirmAppointment
 6,1,submitAnalysisResults
+7,1,prescriptionMedicine

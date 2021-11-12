@@ -383,8 +383,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
         MedicalRecordCreatorService $medicalRecordCreatorService
     ): RedirectResponse
     {
+        $entityManager = $this->getDoctrine()->getManager();
         if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription) && !$prescription->getIsCompleted()) {
-            $entityManager = $this->getDoctrine()->getManager();
             (new PrescriptionEditorService($entityManager, $prescription))->before()->after(
                 [
                     PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $medicalRecordCreatorService
@@ -392,7 +392,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
             );
             $medicalHistory = $prescription->getMedicalHistory();
             $notificationData = new NotificationData(
-                $this->getDoctrine()->getManager(),
+                $entityManager,
                 $medicalHistory->getPatient(),
                 $medicalHistory,
                 $prescription->getMedicalRecord()
@@ -418,8 +418,22 @@ class PrescriptionController extends DoctorOfficeAbstractController
                             $prescriptionAppointment->getPatientAppointment()->getStaff()->getAuthUser(),
                             true
                         ),
-                        $prescriptionAppointment->getPlannedDateTime()
+                        $prescriptionAppointment->getPlannedDateTime()->format('Y-m-d H:i:s')
                     );
+                $this->notifier->notifyPatient(
+                    $notificationServiceBuilder->getWebNotificationService(),
+                    $notificationServiceBuilder->getSMSNotificationService(),
+                    $notificationServiceBuilder->getEmailNotificationService()
+                );
+            }
+            foreach ($prescription->getPrescriptionMedicines() as $prescriptionMedicine){
+                $notificationServiceBuilder = $this->notificationServiceBuilder->makePrescriptionMedicineNotification(
+                    $notificationData,
+                    $prescriptionMedicine->getPatientMedicine()->getMedicineName(),
+                    $prescriptionMedicine->getStartingMedicationDate()->format('Y-m-d'),
+                    $prescriptionMedicine->getEndMedicationDate()->format('Y-m-d'),
+                    $prescriptionMedicine->getPatientMedicine()->getInstruction()
+                );
                 $this->notifier->notifyPatient(
                     $notificationServiceBuilder->getWebNotificationService(),
                     $notificationServiceBuilder->getSMSNotificationService(),

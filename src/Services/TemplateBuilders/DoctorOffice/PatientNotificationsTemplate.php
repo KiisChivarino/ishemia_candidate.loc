@@ -41,6 +41,7 @@ class PatientNotificationsTemplate extends DoctorOfficeTemplateBuilder
         "customMessage" => "Сообщение от врача",
         "doctorAppointment" => "Прием у врача",
         "confirmMedication" => "Подтверждение приема лекарств",
+        "prescriptionMedicine" => 'Назначение лекарства',
         "testingAppointment" => "Сдача анализов",
         "confirmAppointment" => "Подтверждение приема",
         "submitAnalysisResults" => "Результаты анализов",

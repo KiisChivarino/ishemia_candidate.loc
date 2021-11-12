@@ -35,7 +35,8 @@ class NotificationsServiceBuilder
         TEMPLATE_CONFIRM_MEDICATION = 'confirmMedication',
         TEMPLATE_TESTING_APPOINTMENT = 'testingAppointment',
         TEMPLATE_CONFIRM_APPOINTMENT = 'confirmAppointment',
-        TEMPLATE_SUBMIT_ANALYSIS_RESULTS = 'submitAnalysisResults';
+        TEMPLATE_SUBMIT_ANALYSIS_RESULTS = 'submitAnalysisResults',
+        TEMPLATE_PRESCRIPTION_MEDICINE = 'prescriptionMedicine';
 
     /** @var SMSNotificationService */
     private $smsNotificationService;
@@ -355,7 +356,7 @@ class NotificationsServiceBuilder
                 'http://shemia.test/confirmNotification/' . $this->notificationConfirm->getEmailCode()
             ]
         );
-        return $this->makeNotificationServices($notificationData, self::TEMPLATE_CONFIRM_APPOINTMENT);
+        return $this->makeNotificationServices($notificationData, self::TEMPLATE_PRESCRIPTION_MEDICINE);
     }
 
     /**
@@ -438,5 +439,38 @@ class NotificationsServiceBuilder
     {
         $this->prescriptionTesting = $prescriptionTesting;
         return $this;
+    }
+
+    /**
+     * Добавление уведомления о приеме лекарства
+     * @param NotificationData $notificationData
+     * @param string $medicineName
+     * @param string $medicineStartDateString
+     * @param string $mecineEndDateString
+     * @param string $medicineInstruction
+     * @return NotificationsServiceBuilder
+     */
+    public function makePrescriptionMedicineNotification(
+        NotificationData $notificationData,
+        string $medicineName,
+        string $medicineStartDateString,
+        string $mecineEndDateString,
+        string $medicineInstruction
+    )
+    {
+        $this->notificationReceiverType = self::RECEIVER_TYPE_PATIENT;
+        $this->createNotificationConfirm($notificationData->getPatientReceiver());
+        $variables = [
+            $medicineName,
+            $medicineStartDateString,
+            $mecineEndDateString,
+            $medicineInstruction
+        ];
+        $this->setVariables(
+            $variables,
+            $variables,
+            $variables
+        );
+        return $this->makeNotificationServices($notificationData, self::TEMPLATE_PRESCRIPTION_MEDICINE);
     }
 }
