@@ -93,9 +93,11 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
             )
         ;
         $this->addEnabled($listTemplateItem);
-        $this->addOperationsWithParameters(
-            $listTemplateItem,
-            function (int $patientTestingId, PrescriptionMedicine $prescriptionMedicine) use ($renderOperationsFunction) {
+        $this->addOperations(
+            function (
+                int $patientTestingId,
+                PrescriptionMedicine $prescriptionMedicine
+            ) use ($renderOperationsFunction) {
                 return
                     $renderOperationsFunction(
                         (string)$prescriptionMedicine->getId(),
@@ -106,7 +108,8 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                             'prescription' => $prescriptionMedicine->getPrescription()->getId()
                         ]
                     );
-            }
+            },
+            $listTemplateItem
         );
         /** @var Prescription $prescription */
         $prescription = $filters[AppAbstractController::FILTER_LABELS['PRESCRIPTION']] ?? null;

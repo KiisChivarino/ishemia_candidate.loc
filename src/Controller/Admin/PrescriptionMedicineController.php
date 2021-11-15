@@ -72,7 +72,8 @@ class PrescriptionMedicineController extends AdminAbstractController
     ): Response
     {
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [
                     self::FILTER_LABELS['PRESCRIPTION'],
@@ -216,7 +217,7 @@ class PrescriptionMedicineController extends AdminAbstractController
 
     /**
      * Delete prescription medicine
-     * @Route("/prescription_medicine/{id}", name="prescription_medicine_delete", methods={"DELETE"})
+     * @Route("/prescription_medicine/{prescriptionMedicine}", name="prescription_medicine_delete", methods={"DELETE"})
      *
      * @param Request $request
      * @param PrescriptionMedicine $prescriptionMedicine

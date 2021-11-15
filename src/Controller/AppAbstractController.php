@@ -1012,17 +1012,20 @@ abstract class AppAbstractController extends AbstractController
         ?array $routeParameters = []
     )
     {
+        if ($routeParameters === []) {
+            $routeParameters = ['id' => $entityId];
+        }
         return $this->render(
             $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
             [
                 'template' => $this->templateService,
                 'parameters' => array_merge(
                     [
-                        'id' => $entityId,
                         'rowEntity' => $rowEntity
                     ],
                     $routeParameters
                 ),
+                'deleteId' => $entityId,
                 'route' => $route
             ]
         )->getContent();

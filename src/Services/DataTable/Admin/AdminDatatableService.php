@@ -111,33 +111,6 @@ abstract class AdminDatatableService extends DataTableService
     }
 
     /**
-     * Добавляет поле с операциями c возможностью добавления параметров
-     * Клоушура используется для render, чтобы можно было задать сколь угодно много динамических параметров
-     * Клоушура задается в DataTable сервисе
-     *
-     * @param TemplateItem $templateItem
-     * @param Closure $renderFunction
-     * @return DataTable
-     * @throws Exception
-     */
-    protected function addOperationsWithParameters(
-        TemplateItem $templateItem,
-        Closure $renderFunction
-    ): DataTable
-    {
-        return $this->dataTable
-            ->add(
-                'operations', TextColumn::class, [
-                    'label' => $templateItem->getContentValue('operations'),
-                    'className' => 'dataTableOperations',
-                    'render' => $renderFunction,
-                    'field' => 'e.id',
-                    'searchable' => false
-                ]
-            );
-    }
-
-    /**
      * Get link
      *
      * @param string $value
