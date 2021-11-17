@@ -30,10 +30,10 @@
     </li>
     <li>
         <span class="title">{{ template.items.show.content.inclusionTime }}</span>
-        <p>{{ entity.inclusionTime ? entity.inclusionTime|date('Y-m-d H:i:s') : '' }}</p>
+        <p>{{ entity.inclusionTime ? entity.inclusionTime|date('d.m.Y H:i') : '' }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.plannedDateTime }}</span>
-        <p>{{ entity.plannedDateTime ? entity.plannedDateTime|date('Y-m-d H:i:s') : '' }}</p>
+        <p>{{ entity.plannedDateTime ? entity.plannedDateTime|date('d.m.Y H:i') : '' }}</p>
     </li>
 {% endblock %}
