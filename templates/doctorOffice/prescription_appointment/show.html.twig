@@ -7,7 +7,7 @@
     <li>
         <span class="title">{{ template.items.show.content.plannedDateTime }}</span>
         <p>{{ entity.plannedDateTime
-            ? entity.plannedDateTime|date('Y-m-d')
+            ? entity.plannedDateTime|date('d.m.Y')
             : template.items.show.content.empty }}</p>
     </li>
     <li>
@@ -17,7 +17,7 @@
     <li>
         <span class="title">{{ template.items.show.content.inclusion_time }}</span>
         <p>{{ entity.inclusionTime
-            ? entity.inclusionTime|date('Y-m-d H:i:s')
+            ? entity.inclusionTime|date('d.m.Y H:i')
             : template.items.show.content.empty }}</p>
     </li>
 {% endblock %}

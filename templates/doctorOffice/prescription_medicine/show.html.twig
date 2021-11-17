@@ -12,13 +12,13 @@
     <li>
         <span class="title">{{ template.items.show.content.startingMedicationDate }}</span>
         <p>{{ entity.startingMedicationDate
-            ? entity.startingMedicationDate|date('Y-m-d')
+            ? entity.startingMedicationDate|date('d.m.Y')
             : template.items.show.content.empty }}</p>
     </li>
     <li>
         <span class="title">{{ template.items.show.content.endMedicationDate }}</span>
         <p>{{ entity.endMedicationDate
-            ? entity.endMedicationDate|date('Y-m-d')
+            ? entity.endMedicationDate|date('d.m.Y')
             : template.items.show.content.empty }}</p>
     </li>
     <li>
@@ -28,7 +28,7 @@
     <li>
         <span class="title">{{ template.items.show.content.inclusion_time }}</span>
         <p>{{ entity.inclusionTime
-            ? entity.inclusionTime|date('Y-m-d H:i:s')
+            ? entity.inclusionTime|date('d.m.Y H:i')
             : template.items.show.content.empty }}</p>
     </li>
 {% endblock %}
