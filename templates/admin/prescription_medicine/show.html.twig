@@ -102,7 +102,7 @@
         </ul>
         <div class="buttons">
             {% if template.items.delete.isEnabled %}
-                {{ include(template.commonTemplatePath~'_delete_form.html.twig') }}
+                {{ include(template.templatePath~'_delete_form.html.twig') }}
             {% endif %}
             {% if template.items.edit.isEnabled %}
                 <button class="btn btn--edit">
