@@ -39,7 +39,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common FORM_SHOW_CONTENT */
     protected const FORM_SHOW_CONTENT = [
-        'completedTime' => 'Назначено (дата и время)'
+        'completedTime' => 'Дата и время назначения'
     ];
 
     /** @var string[] Common LIST_CONTENT */

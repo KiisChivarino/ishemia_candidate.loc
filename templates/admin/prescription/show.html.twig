@@ -36,6 +36,16 @@
         <span class="title">{{ template.items.show.content.isCompleted }}</span>
         <p>{{ entity.isCompleted ? template.items.show.content.trueValue : template.items.show.content.falseValue }}</p>
     </li>
+    {% if entity.isCompleted %}
+        <li>
+            <span class="title">{{ template.items.show.content.completedTime }}</span>
+            <p>
+                {{ entity.completedTime
+                ? entity.completedTime|date('d.m.Y H:i')
+                : template.items.show.content.falseValue }}
+            </p>
+        </li>
+    {% endif %}
     <li>
         <span class="title">{{ template.items.show.content.isPatientConfirmed }}</span>
         <p>
@@ -57,15 +67,7 @@
     <li>
         <span class="title">{{ template.items.show.content.createdTime }}</span>
         <p>
-            {{ entity.createdTime ? entity.createdTime|date('Y-m-d H:i:s') : template.items.show.content.falseValue }}
-        </p>
-    </li>
-    <li>
-        <span class="title">{{ template.items.show.content.completedTime }}</span>
-        <p>
-            {{ entity.completedTime
-                ? entity.completedTime|date('Y-m-d H:i:s')
-                : template.items.show.content.falseValue }}
+            {{ entity.createdTime ? entity.createdTime|date('d.m.Y H:i') : template.items.show.content.falseValue }}
         </p>
     </li>
 {% endblock %}
