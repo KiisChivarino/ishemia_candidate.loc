@@ -36,23 +36,27 @@ class PrescriptionEditType extends AbstractType
                     'label' => $templateItem->getContentValue('isPatientConfirmed'),
                     'required' => false,
                 ]
-            );
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) use ($templateItem) {
-                /** @var Prescription $prescription */
-                $prescription = $event->getData();
-                if (PrescriptionInfoService::countChildren($prescription) and !$prescription->getIsCompleted()) {
-                    $form = $event->getForm();
-                    $form->add(
-                        'isCompleted', CheckboxType::class, [
-                            'label' => $templateItem->getContentValue('isCompleted'),
-                            'required' => false,
-                        ]
-                    );
+            )
+        ;
+
+        $builder
+            ->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                function (FormEvent $event) use ($templateItem) {
+                    /** @var Prescription $prescription */
+                    $prescription = $event->getData();
+                    if (PrescriptionInfoService::countChildren($prescription) and !$prescription->getIsCompleted()) {
+                        $form = $event->getForm();
+                        $form->add(
+                            'isCompleted', CheckboxType::class, [
+                                'label' => $templateItem->getContentValue('isCompleted'),
+                                'required' => false,
+                            ]
+                        );
+                    }
                 }
-            }
-        );
+            )
+        ;
     }
 
     /**
