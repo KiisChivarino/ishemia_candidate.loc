@@ -31,21 +31,12 @@ class PrescriptionEditType extends AbstractType
         /** @var FormTemplateItem $templateItem */
         $templateItem = $options[AppAbstractController::FORM_TEMPLATE_ITEM_OPTION_TITLE];
         $builder
-            ->add(
-                'isPatientConfirmed', CheckboxType::class, [
-                    'label' => $templateItem->getContentValue('isPatientConfirmed'),
-                    'required' => false,
-                ]
-            )
-        ;
-
-        $builder
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
                 function (FormEvent $event) use ($templateItem) {
                     /** @var Prescription $prescription */
                     $prescription = $event->getData();
-                    if (PrescriptionInfoService::countChildren($prescription) and !$prescription->getIsCompleted()) {
+                    if (PrescriptionInfoService::countChildren($prescription) && !$prescription->getIsCompleted()) {
                         $form = $event->getForm();
                         $form->add(
                             'isCompleted', CheckboxType::class, [
