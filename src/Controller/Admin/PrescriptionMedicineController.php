@@ -113,6 +113,7 @@ class PrescriptionMedicineController extends AdminAbstractController
                 PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
             ]
         )->getEntity();
+
         $this->templateService->setRedirectRouteParameters(
             [
                 'prescription' => $prescription->getId(),

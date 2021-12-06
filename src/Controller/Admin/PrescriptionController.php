@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Prescription;
 use App\Form\Admin\Prescription\PrescriptionEditType;
+use App\Form\Admin\Prescription\PrescriptionEnabled;
+use App\Form\Admin\Prescription\PrescriptionDateType;
 use App\Form\Admin\PrescriptionType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
@@ -19,6 +21,7 @@ use App\Services\InfoService\MedicalRecordInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
 use Exception;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -89,26 +92,46 @@ class PrescriptionController extends AdminAbstractController
      * @Route("/new", name="prescription_new", methods={"GET","POST"})
      *
      * @param Request $request
-     *
+     * @param PrescriptionCreatorService $prescriptionCreatorService
      * @return Response
+     * @throws ReflectionException
      * @throws Exception
      */
     public function new(
-        Request $request
+        Request $request,
+        PrescriptionCreatorService $prescriptionCreatorService
     ): Response
     {
         if (!$medicalHistory = $this->getMedicalHistoryByParameter($request)) {
             return $this->redirectToRoute('prescription_list');
         }
-        return $this->responseNewWithActions(
+
+        $prescription = $prescriptionCreatorService->before(
+            [
+                PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
+            ]
+        )->getEntity();
+
+        return $this->responseNewMultiFormWithActions(
             $request,
-            new CreatorEntityActionsBuilder(
-                new PrescriptionCreatorService($this->getDoctrine()->getManager()),
-                [
-                    PrescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
-                ]
-            ),
-            new FormData(PrescriptionType::class)
+            [
+                new CreatorEntityActionsBuilder(
+                    $prescriptionCreatorService,
+                    [
+                        $prescriptionCreatorService::MEDICAL_HISTORY_OPTION => $medicalHistory,
+                    ]
+                ),
+            ],
+            [
+                new FormData(
+                    PrescriptionType::class,
+                    $prescription
+                ),
+                new FormData(
+                    PrescriptionEnabled::class,
+                    $prescription
+                ),
+            ]
         );
     }
 
@@ -188,7 +211,9 @@ class PrescriptionController extends AdminAbstractController
             ],
             [
                 new FormData(PrescriptionType::class, $prescription),
+                new FormData(PrescriptionDateType::class, $prescription),
                 new FormData(PrescriptionEditType::class, $prescription),
+                new FormData(PrescriptionEnabled::class, $prescription),
             ]
         );
     }
