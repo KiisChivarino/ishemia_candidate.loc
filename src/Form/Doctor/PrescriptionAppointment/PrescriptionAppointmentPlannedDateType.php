@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\PrescriptionAppointmentType;
+namespace App\Form\Doctor\PrescriptionAppointment;
 
 use App\Controller\AppAbstractController;
 use App\Entity\PrescriptionAppointment;

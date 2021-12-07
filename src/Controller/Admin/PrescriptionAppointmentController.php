@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\PrescriptionAppointment;
 use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentConfirmedEnabledType;
-use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
+use App\Form\Admin\PrescriptionAppointment\PrescriptionAppointmentPlannedDateType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentStaffType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionAppointmentDataTableService;

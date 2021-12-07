@@ -8,7 +8,7 @@ use App\Entity\PatientAppointment;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use App\Form\PatientAppointmentType;
-use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentPlannedDateType;
+use App\Form\Doctor\PrescriptionAppointment\PrescriptionAppointmentPlannedDateType;
 use App\Repository\PrescriptionAppointmentRepository;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionAppointmentService;
