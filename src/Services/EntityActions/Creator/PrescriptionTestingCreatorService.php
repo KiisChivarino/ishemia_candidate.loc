@@ -42,7 +42,6 @@ class PrescriptionTestingCreatorService extends AbstractCreatorService
         /** @var PrescriptionTesting $prescriptionTesting */
         $prescriptionTesting = $this->getEntity();
         $prescriptionTesting
-            ->setConfirmedByStaff(false)
             ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
             ->setPatientTesting($this->options[self::PATIENT_TESTING_OPTION]);
     }

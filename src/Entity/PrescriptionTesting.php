@@ -50,11 +50,6 @@ class PrescriptionTesting
     private $enabled;
 
     /**
-     * @ORM\Column(type="boolean", options={"comment"="Флаг подтверждения врачом назначения на прием", "default"=false})
-     */
-    private $confirmedByStaff;
-
-    /**
      * @ORM\Column(type="date", options={"comment"="Назначенная дата проведения обследования"})
      */
     private $plannedDate;
@@ -201,24 +196,6 @@ class PrescriptionTesting
     public function setNotificationConfirm(?NotificationConfirm $notificationConfirm): self
     {
         $this->notificationConfirm = $notificationConfirm;
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getConfirmedByStaff(): ?bool
-    {
-        return $this->confirmedByStaff;
-    }
-
-    /**
-     * @param bool $confirmedByStaff
-     * @return $this
-     */
-    public function setConfirmedByStaff(bool $confirmedByStaff): self
-    {
-        $this->confirmedByStaff = $confirmedByStaff;
         return $this;
     }
 

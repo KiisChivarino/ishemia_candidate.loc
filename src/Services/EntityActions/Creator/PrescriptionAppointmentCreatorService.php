@@ -45,7 +45,6 @@ class PrescriptionAppointmentCreatorService extends AbstractCreatorService
         /** @var PrescriptionAppointment $prescriptionAppointment */
         $prescriptionAppointment = $this->getEntity();
         $prescriptionAppointment
-            ->setConfirmedByStaff(false)
             ->setPrescription($this->options[self::PRESCRIPTION_OPTION])
             ->setPatientAppointment($this->options[self::PATIENT_APPOINTMENT_OPTION]);
     }

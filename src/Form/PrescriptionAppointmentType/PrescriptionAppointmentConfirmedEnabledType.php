@@ -32,14 +32,7 @@ class PrescriptionAppointmentConfirmedEnabledType extends AbstractType
                     'required' => false,
                 ]
             )
-            ->add(
-                'confirmedByStaff',
-                CheckboxType::class,
-                [
-                    'label' => $templateItem->getContentValue('confirmedByStaff'),
-                    'required' => false,
-                ]
-            );
+        ;
     }
 
     /**
