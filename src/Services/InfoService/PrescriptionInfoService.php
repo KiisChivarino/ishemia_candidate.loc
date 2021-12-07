@@ -51,4 +51,15 @@ class PrescriptionInfoService
     {
         return self::countChildren($prescription) > 0;
     }
+
+    /**
+     * Getting information about availability PrescriptionAppointment
+     *
+     * @param Prescription $prescription
+     * @return bool
+     */
+    static public function isPrescriptionAppointmentExists(Prescription $prescription): bool
+    {
+        return $prescription->getPrescriptionAppointments()->count();
+    }
 }

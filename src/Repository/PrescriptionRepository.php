@@ -117,7 +117,8 @@ class PrescriptionRepository extends AppRepository
     {
         return $this->count(
             [
-                'prescription' => $prescription, 'enabled' => true
+                'prescription' => $prescription,
+                'enabled' => true
             ]
         );
     }

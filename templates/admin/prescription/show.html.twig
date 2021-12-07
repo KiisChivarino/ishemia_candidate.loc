@@ -88,11 +88,13 @@
                             {{ template.items.show.content.addPrescriptionTesting }}
                         </a>
                     </li>
-                    <li class="sublist__item">
-                        <a href="{{ path('prescription_appointment_new',{(prescriptionParameterKey) : entity.id}) }}">
-                            {{ template.items.show.content.addPrescriptionAppointment }}
-                        </a>
-                    </li>
+                    {% if isPrescriptionAppointmentExists(entity) == false %}
+                        <li class="sublist__item">
+                            <a href="{{ path('prescription_appointment_new',{(prescriptionParameterKey) : entity.id}) }}">
+                                {{ template.items.show.content.addPrescriptionAppointment }}
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </button>
         {% endif %}

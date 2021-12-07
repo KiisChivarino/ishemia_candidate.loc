@@ -98,6 +98,16 @@ class PrescriptionAppointmentController extends AdminAbstractController
         if (!$prescription = $this->getPrescriptionByParameter($request)) {
             return $this->redirectToRoute('prescription_appointment_list');
         }
+
+        if (PrescriptionInfoService::isPrescriptionAppointmentExists($prescription)) {
+            return $this->redirectToRoute(
+                'prescription_show',
+                [
+                    'id' => $prescription->getId(),
+                ]
+            );
+        }
+
         $patientAppointment = $patientAppointmentCreator->before(
             [
                 PatientAppointmentCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),

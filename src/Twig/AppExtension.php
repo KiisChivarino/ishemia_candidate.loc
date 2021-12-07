@@ -168,6 +168,12 @@ class AppExtension extends AbstractExtension
                     'countPrescriptionChildren'
                 ]
             ),
+            new TwigFunction(
+                'isPrescriptionAppointmentExists', [
+                    $this,
+                    'isPrescriptionAppointmentExists'
+                ]
+            ),
         ];
     }
 
@@ -354,5 +360,17 @@ class AppExtension extends AbstractExtension
     public function getFormName(string $formClassName): string
     {
         return MultiFormService::getFormName($formClassName);
+    }
+
+
+    /**
+     * Getting information about availability PrescriptionAppointment
+     *
+     * @param Prescription $prescription
+     * @return bool
+     */
+    public function isPrescriptionAppointmentExists(Prescription $prescription): bool
+    {
+        return PrescriptionInfoService::isPrescriptionAppointmentExists($prescription);
     }
 }
