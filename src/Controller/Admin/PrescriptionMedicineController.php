@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
+use App\Form\Admin\PrescriptionMedicine\PrescriptionMedicineInclusionTimeType;
 use App\Form\PatientMedicineType\PatientMedicineType;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineStaffType;
 use App\Form\PrescriptionMedicineType\PrescriptionMedicineType;
@@ -137,6 +138,7 @@ class PrescriptionMedicineController extends AdminAbstractController
             [
                 new FormData(PrescriptionMedicineType::class, $prescriptionMedicine),
                 new FormData(PrescriptionMedicineStaffType::class, $prescriptionMedicine),
+                new FormData(PrescriptionMedicineInclusionTimeType::class, $prescriptionMedicine),
                 new FormData(PatientMedicineType::class, $patientMedicine),
             ]
         );
@@ -200,6 +202,14 @@ class PrescriptionMedicineController extends AdminAbstractController
             $request,
             $prescriptionMedicine,
             [
+                new FormData(
+                    PrescriptionMedicineStaffType::class,
+                    $prescriptionMedicine
+                ),
+                new FormData(
+                    PrescriptionMedicineInclusionTimeType::class,
+                    $prescriptionMedicine
+                ),
                 new FormData(
                     PrescriptionMedicineType::class,
                     $prescriptionMedicine
