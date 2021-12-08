@@ -4,6 +4,7 @@ namespace App\Services\EntityActions\Creator;
 
 use App\Entity\PrescriptionAppointment;
 use App\Entity\Staff;
+use DateTime;
 use Exception;
 
 /**
@@ -14,13 +15,26 @@ class DoctorOfficePrescriptionAppointmentService extends PrescriptionAppointment
 {
     /**
      * Actions with entity before persisting one
+     * @throws Exception
      */
     protected function prepare(): void
     {
         parent::prepare();
         /** @var PrescriptionAppointment $prescriptionAppointment */
         $prescriptionAppointment = $this->getEntity();
-        $prescriptionAppointment->setStaff($this->options[self::STAFF_OPTION]);
+
+        $plannedDateTime = new DateTime(
+                date(
+                    'Y-m-d ',
+                    $prescriptionAppointment->getPlannedDateTime()->getTimestamp()
+                ) . date('H:i', (new DateTime())->getTimestamp())
+            )
+        ;
+
+        $prescriptionAppointment
+            ->setPlannedDateTime($plannedDateTime)
+            ->setStaff($this->options[self::STAFF_OPTION])
+        ;
     }
 
     /**
