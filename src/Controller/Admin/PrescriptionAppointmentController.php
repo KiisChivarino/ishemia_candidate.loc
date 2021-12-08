@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\PrescriptionAppointment;
+use App\Form\Admin\PrescriptionAppointment\PrescriptionAppointmentInclusionTimeType;
 use App\Form\PatientAppointmentType;
 use App\Form\PrescriptionAppointmentType\PrescriptionAppointmentConfirmedEnabledType;
 use App\Form\Admin\PrescriptionAppointment\PrescriptionAppointmentPlannedDateType;
@@ -137,6 +138,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
             ],
             [
                 new FormData(PrescriptionAppointmentStaffType::class, $prescriptionAppointment),
+                new FormData(PrescriptionAppointmentInclusionTimeType::class, $prescriptionAppointment),
                 new FormData(PrescriptionAppointmentPlannedDateType::class, $prescriptionAppointment),
                 new FormData(PatientAppointmentType::class, $patientAppointment)
             ]
@@ -183,6 +185,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
             $prescriptionAppointment,
             [
                 new FormData(PrescriptionAppointmentStaffType::class, $prescriptionAppointment),
+                new FormData(PrescriptionAppointmentInclusionTimeType::class, $prescriptionAppointment),
                 new FormData(PrescriptionAppointmentPlannedDateType::class, $prescriptionAppointment),
                 new FormData(PatientAppointmentType::class, $prescriptionAppointment->getPatientAppointment()),
                 new FormData(PrescriptionAppointmentConfirmedEnabledType::class, $prescriptionAppointment),
