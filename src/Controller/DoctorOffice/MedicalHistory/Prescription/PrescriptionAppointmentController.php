@@ -89,6 +89,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 ]
             );
         }
+
         $staff = $this->getStaff($patient);
         /** @var PatientAppointment $patientAppointment */
         $patientAppointment = $patientAppointmentCreator->before(
@@ -97,6 +98,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 SpecialPatientAppointmentCreatorService::STAFF_OPTION => $staff,
             ]
         )->getEntity();
+
         /** @var PrescriptionAppointment $prescriptionAppointment */
         $prescriptionAppointment = $prescriptionAppointmentCreator->before(
             [
@@ -106,6 +108,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
             ]
         )->getEntity();
         $this->redirectToAddPrescriptionPage($patient, $prescription);
+
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -115,7 +118,8 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                     [],
                     function () use ($prescriptionAppointment) {
                         return [
-                            SpecialPatientAppointmentCreatorService::PRESCRIPTION_APPOINTMENT_OPTION => $prescriptionAppointment,
+                            SpecialPatientAppointmentCreatorService::PRESCRIPTION_APPOINTMENT_OPTION
+                                => $prescriptionAppointment,
                         ];
                     }
                 ),
