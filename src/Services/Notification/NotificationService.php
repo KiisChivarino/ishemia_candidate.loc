@@ -12,6 +12,8 @@ use App\Entity\PatientNotification;
 use App\Services\LoggerService\LogService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use RuntimeException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -105,14 +107,19 @@ abstract class NotificationService implements NotificationInterface
     }
 
     /**
-     * @param string $notificationTemplate
+     * @param string $notificationTemplateName
      * @return NotificationService
+     * @throws Exception
      */
-    public function setNotificationTemplate(string $notificationTemplate): self
+    public function setNotificationTemplate(string $notificationTemplateName): self
     {
-        $this->notificationTemplate = $this->em
+        $notificationTemplate = $this->em
             ->getRepository(NotificationTemplate::class)
-            ->findByName($notificationTemplate);
+            ->findByName($notificationTemplateName);
+        if(!is_a($notificationTemplate, NotificationTemplate::class)){
+            throw new RuntimeException('Notification template "'. $notificationTemplateName .'" has not found in db');
+        }
+        $this->notificationTemplate = $notificationTemplate;
         return $this;
     }
 
@@ -187,10 +194,19 @@ abstract class NotificationService implements NotificationInterface
      */
     private function getNotificationText(): string
     {
-        return vsprintf(
+
+        $notificationTemplateText =
             $this->em->getRepository(NotificationTemplateText::class)->findForChannel(
-                $this->channelType, $this->notificationTemplate
-            )->getText(),
+                $this->channelType,
+                $this->notificationTemplate
+            )
+        ;
+
+        if($notificationTemplateText === null){
+            throw new RuntimeException('Cannot find notification template text in db!');
+        }
+        return vsprintf(
+            $notificationTemplateText->getText(),
             $this->variables
         );
     }

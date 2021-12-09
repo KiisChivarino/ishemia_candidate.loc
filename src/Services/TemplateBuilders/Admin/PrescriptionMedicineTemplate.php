@@ -54,7 +54,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
         'title' => 'Просмотр назначения лекарства',
         'h1' => 'Просмотр назначения лекарства',
         'inclusionTime' => 'Дата и время включения лекарства в назначение',
-        'notificationConfirmId' => 'Id уведомления о подтверждении'
+        'notificationConfirm' => 'Подтверждено пациентом'
     ];
 
     /** @var string[] Common EDIT_CONTENT */

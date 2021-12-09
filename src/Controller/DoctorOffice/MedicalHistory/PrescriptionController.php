@@ -79,6 +79,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
     /** @var string Route name for show prescription appointment */
     const SHOW_PRESCRIPTION_MEDICINE_ROUTE_NAME = 'show_prescription_medicine_by_doctor';
 
+    const NO_END_DATE_MEDICATION_CONFIRM_MESSAGE = '(без ограничения)';
+
     /**
      * @var NotifierService
      */
@@ -147,6 +149,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
         if (!$this->flush()) {
             $this->redirectToMedicalHistory($patient);
         }
+
         return $this->redirectToRoute(
             'add_prescription_show', [
                 'patient' => $patient->getId(),
@@ -427,11 +430,14 @@ class PrescriptionController extends DoctorOfficeAbstractController
                 );
             }
             foreach ($prescription->getPrescriptionMedicines() as $prescriptionMedicine){
+                $endMedicationDate = $prescriptionMedicine->getEndMedicationDate();
                 $notificationServiceBuilder = $this->notificationServiceBuilder->makePrescriptionMedicineNotification(
                     $notificationData,
                     $prescriptionMedicine->getPatientMedicine()->getMedicineName(),
                     $prescriptionMedicine->getStartingMedicationDate()->format('Y-m-d'),
-                    $prescriptionMedicine->getEndMedicationDate()->format('Y-m-d'),
+                    $endMedicationDate !== null ?
+                        $endMedicationDate->format('Y-m-d') :
+                        self::NO_END_DATE_MEDICATION_CONFIRM_MESSAGE,
                     $prescriptionMedicine->getPatientMedicine()->getInstruction()
                 );
                 $this->notifier->notifyPatient(
