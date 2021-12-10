@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\PatientTesting;
 use App\Entity\Prescription;
 use App\Entity\PrescriptionTesting;
+use App\Form\Admin\PrescriptionTesting\PrescriptionTestingInclusionTimeType;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
@@ -188,6 +189,10 @@ public function show(PrescriptionTesting $prescriptionTesting): Response
                 new FormData(
                     PatientTestingRequiredType::class,
                     $prescriptionTesting->getPatientTesting()
+                ),
+                new FormData(
+                    PrescriptionTestingInclusionTimeType::class,
+                    $prescriptionTesting
                 ),
                 new FormData(
                     PrescriptionTestingType\PrescriptionTestingPlannedDateType::class,
