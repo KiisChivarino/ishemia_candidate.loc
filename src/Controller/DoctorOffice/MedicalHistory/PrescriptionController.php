@@ -9,6 +9,7 @@ use App\Entity\PrescriptionAppointment;
 use App\Entity\PrescriptionMedicine;
 use App\Entity\PrescriptionTesting;
 use App\Repository\MedicalHistoryRepository;
+use App\Services\CompletePrescription\CompletePrescriptionService;
 use App\Services\DataTable\DataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionAppointmentDataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionMedicineDataTableService;
@@ -16,12 +17,6 @@ use App\Services\DataTable\DoctorOffice\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionService;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
-use App\Services\EntityActions\Editor\PrescriptionEditorService;
-use App\Services\InfoService\AuthUserInfoService;
-use App\Services\InfoService\PrescriptionInfoService;
-use App\Services\Notification\NotificationData;
-use App\Services\Notification\NotificationsServiceBuilder;
-use App\Services\Notification\NotifierService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\EditTemplateItem;
@@ -79,39 +74,29 @@ class PrescriptionController extends DoctorOfficeAbstractController
     /** @var string Route name for show prescription appointment */
     const SHOW_PRESCRIPTION_MEDICINE_ROUTE_NAME = 'show_prescription_medicine_by_doctor';
 
-    const NO_END_DATE_MEDICATION_CONFIRM_MESSAGE = '(без ограничения)';
-
     /**
-     * @var NotifierService
+     * @var CompletePrescriptionService
      */
-    private $notifier;
-
-    /**
-     * @var NotificationsServiceBuilder
-     */
-    private $notificationServiceBuilder;
+    private $completePrescriptionService;
 
     /**
      * PatientPrescriptionController constructor.
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
-     * @param NotifierService $notifier
-     * @param NotificationsServiceBuilder $notificationServiceBuilder
+     * @param CompletePrescriptionService $completePrescriptionService
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
         TranslatorInterface $translator,
-        NotifierService $notifier,
-        NotificationsServiceBuilder $notificationServiceBuilder
+        CompletePrescriptionService $completePrescriptionService
     )
     {
         parent::__construct($translator);
         $this->templateService = new AddPatientPrescriptionTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
-        $this->notifier = $notifier;
-        $this->notificationServiceBuilder = $notificationServiceBuilder;
+        $this->completePrescriptionService = $completePrescriptionService;
     }
 
     /**
@@ -386,68 +371,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
         MedicalRecordCreatorService $medicalRecordCreatorService
     ): RedirectResponse
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription) && !$prescription->getIsCompleted()) {
-            (new PrescriptionEditorService($entityManager, $prescription))->before()->after(
-                [
-                    PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $medicalRecordCreatorService
-                ]
-            );
-            $medicalHistory = $prescription->getMedicalHistory();
-            $notificationData = new NotificationData(
-                $entityManager,
-                $medicalHistory->getPatient(),
-                $medicalHistory,
-                $prescription->getMedicalRecord()
-            );
-            foreach ($prescription->getPrescriptionTestings() as $prescriptionTesting) {
-                $notificationServiceBuilder = $this->notificationServiceBuilder
-                    ->makeTestingAppointmentNotification(
-                        $notificationData,
-                        $prescriptionTesting->getPatientTesting()->getAnalysisGroup()->getName(),
-                        $prescriptionTesting->getPlannedDate()->format('d.m.Y')
-                    );
-                $this->notifier->notifyPatient(
-                    $notificationServiceBuilder->getWebNotificationService(),
-                    $notificationServiceBuilder->getSMSNotificationService(),
-                    $notificationServiceBuilder->getEmailNotificationService()
-                );
-            }
-            foreach ($prescription->getPrescriptionAppointments() as $prescriptionAppointment) {
-                $notificationServiceBuilder = $this->notificationServiceBuilder
-                    ->makeDoctorAppointmentNotification(
-                        $notificationData,
-                        AuthUserInfoService::getFIO(
-                            $prescriptionAppointment->getPatientAppointment()->getStaff()->getAuthUser(),
-                            true
-                        ),
-                        $prescriptionAppointment->getPlannedDateTime()->format('Y-m-d H:i:s')
-                    );
-                $this->notifier->notifyPatient(
-                    $notificationServiceBuilder->getWebNotificationService(),
-                    $notificationServiceBuilder->getSMSNotificationService(),
-                    $notificationServiceBuilder->getEmailNotificationService()
-                );
-            }
-            foreach ($prescription->getPrescriptionMedicines() as $prescriptionMedicine){
-                $endMedicationDate = $prescriptionMedicine->getEndMedicationDate();
-                $notificationServiceBuilder = $this->notificationServiceBuilder->makePrescriptionMedicineNotification(
-                    $notificationData,
-                    $prescriptionMedicine->getPatientMedicine()->getMedicineName(),
-                    $prescriptionMedicine->getStartingMedicationDate()->format('Y-m-d'),
-                    $endMedicationDate !== null ?
-                        $endMedicationDate->format('Y-m-d') :
-                        self::NO_END_DATE_MEDICATION_CONFIRM_MESSAGE,
-                    $prescriptionMedicine->getPatientMedicine()->getInstruction()
-                );
-                $this->notifier->notifyPatient(
-                    $notificationServiceBuilder->getWebNotificationService(),
-                    $notificationServiceBuilder->getSMSNotificationService(),
-                    $notificationServiceBuilder->getEmailNotificationService()
-                );
-            }
-            $entityManager->flush();
-        }
+        $this->completePrescriptionService->completePrescription($prescription, $medicalRecordCreatorService);
         return $this->redirectToMedicalHistory($prescription->getMedicalHistory()->getPatient());
     }
 }

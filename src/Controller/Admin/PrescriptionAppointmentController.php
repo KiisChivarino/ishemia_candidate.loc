@@ -138,7 +138,6 @@ class PrescriptionAppointmentController extends AdminAbstractController
             ],
             [
                 new FormData(PrescriptionAppointmentStaffType::class, $prescriptionAppointment),
-                new FormData(PrescriptionAppointmentInclusionTimeType::class, $prescriptionAppointment),
                 new FormData(PrescriptionAppointmentPlannedDateType::class, $prescriptionAppointment),
                 new FormData(PatientAppointmentType::class, $patientAppointment)
             ]
@@ -179,7 +178,6 @@ class PrescriptionAppointmentController extends AdminAbstractController
         PrescriptionAppointment $prescriptionAppointment
     ): Response
     {
-
         return $this->responseEditMultiForm(
             $request,
             $prescriptionAppointment,

@@ -28,7 +28,8 @@ class PrescriptionEditorService extends AbstractEditorService
         $prescription = $this->getEntity();
         /** @var MedicalRecordCreatorService $medicalRecordCreator */
         $medicalRecordCreator = $this->options[self::MEDICAL_RECORD_CREATOR_OPTION_NAME];
-        if ($prescription->getIsCompleted() && !$prescription->getCompletedTime()) {
+
+        if (!$prescription->getIsCompleted() && !$prescription->getCompletedTime()) {
             $prescription->setMedicalRecord(
                 $medicalRecordCreator->execute(
                     [
