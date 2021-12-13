@@ -39,38 +39,45 @@ class CompletePrescriptionService
     private $notifier;
 
     /**
+     * @var MedicalRecordCreatorService
+     */
+    private $medicalRecordCreatorService;
+
+    /**
      * CompletePrescriptionService constructor.
      *
      * @param EntityManagerInterface $entityManager
      * @param NotificationsServiceBuilder $notificationServiceBuilder
      * @param NotifierService $notifier
+     * @param MedicalRecordCreatorService $medicalRecordCreatorService
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         NotificationsServiceBuilder $notificationServiceBuilder,
-        NotifierService $notifier
+        NotifierService $notifier,
+        MedicalRecordCreatorService $medicalRecordCreatorService
     )
     {
         $this->entityManager = $entityManager;
         $this->notificationServiceBuilder = $notificationServiceBuilder;
         $this->notifier = $notifier;
+        $this->medicalRecordCreatorService = $medicalRecordCreatorService;
     }
 
     /**
      * @param Prescription $prescription
-     * @param MedicalRecordCreatorService $medicalRecordCreatorService
      * @throws NonUniqueResultException
      * @throws Exception
      */
     public function completePrescription(
-        Prescription $prescription,
-        MedicalRecordCreatorService $medicalRecordCreatorService
+        Prescription $prescription
     ): void
     {
-        if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription) && !$prescription->getIsCompleted()) {
+        if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription)) {
+            $prescription->setIsCompleted(true);
             (new PrescriptionEditorService($this->entityManager, $prescription))->before()->after(
                 [
-                    PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $medicalRecordCreatorService,
+                    PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $this->medicalRecordCreatorService,
                 ]
             );
             $medicalHistory = $prescription->getMedicalHistory();
@@ -128,6 +135,5 @@ class CompletePrescriptionService
             }
             $prescription->setIsCompleted(true);
         }
-        $this->entityManager->flush();
     }
 }

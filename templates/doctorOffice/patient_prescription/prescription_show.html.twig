@@ -98,7 +98,7 @@
         {% if(countPrescriptionChildren(prescription)>0) %}
             <button class="button main-button"
                     onclick="location.href='{{ path(
-                        'complete_prescription',
+                        'doctor_complete_prescription',
                         {
                             'patient': patient.id,
                             'prescription' : prescription.id

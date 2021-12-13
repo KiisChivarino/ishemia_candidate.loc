@@ -15,7 +15,6 @@ use App\Services\DataTable\DoctorOffice\PrescriptionAppointmentDataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionMedicineDataTableService;
 use App\Services\DataTable\DoctorOffice\PrescriptionTestingDataTableService;
 use App\Services\EntityActions\Creator\DoctorOfficePrescriptionService;
-use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\TemplateBuilders\DoctorOffice\AddPatientPrescriptionTemplate;
 use App\Services\TemplateItems\DeleteTemplateItem;
@@ -356,22 +355,24 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * Sets prescription completed and redirects to medical history page
      * @Route(
      *     "patient/{patient}/prescription/{prescription}/complete",
-     *     name="complete_prescription",
+     *     name="doctor_complete_prescription",
      *     methods={"GET"},
      *     requirements={"patient"="\d+", "prescription"="\d+"}
      * )
      * @param Prescription $prescription
-     * @param MedicalRecordCreatorService $medicalRecordCreatorService
      * @return RedirectResponse
      * @throws NonUniqueResultException
      * @throws Exception
      */
     public function completePrescription(
-        Prescription $prescription,
-        MedicalRecordCreatorService $medicalRecordCreatorService
+        Prescription $prescription
     ): RedirectResponse
     {
-        $this->completePrescriptionService->completePrescription($prescription, $medicalRecordCreatorService);
+        if ($prescription->getIsCompleted() === false){
+            $this->completePrescriptionService->completePrescription($prescription);
+            $this->getDoctrine()->getManager()->flush();
+        }
+
         return $this->redirectToMedicalHistory($prescription->getMedicalHistory()->getPatient());
     }
 }

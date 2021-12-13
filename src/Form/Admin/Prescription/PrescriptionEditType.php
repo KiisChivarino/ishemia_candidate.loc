@@ -4,8 +4,6 @@ namespace App\Form\Admin\Prescription;
 
 use App\Controller\AppAbstractController;
 use App\Entity\Prescription;
-use App\Services\CompletePrescription\CompletePrescriptionService;
-use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\TemplateItems\FormTemplateItem;
 use Exception;
@@ -23,25 +21,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PrescriptionEditType extends AbstractType
 {
-    /**
-     * @var CompletePrescriptionService
-     */
-    private $completePrescriptionService;
-
-    /**
-     * @var MedicalRecordCreatorService
-     */
-    private $medicalRecordCreatorService;
-
-    public function __construct(
-        CompletePrescriptionService $completePrescriptionService,
-        MedicalRecordCreatorService $medicalRecordCreatorService
-    )
-    {
-        $this->completePrescriptionService = $completePrescriptionService;
-        $this->medicalRecordCreatorService = $medicalRecordCreatorService;
-    }
-
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -68,16 +47,6 @@ class PrescriptionEditType extends AbstractType
                     }
                 }
             )
-            ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-                /** @var Prescription $prescription */
-                $prescription = $event->getData();
-                if ($prescription->getIsCompleted() === true) {
-                    $this->completePrescriptionService->completePrescription(
-                        $prescription,
-                        $this->medicalRecordCreatorService
-                    );
-                }
-            })
         ;
     }
 

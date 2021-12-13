@@ -73,7 +73,7 @@
 {% endblock %}
 {% block custom_actions %}
     <div class="buttons">
-        {% if not entity.isCompleted %}
+        {% if entity.isCompleted == false %}
             <button class="btn btn--add btn--show">Добавить
                 {% set prescriptionParameterKey =
                     constant('App\\Controller\\Admin\\PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY') %}
@@ -96,6 +96,17 @@
                         </li>
                     {% endif %}
                 </ul>
+            </button>
+        {% endif %}
+        {% if(countPrescriptionChildren(entity)>0) and (entity.isCompleted == false) %}
+            <button class="btn btn--edit"
+                    onclick="location.href='{{ path(
+                        'admin_complete_prescription',
+                        {
+                            'prescription' : entity.id
+                        }
+                    ) }}';">
+                Завершить назначение
             </button>
         {% endif %}
         <button class="btn btn--list btn--show">{{ template.items.show.content.list }}

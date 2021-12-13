@@ -5,6 +5,7 @@ namespace App\Services\Notification;
 use App\Services\Notification\Services\EmailNotificationService;
 use App\Services\Notification\Services\SMSNotificationService;
 use App\Services\Notification\Services\WebNotificationService;
+use Exception;
 
 /**
  * Отправка уведомлений пользователю
@@ -34,6 +35,7 @@ class NotifierService
      * @param SMSNotificationService $smsNotificationService
      * @param EmailNotificationService $emailNotificationService
      * @return void
+     * @throws Exception
      */
     public function notifyPatient(
         WebNotificationService $webNotificationService,

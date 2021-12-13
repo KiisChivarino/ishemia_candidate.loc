@@ -3,10 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Prescription;
-use App\Form\Admin\Prescription\PrescriptionEditType;
 use App\Form\Admin\Prescription\PrescriptionEnabled;
 use App\Form\Admin\Prescription\PrescriptionDateType;
 use App\Form\Admin\PrescriptionType;
+use App\Services\CompletePrescription\CompletePrescriptionService;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
@@ -22,6 +22,7 @@ use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
 use Exception;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,17 +47,29 @@ class PrescriptionController extends AdminAbstractController
     public const PRESCRIPTION_ID_PARAMETER_KEY = 'prescription_id';
 
     /**
+     * @var CompletePrescriptionService
+     */
+    private $completePrescriptionService;
+
+    /**
      * PrescriptionController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @param CompletePrescriptionService $completePrescriptionService
      */
-    public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(
+        Environment $twig,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        CompletePrescriptionService $completePrescriptionService
+    )
     {
         parent::__construct($translator);
         $this->templateService = new PrescriptionTemplate($router->getRouteCollection(), get_class($this));
         $this->setTemplateTwigGlobal($twig);
+        $this->completePrescriptionService = $completePrescriptionService;
     }
 
     /**
@@ -212,7 +225,6 @@ class PrescriptionController extends AdminAbstractController
             [
                 new FormData(PrescriptionType::class, $prescription),
                 new FormData(PrescriptionDateType::class, $prescription),
-                new FormData(PrescriptionEditType::class, $prescription),
                 new FormData(PrescriptionEnabled::class, $prescription),
             ]
         );
@@ -231,5 +243,34 @@ class PrescriptionController extends AdminAbstractController
     public function delete(Request $request, Prescription $prescription): Response
     {
         return $this->responseDelete($request, $prescription);
+    }
+
+    /**
+     * Sets prescription completed and redirects to prescription show page
+     * @Route(
+     *     "/{prescription}/complete",
+     *     name="admin_complete_prescription",
+     *     methods={"GET"},
+     *     requirements={"prescription"="\d+"}
+     * )
+     * @param Prescription $prescription
+     * @return RedirectResponse
+     * @throws Exception
+     */
+    public function completePrescription(
+        Prescription $prescription
+    ): RedirectResponse
+    {
+        if ($prescription->getIsCompleted() === false){
+            $this->completePrescriptionService->completePrescription($prescription);
+            $this->getDoctrine()->getManager()->flush();
+        }
+
+        return $this->redirectToRoute(
+            'prescription_show',
+            [
+                'id' => $prescription->getId(),
+            ]
+        );
     }
 }

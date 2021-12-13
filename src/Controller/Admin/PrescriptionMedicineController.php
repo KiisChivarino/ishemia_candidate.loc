@@ -138,7 +138,6 @@ class PrescriptionMedicineController extends AdminAbstractController
             [
                 new FormData(PrescriptionMedicineType::class, $prescriptionMedicine),
                 new FormData(PrescriptionMedicineStaffType::class, $prescriptionMedicine),
-                new FormData(PrescriptionMedicineInclusionTimeType::class, $prescriptionMedicine),
                 new FormData(PatientMedicineType::class, $patientMedicine),
             ]
         );
@@ -191,7 +190,6 @@ class PrescriptionMedicineController extends AdminAbstractController
      */
     public function edit(Request $request, PrescriptionMedicine $prescriptionMedicine): Response
     {
-
         $this->templateService->setRedirectRouteParameters(
             [
                 'prescription' => $prescriptionMedicine->getPrescription()->getId(),
