@@ -55,7 +55,7 @@ class AuthUserCreatorService extends AbstractCreatorService
             ->setPassword(
                 $this->passwordEncoder->encodePassword(
                     $authUser,
-                    $authUser->getPassword() ? $authUser->getPassword() : AuthUserInfoService::randomPassword()
+                    $authUser->getPassword() ?: AuthUserInfoService::randomPassword()
                 )
             )
             ->setRoles($this->options[self::ROLE_OPTION])
