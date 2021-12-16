@@ -7,6 +7,7 @@ use App\Form\Admin\Hospital\HospitalType;
 use App\Services\DataTable\Admin\HospitalDataTableService;
 use App\Services\TemplateBuilders\Admin\HospitalTemplate;
 use App\Services\TemplateItems\DeleteTemplateItem;
+use Closure;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -135,9 +136,9 @@ class HospitalController extends AdminAbstractController
      *
      * @return Closure
      */
-    protected function renderTableActions(): \Closure
+    protected function renderTableActions(): Closure
     {
-        return function (int $hospitalId, ?Hospital $hospital, $route = null) {
+        return function (int $hospitalId, ?Hospital $hospital) {
             $deleteTemplateItem = $this->templateService
                 ->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME);
             if (!is_null($hospital) && !HospitalInfoService::isHospitalDeletable($hospital)) {
@@ -145,7 +146,7 @@ class HospitalController extends AdminAbstractController
             }else{
                 $deleteTemplateItem->setIsEnabled(true);
             }
-            return $this->getTableActionsResponseContent($hospitalId, $hospital, $route);
+            return $this->getTableActionsResponseContent($hospitalId, $hospital);
         };
     }
 }

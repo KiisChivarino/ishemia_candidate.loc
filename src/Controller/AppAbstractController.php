@@ -20,14 +20,18 @@ use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
 use App\Services\Template\TemplateService;
+use App\Services\TemplateItems\DeleteTemplateItem;
+use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
+use App\Services\TemplateItems\ShowTemplateItem;
 use App\Utils\Helper;
 use Closure;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use InvalidArgumentException;
 use ReflectionException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -1018,8 +1022,8 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function renderTableActions(): Closure
     {
-        return function (int $entityId, $rowEntity, $route = null, ?array $routeParameters = []) {
-            return $this->getTableActionsResponseContent($entityId, $rowEntity, $route, $routeParameters);
+        return function (int $entityId, $rowEntity) {
+            return $this->getTableActionsResponseContent($entityId, $rowEntity);
         };
     }
 
@@ -1027,36 +1031,91 @@ abstract class AppAbstractController extends AbstractController
      * Gets the response content for table actions
      * @param int $entityId
      * @param $rowEntity
-     * @param string|null $route
-     * @param array|null $routeParameters
      * @return false|string
      */
     protected function getTableActionsResponseContent(
         int $entityId,
-        $rowEntity,
-        ?string $route,
-        ?array $routeParameters = []
+        $rowEntity
     )
     {
-        if ($routeParameters === []) {
-            $routeParameters = ['id' => $entityId];
-        } else{
-            $routeParameters = [Helper::getShortLowerClassName($rowEntity) => $rowEntity->getId()];
-        }
+        $oldParams = ['id' => $entityId]; //todo убрать после очистки проекта от id в параметрах роута
+        $newParams = [Helper::getShortLowerClassName($rowEntity) => $rowEntity->getId()];
+
+        $showTemplateItemRoute = $this->templateService
+            ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
+            ->getTemplateItemRoute();
+        $showTemplateItemRoute
+            ->setRouteParams(
+                $this->chooseRouteParameters(
+                    $showTemplateItemRoute->getRouteName(),
+                    $newParams,
+                    $oldParams
+                )
+            );
+
+        $editTemplateItemRoute = $this->templateService
+            ->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
+            ->getTemplateItemRoute();
+        $editTemplateItemRoute
+            ->setRouteParams(
+                $this->chooseRouteParameters(
+                    $editTemplateItemRoute->getRouteName(),
+                    $newParams,
+                    $oldParams
+                )
+            );
+
+        $deleteTemplateItemRoute = $this->templateService
+            ->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->getTemplateItemRoute();
+        $deleteTemplateItemRoute
+            ->setRouteParams(
+                $this->chooseRouteParameters(
+                    $deleteTemplateItemRoute->getRouteName(),
+                    $newParams,
+                    $oldParams
+                )
+            );
+
         return $this->render(
             $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
             [
                 'template' => $this->templateService,
-                'parameters' => array_merge(
-                    [
-                        'rowEntity' => $rowEntity,
-                    ],
-                    $routeParameters
-                ),
                 'deleteId' => $entityId,
-                'route' => $route
             ]
         )->getContent();
+    }
+
+    /**
+     * Этот костыль выбирает между новыми параметрами с entity в роуте и старыми с id в роуте
+     * @param string $routeName
+     * @param array $newParams
+     * @param array $oldParams
+     * @return array
+     */
+    private function chooseRouteParameters(string $routeName, array $newParams, array $oldParams): array
+    {
+        return $this->isRouteParamsExists($routeName, $newParams) ? $newParams : $oldParams;
+    }
+
+    /**
+     * Check route for params existing
+     * //todo перенести в сервис
+     * @param string $routeName
+     * @param array $params
+     * @return bool
+     */
+    private function isRouteParamsExists(string $routeName, array $params): bool
+    {
+        try {
+            $this->generateUrl(
+                $routeName,
+                $params
+            );
+            return true;
+        } catch (InvalidArgumentException $e) {
+            return false;
+        }
     }
 
     /**

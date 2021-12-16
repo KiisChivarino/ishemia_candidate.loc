@@ -139,12 +139,24 @@ class AppTemplateBuilder extends TemplateService
     public function list(?FilterService $filterService = null): self
     {
         $this->setTemplateItems($this->templateItemsFactory->getListTemplateItems());
+
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
             ->addContentArray($this->commonContent)
             ->addContentArray($this->listContent)
             ->addContentArray($this->entityContent);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->addContentArray($this->filterContent);
+
+        $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
+            ->getTemplateItemRoute()
+            ->setRouteName($this->getRoutes()['show']);
+        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
+            ->getTemplateItemRoute()
+            ->setRouteName($this->getRoutes()['edit']);
+        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
+            ->getTemplateItemRoute()
+            ->setRouteName($this->getRoutes()['delete']);
+
         return $this;
     }
 
