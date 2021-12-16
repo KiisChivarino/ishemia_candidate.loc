@@ -8,12 +8,14 @@ use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Repository\MedicalHistoryRepository;
+use App\Services\CompletePrescription\CompletePrescriptionService;
 use App\Services\ControllerGetters\EntityActions;
 use App\Services\ControllerGetters\FilterLabels;
 use App\Services\EntityActions\Core\Builder\EntityActionsBuilder;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
 use App\Services\EntityActions\Core\EntityActionsInterface;
+use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\LoggerService\LogService;
 use App\Services\MultiFormService\FormData;
 use App\Services\MultiFormService\MultiFormService;
@@ -21,8 +23,10 @@ use App\Services\Template\TemplateService;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
+use App\Utils\Helper;
 use Closure;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use ReflectionException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -343,7 +347,7 @@ abstract class AppAbstractController extends AbstractController
                 $this->setLogDelete($entityName, $entityId);
                 $entityManager->flush();
             } catch (DBALException $e) {
-                if ($e->getPrevious()->getCode() == self::FOREIGN_KEY_ERROR) {
+                if ($e->getPrevious()->getCode() === self::FOREIGN_KEY_ERROR) {
                     $this->addFlash(
                         'error',
                         $this->translator->trans('app_controller.error.foreign_key')
@@ -365,6 +369,27 @@ abstract class AppAbstractController extends AbstractController
             $this->templateService->getRoute('list'),
             $this->templateService->getRedirectRouteParameters()
         );
+    }
+
+    /**
+     * Complete prescription
+     *
+     * @param Prescription $prescription
+     * @param CompletePrescriptionService $completePrescriptionService
+     * @throws NonUniqueResultException
+     * @throws Exception
+     */
+    public function completePrescription(
+        Prescription $prescription,
+        CompletePrescriptionService $completePrescriptionService
+    ): void
+    {
+        if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription)) {
+            $completePrescriptionService->completePrescription($prescription);
+            $this->getDoctrine()->getManager()->flush();
+        } else {
+            $this->setLogUpdate($prescription, 'log.update.prescription.complete.failed');
+        }
     }
 
     /**
@@ -785,16 +810,17 @@ abstract class AppAbstractController extends AbstractController
 
     /**
      * Set log of update entity object
-     * @param $entity
+     * @param object $entity
+     * @param string|null $message
      * @throws Exception
      */
-    protected function setLogUpdate($entity): void
+    protected function setLogUpdate(object $entity, string $message = null): void
     {
         (new LogService($this->getDoctrine()->getManager()))
             ->setUser($this->getUser())
             ->setDescription(
                 $this->translator->trans(
-                    'log.update.entity',
+                    $message ?? 'log.update.entity',
                     [
                         '%entity%' => $this->templateService
                             ->getItem(self::RESPONSE_FORM_TYPE_EDIT)
@@ -809,7 +835,7 @@ abstract class AppAbstractController extends AbstractController
     /**
      * Set log of delete entity object
      * @param string $entityName
-     * @param $entity
+     * @param int $entityId
      */
     protected function setLogDelete(string $entityName, int $entityId): void
     {
@@ -898,7 +924,7 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function setDefaultRedirectRouteParameters($entity): void
     {
-        if ($this->templateService->getRedirectRouteParameters() == null) {
+        if ($this->templateService->getRedirectRouteParameters() === null) {
             $this->templateService->setRedirectRouteParameters(
                 [
                     'id' => $entity->getId()
@@ -918,9 +944,9 @@ abstract class AppAbstractController extends AbstractController
     {
         if ($parameter = $request->query->get($parameterKey)) {
             return $parameter;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -1014,6 +1040,8 @@ abstract class AppAbstractController extends AbstractController
     {
         if ($routeParameters === []) {
             $routeParameters = ['id' => $entityId];
+        } else{
+            $routeParameters = [Helper::getShortLowerClassName($rowEntity) => $rowEntity->getId()];
         }
         return $this->render(
             $this->templateService->getCommonTemplatePath() . 'tableActions.html.twig',
@@ -1021,7 +1049,7 @@ abstract class AppAbstractController extends AbstractController
                 'template' => $this->templateService,
                 'parameters' => array_merge(
                     [
-                        'rowEntity' => $rowEntity
+                        'rowEntity' => $rowEntity,
                     ],
                     $routeParameters
                 ),

@@ -3,9 +3,8 @@
 namespace App\Services\CompletePrescription;
 use App\Entity\Prescription;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
-use App\Services\EntityActions\Editor\PrescriptionEditorService;
+use App\Services\EntityActions\Editor\CompletePrescriptionEditorService;
 use App\Services\InfoService\AuthUserInfoService;
-use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\Notification\NotificationData;
 use App\Services\Notification\NotificationsServiceBuilder;
 use App\Services\Notification\NotifierService;
@@ -73,67 +72,71 @@ class CompletePrescriptionService
         Prescription $prescription
     ): void
     {
-        if (PrescriptionInfoService::isSpecialPrescriptionsExists($prescription)) {
-            $prescription->setIsCompleted(true);
-            (new PrescriptionEditorService($this->entityManager, $prescription))->before()->after(
-                [
-                    PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $this->medicalRecordCreatorService,
-                ]
-            );
-            $medicalHistory = $prescription->getMedicalHistory();
-            $notificationData = new NotificationData(
-                $this->entityManager,
-                $medicalHistory->getPatient(),
-                $medicalHistory,
-                $prescription->getMedicalRecord()
-            );
-            foreach ($prescription->getPrescriptionTestings() as $prescriptionTesting) {
-                $notificationServiceBuilder = $this->notificationServiceBuilder
-                    ->makeTestingAppointmentNotification(
-                        $notificationData,
-                        $prescriptionTesting->getPatientTesting()->getAnalysisGroup()->getName(),
-                        $prescriptionTesting->getPlannedDate()->format('d.m.Y')
-                    );
-                $this->notifier->notifyPatient(
-                    $notificationServiceBuilder->getWebNotificationService(),
-                    $notificationServiceBuilder->getSMSNotificationService(),
-                    $notificationServiceBuilder->getEmailNotificationService()
-                );
-            }
-            foreach ($prescription->getPrescriptionAppointments() as $prescriptionAppointment) {
-                $notificationServiceBuilder = $this->notificationServiceBuilder
-                    ->makeDoctorAppointmentNotification(
-                        $notificationData,
-                        AuthUserInfoService::getFIO(
-                            $prescriptionAppointment->getPatientAppointment()->getStaff()->getAuthUser(),
-                            true
-                        ),
-                        $prescriptionAppointment->getPlannedDateTime()->format('Y-m-d H:i:s')
-                    );
-                $this->notifier->notifyPatient(
-                    $notificationServiceBuilder->getWebNotificationService(),
-                    $notificationServiceBuilder->getSMSNotificationService(),
-                    $notificationServiceBuilder->getEmailNotificationService()
-                );
-            }
-            foreach ($prescription->getPrescriptionMedicines() as $prescriptionMedicine){
-                $endMedicationDate = $prescriptionMedicine->getEndMedicationDate();
-                $notificationServiceBuilder = $this->notificationServiceBuilder->makePrescriptionMedicineNotification(
+        $prescription->setIsCompleted(true);
+        (new CompletePrescriptionEditorService($this->entityManager, $prescription))->before()->after(
+            [
+                CompletePrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME =>
+                    $this->medicalRecordCreatorService,
+            ]
+        );
+        $medicalHistory = $prescription->getMedicalHistory();
+        $notificationData = new NotificationData(
+            $this->entityManager,
+            $medicalHistory->getPatient(),
+            $medicalHistory,
+            $prescription->getMedicalRecord()
+        );
+        foreach ($prescription->getPrescriptionTestings() as $prescriptionTesting) {
+            $notificationServiceBuilder = $this->notificationServiceBuilder
+                ->makeTestingAppointmentNotification(
                     $notificationData,
-                    $prescriptionMedicine->getPatientMedicine()->getMedicineName(),
-                    $prescriptionMedicine->getStartingMedicationDate()->format('Y-m-d'),
-                    $endMedicationDate !== null ?
-                        $endMedicationDate->format('Y-m-d') :
-                        self::NO_END_DATE_MEDICATION_CONFIRM_MESSAGE,
-                    $prescriptionMedicine->getPatientMedicine()->getInstruction()
+                    $prescriptionTesting->getPatientTesting()->getAnalysisGroup()->getName(),
+                    $prescriptionTesting->getPlannedDate()->format('d.m.Y')
                 );
-                $this->notifier->notifyPatient(
-                    $notificationServiceBuilder->getWebNotificationService(),
-                    $notificationServiceBuilder->getSMSNotificationService(),
-                    $notificationServiceBuilder->getEmailNotificationService()
-                );
-            }
-            $prescription->setIsCompleted(true);
+            $this->senderNotifyForPatient($notificationServiceBuilder);
         }
+        foreach ($prescription->getPrescriptionAppointments() as $prescriptionAppointment) {
+            $notificationServiceBuilder = $this->notificationServiceBuilder
+                ->makeDoctorAppointmentNotification(
+                    $notificationData,
+                    AuthUserInfoService::getFIO(
+                        $prescriptionAppointment->getPatientAppointment()->getStaff()->getAuthUser(),
+                        true
+                    ),
+                    $prescriptionAppointment->getPlannedDateTime()->format('Y-m-d H:i:s')
+                );
+            $this->senderNotifyForPatient($notificationServiceBuilder);
+        }
+        foreach ($prescription->getPrescriptionMedicines() as $prescriptionMedicine){
+            $endMedicationDate = $prescriptionMedicine->getEndMedicationDate();
+            $notificationServiceBuilder = $this->notificationServiceBuilder->makePrescriptionMedicineNotification(
+                $notificationData,
+                $prescriptionMedicine->getPatientMedicine()->getMedicineName(),
+                $prescriptionMedicine->getStartingMedicationDate()->format('Y-m-d'),
+                $endMedicationDate !== null ?
+                    $endMedicationDate->format('Y-m-d') :
+                    self::NO_END_DATE_MEDICATION_CONFIRM_MESSAGE,
+                $prescriptionMedicine->getPatientMedicine()->getInstruction()
+            );
+            $this->senderNotifyForPatient($notificationServiceBuilder);
+        }
+        $prescription->setIsCompleted(true);
+    }
+
+
+    /**
+     * Sending notifications to the patient
+     *
+     * @throws Exception
+     */
+    protected function senderNotifyForPatient(
+        NotificationsServiceBuilder $notificationServiceBuilder
+    ): void
+    {
+        $this->notifier->notifyPatient(
+            $notificationServiceBuilder->getWebNotificationService(),
+            $notificationServiceBuilder->getSMSNotificationService(),
+            $notificationServiceBuilder->getEmailNotificationService()
+        );
     }
 }

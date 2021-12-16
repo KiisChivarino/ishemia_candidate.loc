@@ -164,8 +164,10 @@ class AppTemplateBuilder extends TemplateService
             ->addContentArray($this->showContent)
             ->addContentArray($this->entityContent);
         if ($this->isMethodGetIdExists($entity)) {
+            $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
+                ->getTemplateItemRoute()->setRouteParams(['id'=>$entity->getId()]);
             $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
-                ->getTemplateItemRoute()->setRouteParams($entity->getId());
+                ->getTemplateItemRoute()->setRouteParams(['id' => $entity->getId()]);
         }
         return $this;
     }
@@ -177,7 +179,7 @@ class AppTemplateBuilder extends TemplateService
      */
     public function isMethodGetIdExists(?object $entity = null): bool
     {
-        return is_object($entity && method_exists($entity, 'getId'));
+        return is_object($entity)&& method_exists($entity, 'getId');
     }
 
     /**

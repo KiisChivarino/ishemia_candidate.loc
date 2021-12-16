@@ -113,7 +113,7 @@ class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
                             'class' => Prescription::class,
                             'required' => false,
                             'choice_label' => function (Prescription $value) {
-                                return (new PrescriptionInfoService())->getPrescriptionTitle($value);
+                                return PrescriptionInfoService::getPrescriptionTitle($value);
                             },
                             'query_builder' => function (PrescriptionRepository $er) {
                                 return $er->createQueryBuilder('p')
@@ -137,6 +137,18 @@ class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
             ->addContentArray(
                 PatientAppointmentTemplate::COMMON_CONTENT
             );
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show($entity);
+        $this->setRedirectRouteParameters([
+            'id' => $entity->getId(),
+        ]);
         return $this;
     }
 }

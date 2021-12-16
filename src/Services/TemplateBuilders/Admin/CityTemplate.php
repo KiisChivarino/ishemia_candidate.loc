@@ -79,7 +79,7 @@ class CityTemplate extends AdminTemplateBuilder
      */
     public function show(?object $entity = null): AppTemplateBuilder
     {
-        parent::show();
+        parent::show($entity);
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
             ->setContent('h1', 'Просмотр города ' . $entity->getName());
         return $this;

@@ -364,15 +364,15 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @throws NonUniqueResultException
      * @throws Exception
      */
-    public function completePrescription(
-        Prescription $prescription
-    ): RedirectResponse
+    public function complete(Prescription $prescription): RedirectResponse
     {
-        if ($prescription->getIsCompleted() === false){
-            $this->completePrescriptionService->completePrescription($prescription);
-            $this->getDoctrine()->getManager()->flush();
-        }
+        $this->completePrescription(
+            $prescription,
+            $this->completePrescriptionService
+        );
 
-        return $this->redirectToMedicalHistory($prescription->getMedicalHistory()->getPatient());
+        return $this->redirectToMedicalHistory(
+            $prescription->getMedicalHistory()->getPatient()
+        );
     }
 }

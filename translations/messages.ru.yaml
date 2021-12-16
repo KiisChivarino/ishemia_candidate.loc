@@ -2,6 +2,7 @@ log:
   new.entity: Новая запись - %entity% (id:%id%) создана.
   update.entity: Запись - %entity% (id:%id%) обновлена.
   delete.entity: Запись - %entity% (id:%id%) уадлена.
+  update.prescription.complete.failed: Попытка завершения - %entity% (id:%id%).
 command:
   success: Команда %command% успешно выполнена.
 sms_type:

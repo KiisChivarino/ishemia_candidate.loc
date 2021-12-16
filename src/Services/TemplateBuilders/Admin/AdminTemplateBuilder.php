@@ -3,6 +3,7 @@
 namespace App\Services\TemplateBuilders\Admin;
 
 use App\Services\TemplateBuilders\AppTemplateBuilder;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -23,6 +24,7 @@ abstract class AdminTemplateBuilder extends AppTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {

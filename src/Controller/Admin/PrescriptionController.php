@@ -11,7 +11,6 @@ use App\Services\ControllerGetters\FilterLabels;
 use App\Services\DataTable\Admin\PrescriptionDataTableService;
 use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
-use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionCreatorService;
 use App\Services\EntityActions\Editor\PrescriptionEditorService;
 use App\Services\FilterService\FilterService;
@@ -43,7 +42,7 @@ class PrescriptionController extends AdminAbstractController
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/prescription/';
 
-    /** @var string The key of parameter with prescription id */
+    /** @var string The key of parameter with prescription */
     public const PRESCRIPTION_ID_PARAMETER_KEY = 'prescription_id';
 
     /**
@@ -58,6 +57,7 @@ class PrescriptionController extends AdminAbstractController
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
      * @param CompletePrescriptionService $completePrescriptionService
+     * @throws Exception
      */
     public function __construct(
         Environment $twig,
@@ -115,6 +115,7 @@ class PrescriptionController extends AdminAbstractController
         PrescriptionCreatorService $prescriptionCreatorService
     ): Response
     {
+        //TODO: поправить роуты так, чтобы if отсутствовал medicalhistory/{medicalhistory}/prescription/new
         if (!$medicalHistory = $this->getMedicalHistoryByParameter($request)) {
             return $this->redirectToRoute('prescription_list');
         }
@@ -125,7 +126,8 @@ class PrescriptionController extends AdminAbstractController
             ]
         )->getEntity();
 
-        return $this->responseNewMultiFormWithActions(
+        $this->templateService->new(null, $prescription);
+        return $this->responseMultiFormWithActions(
             $request,
             [
                 new CreatorEntityActionsBuilder(
@@ -144,13 +146,15 @@ class PrescriptionController extends AdminAbstractController
                     PrescriptionEnabled::class,
                     $prescription
                 ),
-            ]
+            ],
+            self::RESPONSE_FORM_TYPE_NEW,
+            self::RESPONSE_FORM_TYPE_NEW
         );
     }
 
     /**
      * Show prescription
-     * @Route("/{id}", name="prescription_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{prescription}", name="prescription_show", methods={"GET"}, requirements={"prescription"="\d+"})
      *
      * @param Prescription $prescription
      * @param FilterService $filterService
@@ -191,19 +195,17 @@ class PrescriptionController extends AdminAbstractController
 
     /**
      * Edit prescription
-     * @Route("/{id}/edit", name="prescription_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/{prescription}/edit", name="prescription_edit", methods={"GET","POST"}, requirements={"prescription"="\d+"})
      *
      * @param Request $request
      * @param Prescription $prescription
      *
-     * @param MedicalRecordCreatorService $medicalRecordCreator
      * @return Response
      * @throws Exception
      */
     public function edit(
         Request $request,
-        Prescription $prescription,
-        MedicalRecordCreatorService $medicalRecordCreator
+        Prescription $prescription
     ): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -211,16 +213,7 @@ class PrescriptionController extends AdminAbstractController
         return $this->responseEditMultiformWithActions(
             $request,
             [
-                new EditorEntityActionsBuilder(
-                    $prescriptionEditorService,
-                    [],
-                    function () use ($medicalRecordCreator): array {
-                        return
-                            [
-                                PrescriptionEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME => $medicalRecordCreator,
-                            ];
-                    }
-                ),
+                new EditorEntityActionsBuilder($prescriptionEditorService),
             ],
             [
                 new FormData(PrescriptionType::class, $prescription),
@@ -232,7 +225,7 @@ class PrescriptionController extends AdminAbstractController
 
     /**
      * Delete prescription
-     * @Route("/{id}", name="prescription_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="prescription_delete", methods={"DELETE"}, requirements={"prescription"="\d+"})
      *
      * @param Request $request
      * @param Prescription $prescription
@@ -257,14 +250,12 @@ class PrescriptionController extends AdminAbstractController
      * @return RedirectResponse
      * @throws Exception
      */
-    public function completePrescription(
-        Prescription $prescription
-    ): RedirectResponse
+    public function complete(Prescription $prescription): RedirectResponse
     {
-        if ($prescription->getIsCompleted() === false){
-            $this->completePrescriptionService->completePrescription($prescription);
-            $this->getDoctrine()->getManager()->flush();
-        }
+        $this->completePrescription(
+            $prescription,
+            $this->completePrescriptionService
+        );
 
         return $this->redirectToRoute(
             'prescription_show',

@@ -102,7 +102,7 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
      */
     public function show(?object $entity = null): AppTemplateBuilder
     {
-        parent::show();
+        parent::show($entity);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
 
         return $this;

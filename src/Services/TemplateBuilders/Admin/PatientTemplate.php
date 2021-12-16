@@ -141,7 +141,7 @@ class PatientTemplate extends AdminTemplateBuilder
      */
     public function show(?object $entity = null): AppTemplateBuilder
     {
-        parent::show();
+        parent::show($entity);
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
             ->addContentArray(
                 array_merge(
@@ -150,7 +150,7 @@ class PatientTemplate extends AdminTemplateBuilder
                     AuthUserTemplate::FORM_SHOW_CONTENT
                 )
             )
-            ->setContent('h1', (new AuthUserInfoService())->getFIO($entity->getAuthUser(), true));
+            ->setContent('h1', AuthUserInfoService::getFIO($entity->getAuthUser(), true));
         return $this;
     }
 

@@ -27,7 +27,7 @@ class PrescriptionDataTableService extends AdminDatatableService
     /**
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param $filters
+     * @param array $filters
      *
      * @return DataTable
      * @throws Exception
@@ -43,7 +43,7 @@ class PrescriptionDataTableService extends AdminDatatableService
                         /** @var MedicalHistory $medicalHistory */
                         $medicalHistory = $prescription->getMedicalHistory();
                         return $medicalHistory ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($medicalHistory->getPatient()->getAuthUser(), true)
+                            AuthUserInfoService::getFIO($medicalHistory->getPatient()->getAuthUser(), true)
                             .': '.
                             $medicalHistory->getDateBegin()->format('d.m.Y'),
                             $medicalHistory->getId(),
@@ -59,7 +59,7 @@ class PrescriptionDataTableService extends AdminDatatableService
                         /** @var Staff $staff */
                         $staff = $prescription->getStaff();
                         return $staff ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true),
+                            AuthUserInfoService::getFIO($staff->getAuthUser(), true),
                             $staff->getId(),
                             'staff_show'
                         ) : $listTemplateItem->getContentValue('empty');
@@ -92,9 +92,9 @@ class PrescriptionDataTableService extends AdminDatatableService
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
         /** @var MedicalHistory $medicalHistory */
-        $medicalHistory = isset($filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']]) ? $filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']] : null;
+        $medicalHistory = $filters[AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY']] ?? null;
         /** @var Staff $staff */
-        $staff = isset($filters[AppAbstractController::FILTER_LABELS['STAFF']]) ? $filters[AppAbstractController::FILTER_LABELS['STAFF']] : null;
+        $staff = $filters[AppAbstractController::FILTER_LABELS['STAFF']] ?? null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

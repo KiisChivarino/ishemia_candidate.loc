@@ -15,6 +15,7 @@ use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use App\Utils\Helper;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -93,6 +94,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -174,6 +176,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
      * @param object|null $entity
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
@@ -182,6 +185,10 @@ class PrescriptionTemplate extends AdminTemplateBuilder
         /** @var Prescription $prescription */
         $prescription = $entity;
 
+        $this->setRedirectRouteParameters([
+            'prescription' => $entity->getId(),
+        ]);
+
         if ($prescription->getIsCompleted()) {
             $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)->setContent(
                 'h1',
@@ -189,6 +196,34 @@ class PrescriptionTemplate extends AdminTemplateBuilder
             );
         }
 
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function new(?FilterService $filterService = null, Prescription $prescription = null): AppTemplateBuilder
+    {
+        parent::new($filterService);
+        $this->setRedirectRouteParameters([
+            'prescription' => $prescription,
+        ]);
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        $entityName = Helper::getShortLowerClassName($entity);
+        parent::show($entity);
+        $this
+            ->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
+            ->getTemplateItemRoute()->setRouteParams([$entityName=>$entity->getId()]);
+        $this->setRedirectRouteParameters([
+            $entityName => $entity,
+        ]);
         return $this;
     }
 }

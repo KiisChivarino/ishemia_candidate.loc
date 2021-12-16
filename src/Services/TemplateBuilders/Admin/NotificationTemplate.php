@@ -130,7 +130,7 @@ class NotificationTemplate extends AdminTemplateBuilder
      */
     public function show(?object $entity = null): AppTemplateBuilder
     {
-        parent::show();
+        parent::show($entity);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
