@@ -93,11 +93,11 @@ class PatientTestingResultTemplate extends AdminTemplateBuilder
      * Builds list template settings of PatientTestingResult controller
      *
      * @param FilterService|null $filterService
-     *
+     * @param array|null $itemsWithRoutes
      * @return AppTemplateBuilder
      * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list();
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);
@@ -129,7 +129,7 @@ class PatientTestingResultTemplate extends AdminTemplateBuilder
                         'class' => PatientTesting::class,
                         'required' => false,
                         'choice_label' => function ($patientTesting) {
-                            return (new PatientTestingInfoService())->getPatientTestingInfoString($patientTesting);
+                            return PatientTestingInfoService::getPatientTestingInfoString($patientTesting);
                         },
                         'query_builder' => function (PatientTestingRepository $er) use ($patientFilterEntity) {
                             $qb = $er->createQueryBuilder('pt')->where('pt.enabled = true');

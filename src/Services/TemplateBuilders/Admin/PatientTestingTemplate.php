@@ -130,11 +130,11 @@ class PatientTestingTemplate extends AdminTemplateBuilder
      * Builds list template settings of PatientTesting controller
      *
      * @param FilterService|null $filterService
-     *
+     * @param array|null $itemsWithRoutes
      * @return AppTemplateBuilder
      * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list();
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)

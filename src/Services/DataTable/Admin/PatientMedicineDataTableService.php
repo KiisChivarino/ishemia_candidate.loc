@@ -61,8 +61,8 @@ class PatientMedicineDataTableService extends AdminDatatableService
                             $this->getLinkMultiParam(
                                 'Назначение лекарств от ' . $prescriptionMedicine->getInclusionTime()->format('d.m.Y'),
                                 [
-                                    'prescriptionMedicine' => $prescriptionMedicine->getId(),
-                                    'prescription' => $prescriptionMedicine->getPrescription()->getId()
+                                    'prescriptionMedicine' => $prescriptionMedicine,
+                                    'prescription' => $prescriptionMedicine->getPrescription()
                                 ],
                                 'prescription_medicine_show'
                             ) : $listTemplateItem->getContentValue('empty');

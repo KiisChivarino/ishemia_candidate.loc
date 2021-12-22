@@ -6,6 +6,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -85,9 +86,11 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
 
     /**
      * @param FilterService|null $filterService
+     * @param array|null $itemsWithRoutes
      * @return $this
+     * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list();
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);

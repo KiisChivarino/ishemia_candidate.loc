@@ -32,7 +32,11 @@ class PrescriptionDataTableService extends AdminDatatableService
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
@@ -42,11 +46,13 @@ class PrescriptionDataTableService extends AdminDatatableService
                     'render' => function ($dataString, $prescription) use ($listTemplateItem) {
                         /** @var MedicalHistory $medicalHistory */
                         $medicalHistory = $prescription->getMedicalHistory();
-                        return $medicalHistory ? $this->getLink(
+                        return $medicalHistory ? $this->getLinkMultiParam(
                             AuthUserInfoService::getFIO($medicalHistory->getPatient()->getAuthUser(), true)
                             .': '.
                             $medicalHistory->getDateBegin()->format('d.m.Y'),
-                            $medicalHistory->getId(),
+                            [
+                                'id' => $medicalHistory->getId(),
+                            ],
                             'medical_history_show'
                         ) : $listTemplateItem->getContentValue('empty');
                     }
@@ -58,9 +64,11 @@ class PrescriptionDataTableService extends AdminDatatableService
                     'render' => function ($dataString, $prescription) use ($listTemplateItem) {
                         /** @var Staff $staff */
                         $staff = $prescription->getStaff();
-                        return $staff ? $this->getLink(
+                        return $staff ? $this->getLinkMultiParam(
                             AuthUserInfoService::getFIO($staff->getAuthUser(), true),
-                            $staff->getId(),
+                            [
+                                'id' => $staff->getId(),
+                            ],
                             'staff_show'
                         ) : $listTemplateItem->getContentValue('empty');
                     }

@@ -6,6 +6,7 @@ use App\Services\FilterService\FilterService;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -62,10 +63,11 @@ class StartingPointTemplate extends AdminTemplateBuilder
      * Builds list template
      *
      * @param FilterService|null $filterService
-     *
+     * @param array|null $itemsWithRoutes
      * @return AppTemplateBuilder
+     * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list($filterService);
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)

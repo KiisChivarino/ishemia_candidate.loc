@@ -43,9 +43,11 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('prescription'),
                     'render' => function (string $data, PrescriptionTesting $prescriptionTesting) use ($listTemplateItem) {
                         $prescription = $prescriptionTesting->getPrescription();
-                        return $prescription ? $this->getLink(
+                        return $prescription ? $this->getLinkMultiParam(
                             PrescriptionInfoService::getPrescriptionTitle($prescription),
-                            $prescription->getId(),
+                            [
+                                'prescription' => $prescription->getId(),
+                            ],
                             'prescription_show'
                         ) : $listTemplateItem->getContentValue('empty');
                     }
@@ -57,9 +59,11 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                     'render' => function (string $data, PrescriptionTesting $prescriptionTesting) use ($listTemplateItem) {
                         /** @var PatientTesting $patientTesting */
                         $patientTesting = $prescriptionTesting->getPatientTesting();
-                        return $patientTesting ? $this->getLink(
+                        return $patientTesting ? $this->getLinkMultiParam(
                             PatientTestingInfoService::getPatientTestingInfoString($patientTesting),
-                            $patientTesting->getId(),
+                            [
+                                'patientTesting' => $patientTesting->getId(),
+                            ],
                             'patient_testing_show'
                         ) : $listTemplateItem->getContentValue('empty');
                     },
@@ -71,9 +75,11 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
                     'render' => function (string $data, PrescriptionTesting $prescriptionTesting) use ($listTemplateItem) {
                         /** @var Staff $staff */
                         $staff = $prescriptionTesting->getStaff();
-                        return $staff ? $this->getLink(
+                        return $staff ? $this->getLinkMultiParam(
                             AuthUserInfoService::getFIO($staff->getAuthUser()),
-                            $staff->getId(),
+                            [
+                                'id' => $staff->getId(),
+                            ],
                             'staff_show'
                         ) : $listTemplateItem->getContentValue('empty');
                     }
@@ -90,7 +96,7 @@ class PrescriptionTestingDataTableService extends AdminDatatableService
         $this->addEnabled($listTemplateItem);
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
         /** @var Prescription $prescription */
-        $prescription = isset($filters[AppAbstractController::FILTER_LABELS['PRESCRIPTION']]) ? $filters[AppAbstractController::FILTER_LABELS['PRESCRIPTION']] : null;
+        $prescription = $filters[AppAbstractController::FILTER_LABELS['PRESCRIPTION']] ?? null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

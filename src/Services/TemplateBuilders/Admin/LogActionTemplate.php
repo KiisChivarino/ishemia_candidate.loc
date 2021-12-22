@@ -61,7 +61,7 @@ class LogActionTemplate extends AdminTemplateBuilder
      *
      * @return $this|AdminTemplateBuilder
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list($filterService);
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)

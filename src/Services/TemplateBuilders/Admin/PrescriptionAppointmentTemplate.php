@@ -94,10 +94,11 @@ class PrescriptionAppointmentTemplate extends AdminTemplateBuilder
 
     /**
      * @param FilterService|null $filterService
+     * @param array|null $itemsWithRoutes
      * @return $this|AppTemplateBuilder
      * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list();
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);

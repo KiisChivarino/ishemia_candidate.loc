@@ -2,6 +2,10 @@
 
 namespace App\Services\TemplateBuilders\Admin;
 
+use App\Entity\Hospital;
+use App\Services\FilterService\FilterService;
+use App\Services\TemplateBuilders\AppTemplateBuilder;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -81,5 +85,23 @@ class HospitalTemplate extends AdminTemplateBuilder
             self::FILTER_CONTENT,
             self::ENTITY_CONTENT
         );
+    }
+
+    /**
+     * @param FilterService|null $filterService
+     * @param Hospital|null $hospital
+     * @return AppTemplateBuilder
+     * @throws Exception
+     */
+    public function new(
+        ?FilterService $filterService = null,
+        Hospital $hospital = null
+    ): AppTemplateBuilder
+    {
+        parent::new($filterService);
+        $this->setRedirectRouteParameters([
+            'hospital' => $hospital,
+        ]);
+        return $this;
     }
 }

@@ -32,41 +32,52 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
                 'prescription', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('prescription'),
-                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) use ($listTemplateItem) {
+                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) {
                         $prescription = $prescriptionMedicine->getPrescription();
-                        return $prescription ? $this->getLink(
-                            (new PrescriptionInfoService())->getPrescriptionTitle($prescription),
-                            $prescription->getId(),
-                            'prescription_show'
-                        ) : '';
+
+                        return $prescription ?
+                            $this->getLinkMultiParam(
+                                PrescriptionInfoService::getPrescriptionTitle($prescription),
+                                [
+                                    'prescription' => $prescription->getId()
+                                ],
+                                'prescription_show'
+                            ) : '';
                     }
                 ]
             )
             ->add(
                 'medicine', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('medicine'),
-                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) use ($listTemplateItem) {
-                        $medicine = $prescriptionMedicine->getPatientMedicine();
-                        return $medicine->getMedicineName();
+                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) {
+                        return $prescriptionMedicine->getPatientMedicine()->getMedicineName();
                     }
                 ]
             )
             ->add(
                 'staff', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('staff'),
-                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) use ($listTemplateItem) {
+                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) use (
+                        $listTemplateItem
+                    ) {
                         /** @var Staff $staff */
                         $staff = $prescriptionMedicine->getStaff();
-                        return $staff ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($staff->getAuthUser()),
-                            $staff->getId(),
+                        return $staff ? $this->getLinkMultiParam(
+                            AuthUserInfoService::getFIO($staff->getAuthUser()),
+                            [
+                                'id' => $staff->getId(),
+                            ],
                             'staff_show'
                         ) : $listTemplateItem->getContentValue('empty');
                     }
@@ -102,10 +113,9 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                     $renderOperationsFunction(
                         (string)$prescriptionMedicine->getId(),
                         $prescriptionMedicine,
-                        'prescription_medicine_show',
                         [
-                            'prescriptionMedicine' => $patientTestingId,
-                            'prescription' => $prescriptionMedicine->getPrescription()->getId()
+                            'prescription' => $prescriptionMedicine->getPrescription()->getId(),
+                            'prescriptionMedicine' => $prescriptionMedicine->getId()
                         ]
                     );
             },

@@ -462,8 +462,13 @@ abstract class AppAbstractController extends AbstractController
         string $formTemplateName = self::RESPONSE_FORM_TYPE_NEW
     )
     {
+        $entityActionsService = $creatorEntityActionsBuilder->getEntityActionsService();
+        $entityActionsService->before($creatorEntityActionsBuilder->getBeforeOptions());
         /** @var TemplateService $template */
-        $template = $this->templateService->new($filterLabels ? $filterLabels->getFilterService() : null);
+        $template = $this->templateService->new(
+            $filterLabels ? $filterLabels->getFilterService() : null,
+            $creatorEntityActionsBuilder->getEntityActionsService()->getEntity()
+        );
         $formData->setFormOptions(array_merge(
                 $formData->getFormOptions(),
                 $filterLabels ? $this->getFiltersByFilterLabels($template, $filterLabels->getFilterLabelsArray()) : [],
@@ -497,7 +502,14 @@ abstract class AppAbstractController extends AbstractController
         string $templateEditName = self::RESPONSE_FORM_TYPE_EDIT
     )
     {
-        $this->templateService->edit();
+
+        $entityActionsService = $editorEntityActionsBuilder->getEntityActionsService();
+        $entityActionsService->before($editorEntityActionsBuilder->getBeforeOptions());
+
+        $this->templateService->edit(
+            $editorEntityActionsBuilder->getEntityActionsService()->getEntity()
+        );
+
         return $this->responseFormWithActions(
             $request,
             $editorEntityActionsBuilder,
@@ -677,7 +689,6 @@ abstract class AppAbstractController extends AbstractController
     )
     {
         $entityActionsService = $entityActionsBuilder->getEntityActionsService();
-        $entityActionsService->before($entityActionsBuilder->getBeforeOptions());
         $defaultEntity = $entityActionsService->getEntity();
         $form = $this->createForm(
             $formData->getFormClassName(),
@@ -720,8 +731,8 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function handleRequest(Request $request, FormInterface $form): bool
     {
+        $form->handleRequest($request);
         try {
-            $form->handleRequest($request);
         } catch (Exception $e) {
             $this->addFlash(
                 'error',
@@ -878,8 +889,8 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function flush(): bool
     {
+        $this->getDoctrine()->getManager()->flush();
         try {
-            $this->getDoctrine()->getManager()->flush();
         } catch (DBALException $e) {
             $this->addFlash(
                 'error',
@@ -1022,20 +1033,22 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function renderTableActions(): Closure
     {
-        return function (int $entityId, $rowEntity) {
-            return $this->getTableActionsResponseContent($entityId, $rowEntity);
+        return function (int $entityId, $rowEntity, ?array $routeParameters = null) {
+            return $this->getTableActionsResponseContent($entityId, $rowEntity, $routeParameters);
         };
     }
 
     /**
      * Gets the response content for table actions
      * @param int $entityId
-     * @param $rowEntity
+     * @param object $rowEntity
+     * @param array|null $routeParams
      * @return false|string
      */
     protected function getTableActionsResponseContent(
         int $entityId,
-        $rowEntity
+        object $rowEntity,
+        ?array $routeParams = null
     )
     {
         $oldParams = ['id' => $entityId]; //todo убрать после очистки проекта от id в параметрах роута
@@ -1046,6 +1059,7 @@ abstract class AppAbstractController extends AbstractController
             ->getTemplateItemRoute();
         $showTemplateItemRoute
             ->setRouteParams(
+                $routeParams ??
                 $this->chooseRouteParameters(
                     $showTemplateItemRoute->getRouteName(),
                     $newParams,
@@ -1058,6 +1072,7 @@ abstract class AppAbstractController extends AbstractController
             ->getTemplateItemRoute();
         $editTemplateItemRoute
             ->setRouteParams(
+                $routeParams ??
                 $this->chooseRouteParameters(
                     $editTemplateItemRoute->getRouteName(),
                     $newParams,
@@ -1070,6 +1085,7 @@ abstract class AppAbstractController extends AbstractController
             ->getTemplateItemRoute();
         $deleteTemplateItemRoute
             ->setRouteParams(
+                $routeParams ??
                 $this->chooseRouteParameters(
                     $deleteTemplateItemRoute->getRouteName(),
                     $newParams,

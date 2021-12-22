@@ -2,6 +2,7 @@
 
 namespace App\Services\TemplateBuilders;
 
+use App\Entity\TemplateRoutes;
 use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateService;
 use App\Services\TemplateBuilders\Admin\AdminTemplateBuilder;
@@ -135,28 +136,17 @@ class AppTemplateBuilder extends TemplateService
      * @param FilterService|null $filterService
      *
      * @return $this
+     * @throws Exception
      */
     public function list(?FilterService $filterService = null): self
     {
         $this->setTemplateItems($this->templateItemsFactory->getListTemplateItems());
-
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
             ->addContentArray($this->commonContent)
             ->addContentArray($this->listContent)
             ->addContentArray($this->entityContent);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
             ->addContentArray($this->filterContent);
-
-        $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
-            ->getTemplateItemRoute()
-            ->setRouteName($this->getRoutes()['show']);
-        $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
-            ->getTemplateItemRoute()
-            ->setRouteName($this->getRoutes()['edit']);
-        $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
-            ->getTemplateItemRoute()
-            ->setRouteName($this->getRoutes()['delete']);
-
         return $this;
     }
 
@@ -286,5 +276,25 @@ class AppTemplateBuilder extends TemplateService
         $this->filterContent = $filterContent;
         $this->entityContent = $entityContent;
         return $this;
+    }
+
+    /**
+     * @param array $routes
+     * @return array
+     */
+    public function generateRouteItem(array $routes): array
+    {
+        $arrObjItems = [];
+
+        unset($routes['list'], $routes['index']);
+
+        foreach ($routes as $key => $routeItem){
+            $arrObjItems[] =
+                (new TemplateRoutes())->addTemplateRoute(
+                    $key, $routeItem
+                );
+        }
+
+        return $arrObjItems;
     }
 }

@@ -86,11 +86,11 @@ class TemplateTemplate extends AdminTemplateBuilder
      * Builds list template
      *
      * @param FilterService|null $filterService
-     *
+     * @param array|null $itemsWithRoutes
      * @return AppTemplateBuilder
      * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list($filterService);
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)

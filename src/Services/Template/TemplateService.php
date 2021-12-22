@@ -3,6 +3,7 @@
 namespace App\Services\Template;
 
 use Exception;
+use RuntimeException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Yaml\Yaml;
@@ -51,7 +52,7 @@ class TemplateService
         $this->templatePath = $className::TEMPLATE_PATH;
         $this->items = [];
         $this->setCommonTemplatePath($commonTemplatePath);
-        $this->setRedirectRoute($this->getRoute($redirectRouteName) ? $this->getRoute($redirectRouteName) : $this->getRoute('index'));
+        $this->setRedirectRoute($this->getRoute($redirectRouteName) ?: $this->getRoute('index'));
     }
 
     /**
@@ -81,7 +82,7 @@ class TemplateService
          */
         foreach ($routeCollection->all() as $key => $value) {
             $routeInfo = explode('::', $value->getDefault('_controller'));
-            if ($routeInfo[0] == $className) {
+            if ($routeInfo[0] === $className) {
                 $routes[$routeInfo[1]] = $key;
             }
         }
@@ -169,7 +170,7 @@ class TemplateService
     }
 
     /**
-     * Get template item
+     * Get template itemauth_user_show
      *
      * @param string|null $itemName
      *
@@ -177,7 +178,7 @@ class TemplateService
      */
     public function getItem(?string $itemName): ?TemplateItem
     {
-        return array_key_exists($itemName, $this->getItems()) ? $this->getItems()[$itemName] : null;
+        return $this->getItems()[$itemName] ?? null;
     }
 
     /**
@@ -246,7 +247,7 @@ class TemplateService
         } elseif (is_file($projectDir . '/templates/' . $templatePathFullName)) {
             return $templatePathFullName;
         } else {
-            throw new Exception('Файл шаблона не найден! Искали по адресам: "' . $templatePathFullName . '", "' . $commonPathFullName . '"');
+            throw new RuntimeException('Файл шаблона не найден! Искали по адресам: "' . $templatePathFullName . '", "' . $commonPathFullName . '"');
         }
     }
 

@@ -40,9 +40,11 @@ class PrescriptionAppointmentDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('prescription'),
                     'render' => function (string $data, PrescriptionAppointment $prescriptionAppointment) {
                         $prescription = $prescriptionAppointment->getPrescription();
-                        return $prescription ? $this->getLink(
-                            (new PrescriptionInfoService())->getPrescriptionTitle($prescription),
-                            $prescription->getId(),
+                        return $prescription ? $this->getLinkMultiParam(
+                            PrescriptionInfoService::getPrescriptionTitle($prescription),
+                            [
+                                'prescription' => $prescription->getId(),
+                            ],
                             'prescription_show'
                         ) : '';
                     }
@@ -54,9 +56,11 @@ class PrescriptionAppointmentDataTableService extends AdminDatatableService
                     'render' => function (string $data, PrescriptionAppointment $prescriptionAppointment) {
                         /** @var PatientAppointment $patientAppointment */
                         $patientAppointment = $prescriptionAppointment->getPatientAppointment();
-                        return $patientAppointment ? $this->getLink(
+                        return $patientAppointment ? $this->getLinkMultiParam(
                             PatientAppointmentInfoService::getPatientAppointmentInfoString($patientAppointment),
-                            $patientAppointment->getId(),
+                            [
+                                'patientAppointment' => $patientAppointment->getId(),
+                            ],
                             'patient_appointment_show'
                         ) : '';
                     },
@@ -68,9 +72,11 @@ class PrescriptionAppointmentDataTableService extends AdminDatatableService
                     'render' => function (string $data, PrescriptionAppointment $prescriptionAppointment) {
                         /** @var Staff $staff */
                         $staff = $prescriptionAppointment->getStaff();
-                        return $staff ? $this->getLink(
+                        return $staff ? $this->getLinkMultiParam(
                             AuthUserInfoService::getFIO($staff->getAuthUser()),
-                            $staff->getId(),
+                            [
+                                'id' => $staff->getId(),
+                            ],
                             'staff_show'
                         ) : '';
                     }
@@ -80,9 +86,7 @@ class PrescriptionAppointmentDataTableService extends AdminDatatableService
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
         /** @var Prescription $prescription */
         $prescription =
-            isset($filters[AppAbstractController::FILTER_LABELS['PRESCRIPTION']])
-                ? $filters[AppAbstractController::FILTER_LABELS['PRESCRIPTION']]
-                : null;
+            $filters[AppAbstractController::FILTER_LABELS['PRESCRIPTION']] ?? null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

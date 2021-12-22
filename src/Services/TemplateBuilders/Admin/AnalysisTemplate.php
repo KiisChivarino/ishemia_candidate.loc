@@ -92,7 +92,7 @@ class AnalysisTemplate extends AdminTemplateBuilder
      * @return AppTemplateBuilder
      * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list($filterService);
         $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)

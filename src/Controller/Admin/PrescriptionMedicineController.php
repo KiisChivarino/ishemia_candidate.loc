@@ -149,7 +149,7 @@ class PrescriptionMedicineController extends AdminAbstractController
      *     "/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}",
      *     name="prescription_medicine_show",
      *     methods={"GET"},
-     *      requirements={"prescriptionMedicine"="\d+","prescription"="\d+"}
+     *      requirements={"prescription"="\d+", "prescriptionMedicine"="\d+"}
      *     )
      *
      * @param PrescriptionMedicine $prescriptionMedicine

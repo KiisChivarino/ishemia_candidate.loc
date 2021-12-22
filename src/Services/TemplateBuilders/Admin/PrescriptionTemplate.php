@@ -114,11 +114,11 @@ class PrescriptionTemplate extends AdminTemplateBuilder
 
     /**
      * @param FilterService|null $filterService
-     *
+     * @param array|null $itemsWithRoutes
      * @return AppTemplateBuilder
      * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list();
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
@@ -136,7 +136,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
                             'class' => MedicalHistory::class,
                             'required' => false,
                             'choice_label' => function (MedicalHistory $value) {
-                                return (new AuthUserInfoService())->getFIO($value->getPatient()->getAuthUser()).': '
+                                return AuthUserInfoService::getFIO($value->getPatient()->getAuthUser()).': '
                                     .$value->getDateBegin()->format('d.m.Y');
                             },
                             'query_builder' => function (MedicalHistoryRepository $er) {
@@ -156,7 +156,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
                             'class' => Staff::class,
                             'required' => false,
                             'choice_label' => function (Staff $value) {
-                                return (new AuthUserInfoService())->getFIO($value->getAuthUser(), true);
+                                return AuthUserInfoService::getFIO($value->getAuthUser(), true);
                             },
                             'query_builder' => function (StaffRepository $er) {
                                 return $er->createQueryBuilder('s')

@@ -129,11 +129,11 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
 
     /**
      * @param FilterService|null $filterService
-     *
+     * @param array|null $itemsWithRoutes
      * @return AppTemplateBuilder
      * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
         parent::list();
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)->setIsEnabled(false);
@@ -150,7 +150,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
                             'class' => Prescription::class,
                             'required' => false,
                             'choice_label' => function (Prescription $value) {
-                                return (new PrescriptionInfoService())->getPrescriptionTitle($value);
+                                return PrescriptionInfoService::getPrescriptionTitle($value);
                             },
                             'query_builder' => function (PrescriptionRepository $er) {
                                 return $er->createQueryBuilder('p')

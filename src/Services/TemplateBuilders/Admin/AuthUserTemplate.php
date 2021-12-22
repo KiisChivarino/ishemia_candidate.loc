@@ -10,6 +10,7 @@ use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
+use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -80,6 +81,7 @@ class AuthUserTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -101,12 +103,13 @@ class AuthUserTemplate extends AdminTemplateBuilder
      * Builds list template
      *
      * @param FilterService|null $filterService
-     *
+     * @param array|null $itemsWithRoutes
      * @return AppTemplateBuilder
+     * @throws Exception
      */
-    public function list(?FilterService $filterService = null): AppTemplateBuilder
+    public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
-        parent::list($filterService);
+        parent::list($filterService, $this->generateRouteItem($this->getRoutes()));
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
             ->setIsEnabled(false);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)

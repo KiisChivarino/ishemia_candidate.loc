@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\Hospital;
 use App\Form\Admin\Hospital\HospitalType;
 use App\Services\DataTable\Admin\HospitalDataTableService;
+use App\Services\EntityActions\Creator\HospitalCreatorService;
+use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\HospitalTemplate;
 use App\Services\TemplateItems\DeleteTemplateItem;
 use Closure;
@@ -17,6 +19,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Services\InfoService\HospitalInfoService;
+use App\Services\EntityActions\Core\Builder\CreatorEntityActionsBuilder;
 
 /**
  * Class HospitalController
@@ -43,6 +46,7 @@ class HospitalController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     * @throws Exception
      */
     public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
@@ -71,18 +75,29 @@ class HospitalController extends AdminAbstractController
      * @Route("/new", name="hospital_new", methods={"GET","POST"})
      *
      * @param Request $request
-     *
+     * @param HospitalCreatorService $hospitalCreatorService
      * @return Response
      * @throws Exception
      */
-    public function new(Request $request): Response
+    public function new(
+        Request $request,
+        HospitalCreatorService $hospitalCreatorService
+    ): Response
     {
-        return $this->responseNew($request, (new Hospital()), HospitalType::class);
+        return $this->responseNewWithActions(
+            $request,
+            new CreatorEntityActionsBuilder(
+                $hospitalCreatorService
+            ),
+            new FormData(
+                HospitalType::class
+            )
+        );
     }
 
     /**
      * Информация о больнице
-     * @Route("/{id}", name="hospital_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{hospital}", name="hospital_show", methods={"GET"}, requirements={"hospital"="\d+"})
      *
      * @param Hospital $hospital
      *
