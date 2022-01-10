@@ -165,12 +165,6 @@ class AppTemplateBuilder extends TemplateService
             ->addContentArray($this->formShowContent)
             ->addContentArray($this->showContent)
             ->addContentArray($this->entityContent);
-        if ($this->isMethodGetIdExists($entity)) {
-            $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
-                ->getTemplateItemRoute()->setRouteParams(['id'=>$entity->getId()]);
-            $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
-                ->getTemplateItemRoute()->setRouteParams(['id' => $entity->getId()]);
-        }
         return $this;
     }
 

@@ -190,7 +190,7 @@ abstract class AppAbstractController extends AbstractController
         object $formEntity = null
     )
     {
-        $this->templateService->edit();
+        $this->templateService->edit($entity);
         return $this->responseFormTemplate(
             $request,
             $entity,
@@ -731,8 +731,8 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function handleRequest(Request $request, FormInterface $form): bool
     {
-        $form->handleRequest($request);
         try {
+            $form->handleRequest($request);
         } catch (Exception $e) {
             $this->addFlash(
                 'error',
@@ -889,8 +889,8 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function flush(): bool
     {
-        $this->getDoctrine()->getManager()->flush();
         try {
+            $this->getDoctrine()->getManager()->flush();
         } catch (DBALException $e) {
             $this->addFlash(
                 'error',
