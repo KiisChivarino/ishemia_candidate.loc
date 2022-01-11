@@ -6,7 +6,7 @@ namespace App\Utils;
 
 use ReflectionClass;
 
-class Helper
+class ReflectionClassHelper
 {
     /**
      *
@@ -14,6 +14,6 @@ class Helper
      * @return string
      */
     public static function getShortLowerClassName(object $object): string {
-        return strtolower((new ReflectionClass($object))->getShortName());
+        return lcfirst((new ReflectionClass($object))->getShortName());
     }
 }

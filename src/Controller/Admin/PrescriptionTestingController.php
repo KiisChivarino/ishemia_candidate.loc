@@ -86,7 +86,7 @@ class PrescriptionTestingController extends AdminAbstractController
     /**
      * New testing prescription
      * @Route(
-     *     "/prescription/{prescription}/prescription_testing/new",
+     *     "/{prescription}/new",
      *     name="admin_prescription_testing_new",
      *     methods={"GET","POST"}
      *     )

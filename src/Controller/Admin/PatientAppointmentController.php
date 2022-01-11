@@ -81,7 +81,7 @@ class PatientAppointmentController extends AdminAbstractController
 
     /**
      * Show patient appointment
-     * @Route("/{id}", name="patient_appointment_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{patientAppointment}", name="patient_appointment_show", methods={"GET"}, requirements={"id"="\d+"})
      *
      * @param PatientAppointment $patientAppointment
      *
@@ -105,7 +105,7 @@ class PatientAppointmentController extends AdminAbstractController
 
     /**
      * Edit patient appointment
-     * @Route("/{id}/edit", name="patient_appointment_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/{patientAppointment}/edit", name="patient_appointment_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param PatientAppointment $patientAppointment

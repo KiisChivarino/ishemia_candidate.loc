@@ -15,7 +15,7 @@ use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\EditTemplateItem;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
-use App\Utils\Helper;
+use App\Utils\ReflectionClassHelper;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -68,7 +68,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
         'prescriptionMedicines' => 'Лекарства',
         'addPrescriptionTesting' => 'Добавить назначение на обследование',
         'prescriptionTestings' => 'Назначения на обследование',
-        'prescriptionAppointments' =>'Назначения на прием',
+        'prescriptionAppointments' => 'Назначения на прием',
         'addPrescriptionAppointment' => 'Добавить назначение на прием',
     ];
 
@@ -136,8 +136,8 @@ class PrescriptionTemplate extends AdminTemplateBuilder
                             'class' => MedicalHistory::class,
                             'required' => false,
                             'choice_label' => function (MedicalHistory $value) {
-                                return AuthUserInfoService::getFIO($value->getPatient()->getAuthUser()).': '
-                                    .$value->getDateBegin()->format('d.m.Y');
+                                return AuthUserInfoService::getFIO($value->getPatient()->getAuthUser()) . ': '
+                                    . $value->getDateBegin()->format('d.m.Y');
                             },
                             'query_builder' => function (MedicalHistoryRepository $er) {
                                 return $er->createQueryBuilder('mh')
@@ -205,9 +205,11 @@ class PrescriptionTemplate extends AdminTemplateBuilder
     public function new(?FilterService $filterService = null, Prescription $prescription = null): AppTemplateBuilder
     {
         parent::new($filterService);
-        $this->setRedirectRouteParameters([
-            'prescription' => $prescription,
-        ]);
+        $this->setRedirectRouteParameters(
+            [
+                'prescription' => $prescription,
+            ]
+        );
         return $this;
     }
 
@@ -216,11 +218,11 @@ class PrescriptionTemplate extends AdminTemplateBuilder
      */
     public function show(?object $entity = null): AppTemplateBuilder
     {
-        $entityName = Helper::getShortLowerClassName($entity);
+        $entityName = ReflectionClassHelper::getShortLowerClassName($entity);
         parent::show($entity);
         $this
             ->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
-            ->getTemplateItemRoute()->setRouteParams([$entityName=>$entity->getId()]);
+            ->getTemplateItemRoute()->setRouteParams([$entityName => $entity->getId()]);
         $this->setRedirectRouteParameters([
             $entityName => $entity,
         ]);

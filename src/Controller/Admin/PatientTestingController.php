@@ -85,7 +85,7 @@ class PatientTestingController extends AdminAbstractController
 
     /**
      * Информация по анализу пациента
-     * @Route("/{id}", name="patient_testing_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{patientTesting}", name="patient_testing_show", methods={"GET"}, requirements={"patientTesting"="\d+"})
      *
      * @param PatientTesting $patientTesting
      * @param FilterService $filterService

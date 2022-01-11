@@ -4,7 +4,7 @@
         <span class="title">{{ template.items.show.content.prescription }}</span>
         <p>
             {% if entity.prescription %}
-                <a href="{{ path('prescription_show', {'id': entity.prescription.id}) }}">
+                <a href="{{ path('prescription_show', {'prescription': entity.prescription.id}) }}">
                     {{ prescriptionTitle }}
                 </a>
             {% endif %}
@@ -14,7 +14,13 @@
         <span class="title">{{ template.items.show.content.patientTesting }}</span>
         <p>
             {% if entity.patientTesting %}
-                <a href="{{ path('patient_testing_show', {'id': entity.patientTesting.id}) }}">{{ patientTestingInfo }}</a>
+                <a
+                        href="{{ path(
+                            'patient_testing_show',
+                            {'patientTesting': entity.patientTesting.id}
+                        ) }}">
+                    {{ patientTestingInfo }}
+                </a>
             {% endif %}
         </p>
     </li>

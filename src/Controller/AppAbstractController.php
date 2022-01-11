@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Controller\Admin\MedicalHistoryController;
 use App\Controller\Admin\PrescriptionController;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
@@ -26,7 +25,7 @@ use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\FormTemplateItem;
 use App\Services\TemplateItems\ListTemplateItem;
 use App\Services\TemplateItems\ShowTemplateItem;
-use App\Utils\Helper;
+use App\Utils\ReflectionClassHelper;
 use Closure;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
@@ -731,8 +730,9 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function handleRequest(Request $request, FormInterface $form): bool
     {
+        $form->handleRequest($request);
         try {
-            $form->handleRequest($request);
+
         } catch (Exception $e) {
             $this->addFlash(
                 'error',
@@ -889,8 +889,9 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function flush(): bool
     {
+        $this->getDoctrine()->getManager()->flush();
         try {
-            $this->getDoctrine()->getManager()->flush();
+
         } catch (DBALException $e) {
             $this->addFlash(
                 'error',
@@ -939,7 +940,7 @@ abstract class AppAbstractController extends AbstractController
      */
     protected function setDefaultRedirectRouteParameters($entity): void
     {
-        if ($this->templateService->getRedirectRouteParameters() === null) {
+        if (empty($this->templateService->getRedirectRouteParameters())) {
             $this->templateService->setRedirectRouteParameters(
                 [
                     'id' => $entity->getId()
@@ -978,30 +979,6 @@ abstract class AppAbstractController extends AbstractController
             return false;
         }
         return $entity;
-    }
-
-    /**
-     * Returns MedicalHistory entity by GET parameter
-     * @param Request $request
-     * @return MedicalHistory|bool
-     * @throws Exception
-     * @todo сделать нормальные рауты в админке и убрать этот дебильный метод!!!
-     */
-    protected function getMedicalHistoryByParameter(Request $request)
-    {
-        if (!$medicalHistory =
-            $this->getEntityById(
-                MedicalHistory::class,
-                $this->getGETParameter($request, MedicalHistoryController::MEDICAL_HISTORY_ID_PARAMETER_KEY)
-            )
-        ) {
-            $this->addFlash(
-                'error',
-                $this->translator->trans('app_controller.error.parameter_not_found')
-            );
-            return false;
-        }
-        return $medicalHistory;
     }
 
     /**
@@ -1052,7 +1029,7 @@ abstract class AppAbstractController extends AbstractController
     )
     {
         $oldParams = ['id' => $entityId]; //todo убрать после очистки проекта от id в параметрах роута
-        $newParams = [Helper::getShortLowerClassName($rowEntity) => $rowEntity->getId()];
+        $newParams = [ReflectionClassHelper::getShortLowerClassName($rowEntity) => $rowEntity->getId()];
 
         $showTemplateItemRoute = $this->templateService
             ->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)

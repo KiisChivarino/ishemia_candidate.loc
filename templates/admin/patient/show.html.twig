@@ -60,7 +60,9 @@
         <span class="title">{{ template.items.show.content.hospital }}</span>
         <p>
             {% if entity.hospital %}
-                <a href="{{ path('hospital_show', {'id': entity.hospital.id}) }}">{{ entity.hospital.name }}</a>
+                <a href="{{ path('hospital_show', {'hospital': entity.hospital.id}) }}">
+                    {{ entity.hospital.name }}
+                </a>
             {% endif %}
         </p>
     </li>

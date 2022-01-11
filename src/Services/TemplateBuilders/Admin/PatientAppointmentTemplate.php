@@ -11,6 +11,7 @@ use App\Services\Template\TemplateFilter;
 use App\Services\TemplateBuilders\AppTemplateBuilder;
 use App\Services\TemplateItems\FilterTemplateItem;
 use App\Services\TemplateItems\NewTemplateItem;
+use App\Utils\ReflectionClassHelper;
 use Exception;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -107,8 +108,10 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
 
     /**
      * @param FilterService|null $filterService
+     * @param array|null $itemsWithRoutes
      *
      * @return AppTemplateBuilder
+     *
      * @throws Exception
      */
     public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
@@ -139,6 +142,35 @@ class PatientAppointmentTemplate extends AdminTemplateBuilder
                     ),
                 ]
             );
+        return $this;
+    }
+
+    /**
+     * @param object|null $entity
+     * @return AppTemplateBuilder
+     * @throws Exception
+     */
+    public function show(?object $entity = null): AppTemplateBuilder
+    {
+        parent::show($entity);
+        $this->setRedirectRouteParameters(
+            [
+                ReflectionClassHelper::getShortLowerClassName($entity) => $entity->getId(),
+            ]
+        );
+        return $this;
+    }
+
+    /**
+     * Build edit PatientAppointmentTemplate
+     * @param object|null $entity
+     *
+     * @return AppTemplateBuilder
+     * @throws Exception
+     */
+    public function edit(?object $entity = null): AppTemplateBuilder
+    {
+        parent::edit($entity);
         return $this;
     }
 }

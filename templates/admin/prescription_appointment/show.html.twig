@@ -4,7 +4,7 @@
         <span class="title">{{ template.items.show.content.prescription }}</span>
         <p>
             {% if entity.prescription %}
-                <a href="{{ path('prescription_show', {'id': entity.prescription.id}) }}">
+                <a href="{{ path('prescription_show', {'prescription': entity.prescription.id}) }}">
                     {{ prescriptionTitle }}
                 </a>
             {% endif %}
