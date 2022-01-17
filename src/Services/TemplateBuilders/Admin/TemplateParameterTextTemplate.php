@@ -51,7 +51,7 @@ class TemplateParameterTextTemplate extends AdminTemplateBuilder
 
     /** @var string[] Common FILTER CONTENT */
     protected const FILTER_CONTENT = [
-        'templateParameterFilter'=>'Фильтр по параметру шаблона',
+        'templateParameterFilter' => 'Фильтр по параметру шаблона',
     ];
 
     /** @var string[] Common ENTITY CONTENT */
@@ -64,6 +64,8 @@ class TemplateParameterTextTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -86,6 +88,7 @@ class TemplateParameterTextTemplate extends AdminTemplateBuilder
      *
      * @param FilterService|null $filterService
      * @param array|null $itemsWithRoutes
+     *
      * @return AppTemplateBuilder
      * @throws Exception
      */
@@ -122,10 +125,11 @@ class TemplateParameterTextTemplate extends AdminTemplateBuilder
      * @param object|null $entity
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         return $this;
     }
 
@@ -133,6 +137,7 @@ class TemplateParameterTextTemplate extends AdminTemplateBuilder
      *  Builds show template settings of AnalysisGroup controller
      *
      * @param object|null $templateParameter
+     *
      * @return AppTemplateBuilder
      */
     public function show(?object $templateParameter = null): AppTemplateBuilder

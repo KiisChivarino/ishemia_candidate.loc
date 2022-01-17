@@ -32,7 +32,7 @@ use App\Form\PatientTesting\PatientTestingRequiredType;
 
 /**
  * Class PrescriptionTestingController
- * @Route("/admin/prescription_testing")
+ * @Route("/admin")
  * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
@@ -58,7 +58,7 @@ class PrescriptionTestingController extends AdminAbstractController
 
     /**
      * List of testing prescriptions
-     * @Route("/", name="admin_prescription_testing_list", methods={"GET","POST"})
+     * @Route("/prescription_testing/", name="admin_prescription_testing_list", methods={"GET","POST"})
      *
      * @param Request $request
      * @param PrescriptionTestingDataTableService $dataTableService
@@ -74,7 +74,8 @@ class PrescriptionTestingController extends AdminAbstractController
     ): Response
     {
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [
                     self::FILTER_LABELS['PRESCRIPTION'],
@@ -86,15 +87,17 @@ class PrescriptionTestingController extends AdminAbstractController
     /**
      * New testing prescription
      * @Route(
-     *     "/{prescription}/new",
+     *     "/prescription/{prescription}/prescription_testing/new/",
      *     name="admin_prescription_testing_new",
-     *     methods={"GET","POST"}
+     *     methods={"GET","POST"},
+     *     requirements={"prescription"="\d+"}
      *     )
      *
      * @param Request $request
      * @param Prescription $prescription
      * @param PrescriptionTestingCreatorService $prescriptionTestingCreatorService
      * @param SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -135,36 +138,46 @@ class PrescriptionTestingController extends AdminAbstractController
                 new FormData(PatientTestingRequiredType::class, $patientTesting),
             ]
         );
-}
+    }
 
-/**
- * Show testing prescription
- * @Route("/{id}", name="admin_prescription_testing_show", methods={"GET"}, requirements={"id"="\d+"})
- *
- * @param PrescriptionTesting $prescriptionTesting
- *
- * @return Response
- * @throws Exception
- */
-public function show(PrescriptionTesting $prescriptionTesting): Response
-{
-    return $this->responseShow(
-        self::TEMPLATE_PATH,
-        $prescriptionTesting,
-        [
-            'prescriptionTitle' =>
-                PrescriptionInfoService::getPrescriptionTitle($prescriptionTesting->getPrescription()),
-            'patientTestingInfo' =>
-                PatientTestingInfoService::getPatientTestingInfoString($prescriptionTesting->getPatientTesting()),
-            'staff' =>
-                AuthUserInfoService::getFIO($prescriptionTesting->getStaff()->getAuthUser(), true),
-        ]
-    );
-}
+    /**
+     * Show testing prescription
+     * @Route(
+     *     "/prescription_testing/{prescriptionTesting}/",
+     *     name="admin_prescription_testing_show",
+     *     methods={"GET"},
+     *     requirements={"id"="\d+"}
+     *     )
+     *
+     * @param PrescriptionTesting $prescriptionTesting
+     *
+     * @return Response
+     * @throws Exception
+     */
+    public function show(PrescriptionTesting $prescriptionTesting): Response
+    {
+        return $this->responseShow(
+            self::TEMPLATE_PATH,
+            $prescriptionTesting,
+            [
+                'prescriptionTitle' =>
+                    PrescriptionInfoService::getPrescriptionTitle($prescriptionTesting->getPrescription()),
+                'patientTestingInfo' =>
+                    PatientTestingInfoService::getPatientTestingInfoString($prescriptionTesting->getPatientTesting()),
+                'staff' =>
+                    AuthUserInfoService::getFIO($prescriptionTesting->getStaff()->getAuthUser(), true),
+            ]
+        );
+    }
 
     /**
      * Edit testing prescription
-     * @Route("/{id}/edit", name="admin_prescription_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route(
+     *     "/prescription_testing/{prescriptionTesting}/edit/",
+     *     name="admin_prescription_testing_edit",
+     *     methods={"GET","POST"},
+     *     requirements={"prescriptionTesting"="\d+"}
+     *     )
      *
      * @param Request $request
      * @param PrescriptionTesting $prescriptionTesting
@@ -208,7 +221,8 @@ public function show(PrescriptionTesting $prescriptionTesting): Response
 
     /**
      * Delete testing prescription
-     * @Route("/{id}", name="admin_prescription_testing_delete", methods={"DELETE"}, requirements={"prescriptionTesting"="\d+"})
+     * @Route("/prescription_testing/{id}/", name="admin_prescription_testing_delete", methods={"DELETE"},
+     *     requirements={"prescriptionTesting"="\d+"})
      *
      * @param Request $request
      * @param PrescriptionTesting $prescriptionTesting

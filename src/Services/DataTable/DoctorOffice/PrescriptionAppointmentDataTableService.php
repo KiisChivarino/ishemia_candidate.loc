@@ -17,6 +17,7 @@ use Omines\DataTablesBundle\DataTable;
 /**
  * Class PrescriptionAppointmentDataTableService
  * settings for display only one prescription for an appointment in doctor office
+ *
  * @package App\Services\DataTable\DoctorOffice
  */
 class PrescriptionAppointmentDataTableService extends DoctorOfficeDatatableService
@@ -30,6 +31,7 @@ class PrescriptionAppointmentDataTableService extends DoctorOfficeDatatableServi
      * @param Closure $renderOperationsFunction
      * @param ShowTemplateItem $showTemplateItem
      * @param Prescription $prescription
+     *
      * @return DataTable
      * @throws Exception
      */
@@ -52,8 +54,11 @@ class PrescriptionAppointmentDataTableService extends DoctorOfficeDatatableServi
             ->add(
                 'staff', TextColumn::class, [
                     'label' => $showTemplateItem->getContentValue('doctor'),
-                    'render' => function (string $data, PrescriptionAppointment $prescriptionAppointment) use ($showTemplateItem) {
-                    $staff = $prescriptionAppointment->getStaff();
+                    'render' => function (
+                        string $data,
+                        PrescriptionAppointment $prescriptionAppointment
+                    ) use ($showTemplateItem) {
+                        $staff = $prescriptionAppointment->getStaff();
                         return AuthUserInfoService::getFIO($staff->getAuthUser());
                     },
                 ]
@@ -77,6 +82,9 @@ class PrescriptionAppointmentDataTableService extends DoctorOfficeDatatableServi
                             ->select('pa')
                             ->from(self::ENTITY_CLASS, 'pa')
                             ->join('pa.patientAppointment', 'pta');
+                        $builder
+                            ->andWhere('pa.prescription = :prescription')
+                            ->setParameter('prescription', $prescription);
                         if ($prescription) {
                             $builder
                                 ->andWhere('pa.prescription = :prescription')

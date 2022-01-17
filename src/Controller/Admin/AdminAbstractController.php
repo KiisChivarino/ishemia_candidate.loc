@@ -46,7 +46,7 @@ abstract class AdminAbstractController extends AppAbstractController
      */
     protected function redirectToPatient(Patient $patient): RedirectResponse
     {
-        return $this->redirectToRoute('patient_show', ['id' => $patient->getId()]);
+        return $this->redirectToRoute('patient_show', ['patient' => $patient->getId()]);
     }
 
     /**

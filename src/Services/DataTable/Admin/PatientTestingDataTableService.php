@@ -4,7 +4,6 @@ namespace App\Services\DataTable\Admin;
 
 use App\Controller\AppAbstractController;
 use App\Entity\AnalysisGroup;
-use App\Entity\AuthUser;
 use App\Entity\MedicalHistory;
 use App\Entity\Patient;
 use App\Entity\PatientTesting;
@@ -35,7 +34,11 @@ class PatientTestingDataTableService extends AdminDatatableService
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
@@ -43,14 +46,15 @@ class PatientTestingDataTableService extends AdminDatatableService
                 'fio', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('fio'),
                     'render' => function (string $data, PatientTesting $patientTesting) use ($listTemplateItem) {
-                        /** @var AuthUser $authUser */
-                        $authUser = $patientTesting->getMedicalHistory()->getPatient()->getAuthUser();
+                        $patient = $patientTesting->getMedicalHistory()->getPatient();
                         return
-                            $authUser ? $this->getLink(
-                                (new AuthUserInfoService())->getFIO($authUser, true),
-                                $patientTesting->getMedicalHistory()->getPatient()->getId(),
+                            $this->getLinkMultiParam(
+                                AuthUserInfoService::getFIO($patient->getAuthUser(), true),
+                                [
+                                    'patient' => $patient->getId(),
+                                ],
                                 'patient_show'
-                            ) : $listTemplateItem->getContentValue('empty');
+                            );
                     }
                 ]
             )
@@ -60,10 +64,13 @@ class PatientTestingDataTableService extends AdminDatatableService
                     'render' => function (string $data, PatientTesting $patientTesting) use ($listTemplateItem) {
                         /** @var AnalysisGroup $analysisGroup */
                         $analysisGroup = $patientTesting->getAnalysisGroup();
+                        $patientTesting->getPatientTestingResults(); //черная магия datatables - без этого падает 502
                         return
-                            $analysisGroup ?
-                                $this->getLink($analysisGroup->getName(), $analysisGroup->getId(), 'analysis_group_show')
-                                : $listTemplateItem->getContentValue('empty');
+                            $this->getLink(
+                                $analysisGroup->getName(),
+                                $analysisGroup->getId(),
+                                'analysis_group_show'
+                            );
                     }
                 ]
             )

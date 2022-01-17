@@ -1,7 +1,7 @@
 <form
         class="btn btn--delete"
         method="post"
-        action="{{ path(template.routes.delete, {'id': entity.id}) }}"
+        action="{{ path(template.routes.delete.name, {'id': entity.id}) }}"
         onsubmit="return confirm('{{ template.items.delete.content.deleteConfirm }}');"
 >
     <input type="hidden" name="_method" value="DELETE">

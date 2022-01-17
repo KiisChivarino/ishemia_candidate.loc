@@ -65,6 +65,8 @@ class StaffTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
+     * @throws \Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -88,6 +90,7 @@ class StaffTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return $this|AdminTemplateBuilder
+     * @throws \Exception
      */
     public function new(?FilterService $filterService = null): AppTemplateBuilder
     {
@@ -131,10 +134,11 @@ class StaffTemplate extends AdminTemplateBuilder
      * @param object|null $entity
      *
      * @return $this|AdminTemplateBuilder
+     * @throws \Exception
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
             ->addContentArray(
                 array_merge(

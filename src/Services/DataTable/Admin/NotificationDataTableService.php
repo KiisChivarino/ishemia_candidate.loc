@@ -21,6 +21,7 @@ use Omines\DataTablesBundle\DataTable;
 
 /**
  * Class NotificationDataTableService
+ *
  * @package App\Services\DataTable\Admin
  */
 class NotificationDataTableService extends AdminDatatableService
@@ -29,6 +30,7 @@ class NotificationDataTableService extends AdminDatatableService
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
      * @param array $filters
+     *
      * @return DataTable
      * @throws Exception
      */
@@ -47,7 +49,7 @@ class NotificationDataTableService extends AdminDatatableService
                         /** @var AuthUser $authUser */
                         $authUser = $notification->getAuthUserSender();
                         return $authUser ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($authUser, true),
+                            AuthUserInfoService::getFIO($authUser, true),
                             $authUser->getId(),
                             'auth_user_show'
                         ) : $listTemplateItem->getContentValue('empty');
@@ -81,14 +83,17 @@ class NotificationDataTableService extends AdminDatatableService
                     'label' => $listTemplateItem->getContentValue('receiver'),
                     'render' => function (string $data, Notification $notification) use ($listTemplateItem): string {
                         /** @var NotificationReceiverType $notificationReceiverType */
-                        switch ($notification->getNotificationReceiverType()->getName()){
+                        switch ($notification->getNotificationReceiverType()->getName()) {
                             case 'patient':
                                 $patientNotification = $notification->getPatientNotification();
-                                return $patientNotification ? $this->getLink(
-                                    (new AuthUserInfoService())->getFIO(
-                                        $patientNotification->getPatient()->getAuthUser(), true
+                                return $patientNotification ? $this->getLinkMultiParam(
+                                    AuthUserInfoService::getFIO(
+                                        $patientNotification->getPatient()->getAuthUser(),
+                                        true
                                     ),
-                                    $patientNotification->getPatient()->getId(),
+                                    [
+                                        'patient' => $patientNotification->getPatient()->getId(),
+                                    ],
                                     'patient_show'
                                 ) : $listTemplateItem->getContentValue('empty');
                             case 'staff':
@@ -130,8 +135,7 @@ class NotificationDataTableService extends AdminDatatableService
             );
 
         /** @var Patient $patient */
-        $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']])
-            ? $filters[AppAbstractController::FILTER_LABELS['PATIENT']] : null;
+        $patient = $filters[AppAbstractController::FILTER_LABELS['PATIENT']] ?? null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [

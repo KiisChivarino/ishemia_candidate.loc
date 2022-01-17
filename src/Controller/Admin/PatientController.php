@@ -60,7 +60,9 @@ class PatientController extends AdminAbstractController
     public function __construct(
         Environment $twig,
         RouterInterface $router,
-        UserPasswordEncoderInterface $passwordEncoder, TranslatorInterface $translator)
+        UserPasswordEncoderInterface $passwordEncoder,
+        TranslatorInterface $translator
+    )
     {
         parent::__construct($translator);
         $this->passwordEncoder = $passwordEncoder;
@@ -89,6 +91,7 @@ class PatientController extends AdminAbstractController
      *
      * @param Request $request
      * @param ByAdminCreatingPatientServicesFactory $patientCreatingFactory
+     *
      * @return Response
      * @throws ReflectionException
      */
@@ -134,7 +137,7 @@ class PatientController extends AdminAbstractController
 
     /**
      * Информация о пациенте
-     * @Route("/{id}", name="patient_show", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/{patient}", name="patient_show", methods={"GET","POST"}, requirements={"patient"="\d+"})
      *
      * @param Patient $patient
      * @param FilterService $filterService
@@ -157,11 +160,12 @@ class PatientController extends AdminAbstractController
 
     /**
      * Редактирование пациента
-     * @Route("/{id}/edit", name="patient_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/{patient}/edit", name="patient_edit", methods={"GET","POST"}, requirements={"patient"="\d+"})
      *
      * @param Request $request
      * @param Patient $patient
      * @param MedicalHistoryRepository $medicalHistoryRepository
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception

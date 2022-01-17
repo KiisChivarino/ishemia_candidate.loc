@@ -4,8 +4,9 @@
     <div class="content-wrapper__top">
         <ul>
             {% if template.items.list.isEnabled %}
-                <a href="{{ path(template.routes.list) }}"
-                   class="back-page">{{ template.items.show.content.toList }}</a>
+                <a href="{{ path(template.routes.list.name) }}"
+                   class="back-page"
+                >{{ template.items.show.content.toList }}</a>
             {% endif %}
         </ul>
     </div>
@@ -107,10 +108,7 @@
             {% if template.items.edit.isEnabled %}
                 <button class="btn btn--edit">
                     <a style="text-decoration: none; color: inherit; display:block;"
-                       href="{{ path(template.routes.edit,
-                           {
-                               'prescription': entity.prescription.id,
-                               'prescriptionMedicine': entity.id}) }}">
+                       href="{{ path(template.routes.edit.name,{'prescriptionMedicine': entity.id}) }}">
                         {{ template.items.show.content.toEdit }}
                     </a>
                 </button>

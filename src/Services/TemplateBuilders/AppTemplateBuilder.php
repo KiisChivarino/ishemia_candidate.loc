@@ -2,7 +2,6 @@
 
 namespace App\Services\TemplateBuilders;
 
-use App\Entity\TemplateRoutes;
 use App\Services\FilterService\FilterService;
 use App\Services\Template\TemplateService;
 use App\Services\TemplateBuilders\Admin\AdminTemplateBuilder;
@@ -19,6 +18,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Class AppTemplateBuilder
+ *
  * @package App\Services\TemplateBuilders
  */
 class AppTemplateBuilder extends TemplateService
@@ -101,6 +101,7 @@ class AppTemplateBuilder extends TemplateService
      * @param string $className
      * @param string $defaultCommonTemplatePath
      * @param string $defaultRedirectRouteName
+     *
      * @throws Exception
      */
     public function __construct(
@@ -166,16 +167,6 @@ class AppTemplateBuilder extends TemplateService
             ->addContentArray($this->showContent)
             ->addContentArray($this->entityContent);
         return $this;
-    }
-
-    /**
-     * Check is method getId exists for entity
-     * @param object|null $entity
-     * @return bool
-     */
-    public function isMethodGetIdExists(?object $entity = null): bool
-    {
-        return is_object($entity)&& method_exists($entity, 'getId');
     }
 
     /**
@@ -246,6 +237,7 @@ class AppTemplateBuilder extends TemplateService
      * @param array|null $commonContent
      * @param array|null $filterContent
      * @param array|null $entityContent
+     *
      * @return AdminTemplateBuilder
      */
     protected function addContent(
@@ -270,25 +262,5 @@ class AppTemplateBuilder extends TemplateService
         $this->filterContent = $filterContent;
         $this->entityContent = $entityContent;
         return $this;
-    }
-
-    /**
-     * @param array $routes
-     * @return array
-     */
-    public function generateRouteItem(array $routes): array
-    {
-        $arrObjItems = [];
-
-        unset($routes['list'], $routes['index']);
-
-        foreach ($routes as $key => $routeItem){
-            $arrObjItems[] =
-                (new TemplateRoutes())->addTemplateRoute(
-                    $key, $routeItem
-                );
-        }
-
-        return $arrObjItems;
     }
 }

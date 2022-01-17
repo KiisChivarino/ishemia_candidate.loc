@@ -101,6 +101,7 @@ class NotificationTemplate extends DoctorOfficeTemplateBuilder
             );
         return $this;
     }
+
     /**
      * Builds edit template settings of Patient controller
      *
@@ -110,7 +111,7 @@ class NotificationTemplate extends DoctorOfficeTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
         return $this;

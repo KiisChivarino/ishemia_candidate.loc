@@ -32,21 +32,26 @@ class MedicalHistoryDataTableService extends AdminDatatableService
      * @return DataTable
      * @throws Exception
      */
-    public function getTable(Closure $renderOperationsFunction, ListTemplateItem $listTemplateItem, array $filters): DataTable
+    public function getTable(
+        Closure $renderOperationsFunction,
+        ListTemplateItem $listTemplateItem,
+        array $filters
+    ): DataTable
     {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
                 'patientFio', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('patientFio'),
-                    'render' => function ($dataString, $medicalHistory) {
-                        /** @var Patient $patient */
+                    'render' => function ($dataString, MedicalHistory $medicalHistory) use ($listTemplateItem) {
                         $patient = $medicalHistory->getPatient();
-                        return $patient ? $this->getLink(
-                            (new AuthUserInfoService())->getFIO($patient->getAuthUser(), true),
-                            $patient->getId(),
+                        return $this->getLinkMultiParam(
+                            AuthUserInfoService::getFIO($patient->getAuthUser(), true),
+                            [
+                                'patient' => $patient->getId(),
+                            ],
                             'patient_show'
-                        ) : '';
+                        );
                     }
                 ]
             )

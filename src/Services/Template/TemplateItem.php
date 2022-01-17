@@ -33,7 +33,7 @@ abstract class TemplateItem
     /** @var FilterData[] entity, form and filter objects for every filter */
     private $filterData;
 
-    /** @var TemplateItemRoute  */
+    /** @var TemplateItemRoute */
     protected $templateItemRoute;
 
     /** @var TemplateService $templateService */
@@ -41,6 +41,7 @@ abstract class TemplateItem
 
     /**
      * TemplateItem constructor.
+     *
      * @param TemplateService $templateService
      */
     public function __construct(TemplateService $templateService)
@@ -109,7 +110,7 @@ abstract class TemplateItem
      */
     public function addContentArray(?array $contents = []): self
     {
-        if(is_array($contents)){
+        if (is_array($contents)) {
             $this->content = array_merge($this->content, $contents);
         }
         return $this;
@@ -117,14 +118,16 @@ abstract class TemplateItem
 
     /**
      * Returns value of content by key
+     *
      * @param string $contentKey
+     *
      * @return string|null
      * @throws Exception
      */
     public function getContentValue(string $contentKey): ?string
     {
         if (!array_key_exists($contentKey, $this->getContent())) {
-            throw new Exception('Value '.$contentKey.' is not defined');
+            throw new Exception('Value ' . $contentKey . ' is not defined');
         }
         return $this->getContent()[$contentKey] ?? null;
     }
@@ -197,7 +200,7 @@ abstract class TemplateItem
     public function getFiltersViews(): array
     {
         $views = [];
-        $filterData = $this->getFilterData() ? $this->getFilterData() : [];
+        $filterData = $this->getFilterData() ?: [];
         foreach ($filterData as $filterDataOne) {
             $views[] = $filterDataOne->getForm()->createView();
         }
@@ -263,7 +266,7 @@ abstract class TemplateItem
                 $filterService->generateFilter(
                     $templateFilter->getEntityClass(),
                     $templateFilter->getFormData(),
-                    $templateFilter->getFilterName() ? $templateFilter->getFilterName() : null
+                    $templateFilter->getFilterName() ?: null
                 )
             );
         }
@@ -274,7 +277,9 @@ abstract class TemplateItem
 
     /**
      * Устанавливает контент для шаблона
+     *
      * @param array|null $contents
+     *
      * @return TemplateItem
      */
     public function setContents(?array $contents = []): self
@@ -304,9 +309,11 @@ abstract class TemplateItem
     /**
      * @param string $itemName
      */
-    protected function setItemRouteName(string $itemName){
-        if(array_key_exists($itemName, $this->templateService->getRoutes())){
-            $this->templateItemRoute->setRouteName($itemName);
+    protected function setItemRouteName(string $itemName)
+    {
+        $routes = $this->templateService->getRoutes();
+        if (array_key_exists($itemName, $routes)) {
+            $this->templateItemRoute->setRouteName($routes[$itemName]['name']);
         }
     }
 }

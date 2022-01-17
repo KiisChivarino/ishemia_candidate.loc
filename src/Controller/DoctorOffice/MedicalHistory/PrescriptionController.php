@@ -80,6 +80,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /**
      * PatientPrescriptionController constructor.
+     *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
@@ -101,7 +102,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
     /**
      * New prescription
      * @Route(
-     *     "patient/{id}/prescription/new",
+     *     "patient/{patient}/prescription/new",
      *     name="adding_prescriprion_by_doctor",
      *     methods={"GET","POST"}
      *     )
@@ -109,6 +110,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @param Patient $patient
      * @param DoctorOfficePrescriptionService $prescriptionCreatorService
      * @param MedicalHistoryRepository $medicalHistoryRepository
+     *
      * @return Response
      * @throws Exception
      */
@@ -129,7 +131,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
             ]
         );
         $prescriptionEntity = $prescriptionCreatorService->getEntity();
-        $this->setLogCreate($prescriptionEntity);
+        $this->setFormLogByType('new', $prescriptionEntity);
         if (!$this->flush()) {
             $this->redirectToMedicalHistory($patient);
         }
@@ -150,12 +152,14 @@ class PrescriptionController extends DoctorOfficeAbstractController
      *     methods={"GET", "POST"},
      *     requirements={"patient"="\d+", "prescription"="\d+"}
      *     )
+     *
      * @param Patient $patient
      * @param Prescription $prescription
      * @param Request $request
      * @param PrescriptionTestingDataTableService $prescriptionTestingDataTableService
      * @param PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService
      * @param PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -214,9 +218,11 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /**
      * Generates and handles datatable of prescription testing list
+     *
      * @param Request $request
      * @param PrescriptionTestingDataTableService $prescriptionTestingDataTableService
      * @param Prescription $prescription
+     *
      * @return DataTable
      * @throws ReflectionException
      */
@@ -239,9 +245,11 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /**
      * Generates and handles datatable of one prescription appointment
+     *
      * @param Request $request
      * @param PrescriptionAppointmentDataTableService $prescriptionAppointmentDataTableService
      * @param Prescription $prescription
+     *
      * @return DataTable
      * @throws ReflectionException
      */
@@ -264,9 +272,11 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /**
      * Generates and handles datatable of one prescription medicine
+     *
      * @param Request $request
      * @param PrescriptionMedicineDataTableService $prescriptionMedicineDataTableService
      * @param Prescription $prescription
+     *
      * @return DataTable
      * @throws ReflectionException
      */
@@ -289,6 +299,7 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /**
      * Generates and handles datatable of special prescription
+     *
      * @param Request $request
      * @param DataTableService $specialPrescriptionDatatableService
      * @param Prescription $prescription
@@ -296,12 +307,13 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @param string $showRouteName
      * @param string $editRouteName
      * @param string $deleteRouteName
+     *
      * @return DataTable
      * @throws ReflectionException
      */
     public function generateSpecialPrescriptionDatatable(
         Request $request,
-        DataTableService $specialPrescriptionDatatableService,
+        $specialPrescriptionDatatableService,
         Prescription $prescription,
         string $entityClassName,
         string $showRouteName,
@@ -309,10 +321,9 @@ class PrescriptionController extends DoctorOfficeAbstractController
         string $deleteRouteName
     ): DataTable
     {
-         return $specialPrescriptionDatatableService->getTable(
+        return $specialPrescriptionDatatableService->getTable(
             function (string $id, $entity)
-            use ($entityClassName, $prescription, $showRouteName, $editRouteName, $deleteRouteName)
-            {
+            use ($entityClassName, $prescription, $showRouteName, $editRouteName, $deleteRouteName) {
                 $routeParams = [
                     'patient' => $prescription->getMedicalHistory()->getPatient()->getId(),
                     'prescription' => $prescription->getId(),
@@ -342,7 +353,9 @@ class PrescriptionController extends DoctorOfficeAbstractController
 
     /**
      * Returns short name of class with lower case first letter
+     *
      * @param string $className
+     *
      * @return string
      * @throws ReflectionException
      */
@@ -359,7 +372,9 @@ class PrescriptionController extends DoctorOfficeAbstractController
      *     methods={"GET"},
      *     requirements={"patient"="\d+", "prescription"="\d+"}
      * )
+     *
      * @param Prescription $prescription
+     *
      * @return RedirectResponse
      * @throws NonUniqueResultException
      * @throws Exception

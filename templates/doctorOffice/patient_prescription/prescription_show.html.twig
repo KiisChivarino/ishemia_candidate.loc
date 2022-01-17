@@ -44,11 +44,17 @@
     </div>
     <div id="prescriptionInfo">
         <div id="prescriptionDate">
-            <div><strong>{{ template.items.show.content.createdTime }}</strong></div>
+            <div>
+                <strong>
+                    {{ template.items.show.content.createdTime }}
+                </strong>
+            </div>
             {{ prescription.createdTime ? prescription.createdTime|date('d.m.Y H:i') : '' }}
         </div>
         <div id="prescriptionStaff">
-            <div><strong>{{ template.items.show.content.doctor }}</strong></div>
+            <div>
+                <strong>{{ template.items.show.content.doctor }}</strong>
+            </div>
             {{ fio(prescription.staff.AuthUser) }}
         </div>
     </div>
@@ -108,59 +114,6 @@
             </button>
         {% endif %}
     </div>
-
-    <style>
-        /*
-        Верстка страницы назначений в кабинете врача
-        /doctor_office/patient/{id}/prescription/{id}/show
-        Выполнено в рамках задачи
-        https://www.notion.so/EntityActions-1ddaf1763cb64e379685ed3f359a86e8
-        */
-        .main-button {
-            margin: 5px;
-        }
-
-        .main-button:nth-child(1) {
-            margin: 5px 5px 5px 0;
-        }
-
-        .main-button:nth-last-child {
-            margin: 5px 0 5px 5px;
-        }
-
-
-        #prescriptionDate, #prescriptionStaff {
-            margin: 10px 0;
-        }
-
-        #prescriptionInfo {
-            margin-top: 5px;
-        }
-
-        .dataTablePrescriptionWrapper{
-            margin-bottom: 25px;
-        }
-
-        .labelSeparating{
-            margin: 20px 0 10px 0;
-        }
-
-        /*Дататейблы*/
-
-        .dataTable th {
-            cursor: pointer;
-        }
-
-        .dataTable .sorting_disabled {
-            cursor: default;
-        }
-
-        .pagination:empty {
-            display: none;
-        }
-
-    </style>
-
 {% endblock %}
 
 {% block javascripts %}

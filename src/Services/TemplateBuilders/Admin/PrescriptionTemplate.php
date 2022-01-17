@@ -65,11 +65,12 @@ class PrescriptionTemplate extends AdminTemplateBuilder
         'h1' => 'Просмотр назначения',
         'medicalRecord' => MedicalRecordTemplate::ENTITY_CONTENT['entity'],
         'addPrescriptionMedicine' => 'Добавить назначение на лекарство',
-        'prescriptionMedicines' => 'Лекарства',
+        'prescriptionMedicines' => 'Назначения лекарств',
         'addPrescriptionTesting' => 'Добавить назначение на обследование',
         'prescriptionTestings' => 'Назначения на обследование',
         'prescriptionAppointments' => 'Назначения на прием',
         'addPrescriptionAppointment' => 'Добавить назначение на прием',
+        'completePrescription' => 'Завершить назначение'
     ];
 
     /** @var string[] Common EDIT_CONTENT */
@@ -94,6 +95,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
      * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
@@ -115,6 +117,7 @@ class PrescriptionTemplate extends AdminTemplateBuilder
     /**
      * @param FilterService|null $filterService
      * @param array|null $itemsWithRoutes
+     *
      * @return AppTemplateBuilder
      * @throws Exception
      */

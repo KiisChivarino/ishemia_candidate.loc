@@ -8,7 +8,7 @@
                     {{ medicalHistoryTitle }}
                 </a>
             {% else %}
-            {{ template.items.show.content.empty }}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -26,7 +26,10 @@
         <span class="title">{{ template.items.show.content.prescriptionAppointment }}</span>
         <p>
             {% if entity.prescriptionAppointment %}
-                <a href="{{ path('prescription_appointment_show', {'id': entity.prescriptionAppointment.id}) }}">
+                <a href="{{ path(
+                    'prescription_appointment_show',
+                    {'prescriptionAppointment': entity.prescriptionAppointment.id}
+                ) }}">
                     {{ template.items.show.content.prescriptionAppointment }}
                 </a>
             {% else %}
@@ -81,13 +84,13 @@
     <li>
         <span class="title">{{ template.items.show.content.complaints }}</span>
         {% if  entity.complaints | length > 0 %}
-        {% for complaint in entity.complaints %}
-            <p>
-                <a href="{{ path('complaint_show', {'id': complaint.id}) }}">
-                    {{ complaint.name }}
-                </a>
-            </p>
-        {% endfor %}
+            {% for complaint in entity.complaints %}
+                <p>
+                    <a href="{{ path('complaint_show', {'id': complaint.id}) }}">
+                        {{ complaint.name }}
+                    </a>
+                </p>
+            {% endfor %}
         {% else %}
             <p>{{ template.items.show.content.empty_plural }}</p>
         {% endif %}

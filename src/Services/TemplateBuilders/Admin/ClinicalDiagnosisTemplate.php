@@ -65,8 +65,11 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
 
     /**
      * ClinicalDiagnosisTemplate constructor.
+     *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -113,11 +116,13 @@ class ClinicalDiagnosisTemplate extends AdminTemplateBuilder
 
     /**
      * @param object|null $entity
+     *
      * @return $this
+     * @throws Exception
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
 
         return $this;

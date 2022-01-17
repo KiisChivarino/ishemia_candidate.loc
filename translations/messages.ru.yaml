@@ -3,6 +3,8 @@ log:
   update.entity: Запись - %entity% (id:%id%) обновлена.
   delete.entity: Запись - %entity% (id:%id%) уадлена.
   update.prescription.complete.failed: Попытка завершения - %entity% (id:%id%).
+  flush.failed: Ошибка сохранения записи - %error%
+  handle.failed: Ошибка при выполнении handle - %error%
 command:
   success: Команда %command% успешно выполнена.
 sms_type:

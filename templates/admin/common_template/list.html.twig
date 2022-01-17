@@ -8,16 +8,20 @@
     {% endif %}
     <div class="tabs">
         <ul class="content-wrapper__nav tabs__caption">
-        {% if template.items.filter.isEnabled %}
-            {{ include(
-                template.items.filter.path~'_filter_form.html.twig'
-            ) }}
-        {% endif %}
-        {% if template.items.new.isEnabled %}
-            <div class="content-wrapper__select">
-                <a style="text-decoration: none;" href="{{ path(template.routes.new) }}" class="main-button">{{ template.items.list.content.toNew }}</a>
-            </div>
-        {% endif %}
+            {% if template.items.filter.isEnabled %}
+                {{ include(
+                    template.items.filter.path~'_filter_form.html.twig'
+                ) }}
+            {% endif %}
+            {% if template.items.new.isEnabled %}
+                <div class="content-wrapper__select">
+                    <a
+                            style="text-decoration: none;"
+                            href="{{ path(template.routes.new.name) }}"
+                            class="main-button"
+                    >{{ template.items.list.content.toNew }}</a>
+                </div>
+            {% endif %}
         </ul>
         {{ include('flashmessages.html.twig') }}
         <div class="box-body table-responsive table-wrapper table-pacients tabs__content active">

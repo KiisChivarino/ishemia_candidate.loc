@@ -5,7 +5,6 @@ namespace App\Services\DataTable\DoctorOffice;
 use App\Controller\AppAbstractController;
 use App\Entity\PatientTesting;
 use App\Repository\PatientTestingDatatableRepository;
-use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +23,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PatientTestingListHistoryDataTableService extends DoctorOfficeDatatableService
 {
-    private $authUserInfoService;
 
     /** @var PatientTestingDatatableRepository */
     private $patientTestingDatatableRepository;
@@ -35,19 +33,16 @@ class PatientTestingListHistoryDataTableService extends DoctorOfficeDatatableSer
      * @param DataTableFactory $dataTableFactory
      * @param UrlGeneratorInterface $router
      * @param EntityManagerInterface $em
-     * @param AuthUserInfoService $authUserInfoService
      * @param PatientTestingDatatableRepository $patientTestingDatatableRepository
      */
     public function __construct(
         DataTableFactory $dataTableFactory,
         UrlGeneratorInterface $router,
         EntityManagerInterface $em,
-        AuthUserInfoService $authUserInfoService,
         PatientTestingDatatableRepository $patientTestingDatatableRepository
     )
     {
         parent::__construct($dataTableFactory, $router, $em);
-        $this->authUserInfoService = $authUserInfoService;
         $this->patientTestingDatatableRepository = $patientTestingDatatableRepository;
     }
 
@@ -58,6 +53,7 @@ class PatientTestingListHistoryDataTableService extends DoctorOfficeDatatableSer
      * @param ListTemplateItem $listTemplateItem
      * @param array $filters
      * @param array $options
+     *
      * @return DataTable
      * @throws Exception
      */
@@ -68,12 +64,7 @@ class PatientTestingListHistoryDataTableService extends DoctorOfficeDatatableSer
         array $options
     ): DataTable
     {
-        $this->generateTableForPatientTestingsInDoctorOffice(
-            $renderOperationsFunction,
-            $listTemplateItem,
-            $options['route'] ?? null
-        );
-
+        $this->generateTableForPatientTestingsInDoctorOffice($renderOperationsFunction, $listTemplateItem);
         $analysisGroup = $filters[AppAbstractController::FILTER_LABELS['ANALYSIS_GROUP']];
         return $this->dataTable
             ->createAdapter(

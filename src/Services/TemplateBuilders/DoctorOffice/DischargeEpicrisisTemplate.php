@@ -20,7 +20,7 @@ class DischargeEpicrisisTemplate extends DoctorOfficeTemplateBuilder
     ];
 
     /** @var string[] Common form content for new templates */
-    protected const NEW_CONTENT  = [
+    protected const NEW_CONTENT = [
         'discharge_epicrisis' => 'Выписные эпикризы',
     ];
 
@@ -53,6 +53,7 @@ class DischargeEpicrisisTemplate extends DoctorOfficeTemplateBuilder
 
     /**
      * @param FilterService|null $filterService
+     *
      * @return AppTemplateBuilder
      */
     public function new(?FilterService $filterService = null): AppTemplateBuilder
@@ -70,7 +71,7 @@ class DischargeEpicrisisTemplate extends DoctorOfficeTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->setCommonTemplatePath(($this->getTemplatePath()));
         $this
             ->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)

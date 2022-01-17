@@ -8,8 +8,6 @@ use App\Services\DataTable\Admin\HospitalDataTableService;
 use App\Services\EntityActions\Creator\HospitalCreatorService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\HospitalTemplate;
-use App\Services\TemplateItems\DeleteTemplateItem;
-use Closure;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,18 +32,13 @@ class HospitalController extends AdminAbstractController
     //relative path to twig templates
     public const TEMPLATE_PATH = 'admin/hospital/';
 
-    /** @var string Название маршрута для редиректа в случае невозможности удаления сущности Hospital */
-    const REDIRECT_IF_IMPOSSIBLE_TO_DELETE = 'hospital_show';
-
-    /** @var string Ключ для редиректа в случае невозможности удаления сущности Hospital */
-    const REDIRECT_PARAMETER_KEY_IF_IMPOSSIBLE_TO_DELETE = 'id';
-
     /**
      * HospitalController constructor.
      *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     *
      * @throws Exception
      */
     public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
@@ -76,6 +69,7 @@ class HospitalController extends AdminAbstractController
      *
      * @param Request $request
      * @param HospitalCreatorService $hospitalCreatorService
+     *
      * @return Response
      * @throws Exception
      */
@@ -111,7 +105,7 @@ class HospitalController extends AdminAbstractController
 
     /**
      * Редактирование больницы
-     * @Route("/{id}/edit", name="hospital_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/{hospital}/edit", name="hospital_edit", methods={"GET","POST"}, requirements={"hospital"="\d+"})
      *
      * @param Request $request
      * @param Hospital $hospital
@@ -139,29 +133,14 @@ class HospitalController extends AdminAbstractController
         if (HospitalInfoService::isHospitalDeletable($hospital)) {
             return $this->responseDelete($request, $hospital);
         }
+
         $this->addFlash('error', $this->translator->trans('hospital_controller.error.delete'));
 
-        return $this->redirectToRoute(self::REDIRECT_IF_IMPOSSIBLE_TO_DELETE, [
-            self::REDIRECT_PARAMETER_KEY_IF_IMPOSSIBLE_TO_DELETE => $hospital->getId()
-        ]);
-    }
-
-    /**
-     * Отображает действия с записью в таблице datatables для списка больниц
-     *
-     * @return Closure
-     */
-    protected function renderTableActions(): Closure
-    {
-        return function (int $hospitalId, ?Hospital $hospital) {
-            $deleteTemplateItem = $this->templateService
-                ->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME);
-            if (!is_null($hospital) && !HospitalInfoService::isHospitalDeletable($hospital)) {
-                $deleteTemplateItem->setIsEnabled(false);
-            }else{
-                $deleteTemplateItem->setIsEnabled(true);
-            }
-            return $this->getTableActionsResponseContent($hospitalId, $hospital);
-        };
+        return $this->redirectToRoute(
+            'hospital_show',
+            [
+                'hospital' => $hospital->getId()
+            ]
+        );
     }
 }

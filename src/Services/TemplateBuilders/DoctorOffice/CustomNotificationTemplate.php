@@ -7,6 +7,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Class CustomNotificationTemplate
+ *
  * @package App\Services\TemplateBuilders\DoctorOffice
  */
 class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
@@ -52,7 +53,7 @@ class CustomNotificationTemplate extends DoctorOfficeTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         return $this;
     }
 

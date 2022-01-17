@@ -81,6 +81,7 @@ class AuthUserTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
      * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
@@ -104,12 +105,13 @@ class AuthUserTemplate extends AdminTemplateBuilder
      *
      * @param FilterService|null $filterService
      * @param array|null $itemsWithRoutes
+     *
      * @return AppTemplateBuilder
      * @throws Exception
      */
     public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
-        parent::list($filterService, $this->generateRouteItem($this->getRoutes()));
+        parent::list($filterService);
         $this->getItem(NewTemplateItem::TEMPLATE_ITEM_NEW_NAME)
             ->setIsEnabled(false);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
@@ -120,16 +122,16 @@ class AuthUserTemplate extends AdminTemplateBuilder
     /**
      * Builds show template
      *
-     * @param object|null $entity
+     * @param object|null $authUser
      *
      * @return AppTemplateBuilder
      */
-    public function show(?object $entity = null): AppTemplateBuilder
+    public function show(?object $authUser = null): AppTemplateBuilder
     {
-        parent::show($entity);
+        parent::show($authUser);
         $authUserInfoService = new AuthUserInfoService();
         $this->getItem(ShowTemplateItem::TEMPLATE_ITEM_SHOW_NAME)
-            ->setContent('h1', 'Просмотр данных пользователя: '.$authUserInfoService->getFIO($entity, true));
+            ->setContent('h1', 'Просмотр данных пользователя: ' . $authUserInfoService->getFIO($authUser, true));
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
         return $this;
@@ -141,13 +143,14 @@ class AuthUserTemplate extends AdminTemplateBuilder
      * @param object|null $entity
      *
      * @return AdminTemplateBuilder
+     * @throws Exception
      */
-    public function edit(?object $entity = null): AppTemplateBuilder
+    public function edit(?object $authUser = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($authUser);
         $authUserInfoService = new AuthUserInfoService();
         $this->getItem(EditTemplateItem::TEMPLATE_ITEM_EDIT_NAME)
-            ->setContent('h1', 'Редактирование пользователя: '.$authUserInfoService->getFIO($entity, true));
+            ->setContent('h1', 'Редактирование пользователя: ' . $authUserInfoService->getFIO($authUser, true));
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)
             ->setPath($this->getTemplatePath());
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)

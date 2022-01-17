@@ -136,11 +136,14 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
                         AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY'],
                         MedicalHistory::class,
                         [
-                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getContentValue('medicalHistory'),
+                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getContentValue(
+                                'medicalHistory'),
                             'class' => MedicalHistory::class,
                             'required' => false,
                             'choice_label' => function (MedicalHistory $value) {
-                                return (new AuthUserInfoService())->getFIO($value->getPatient()->getAuthUser()) . ': ' . $value->getDateBegin()->format('d.m.Y');
+                                return (new AuthUserInfoService())->getFIO(
+                                        $value->getPatient()->getAuthUser()) . ': ' . $value->getDateBegin()->format(
+                                        'd.m.Y');
                             },
                             'query_builder' => function (MedicalHistoryRepository $er) {
                                 return $er->createQueryBuilder('mh')
@@ -154,13 +157,15 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
             );
         return $this;
     }
+
     /**
      * @param object|null $entity
+     *
      * @return $this|AppTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
         return $this;
     }

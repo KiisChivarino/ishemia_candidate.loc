@@ -23,6 +23,7 @@ class PatientMedicineDataTableService extends AdminDatatableService
     /**
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
+     *
      * @return DataTable
      * @throws Exception
      */
@@ -61,8 +62,8 @@ class PatientMedicineDataTableService extends AdminDatatableService
                             $this->getLinkMultiParam(
                                 'Назначение лекарств от ' . $prescriptionMedicine->getInclusionTime()->format('d.m.Y'),
                                 [
-                                    'prescriptionMedicine' => $prescriptionMedicine,
-                                    'prescription' => $prescriptionMedicine->getPrescription()
+                                    'prescriptionMedicine' => $prescriptionMedicine->getId(),
+                                    'prescription' => $prescriptionMedicine->getPrescription()->getId()
                                 ],
                                 'prescription_medicine_show'
                             ) : $listTemplateItem->getContentValue('empty');

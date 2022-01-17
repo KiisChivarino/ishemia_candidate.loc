@@ -48,6 +48,10 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
         'title' => 'Редактирование лекарства',
     ];
 
+    public const ENTITY_CONTENT = [
+        'entity' => 'Прием лекарства',
+    ];
+
     /**
      * PatientTestingTemplate constructor.
      *
@@ -84,6 +88,7 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
 
     /**
      * @param object|null $entity
+     *
      * @return AppTemplateBuilder
      */
     public function show(?object $entity = null): AppTemplateBuilder
@@ -133,11 +138,12 @@ class PatientMedicineTemplate extends DoctorOfficeTemplateBuilder
 
     /**
      * @param object|null $entity
+     *
      * @return $this|AppTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)->setIsEnabled(false);
         return $this;
     }

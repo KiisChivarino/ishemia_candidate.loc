@@ -73,7 +73,8 @@ class PatientTestingController extends AdminAbstractController
     ): Response
     {
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [
                     self::FILTER_LABELS['PATIENT'],
@@ -120,12 +121,16 @@ class PatientTestingController extends AdminAbstractController
 
     /**
      * Редактирование анализа пациента
-     * @Route("/{id}/edit", name="patient_testing_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route(
+     *     "/{patientTesting}/edit",
+     *     name="patient_testing_edit",
+     *     methods={"GET","POST"}, requirements={"patientTesting"="\d+"})
      *
      * @param Request $request
      * @param PatientTesting $patientTesting
      *
      * @param FileService $fileService
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -144,9 +149,10 @@ class PatientTestingController extends AdminAbstractController
                 new FormData(PatientTestingNotRequiredType::class, $patientTesting),
             ],
             function (EntityActions $actions) use ($patientTesting, $fileService) {
-                $fileService->prepareFiles($actions->getForm()
-                    ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
-                    ->get(self::FILES_COLLECTION_PROPERTY_NAME));
+                $fileService->prepareFiles(
+                    $actions->getForm()
+                        ->get(MultiFormService::getFormName(PatientTestingNotRequiredType::class))
+                        ->get(self::FILES_COLLECTION_PROPERTY_NAME));
             }
         );
     }

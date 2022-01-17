@@ -109,7 +109,7 @@ class ReceivedSmsFromPatientTemplate extends DoctorOfficeTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->getItem(ListTemplateItem::TEMPLATE_ITEM_LIST_NAME)
             ->setIsEnabled(false);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)

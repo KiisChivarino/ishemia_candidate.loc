@@ -54,7 +54,7 @@ class ClinicalDiagnosisTemplate extends DoctorOfficeTemplateBuilder
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->setCommonTemplatePath(($this->getTemplatePath()));
         $this
             ->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)

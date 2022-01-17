@@ -1,0 +1,50 @@
+/*
+        Верстка страницы назначений в кабинете врача
+        /doctor_office/patient/{id}/prescription/{id}/show
+        Выполнено в рамках задачи
+        https://www.notion.so/EntityActions-1ddaf1763cb64e379685ed3f359a86e8
+        */
+.main-button {
+    margin: 5px;
+}
+
+.main-button:nth-child(1) {
+    margin: 5px 5px 5px 0;
+}
+
+.main-button:nth-last-child {
+    margin: 5px 0 5px 5px;
+}
+
+
+#prescriptionDate, #prescriptionStaff {
+    margin: 10px 0;
+}
+
+#prescriptionInfo {
+    margin-top: 5px;
+}
+
+.dataTablePrescriptionWrapper {
+    margin-bottom: 25px;
+}
+
+.labelSeparating {
+    margin: 20px 0 10px 0;
+}
+
+/*Дататейблы*/
+
+.dataTable th {
+    cursor: pointer;
+}
+
+.dataTable .sorting_disabled {
+    cursor: default;
+}
+
+.pagination:empty {
+    display: none;
+}
+
+/* окончание */

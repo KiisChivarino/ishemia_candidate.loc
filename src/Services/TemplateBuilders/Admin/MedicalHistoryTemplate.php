@@ -100,6 +100,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
      * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
@@ -120,7 +121,9 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
 
     /**
      * @param FilterService|null $filterService
+     *
      * @return $this|AppTemplateBuilder
+     * @throws Exception
      */
     public function new(?FilterService $filterService = null): AppTemplateBuilder
     {
@@ -131,12 +134,13 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
 
     /**
      * @param object|null $entity
+     *
      * @return $this|AppTemplateBuilder
      * @throws Exception
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->setRedirectRouteParameters([
             'id' => $entity->getId(),
         ]);
@@ -150,6 +154,7 @@ class MedicalHistoryTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @param array|null $itemsWithRoutes
+     *
      * @return AppTemplateBuilder
      * @throws Exception
      */

@@ -91,6 +91,8 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -112,6 +114,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return $this|DoctorOfficeTemplateBuilder
+     * @throws Exception
      */
     public function new(?FilterService $filterService = null): AppTemplateBuilder
     {
@@ -130,6 +133,7 @@ class PrescriptionMedicineTemplate extends AdminTemplateBuilder
     /**
      * @param FilterService|null $filterService
      * @param array|null $itemsWithRoutes
+     *
      * @return AppTemplateBuilder
      * @throws Exception
      */

@@ -19,14 +19,17 @@ use Omines\DataTablesBundle\DataTable;
 /**
  * Class DataTableService
  * methods for adding data tables
+ *
  * @package App\DataTable
  */
 class PatientSMSDataTableService extends AdminDatatableService
 {
     /**
      * Таблица полученных sms
+     *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
+     *
      * @return DataTable
      * @throws Exception
      */
@@ -40,13 +43,16 @@ class PatientSMSDataTableService extends AdminDatatableService
                     'field' => 'u.lastName',
                     'orderable' => true,
                     'orderField' => 'u.lastName',
-                    'render' => function (string $data, PatientSMS $patientSMS) {
+                    'render' => function (string $data, PatientSMS $patientSMS) use ($listTemplateItem) {
                         /** @var Patient $patient */
                         $patient = $patientSMS->getPatient();
-                        return $patient
-                            ? $this->getLink((new AuthUserInfoService())
-                                ->getFIO($patient->getAuthUser()), $patient->getId(), 'patient_show')
-                            : '';
+                        return $patient ? $this->getLinkMultiParam(
+                            AuthUserInfoService::getFIO($patient->getAuthUser(), true),
+                            [
+                                'patient' => $patient->getId(),
+                            ],
+                            'patient_show'
+                        ) : $listTemplateItem->getContentValue('empty');
                     }
                 ]
             )
@@ -77,13 +83,11 @@ class PatientSMSDataTableService extends AdminDatatableService
                     'searchable' => false,
                     'format' => 'd.m.Y H:m',
                 ]
-            )
-            ;
+            );
         $this->addOperations($renderOperationsFunction, $listTemplateItem);
 
         /** @var Patient $patient */
-        $patient = isset($filters[AppAbstractController::FILTER_LABELS['PATIENT']])
-            ? $filters[AppAbstractController::FILTER_LABELS['PATIENT']] : null;
+        $patient = $filters[AppAbstractController::FILTER_LABELS['PATIENT']] ?? null;
         return $this->dataTable
             ->createAdapter(
                 ORMAdapter::class, [
@@ -96,8 +100,7 @@ class PatientSMSDataTableService extends AdminDatatableService
                             ->leftJoin('p.AuthUser', 'u')
                             ->andWhere('u.enabled = :val')
                             ->setParameter('val', true)
-                            ->orderBy('ps.id', 'desc')
-                        ;
+                            ->orderBy('ps.id', 'desc');
                         if ($patient) {
                             $builder
                                 ->andWhere('ps.patient = :patient')

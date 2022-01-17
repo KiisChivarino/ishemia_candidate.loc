@@ -50,6 +50,8 @@ class TemplateTypeTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -91,10 +93,11 @@ class TemplateTypeTemplate extends AdminTemplateBuilder
      * @param object|null $entity
      *
      * @return AppTemplateBuilder
+     * @throws Exception
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
         return $this;

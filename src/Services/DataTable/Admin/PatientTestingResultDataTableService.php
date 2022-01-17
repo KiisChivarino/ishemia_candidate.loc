@@ -37,18 +37,23 @@ class PatientTestingResultDataTableService extends AdminDatatableService
         Closure $renderOperationsFunction,
         ListTemplateItem $listTemplateItem,
         array $filters = []
-    ): DataTable {
+    ): DataTable
+    {
         $this->addSerialNumber();
         $this->dataTable
             ->add(
                 'patientTesting', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('patientTesting'),
-                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use ($listTemplateItem) {
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use (
+                        $listTemplateItem
+                    ) {
                         /** @var PatientTesting $patientTesting */
                         $patientTesting = $patientTestingResult->getPatientTesting();
-                        return $patientTesting ? $this->getLink(
-                            (new PatientTestingInfoService())->getPatientTestingInfoString($patientTesting),
-                            $patientTesting->getId(),
+                        return $patientTesting ? $this->getLinkMultiParam(
+                            PatientTestingInfoService::getPatientTestingInfoString($patientTesting),
+                            [
+                                'patientTesting' => $patientTesting->getId(),
+                            ],
                             'patient_testing_show'
                         ) : $listTemplateItem->getContentValue('empty');
                     },
@@ -57,7 +62,9 @@ class PatientTestingResultDataTableService extends AdminDatatableService
             ->add(
                 'analysis', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysis'),
-                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use ($listTemplateItem) {
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use (
+                        $listTemplateItem
+                    ) {
                         /** @var Analysis $analysis */
                         $analysis = $patientTestingResult->getAnalysis();
                         return
@@ -70,7 +77,9 @@ class PatientTestingResultDataTableService extends AdminDatatableService
             ->add(
                 'analysisRate', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('analysisRate'),
-                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use ($listTemplateItem) {
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use (
+                        $listTemplateItem
+                    ) {
                         /** @var AnalysisRate $analysisRate */
                         $analysisRate = $patientTestingResult->getAnalysisRate();
                         return $analysisRate ? $this->getLink(
@@ -81,11 +90,14 @@ class PatientTestingResultDataTableService extends AdminDatatableService
                     },
                 ]
             )
-            ->add('result',TextColumn::class,
+            ->add('result', TextColumn::class,
                 [
                     'label' => $listTemplateItem->getContentValue('result'),
-                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use ($listTemplateItem) {
-                        return $patientTestingResult->getResult() ? $patientTestingResult->getResult() : $listTemplateItem->getContentValue('empty');
+                    'render' => function (string $data, PatientTestingResult $patientTestingResult) use (
+                        $listTemplateItem
+                    ) {
+                        return $patientTestingResult->getResult() ?: $listTemplateItem->getContentValue(
+                            'empty');
                     },
                 ]
             );

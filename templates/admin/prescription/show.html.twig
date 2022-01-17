@@ -75,22 +75,29 @@
     <div class="buttons">
         {% if entity.isCompleted == false %}
             <button class="btn btn--add btn--show">Добавить
-                {% set prescriptionParameterKey =
-                    constant('App\\Controller\\Admin\\PrescriptionController::PRESCRIPTION_ID_PARAMETER_KEY') %}
                 <ul class="sublist">
                     <li class="sublist__item">
-                        <a href="{{ path('prescription_medicine_new',{prescription: entity.id}) }}"
+                        <a href="{{ path(
+                            'prescription_medicine_new',
+                            {'prescription': entity.id}
+                        ) }}"
                         >{{ template.items.show.content.addPrescriptionMedicine }}
                         </a>
                     </li>
                     <li class="sublist__item">
-                        <a href="{{ path('admin_prescription_testing_new',{prescription : entity.id}) }}">
+                        <a href="{{ path(
+                            'admin_prescription_testing_new',
+                            {'prescription' : entity.id}
+                        ) }}">
                             {{ template.items.show.content.addPrescriptionTesting }}
                         </a>
                     </li>
                     {% if isPrescriptionAppointmentExists(entity) == false %}
                         <li class="sublist__item">
-                            <a href="{{ path('prescription_appointment_new',{(prescriptionParameterKey) : entity.id}) }}">
+                            <a href="{{ path(
+                                'prescription_appointment_new',
+                                {'prescription' : entity.id}
+                            ) }}">
                                 {{ template.items.show.content.addPrescriptionAppointment }}
                             </a>
                         </li>
@@ -106,14 +113,16 @@
                             'prescription' : entity.id
                         }
                     ) }}';">
-                Завершить назначение
+                {{ template.items.show.content.completePrescription }}
             </button>
         {% endif %}
         <button class="btn btn--list btn--show">{{ template.items.show.content.list }}
             <ul class="sublist">
                 <li class="sublist__item">
                     <a href="{{ path(
-                        'prescription_medicine_list', {(prescriptionMedicineFilterName) : entity.id}) }}">
+                        'prescription_medicine_list',
+                        {(prescriptionMedicineFilterName) : entity.id}
+                    ) }}">
                         {{ template.items.show.content.prescriptionMedicines }}
                     </a>
                 </li>

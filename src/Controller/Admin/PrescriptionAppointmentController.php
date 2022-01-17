@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Prescription;
 use App\Entity\PrescriptionAppointment;
 use App\Form\Admin\PrescriptionAppointment\PrescriptionAppointmentInclusionTimeType;
 use App\Form\PatientAppointmentType;
@@ -32,7 +33,7 @@ use Twig\Environment;
 
 /**
  * Class PrescriptionAppointmentController
- * @Route("/admin/prescription_appointment")
+ * @Route("/admin")
  * @IsGranted("ROLE_ADMIN")
  *
  * @package App\Controller\Admin
@@ -44,6 +45,7 @@ class PrescriptionAppointmentController extends AdminAbstractController
 
     /**
      * PrescriptionAppointmentController constructor.
+     *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
@@ -57,10 +59,12 @@ class PrescriptionAppointmentController extends AdminAbstractController
 
     /**
      * List of prescription appointments
-     * @Route("/", name="prescription_appointment_list", methods={"GET","POST"})
+     * @Route("/prescription_appointment/", name="prescription_appointment_list", methods={"GET","POST"})
+     *
      * @param Request $request
      * @param PrescriptionAppointmentDataTableService $dataTableService
      * @param FilterService $filterService
+     *
      * @return Response
      * @throws Exception
      */
@@ -71,7 +75,8 @@ class PrescriptionAppointmentController extends AdminAbstractController
     ): Response
     {
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [
                     self::FILTER_LABELS['PRESCRIPTION'],
@@ -82,29 +87,34 @@ class PrescriptionAppointmentController extends AdminAbstractController
 
     /**
      * New patient appointment
-     * @Route("/new", name="prescription_appointment_new", methods={"GET","POST"})
+     * @Route(
+     *     "/prescription/{prescription}/prescription_appointment/new/",
+     *     name="prescription_appointment_new",
+     *     methods={"GET","POST"},
+     *     requirements={"prescription"="\d+"}
+     *     )
+     *
      * @param Request $request
+     * @param Prescription $prescription
      * @param PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator
      * @param SpecialPatientAppointmentCreatorService $patientAppointmentCreator
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
      */
     public function new(
         Request $request,
+        Prescription $prescription,
         PrescriptionAppointmentCreatorService $prescriptionAppointmentCreator,
         SpecialPatientAppointmentCreatorService $patientAppointmentCreator
     ): Response
     {
-        if (!$prescription = $this->getPrescriptionByParameter($request)) {
-            return $this->redirectToRoute('prescription_appointment_list');
-        }
-
         if (PrescriptionInfoService::isPrescriptionAppointmentExists($prescription)) {
             return $this->redirectToRoute(
                 'prescription_show',
                 [
-                    'id' => $prescription->getId(),
+                    'prescription' => $prescription->getId(),
                 ]
             );
         }
@@ -146,8 +156,15 @@ class PrescriptionAppointmentController extends AdminAbstractController
 
     /**
      * Show appointment prescription
-     * @Route("/{id}", name="prescription_appointment_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route(
+     *     "/prescription_appointment/{prescriptionAppointment}/",
+     *     name="prescription_appointment_show",
+     *     methods={"GET"},
+     *     requirements={"prescriptionAppointment"="\d+"}
+     *     )
+     *
      * @param PrescriptionAppointment $prescriptionAppointment
+     *
      * @return Response
      * @throws Exception
      */
@@ -158,7 +175,9 @@ class PrescriptionAppointmentController extends AdminAbstractController
                 'prescriptionTitle' =>
                     PrescriptionInfoService::getPrescriptionTitle($prescriptionAppointment->getPrescription()),
                 'patientAppointmentInfo' =>
-                    PatientAppointmentInfoService::getPatientAppointmentInfoString($prescriptionAppointment->getPatientAppointment()),
+                    PatientAppointmentInfoService::getPatientAppointmentInfoString(
+                        $prescriptionAppointment->getPatientAppointment()
+                    ),
                 'staff' =>
                     AuthUserInfoService::getFIO($prescriptionAppointment->getStaff()->getAuthUser(), true),
             ]
@@ -167,9 +186,16 @@ class PrescriptionAppointmentController extends AdminAbstractController
 
     /**
      * Edit prescription appointment
-     * @Route("/{id}/edit", name="prescription_appointment_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route(
+     *     "/prescription_appointment/{prescriptionAppointment}/edit/",
+     *     name="prescription_appointment_edit",
+     *     methods={"GET","POST"},
+     *     requirements={"prescriptionAppointment"="\d+"}
+     *     )
+     *
      * @param Request $request
      * @param PrescriptionAppointment $prescriptionAppointment
+     *
      * @return Response
      * @throws Exception
      */
@@ -193,9 +219,15 @@ class PrescriptionAppointmentController extends AdminAbstractController
 
     /**
      * Delete prescription appointment
-     * @Route("/{id}", name="prescription_appointment_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @Route("/prescription_appointment/{id}/",
+     *     name="prescription_appointment_delete",
+     *     methods={"DELETE"},
+     *     requirements={"id"="\d+"}
+     *     )
+     *
      * @param Request $request
      * @param PrescriptionAppointment $prescriptionAppointment
+     *
      * @return Response
      * @throws Exception
      */

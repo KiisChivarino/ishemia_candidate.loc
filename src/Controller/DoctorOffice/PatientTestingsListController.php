@@ -231,7 +231,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
     /**
      * Редактирование анализа пациента
      * @Route(
-     *     "/patient/{id}/patient_testing/{patientTesting}/edit",
+     *     "/patient/{patient}/patient_testing/{patientTesting}/edit",
      *     name="doctor_patient_testing_edit",
      *     methods={"GET","POST"},
      *     requirements={"id"="\d+"}
@@ -241,6 +241,7 @@ class PatientTestingsListController extends DoctorOfficeAbstractController
      * @param FileService $fileService
      * @param PatientTestingResultRepository $patientTestingResultRepository
      * @param PatientTesting $patientTesting
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception

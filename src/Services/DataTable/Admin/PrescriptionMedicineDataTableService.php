@@ -7,6 +7,7 @@ use App\Entity\Prescription;
 use App\Entity\PrescriptionMedicine;
 use App\Entity\Staff;
 use App\Services\InfoService\AuthUserInfoService;
+use App\Services\InfoService\PatientMedicineInfoService;
 use App\Services\InfoService\PrescriptionInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
@@ -58,6 +59,23 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                 ]
             )
             ->add(
+                'patientMedicine', TextColumn::class, [
+                    'label' => $listTemplateItem->getContentValue('patientMedicine'),
+                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) {
+                        $patientMedicine = $prescriptionMedicine->getPatientMedicine();
+
+                        return $patientMedicine ?
+                            $this->getLinkMultiParam(
+                                PatientMedicineInfoService::getPatientMedicineInfoString($patientMedicine),
+                                [
+                                    'id' => $patientMedicine->getId()
+                                ],
+                                'patient_medicine_show'
+                            ) : '';
+                    }
+                ]
+            )
+            ->add(
                 'medicine', TextColumn::class, [
                     'label' => $listTemplateItem->getContentValue('medicine'),
                     'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) {
@@ -95,32 +113,17 @@ class PrescriptionMedicineDataTableService extends AdminDatatableService
                 'endMedicationDate', DateTimeColumn::class, [
                     'label' => $listTemplateItem->getContentValue('endMedicationDate'),
                     'searchable' => false,
-                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) use ($listTemplateItem) {
+                    'render' => function (string $data, PrescriptionMedicine $prescriptionMedicine) use (
+                        $listTemplateItem
+                    ) {
                         return $prescriptionMedicine->getEndMedicationDate()
                             ? $prescriptionMedicine->getEndMedicationDate()->format('d.m.Y')
                             : $listTemplateItem->getContentValue('empty');
                     }
                 ]
-            )
-        ;
+            );
         $this->addEnabled($listTemplateItem);
-        $this->addOperations(
-            function (
-                int $patientTestingId,
-                PrescriptionMedicine $prescriptionMedicine
-            ) use ($renderOperationsFunction) {
-                return
-                    $renderOperationsFunction(
-                        (string)$prescriptionMedicine->getId(),
-                        $prescriptionMedicine,
-                        [
-                            'prescription' => $prescriptionMedicine->getPrescription()->getId(),
-                            'prescriptionMedicine' => $prescriptionMedicine->getId()
-                        ]
-                    );
-            },
-            $listTemplateItem
-        );
+        $this->addOperations($renderOperationsFunction, $listTemplateItem);
         /** @var Prescription $prescription */
         $prescription = $filters[AppAbstractController::FILTER_LABELS['PRESCRIPTION']] ?? null;
         return $this->dataTable

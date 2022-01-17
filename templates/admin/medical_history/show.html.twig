@@ -4,9 +4,9 @@
         <span class="title">{{ template.items.show.content.patientFio }}</span>
         <p>
             {% if entity.patient %}
-                <a href="{{ path('patient_show', {'id': entity.patient.id}) }}">{{ patientFio }}</a>
+                <a href="{{ path('patient_show', {'patient': entity.patient.id}) }}">{{ patientFio }}</a>
             {% else %}
-            {{ template.items.show.content.empty }}
+                {{ template.items.show.content.empty }}
             {% endif %}
         </p>
     </li>
@@ -52,10 +52,10 @@
         <p>
             {% if (entity.clinicalDiagnosis.MKBCode or entity.clinicalDiagnosis.text) %}
                 <a href="{{ path('clinical_diagnosis_show', {'id': entity.clinicalDiagnosis.id}) }}">
-                        {{ entity.clinicalDiagnosis.text|striptags('<br>')|raw }}
-                        ({{ entity.clinicalDiagnosis.MKBCode
-                            ? entity.clinicalDiagnosis.MKBCode.code
-                            : template.items.show.content.MKBNotFound  }})
+                    {{ entity.clinicalDiagnosis.text|striptags('<br>')|raw }}
+                    ({{ entity.clinicalDiagnosis.MKBCode
+                    ? entity.clinicalDiagnosis.MKBCode.code
+                    : template.items.show.content.MKBNotFound }})
                 </a>
             {% else %}
                 {{ template.items.show.content.empty }}

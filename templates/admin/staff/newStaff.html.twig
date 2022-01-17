@@ -3,7 +3,9 @@
     <div class="content-wrapper__top">
         <ul>
             {% if template.items.list.isEnabled %}
-                <a href="{{ path(template.routes.list) }}" class="back-page">{{ template.items.new.content.toList }}</a>
+                <a href="{{ path(template.routes.list.name) }}" class="back-page">
+                    {{ template.items.new.content.toList }}
+                </a>
             {% endif %}
             {{ include('flashmessages.html.twig') }}
         </ul>

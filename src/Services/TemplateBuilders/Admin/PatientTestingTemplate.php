@@ -31,7 +31,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
         'analysisGroup' => AnalysisGroupTemplate::ENTITY_CONTENT['entity'],
         'analysisDate' => 'Проведено',
         'isProcessedByStaff' => 'Обработано врачом',
-        'patientTestingFiles'=> 'Сканкопии результатов анализов',
+        'patientTestingFiles' => 'Сканкопии результатов анализов',
         'resultData' => 'Данные результатов обследования',
     ];
 
@@ -85,6 +85,8 @@ class PatientTestingTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
+     * @throws Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -106,6 +108,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return $this|AdminTemplateBuilder
+     * @throws Exception
      */
     public function new(?FilterService $filterService = null): AppTemplateBuilder
     {
@@ -118,10 +121,11 @@ class PatientTestingTemplate extends AdminTemplateBuilder
      * @param object|null $entity
      *
      * @return $this|AdminTemplateBuilder
+     * @throws Exception
      */
     public function edit(?object $entity = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($entity);
         $this->getItem(FormTemplateItem::TEMPLATE_ITEM_FORM_NAME)->setPath($this->getTemplatePath());
         return $this;
     }
@@ -131,6 +135,7 @@ class PatientTestingTemplate extends AdminTemplateBuilder
      *
      * @param FilterService|null $filterService
      * @param array|null $itemsWithRoutes
+     *
      * @return AppTemplateBuilder
      * @throws Exception
      */
@@ -147,7 +152,9 @@ class PatientTestingTemplate extends AdminTemplateBuilder
                         AppAbstractController::FILTER_LABELS['PATIENT'],
                         Patient::class,
                         [
-                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getContentValue('patient'),
+                            'label' => $this
+                                ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                                ->getContentValue('patient'),
                             'class' => Patient::class,
                             'required' => false,
                             'choice_label' => 'AuthUser.lastName',
@@ -162,11 +169,15 @@ class PatientTestingTemplate extends AdminTemplateBuilder
                         AppAbstractController::FILTER_LABELS['MEDICAL_HISTORY'],
                         MedicalHistory::class,
                         [
-                            'label' => $this->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)->getContentValue('medicalHistory'),
+                            'label' => $this
+                                ->getItem(FilterTemplateItem::TEMPLATE_ITEM_FILTER_NAME)
+                                ->getContentValue('medicalHistory'),
                             'class' => MedicalHistory::class,
                             'required' => false,
                             'choice_label' => function (MedicalHistory $value) {
-                                return (new AuthUserInfoService())->getFIO($value->getPatient()->getAuthUser()).': '.$value->getDateBegin()->format('d.m.Y');
+                                return AuthUserInfoService::getFIO($value->getPatient()->getAuthUser())
+                                    . ': '
+                                    . $value->getDateBegin()->format('d.m.Y');
                             },
                             'query_builder' => function (MedicalHistoryRepository $er) {
                                 return $er->createQueryBuilder('mh')

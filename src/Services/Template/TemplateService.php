@@ -44,15 +44,20 @@ class TemplateService
      * @param string $className
      * @param string $commonTemplatePath
      * @param string $redirectRouteName
+     *
      * @throws Exception
      */
-    public function __construct(RouteCollection $routeCollection, string $className, string $commonTemplatePath, string $redirectRouteName)
+    public function __construct(
+        RouteCollection $routeCollection,
+        string $className,
+        string $commonTemplatePath,
+        string $redirectRouteName
+    )
     {
         $this->routes = $this->getRoutesFromRouteCollection($routeCollection, $className);
         $this->templatePath = $className::TEMPLATE_PATH;
         $this->items = [];
         $this->setCommonTemplatePath($commonTemplatePath);
-        $this->setRedirectRoute($this->getRoute($redirectRouteName) ?: $this->getRoute('index'));
     }
 
     /**
@@ -77,18 +82,31 @@ class TemplateService
     {
         $routes = [];
         /**
-         * @var string $key
-         * @var Route $value
+         * @var string $routeName
+         * @var Route $route
          */
-        foreach ($routeCollection->all() as $key => $value) {
-            $routeInfo = explode('::', $value->getDefault('_controller'));
+        foreach ($routeCollection->all() as $routeName => $route) {
+            $routeInfo = explode('::', $route->getDefault('_controller'));
             if ($routeInfo[0] === $className) {
-                $routes[$routeInfo[1]] = $key;
+                preg_match_all('/{[a-zA-Z]+}/', $route->getPath(), $matches);
+                $parameters = [];
+                foreach ($matches as $matchValues) {
+                    foreach ($matchValues as $matchValue) {
+                        $parameters[] = trim($matchValue, '{}');
+                    }
+                }
+                $routes[$routeInfo[1]] = [
+                    'name' => $routeName,
+                    'parameters' => $parameters
+                ];
             }
         }
         $yaml = Yaml::parseFile(self::YAML_ROUTES_PATH);
         if (isset($yaml['parameters'])) {
-            $routes['index'] = $yaml['parameters']['index'];
+            $routes['index'] = [
+                'name' => $yaml['parameters']['index'],
+                'parameters' => [],
+            ];
         }
         return $routes;
     }
@@ -128,6 +146,7 @@ class TemplateService
 
     /**
      * @param string $commonTemplatePath
+     *
      * @return $this
      */
     public function setCommonTemplatePath(string $commonTemplatePath): TemplateService
@@ -161,12 +180,14 @@ class TemplateService
 
     /**
      * Get route of controller by route name
+     *
      * @param string $route
-     * @return string|null
+     *
+     * @return array|null
      */
-    public function getRoute(string $route): ?string
+    public function getRouteInfo(string $route): ?array
     {
-        return array_key_exists($route, $this->getRoutes()) ? $this->getRoutes()[$route] : $this->redirectRouteName;
+        return array_key_exists($route, $this->getRoutes()) ? $this->getRoutes()[$route] : null;
     }
 
     /**
@@ -195,14 +216,18 @@ class TemplateService
 
     /**
      * Sets redirect route
+     *
      * @param string $redirectRouteName
      * @param array $redirectRouteParameters
+     *
      * @return TemplateService
      * @throws Exception
      */
     public function setRedirectRoute(string $redirectRouteName, array $redirectRouteParameters = []): self
     {
-        $this->setRedirectRouteParameters($redirectRouteParameters);
+        if (empty($this->redirectRouteParameters)) {
+            $this->setRedirectRouteParameters($redirectRouteParameters);
+        }
         $this->redirectRouteName = $redirectRouteName;
 
         return $this;
@@ -210,6 +235,7 @@ class TemplateService
 
     /**
      * Returns name of route for redirect
+     *
      * @return string
      */
     public function getRedirectRouteName(): string
@@ -219,11 +245,12 @@ class TemplateService
 
     /**
      * Returns parameters of route for redirect
+     *
      * @return array|null
      */
     public function getRedirectRouteParameters(): ?array
     {
-        array_walk( $this->redirectRouteParameters, function (&$array) {
+        array_walk($this->redirectRouteParameters, function (&$array) {
             if (is_object($array) and method_exists($array, 'getId')) {
                 $array = $array->getId();
             }
@@ -233,8 +260,10 @@ class TemplateService
 
     /**
      * Returns template file name with path
+     *
      * @param string $templateName
      * @param string $projectDir
+     *
      * @return string
      * @throws Exception
      */
@@ -247,7 +276,8 @@ class TemplateService
         } elseif (is_file($projectDir . '/templates/' . $templatePathFullName)) {
             return $templatePathFullName;
         } else {
-            throw new RuntimeException('Файл шаблона не найден! Искали по адресам: "' . $templatePathFullName . '", "' . $commonPathFullName . '"');
+            throw new RuntimeException(
+                'Файл шаблона не найден! Искали по адресам: "' . $templatePathFullName . '", "' . $commonPathFullName . '"');
         }
     }
 
@@ -257,7 +287,9 @@ class TemplateService
      * [
      * 'paramName' => (int) 'entityId'
      * ]
+     *
      * @param array $redirectRouteParameters
+     *
      * @throws Exception
      */
     public function setRedirectRouteParameters(array $redirectRouteParameters)

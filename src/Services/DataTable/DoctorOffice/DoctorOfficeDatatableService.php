@@ -50,15 +50,15 @@ abstract class DoctorOfficeDatatableService extends DataTableService
 
     /**
      * Generates table for patient testings
+     *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param string|null $route
+     *
      * @throws \Exception
      */
     protected function generateTableForPatientTestingsInDoctorOffice(
         Closure $renderOperationsFunction,
-        ListTemplateItem $listTemplateItem,
-        string $route = null
+        ListTemplateItem $listTemplateItem
     )
     {
         $this->addSerialNumber();
@@ -69,11 +69,9 @@ abstract class DoctorOfficeDatatableService extends DataTableService
                     'field' => 'upper(aG.name)',
                     'render' => function (string $data, PatientTesting $patientTesting) {
                         return
-                            $patientTesting
-                                ? PatientTestingInfoService::isPatientTestingInRangeOfReferentValues($patientTesting)
+                            PatientTestingInfoService::isPatientTestingInRangeOfReferentValues($patientTesting)
                                 ? $patientTesting->getAnalysisGroup()->getName()
-                                : '<span class="redRow">' . $patientTesting->getAnalysisGroup()->getName() . '</span>'
-                                : '';
+                                : '<span class="redRow">' . $patientTesting->getAnalysisGroup()->getName() . '</span>';
                     },
                     'orderable' => true,
                     'orderField' => 'aG.name',
@@ -89,14 +87,14 @@ abstract class DoctorOfficeDatatableService extends DataTableService
             );
         $this->addOperationsWithParameters(
             $listTemplateItem,
-            function (int $patientTestingId, PatientTesting $patientTesting) use ($renderOperationsFunction, $route) {
+            function (int $patientTestingId, PatientTesting $patientTesting) use ($renderOperationsFunction) {
                 return
                     $renderOperationsFunction(
                         (string)$patientTesting->getMedicalHistory()->getPatient()->getId(),
                         $patientTesting,
-                        $route,
                         [
-                            'patientTesting' => $patientTestingId
+                            'patientTesting' => $patientTestingId,
+                            'patient' => $patientTesting->getMedicalHistory()->getPatient()->getId(),
                         ]
                     );
             }
@@ -113,7 +111,7 @@ abstract class DoctorOfficeDatatableService extends DataTableService
      */
     protected function criteriaSearch(): array
     {
-        return  [
+        return [
             function (QueryBuilder $queryBuilder, DataTableState $state) {
                 $state->setGlobalSearch(mb_strtoupper($state->getGlobalSearch()));
             },

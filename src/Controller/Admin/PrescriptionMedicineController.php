@@ -47,6 +47,8 @@ class PrescriptionMedicineController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     *
+     * @throws Exception
      */
     public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
@@ -57,7 +59,7 @@ class PrescriptionMedicineController extends AdminAbstractController
 
     /**
      * PrescriptionMedicine list
-     * @Route("/prescription_medicine", name="prescription_medicine_list", methods={"GET","POST"})
+     * @Route("/prescription_medicine/", name="prescription_medicine_list", methods={"GET","POST"})
      *
      * @param Request $request
      * @param PrescriptionMedicineDataTableService $dataTableService
@@ -86,16 +88,17 @@ class PrescriptionMedicineController extends AdminAbstractController
     /**
      * New medicine prescription
      * @Route(
-     *     "/prescription/{prescription}/prescription_medicine/new",
+     *     "/prescription/{prescription}/prescription_medicine/new/",
      *     name="prescription_medicine_new",
      *     methods={"GET","POST"},
-     *      requirements={"prescription"="\d+"}
+     *     requirements={"prescription"="\d+"}
      *     )
      *
      * @param Request $request
      * @param Prescription $prescription
      * @param PrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -114,13 +117,6 @@ class PrescriptionMedicineController extends AdminAbstractController
                 PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
             ]
         )->getEntity();
-
-        $this->templateService->setRedirectRouteParameters(
-            [
-                'prescription' => $prescription->getId(),
-                'prescriptionMedicine' => $prescriptionMedicine,
-            ]
-        );
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -146,10 +142,10 @@ class PrescriptionMedicineController extends AdminAbstractController
     /**
      * Show medicine prescription info
      * @Route(
-     *     "/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}",
+     *     "/prescription_medicine/{prescriptionMedicine}/",
      *     name="prescription_medicine_show",
      *     methods={"GET"},
-     *      requirements={"prescription"="\d+", "prescriptionMedicine"="\d+"}
+     *     requirements={"prescriptionMedicine"="\d+"}
      *     )
      *
      * @param PrescriptionMedicine $prescriptionMedicine
@@ -159,10 +155,6 @@ class PrescriptionMedicineController extends AdminAbstractController
      */
     public function show(PrescriptionMedicine $prescriptionMedicine): Response
     {
-        $this->templateService->setRedirectRoute(
-            $this->templateService->getRedirectRouteName(),
-            ['prescriptionMedicine' => $prescriptionMedicine->getId()]
-        );
         return $this->responseShow(
             self::TEMPLATE_PATH, $prescriptionMedicine, [
                 'prescriptionTitle' =>
@@ -176,10 +168,10 @@ class PrescriptionMedicineController extends AdminAbstractController
     /**
      * Edit prescription medicine
      * @Route(
-     *     "/prescription/{prescription}/prescription_medicine/{prescriptionMedicine}/edit",
+     *     "/prescription_medicine/{prescriptionMedicine}/edit/",
      *     name="prescription_medicine_edit",
      *     methods={"GET","POST"},
-     *      requirements={"prescriptionMedicine"="\d+", "prescription"="\d+"}
+     *     requirements={"prescriptionMedicine"="\d+"}
      *     )
      *
      * @param Request $request
@@ -190,43 +182,22 @@ class PrescriptionMedicineController extends AdminAbstractController
      */
     public function edit(Request $request, PrescriptionMedicine $prescriptionMedicine): Response
     {
-        $this->templateService->setRedirectRouteParameters(
-            [
-                'prescription' => $prescriptionMedicine->getPrescription()->getId(),
-                'prescriptionMedicine' => $prescriptionMedicine->getId()
-            ]
-        );
         return $this->responseEditMultiForm(
             $request,
             $prescriptionMedicine,
             [
-                new FormData(
-                    PrescriptionMedicineStaffType::class,
-                    $prescriptionMedicine
-                ),
-                new FormData(
-                    PrescriptionMedicineInclusionTimeType::class,
-                    $prescriptionMedicine
-                ),
-                new FormData(
-                    PrescriptionMedicineType::class,
-                    $prescriptionMedicine
-                ),
-                new FormData(
-                    PrescriptionMedicineTypeEnabled::class,
-                    $prescriptionMedicine
-                ),
-                new FormData(
-                    PatientMedicineType::class,
-                    $prescriptionMedicine->getPatientMedicine()
-                ),
+                new FormData(PrescriptionMedicineStaffType::class, $prescriptionMedicine),
+                new FormData(PrescriptionMedicineInclusionTimeType::class, $prescriptionMedicine),
+                new FormData(PrescriptionMedicineType::class, $prescriptionMedicine),
+                new FormData(PrescriptionMedicineTypeEnabled::class, $prescriptionMedicine),
+                new FormData(PatientMedicineType::class, $prescriptionMedicine->getPatientMedicine()),
             ]
         );
     }
 
     /**
      * Delete prescription medicine
-     * @Route("/prescription_medicine/{prescriptionMedicine}", name="prescription_medicine_delete", methods={"DELETE"})
+     * @Route("/prescription_medicine/{prescriptionMedicine}/", name="prescription_medicine_delete", methods={"DELETE"})
      *
      * @param Request $request
      * @param PrescriptionMedicine $prescriptionMedicine

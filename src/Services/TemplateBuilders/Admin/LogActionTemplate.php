@@ -39,6 +39,8 @@ class LogActionTemplate extends AdminTemplateBuilder
      *
      * @param RouteCollection $routeCollection
      * @param string $className
+     *
+     * @throws \Exception
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -60,6 +62,7 @@ class LogActionTemplate extends AdminTemplateBuilder
      * @param FilterService|null $filterService
      *
      * @return $this|AdminTemplateBuilder
+     * @throws \Exception
      */
     public function list(?FilterService $filterService = null, ?array $itemsWithRoutes = null): AppTemplateBuilder
     {
@@ -79,6 +82,7 @@ class LogActionTemplate extends AdminTemplateBuilder
      * @param object|null $analysisGroup
      *
      * @return $this
+     * @throws \Exception
      */
     public function edit(?object $analysisGroup = null): AppTemplateBuilder
     {

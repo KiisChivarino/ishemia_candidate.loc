@@ -19,6 +19,7 @@ use App\Services\InfoService\MedicalHistoryInfoService;
 use App\Services\InfoService\MedicalRecordInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\Admin\PrescriptionTemplate;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,9 +43,6 @@ class PrescriptionController extends AdminAbstractController
     //путь к twig шаблонам
     public const TEMPLATE_PATH = 'admin/prescription/';
 
-    /** @var string The key of parameter with prescription */
-    public const PRESCRIPTION_ID_PARAMETER_KEY = 'prescription_id';
-
     /**
      * @var CompletePrescriptionService
      */
@@ -57,6 +55,7 @@ class PrescriptionController extends AdminAbstractController
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
      * @param CompletePrescriptionService $completePrescriptionService
+     *
      * @throws Exception
      */
     public function __construct(
@@ -90,7 +89,8 @@ class PrescriptionController extends AdminAbstractController
     ): Response
     {
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [
                     self::FILTER_LABELS['MEDICAL_HISTORY'],
@@ -106,6 +106,7 @@ class PrescriptionController extends AdminAbstractController
      *
      * @param Request $request
      * @param PrescriptionCreatorService $prescriptionCreatorService
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -138,14 +139,8 @@ class PrescriptionController extends AdminAbstractController
                 ),
             ],
             [
-                new FormData(
-                    PrescriptionType::class,
-                    $prescription
-                ),
-                new FormData(
-                    PrescriptionEnabled::class,
-                    $prescription
-                ),
+                new FormData(PrescriptionType::class, $prescription),
+                new FormData(PrescriptionEnabled::class, $prescription),
             ],
             self::RESPONSE_FORM_TYPE_NEW,
             self::RESPONSE_FORM_TYPE_NEW
@@ -171,20 +166,11 @@ class PrescriptionController extends AdminAbstractController
             self::TEMPLATE_PATH, $prescription, [
                 'staff' => AuthUserInfoService::getFIO($prescription->getStaff()->getAuthUser(), true),
                 'prescriptionMedicineFilterName' =>
-                    $filterService->generateFilterName(
-                        'prescription_medicine_list',
-                        Prescription::class
-                    ),
+                    $filterService->generateFilterName('prescription_medicine_list', Prescription::class),
                 'prescriptionTestingFilterName' =>
-                    $filterService->generateFilterName(
-                        'prescription_testing_list',
-                        Prescription::class
-                    ),
+                    $filterService->generateFilterName('prescription_testing_list', Prescription::class),
                 'prescriptionAppointmentFilterName' =>
-                    $filterService->generateFilterName(
-                        'prescription_appointment_list',
-                        Prescription::class
-                    ),
+                    $filterService->generateFilterName('prescription_appointment_list', Prescription::class),
                 'medicalHistoryTitle' =>
                     MedicalHistoryInfoService::getMedicalHistoryTitle($prescription->getMedicalHistory()),
                 'medicalRecordTitle' =>
@@ -246,9 +232,11 @@ class PrescriptionController extends AdminAbstractController
      *     methods={"GET"},
      *     requirements={"prescription"="\d+"}
      * )
+     *
      * @param Prescription $prescription
+     *
      * @return RedirectResponse
-     * @throws Exception
+     * @throws NonUniqueResultException
      */
     public function complete(Prescription $prescription): RedirectResponse
     {
@@ -260,7 +248,7 @@ class PrescriptionController extends AdminAbstractController
         return $this->redirectToRoute(
             'prescription_show',
             [
-                'id' => $prescription->getId(),
+                'prescription' => $prescription->getId(),
             ]
         );
     }

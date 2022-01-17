@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\CompletePrescription;
+
 use App\Entity\Prescription;
 use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
 use App\Services\EntityActions\Editor\CompletePrescriptionEditorService;
@@ -65,6 +66,7 @@ class CompletePrescriptionService
 
     /**
      * @param Prescription $prescription
+     *
      * @throws NonUniqueResultException
      * @throws Exception
      */
@@ -86,30 +88,31 @@ class CompletePrescriptionService
             $medicalHistory,
             $prescription->getMedicalRecord()
         );
+        $notificationServiceBuilder = clone $this->notificationServiceBuilder;
         foreach ($prescription->getPrescriptionTestings() as $prescriptionTesting) {
-            $notificationServiceBuilder = $this->notificationServiceBuilder
-                ->makeTestingAppointmentNotification(
-                    $notificationData,
-                    $prescriptionTesting->getPatientTesting()->getAnalysisGroup()->getName(),
-                    $prescriptionTesting->getPlannedDate()->format('d.m.Y')
-                );
+            $notificationServiceBuilder->makeTestingAppointmentNotification(
+                $notificationData,
+                $prescriptionTesting->getPatientTesting()->getAnalysisGroup()->getName(),
+                $prescriptionTesting->getPlannedDate()->format('d.m.Y')
+            );
             $this->senderNotifyForPatient($notificationServiceBuilder);
         }
+        $notificationServiceBuilder = clone $this->notificationServiceBuilder;
         foreach ($prescription->getPrescriptionAppointments() as $prescriptionAppointment) {
-            $notificationServiceBuilder = $this->notificationServiceBuilder
-                ->makeDoctorAppointmentNotification(
-                    $notificationData,
-                    AuthUserInfoService::getFIO(
-                        $prescriptionAppointment->getPatientAppointment()->getStaff()->getAuthUser(),
-                        true
-                    ),
-                    $prescriptionAppointment->getPlannedDateTime()->format('Y-m-d H:i:s')
-                );
+            $notificationServiceBuilder->makeDoctorAppointmentNotification(
+                $notificationData,
+                AuthUserInfoService::getFIO(
+                    $prescriptionAppointment->getPatientAppointment()->getStaff()->getAuthUser(),
+                    true
+                ),
+                $prescriptionAppointment->getPlannedDateTime()->format('Y-m-d H:i:s')
+            );
             $this->senderNotifyForPatient($notificationServiceBuilder);
         }
-        foreach ($prescription->getPrescriptionMedicines() as $prescriptionMedicine){
+        $notificationServiceBuilder = clone $this->notificationServiceBuilder;
+        foreach ($prescription->getPrescriptionMedicines() as $prescriptionMedicine) {
             $endMedicationDate = $prescriptionMedicine->getEndMedicationDate();
-            $notificationServiceBuilder = $this->notificationServiceBuilder->makePrescriptionMedicineNotification(
+            $notificationServiceBuilder = $notificationServiceBuilder->makePrescriptionMedicineNotification(
                 $notificationData,
                 $prescriptionMedicine->getPatientMedicine()->getMedicineName(),
                 $prescriptionMedicine->getStartingMedicationDate()->format('Y-m-d'),

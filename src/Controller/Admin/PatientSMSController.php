@@ -29,6 +29,7 @@ class PatientSMSController extends AdminAbstractController
 
     /**
      * Received SMS constructor.
+     *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
@@ -43,9 +44,11 @@ class PatientSMSController extends AdminAbstractController
     /**
      * Список полученных смс
      * @Route("/", name="patient_sms_list", methods={"GET", "POST"})
+     *
      * @param Request $request
      * @param PatientSMSDataTableService $patientSMSDataTableService
      * @param FilterService $filterService
+     *
      * @return Response
      * @throws Exception
      */
@@ -53,9 +56,11 @@ class PatientSMSController extends AdminAbstractController
         Request $request,
         PatientSMSDataTableService $patientSMSDataTableService,
         FilterService $filterService
-    ): Response {
+    ): Response
+    {
         return $this->responseList(
-            $request, $patientSMSDataTableService,
+            $request,
+            $patientSMSDataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['PATIENT'],]
             )
@@ -65,8 +70,10 @@ class PatientSMSController extends AdminAbstractController
     /**
      * Edit sms
      * @Route("/{id}/edit", name="patient_sms_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
+     *
      * @param Request $request
      * @param PatientSMS $patientSMS
+     *
      * @return Response
      * @throws Exception
      */
@@ -78,8 +85,10 @@ class PatientSMSController extends AdminAbstractController
     /**
      * Delete sms
      * @Route("/{id}", name="patient_sms_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     *
      * @param Request $request
      * @param PatientSMS $patientSMS
+     *
      * @return Response
      * @throws Exception
      */
