@@ -6,7 +6,6 @@ use Exception;
 use RuntimeException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class TemplateService
@@ -16,8 +15,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class TemplateService
 {
-    /** @var string Path to routes config file */
-    private const YAML_ROUTES_PATH = '../config/services/template/routes.yaml';
+    /** @var string */
+    const DEFAULT_ROUTE = 'index';
 
     /** @var array $routes Массив с роутами контроллера */
     private $routes;
@@ -101,13 +100,12 @@ class TemplateService
                 ];
             }
         }
-        $yaml = Yaml::parseFile(self::YAML_ROUTES_PATH);
-        if (isset($yaml['parameters'])) {
-            $routes['index'] = [
-                'name' => $yaml['parameters']['index'],
-                'parameters' => [],
-            ];
-        }
+
+        $routes[self::DEFAULT_ROUTE] = [
+            'name' => self::DEFAULT_ROUTE,
+            'parameters' => [],
+        ];
+
         return $routes;
     }
 
@@ -191,7 +189,7 @@ class TemplateService
     }
 
     /**
-     * Get template itemauth_user_show
+     * Get template item
      *
      * @param string|null $itemName
      *

@@ -41,9 +41,6 @@ class EmailChannelService
     /** @var string */
     private $mailBody;
 
-    /** @var string */
-    private $serverHost;
-
     /** @var Environment */
     private $twig;
 
@@ -98,9 +95,6 @@ class EmailChannelService
         $this->EMAIL_PARAMETERS = $emailParameters;
         $this->twig = $twig;
         $this->translator = $translator;
-        $this->serverHost = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
-            . "://"
-            . $_SERVER['HTTP_HOST'];
     }
 
     /**
@@ -177,7 +171,7 @@ class EmailChannelService
 
         if (!empty($this->recipientList)) {
             foreach ($this->recipientList as $recipient) {
-                if (filter_var($this->recipient, FILTER_VALIDATE_EMAIL)) {
+                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
                     $message->addTo($recipient);
                 }
             }

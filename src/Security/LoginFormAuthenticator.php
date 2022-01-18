@@ -38,6 +38,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     private $urlGenerator;
     private $csrfTokenManager;
     private $passwordEncoder;
+    /**
+     * @var array
+     */
+    private $roles;
 
     /**
      * LoginFormAuthenticator constructor.
@@ -46,17 +50,20 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      * @param UrlGeneratorInterface $urlGenerator
      * @param CsrfTokenManagerInterface $csrfTokenManager
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param array $roles
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordEncoderInterface $passwordEncoder,
+        array $roles
     ) {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
+        $this->roles = $roles;
     }
 
     /**
@@ -167,8 +174,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             return new RedirectResponse($targetPath);
         }
         $roleTechName = $authUserInfoService->getRoleNames($userRepository->getRoles($authUser), true);
-        $roles = Yaml::parseFile('..//config/services/roles.yaml');
-        foreach ($roles['parameters']['roles'] as $roleData) {
+        foreach ($this->roles as $roleData) {
             if ($roleTechName && strpos($roleData['techName'], $roleTechName) !== false) {
                 return new RedirectResponse($this->urlGenerator->generate($roleData['route']));
             } elseif (array_search($roleData['techName'], $authUser->getRoles()) !== false) {

@@ -107,12 +107,7 @@ class AnalysisRateType extends AbstractType
                     'label' => $templateItem->getContentValue('enabled'),
                     'required' => false,
                 ]
-            )->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                if($event->getData()['rateMin'] >= $event->getData()['rateMax']){
-                    $errorMessage = $this->translator->trans('form.error.min_max_analysis_rate');
-                    $event->getForm()->addError((new FormError($errorMessage)));
-                }
-            });
+            );
 
     }
 

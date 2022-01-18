@@ -43,5 +43,4 @@ class PatientRepository extends AppRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-
 }
