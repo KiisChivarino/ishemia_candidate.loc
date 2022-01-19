@@ -26,10 +26,18 @@ class PatientCreatorService extends AbstractCreatorService
         parent::__construct($entityManager, Patient::class);
     }
 
+    protected function create(): void
+    {
+        parent::create();
+
+        /** @var Patient $entity */
+        $entity = $this->getEntity();
+        $entity->setAuthUser($this->options[self::AUTH_USER_OPTION]);
+    }
+
     protected function prepare(): void
     {
         $this->getEntity()
-            ->setAuthUser($this->options[self::AUTH_USER_OPTION])
             ->setSmsInforming(true)
             ->setEmailInforming(true);
     }

@@ -36,7 +36,7 @@ class PrescriptionType extends AbstractType
                     'label' => $templateItem->getContentValue('staffFio'),
                     'class' => Staff::class,
                     'choice_label' => function ($staff) {
-                        return (new AuthUserInfoService())->getFIO($staff->getAuthUser(), true);
+                        return AuthUserInfoService::getFIO($staff->getAuthUser(), true);
                     },
                     'query_builder' => function (StaffRepository $er) {
                         return $er->createQueryBuilder('s')
@@ -57,7 +57,7 @@ class PrescriptionType extends AbstractType
     /**
      * @param OptionsResolver $resolver
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults(['data_class' => Prescription::class,])
