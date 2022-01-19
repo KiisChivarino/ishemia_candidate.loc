@@ -110,6 +110,14 @@ class PrescriptionMedicineController extends AdminAbstractController
         PatientMedicineCreatorService $patientMedicineCreatorService
     ): Response
     {
+        if ($prescription->getIsCompleted()) {
+            return $this->redirectToRoute(
+                'prescription_show',
+                [
+                    'prescription' => $prescription,
+                ]
+            );
+        }
         $patientMedicine = $patientMedicineCreatorService->execute()->getEntity();
         $prescriptionMedicine = $prescriptionMedicineCreatorService->before(
             [

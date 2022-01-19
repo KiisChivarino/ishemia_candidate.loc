@@ -109,6 +109,15 @@ class PrescriptionTestingController extends AdminAbstractController
         SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
     ): Response
     {
+        if ($prescription->getIsCompleted()) {
+            return $this->redirectToRoute(
+                'prescription_show',
+                [
+                    'prescription' => $prescription,
+                ]
+            );
+        }
+
         /** @var PatientTesting $patientTesting */
         $patientTesting = $specialPatientTestingCreatorService->execute(
             [
@@ -185,12 +194,8 @@ class PrescriptionTestingController extends AdminAbstractController
      * @return Response
      * @throws Exception
      */
-    public function edit(
-        Request $request,
-        PrescriptionTesting $prescriptionTesting
-    ): Response
+    public function edit(Request $request, PrescriptionTesting $prescriptionTesting): Response
     {
-
         return $this->responseEditMultiForm(
             $request,
             $prescriptionTesting,

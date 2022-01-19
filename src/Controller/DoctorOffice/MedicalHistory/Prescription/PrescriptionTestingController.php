@@ -77,6 +77,10 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
     ): Response
     {
+        if ($prescription->getIsCompleted()) {
+            return $this->redirectToMedicalHistory($patient);
+        }
+
         $patientTesting = $specialPatientTestingCreatorService->execute(
             [
                 PatientTestingCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
@@ -87,7 +91,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
             PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
             PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting
         ]);
-        $this->redirectToAddPrescriptionPage($patient, $prescription);
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -135,13 +139,12 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         PrescriptionTesting $prescriptionTesting
     ): Response
     {
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $prescriptionTesting->getPrescription()->getMedicalHistory()->getPatient(),
-                'prescription' => $prescriptionTesting->getPrescription()
-            ]
-        );
+        $prescription = $prescriptionTesting->getPrescription();
+        $patient = $prescription->getMedicalHistory()->getPatient();
+        if ($prescription->getIsCompleted()) {
+            return $this->redirectToMedicalHistory($patient);
+        }
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseEditMultiForm(
             $request,
             $prescriptionTesting,
@@ -202,7 +205,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): Response
     {
-        $this->redirectToAddPrescriptionPage($patient, $prescription);
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseDelete($request, $prescriptionTesting);
     }
 }

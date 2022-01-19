@@ -23,7 +23,7 @@ use Symfony\Component\Security\Core\Security;
 class MenuBuilder
 {
     /** @var string Name of patient get parameter */
-    private const PATIENT_GET_PARAMETER_NAME = 'id';
+    private const PATIENT_GET_PARAMETER_NAME = 'patient';
 
     /** @var FactoryInterface $factory */
     private $factory;
@@ -40,7 +40,7 @@ class MenuBuilder
     private $entityManager;
 
     /** @var string Параметр запроса */
-    const PATIENT_QUERY_PARAMETER = 'id';
+    const PATIENT_QUERY_PARAMETER = 'patient';
 
     /** @var string Флаг админ панели */
     const ADMIN_FLAG = 'doctorOffice';
@@ -468,7 +468,7 @@ class MenuBuilder
                     'label' => 'Сообщение пациенту',
                     'route' => 'doctor_create_notification',
                     'routeParameters' => [
-                        self::PATIENT_GET_PARAMETER_NAME => $patientId
+                        'id' => $patientId
                     ]
                 ]
             );
@@ -493,6 +493,7 @@ class MenuBuilder
      * @param RequestStack $requestStack
      * @param PatientTestingCounterRepository $patientTestingCounterRepository
      * @param PrescriptionRepository $prescriptionRepository
+     *
      * @return ItemInterface
      */
     public function createDoctorOfficeSidebarMenu(
@@ -675,6 +676,7 @@ class MenuBuilder
      * Меню кабинета пациента
      *
      * @param RequestStack $requestStack
+     *
      * @return ItemInterface
      */
     public function createPatientOfficeSidebarMenu(
@@ -729,6 +731,7 @@ class MenuBuilder
      * @param string $label
      * @param int $number
      * @param string|null $customClasses
+     *
      * @return string
      */
     private function getLabelWithNotificationNumber(string $label, int $number, string $customClasses = ""): string
@@ -740,8 +743,10 @@ class MenuBuilder
 
     /**
      * Checks if current page and menu item belongs to the entity object pages block
+     *
      * @param string $entityClass
      * @param string $GETParameterKey
+     *
      * @return bool
      */
     private function isMenuForEntity(string $entityClass, string $GETParameterKey): bool
@@ -756,7 +761,9 @@ class MenuBuilder
 
     /**
      * Returns id of entity object by GET parameter
+     *
      * @param string $GETParameterKey
+     *
      * @return int|null
      */
     private function getEntityId(string $GETParameterKey): ?int
@@ -770,8 +777,10 @@ class MenuBuilder
 
     /**
      * Returns entity object by id
+     *
      * @param int $entityId
      * @param string $entityClass
+     *
      * @return object|null
      */
     private function getEntityById(int $entityId, string $entityClass): ?object
@@ -781,8 +790,10 @@ class MenuBuilder
 
     /**
      * Activates storing the selected menu item
+     *
      * @param ItemInterface $menu
      * @param RequestStack $requestStack
+     *
      * @return void
      */
     private function activateStoringSelectedMenuItem(ItemInterface $menu, RequestStack $requestStack, $flag): void
@@ -792,7 +803,8 @@ class MenuBuilder
                 if (
                     $childrenItem->getUri() == $requestStack->getCurrentRequest()->getRequestUri()
                     || preg_replace(
-                        '/\/new*(.+)|\/\?.*$|\/\d+(\/(edit|show))?(\?.+\=.+)?/', // Вырезает с конца /число/(edit или show) или /new
+                        '/\/new*(.+)|\/\?.*$|\/\d+(\/(edit|show))?(\?.+=.+)?/',
+                        // Вырезает с конца /число/(edit или show) или /new
                         ($flag == self::ADMIN_FLAG) ? "/" : "",
                         $requestStack->getCurrentRequest()->getRequestUri()
                     ) == $childrenItem->getUri()
@@ -805,8 +817,10 @@ class MenuBuilder
 
     /**
      * Activates storing the selected menu item
+     *
      * @param ItemInterface $menu
      * @param RequestStack $requestStack
+     *
      * @return void
      */
     private function activateStoringSelectedMenuItemPatientOffice(ItemInterface $menu, RequestStack $requestStack): void

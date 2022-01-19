@@ -110,7 +110,10 @@ class PrescriptionAppointmentController extends AdminAbstractController
         SpecialPatientAppointmentCreatorService $patientAppointmentCreator
     ): Response
     {
-        if (PrescriptionInfoService::isPrescriptionAppointmentExists($prescription)) {
+        if (
+            PrescriptionInfoService::isPrescriptionAppointmentExists($prescription)
+            || $prescription->getIsCompleted()
+        ) {
             return $this->redirectToRoute(
                 'prescription_show',
                 [

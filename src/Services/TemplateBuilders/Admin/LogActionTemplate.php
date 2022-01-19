@@ -86,7 +86,7 @@ class LogActionTemplate extends AdminTemplateBuilder
      */
     public function edit(?object $analysisGroup = null): AppTemplateBuilder
     {
-        parent::edit();
+        parent::edit($analysisGroup);
         $this->getItem(DeleteTemplateItem::TEMPLATE_ITEM_DELETE_NAME)
             ->setIsEnabled(false);
         $this->setRedirectRoute('log_action_list');

@@ -104,7 +104,8 @@ class PrescriptionController extends DoctorOfficeAbstractController
      * @Route(
      *     "patient/{patient}/prescription/new",
      *     name="adding_prescriprion_by_doctor",
-     *     methods={"GET","POST"}
+     *     methods={"GET","POST"},
+     *     requirements={"patient"="\d+"}
      *     )
      *
      * @param Patient $patient

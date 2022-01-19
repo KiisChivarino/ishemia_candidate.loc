@@ -29,6 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  * Class AddingMedicationController
  * @Route("/doctor_office")
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
+ *
  * @package App\Controller\DoctorOffice\MedicalHistory\Prescription
  */
 class PrescriptionMedicineController extends DoctorOfficeAbstractController
@@ -38,6 +39,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
 
     /**
      * PatientPrescriptionController constructor.
+     *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
@@ -61,11 +63,13 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      *     methods={"GET","POST"},
      *     requirements={"prescription"="\d+"}
      *     )
+     *
      * @param Request $request
      * @param Prescription $prescription
      * @param Patient $patient
      * @param DoctorOfficePrescriptionMedicineCreatorService $prescriptionMedicineCreatorService
      * @param PatientMedicineCreatorService $patientMedicineCreatorService
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -78,6 +82,10 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
         PatientMedicineCreatorService $patientMedicineCreatorService
     ): Response
     {
+        if ($prescription->getIsCompleted()) {
+            return $this->redirectToMedicalHistory($patient);
+        }
+
         $patientMedicine = $patientMedicineCreatorService->execute()->getEntity();
         $prescriptionMedicineCreatorService->before(
             [
@@ -85,7 +93,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
                 PrescriptionMedicineCreatorService::PATIENT_MEDICINE_OPTION => $patientMedicine
             ]
         );
-        $this->redirectToAddPrescriptionPage($patient, $prescription);
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -113,7 +121,9 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      *     "/patient/{patient}/prescription/{prescription}/medicine/{prescriptionMedicine}/show/",
      *     name="show_prescription_medicine_by_doctor",
      *     )
+     *
      * @param PrescriptionMedicine $prescriptionMedicine
+     *
      * @return Response
      * @throws Exception
      */
@@ -138,8 +148,10 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      *     name="edit_prescription_medicine_by_doctor",
      *     methods={"GET","POST"}
      *     )
+     *
      * @param Request $request
      * @param PrescriptionMedicine $prescriptionMedicine
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -149,13 +161,12 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
         PrescriptionMedicine $prescriptionMedicine
     ): Response
     {
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $prescriptionMedicine->getPrescription()->getMedicalHistory()->getPatient(),
-                'prescription' => $prescriptionMedicine->getPrescription()
-            ]
-        );
+        $prescription = $prescriptionMedicine->getPrescription();
+        $patient = $prescriptionMedicine->getPrescription()->getMedicalHistory()->getPatient();
+        if ($prescription->getIsCompleted()) {
+            return $this->redirectToMedicalHistory($patient);
+        }
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseEditMultiForm(
             $request,
             $prescriptionMedicine,
@@ -179,10 +190,12 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
      *     name="delete_prescription_medicine_by_doctor",
      *     methods={"DELETE"},
      *     )
+     *
      * @param Request $request
      * @param PrescriptionMedicine $prescriptionMedicine
      * @param Patient $patient
      * @param Prescription $prescription
+     *
      * @return Response
      * @throws Exception
      */
@@ -193,7 +206,7 @@ class PrescriptionMedicineController extends DoctorOfficeAbstractController
         Prescription $prescription
     ): Response
     {
-        $this->redirectToAddPrescriptionPage($patient, $prescription);
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseDelete($request, $prescriptionMedicine);
     }
 }

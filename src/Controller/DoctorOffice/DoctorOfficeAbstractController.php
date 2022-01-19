@@ -76,13 +76,13 @@ abstract class DoctorOfficeAbstractController extends AppAbstractController
     }
 
     /**
-     * Redirect to add prescription page
+     * Set redirect route to add prescription page
      * @param Patient $patient
      * @param Prescription $prescription
      * @return TemplateService
      * @throws Exception
      */
-    protected function redirectToAddPrescriptionPage(Patient $patient, Prescription $prescription): TemplateService
+    protected function setRedirectRouteToNewPrescription(Patient $patient, Prescription $prescription): TemplateService
     {
         return $this->templateService->setRedirectRoute(
             'add_prescription_show',

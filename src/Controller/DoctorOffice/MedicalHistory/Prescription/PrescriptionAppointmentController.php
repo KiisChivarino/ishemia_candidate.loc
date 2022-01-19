@@ -30,6 +30,7 @@ use Twig\Environment;
 /**
  * @Route("/doctor_office")
  * Class AddingReceptionController
+ *
  * @package App\Controller\DoctorOffice\MedicalHistory\Prescription
  */
 class PrescriptionAppointmentController extends DoctorOfficeAbstractController
@@ -39,13 +40,14 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
 
     /**
      * PatientPrescriptionController constructor.
+     *
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
      */
     public function __construct(
-        Environment         $twig,
-        RouterInterface     $router,
+        Environment $twig,
+        RouterInterface $router,
         TranslatorInterface $translator
     )
     {
@@ -60,34 +62,39 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      *     "/patient/{patient}/prescription/{prescription}/appointment/new/",
      *     name="adding_reception_by_doctor",
      *     methods={"GET","POST"})
+     *
      * @param Request $request
      * @param Prescription $prescription
      * @param Patient $patient
      * @param DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreator
      * @param SpecialPatientAppointmentCreatorService $patientAppointmentCreator
      * @param PrescriptionAppointmentRepository $prescriptionAppointmentRepository
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
      */
     public function new(
-        Request                                    $request,
-        Prescription                               $prescription,
-        Patient                                    $patient,
+        Request $request,
+        Prescription $prescription,
+        Patient $patient,
         DoctorOfficePrescriptionAppointmentService $prescriptionAppointmentCreator,
-        SpecialPatientAppointmentCreatorService    $patientAppointmentCreator,
-        PrescriptionAppointmentRepository          $prescriptionAppointmentRepository
+        SpecialPatientAppointmentCreatorService $patientAppointmentCreator,
+        PrescriptionAppointmentRepository $prescriptionAppointmentRepository
     ): Response
     {
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         $countPrescriptionAppointment = $prescriptionAppointmentRepository
             ->countPrescriptionAppointmentsByPrescription($prescription);
         if ($countPrescriptionAppointment !== 0) {
-            return $this->redirectToRoute('add_prescription_show',
-                [
-                    "patient" => $patient->getId(),
-                    "prescription" => $prescription->getId(),
-                ]
-            );
+            return
+                $this->redirectToRoute(
+                    $this->templateService->getRedirectRouteName(),
+                    $this->templateService->getRedirectRouteParameters()
+                );
+        }
+        if ($prescription->getIsCompleted()) {
+            return $this->redirectToMedicalHistory($patient);
         }
 
         $staff = $this->getStaff($patient);
@@ -107,7 +114,6 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                 PrescriptionAppointmentCreatorService::PATIENT_APPOINTMENT_OPTION => $patientAppointment
             ]
         )->getEntity();
-        $this->redirectToAddPrescriptionPage($patient, $prescription);
 
         return $this->responseNewMultiFormWithActions(
             $request,
@@ -119,7 +125,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
                     function () use ($prescriptionAppointment) {
                         return [
                             SpecialPatientAppointmentCreatorService::PRESCRIPTION_APPOINTMENT_OPTION
-                                => $prescriptionAppointment,
+                            => $prescriptionAppointment,
                         ];
                     }
                 ),
@@ -139,24 +145,24 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      *     methods={"GET","POST"},
      *     requirements={"patient"="\d+", "prescription"="\d+"}
      *     )
+     *
      * @param Request $request
      * @param PrescriptionAppointment $prescriptionAppointment
+     *
      * @return Response
      * @throws Exception
      */
     public function edit(
-        Request                 $request,
+        Request $request,
         PrescriptionAppointment $prescriptionAppointment
     ): Response
     {
-        $this->templateService->setRedirectRoute(
-            'add_prescription_show',
-            [
-                'patient' => $prescriptionAppointment->getPrescription()->getMedicalHistory()->getPatient(),
-                'prescription' => $prescriptionAppointment->getPrescription()
-            ]
-        );
-
+        $prescription = $prescriptionAppointment->getPrescription();
+        $patient = $prescription->getMedicalHistory()->getPatient();
+        if ($prescriptionAppointment->getPrescription()->getIsCompleted()) {
+            return $this->redirectToMedicalHistory($patient);
+        }
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseEditMultiForm(
             $request,
             $prescriptionAppointment,
@@ -173,7 +179,9 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      *     "/patient/{patient}/prescription/{prescription}/appointment/{prescriptionAppointment}/show/",
      *     name="show_prescription_appointment_by_doctor",
      *     )
+     *
      * @param PrescriptionAppointment $prescriptionAppointment
+     *
      * @return Response
      * @throws Exception
      */
@@ -186,7 +194,7 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
             $prescriptionAppointment, [
                 'staffTitle' =>
                     AuthUserInfoService::getFIO($prescriptionAppointment->getStaff()->getAuthUser())
-                ]
+            ]
         );
     }
 
@@ -197,21 +205,23 @@ class PrescriptionAppointmentController extends DoctorOfficeAbstractController
      *     name="delete_prescription_appointment_by_doctor",
      *     methods={"DELETE"},
      *     )
+     *
      * @param Request $request
      * @param PrescriptionAppointment $prescriptionAppointment
      * @param Patient $patient
      * @param Prescription $prescription
+     *
      * @return Response
      * @throws Exception
      */
     public function delete(
-        Request                 $request,
+        Request $request,
         PrescriptionAppointment $prescriptionAppointment,
-        Patient                 $patient,
-        Prescription            $prescription
+        Patient $patient,
+        Prescription $prescription
     ): Response
     {
-        $this->redirectToAddPrescriptionPage($patient, $prescription);
+        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseDelete($request, $prescriptionAppointment);
     }
 
