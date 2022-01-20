@@ -15,7 +15,7 @@
         {% if entity.prescriptions | length > 0 %}
             {% for prescription in entity.prescriptions %}
                 <p>
-                    <a href="{{ path('prescription_show', {'id': prescription.id}) }}">
+                    <a href="{{ path('prescription_show', {'prescription': prescription.id}) }}">
                         {{ prescription.staff.AuthUser.lastName~' '
                         ~prescription.staff.AuthUser.firstName~' '
                         ~prescription.staff.AuthUser.patronymicName~': '

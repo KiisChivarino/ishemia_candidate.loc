@@ -113,7 +113,7 @@ class PrescriptionTestingController extends AdminAbstractController
             return $this->redirectToRoute(
                 'prescription_show',
                 [
-                    'prescription' => $prescription,
+                    'prescription' => $prescription->getId(),
                 ]
             );
         }
