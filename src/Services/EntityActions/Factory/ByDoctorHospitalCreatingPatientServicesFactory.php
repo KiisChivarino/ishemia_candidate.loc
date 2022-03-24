@@ -54,5 +54,7 @@ class ByDoctorHospitalCreatingPatientServicesFactory extends AbstractCreatingPat
             $clinicalDiagnosisCreator,
             $roles
         );
+
+        $this->createPatient();
     }
 }

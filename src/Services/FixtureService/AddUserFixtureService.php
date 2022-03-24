@@ -3,14 +3,9 @@
 namespace App\Services\FixtureService;
 
 use App\Entity\AuthUser;
-use App\Entity\City;
-use App\Entity\Patient;
 use App\Entity\Position;
 use App\Entity\Staff;
-use App\Repository\CityRepository;
-use App\Repository\HospitalRepository;
 use App\Repository\PositionRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -21,37 +16,26 @@ class AddUserFixtureService
     private $entityManager;
 
     /** @var PasswordEncoderInterface $passwordEncoder */
-
     private $passwordEncoder;
+
     /**@var PositionRepository $positionRepository */
-
     private $positionRepository;
-    /** @var HospitalRepository $hospitalRepository*/
-    private $hospitalRepository;
-
-    /** @var CityRepository $cityRepository*/
-    private $cityRepository;
 
     /**
+     * AddUserFixtureService constructor.
      * @param EntityManagerInterface $entityManager
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param PositionRepository $positionRepository
-     * @param HospitalRepository $hospitalRepository
-     * @param CityRepository $cityRepository
      */
     public function __construct(
         EntityManagerInterface   $entityManager,
         UserPasswordEncoderInterface $passwordEncoder,
-        PositionRepository       $positionRepository,
-        HospitalRepository $hospitalRepository,
-        CityRepository $cityRepository
+        PositionRepository       $positionRepository
     )
     {
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
         $this->positionRepository = $positionRepository;
-        $this->hospitalRepository = $hospitalRepository;
-        $this->cityRepository = $cityRepository;
     }
 
     /**
@@ -108,51 +92,6 @@ class AddUserFixtureService
             $password,
             $enabled
         );
-    }
-
-    /**
-     * add Patient
-     */
-    public function addPatient(
-        string $phone,
-        string $firstName,
-        string $lastName,
-        string $role,
-        string $password,
-        bool   $enabled,
-        string $hospitalName,
-        string $cityName,
-        string $address,
-        bool $smsInformation,
-        bool $emailInformation,
-        DateTime $dateBirthDate,
-        DateTime $heartAttackDate
-    ): void
-    {
-        $hospital = $this->hospitalRepository->findOneBy(['name' => $hospitalName]);
-        /** @var City $city */
-        $city = $this->cityRepository->findOneBy(['name' => $cityName]);
-
-        $authUser = $this->addAuthUser(
-            $phone,
-            $firstName,
-            $lastName,
-            $role,
-            $password,
-            $enabled
-        );
-
-        $patient = (new Patient())
-            ->setAuthUser($authUser)
-            ->setHospital($hospital)
-            ->setCity($city)
-            ->setAddress($address)
-            ->setSmsInforming($smsInformation)
-            ->setEmailInforming($emailInformation)
-            ->setDateBirth($dateBirthDate)
-            ->setHeartAttackDate($heartAttackDate);
-        $this->entityManager->persist($patient);
-
     }
 
     /**

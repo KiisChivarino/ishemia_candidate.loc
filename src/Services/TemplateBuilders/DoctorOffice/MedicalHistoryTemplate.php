@@ -18,37 +18,37 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
 {
     /** @var string[] Common show content for medical history templates */
     protected const SHOW_CONTENT = [
-        'h1' => 'История болезни',
-        'title' => 'История болезни',
-        'fio' => 'ФИО',
-        'age' => 'Возраст',
-        'imt' => 'ИМТ',
-        'bySms' => 'Информируется по смс',
-        'byEmail' => 'Информируется по email',
-        'personalData' => 'Личные данные',
-        'anamnesticData' => 'Клинический диагноз',
-        'objectiveData' => 'Первичный осмотр пациента',
-        'addAnamnesticData' => 'Внести клинический диагноз',
-        'addPersonalData' => 'Внести личные данные',
-        'addObjectiveData' => 'Внести первичный осмотр пациента',
-        'recommendationNotFound' => 'Рекомендации врача отсутствуют',
-        'mainDiseaseNotFound' => 'Основное заболевание не найдено!',
-        'backgroundDiseasesNotFound' => 'Фоновые заболевания отсутствуют',
+        'h1'                          => 'История болезни',
+        'title'                       => 'История болезни',
+        'fio'                         => 'ФИО',
+        'age'                         => 'Возраст',
+        'imt'                         => 'ИМТ',
+        'bySms'                       => 'Информируется по смс',
+        'byEmail'                     => 'Информируется по email',
+        'personalData'                => 'Личные данные',
+        'anamnesticData'              => 'Клинический диагноз',
+        'objectiveData'               => 'Первичный осмотр пациента',
+        'addAnamnesticData'           => 'Внести клинический диагноз',
+        'addPersonalData'             => 'Внести личные данные',
+        'addObjectiveData'            => 'Внести первичный осмотр пациента',
+        'recommendationNotFound'      => 'Рекомендации врача отсутствуют',
+        'mainDiseaseNotFound'         => 'Основное заболевание не найдено!',
+        'backgroundDiseasesNotFound'  => 'Фоновые заболевания отсутствуют',
         'concomitantDiseasesNotFound' => 'Сопутствующие заболевания отсутствуют',
-        'appointmentTypeNotFound' => 'Вид приема пациента отсутствует',
-        'complicationsNotFound' => 'Осложнения основного заболевания отсутствуют',
-        'diseaseHistoryNotFound' => 'Анамнез болезни отсутствует',
-        'lifeHistoryNotFound' => 'Анамнез жизни отсутствует',
-        'complaintsCommentNotFound' => 'Комментарий врача по жалобам отсутствует',
-        'objectiveStatusNotFound' => 'Объективный статус отсутствует',
-        'therapyNotFound' => 'Терапия отсутствует',
-        'laboratoryData' => 'Медицинская документация',
-        'addPatientTestingResults' => 'Внести результаты обследования',
-        'firstTestings' => 'Обследования',
-        'addDischargeEpicrises' => 'Добавить выписные эпикризы',
-        'diseaseHistory' => 'Анамнез болезни',
-        'resultData' => 'Данные результатов обследования',
-        'files' => 'Файлы',
+        'appointmentTypeNotFound'     => 'Вид приема пациента отсутствует',
+        'complicationsNotFound'       => 'Осложнения основного заболевания отсутствуют',
+        'diseaseHistoryNotFound'      => 'Анамнез болезни отсутствует',
+        'lifeHistoryNotFound'         => 'Анамнез жизни отсутствует',
+        'complaintsCommentNotFound'   => 'Комментарий врача по жалобам отсутствует',
+        'objectiveStatusNotFound'     => 'Объективный статус отсутствует',
+        'therapyNotFound'             => 'Терапия отсутствует',
+        'laboratoryData'              => 'Медицинская документация',
+        'addPatientTestingResults'    => 'Внести результаты обследования',
+        'firstTestings'               => 'Обследования',
+        'addDischargeEpicrises'       => 'Добавить выписные эпикризы',
+        'diseaseHistory'              => 'Анамнез болезни',
+        'resultData'                  => 'Данные результатов обследования',
+        'files'                       => 'Файлы',
     ];
 
     /** @var string[] Common ENTITY_CONTENT */
@@ -58,7 +58,7 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
 
     /** @var string[] Common COMMON_CONTENT */
     protected const COMMON_CONTENT = [
-        'text' => 'Текст клинического диагноза',
+        'text'    => 'Текст клинического диагноза',
         'MKBCode' => 'Код клинического диагноза',
     ];
 
@@ -66,7 +66,7 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
      * MedicalHistoryTemplate constructor.
      *
      * @param RouteCollection $routeCollection
-     * @param string $className
+     * @param string          $className
      */
     public function __construct(RouteCollection $routeCollection, string $className)
     {
@@ -109,6 +109,7 @@ class MedicalHistoryTemplate extends DoctorOfficeTemplateBuilder
                 $this->showContent
             )
         );
+
         return $this;
     }
 }

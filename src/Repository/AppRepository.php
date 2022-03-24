@@ -17,7 +17,7 @@ class AppRepository extends ServiceEntityRepository
      * Добавляет данные в БД
      *
      * @param array $params
-     * @param $entity
+     * @param       $entity
      * @param array $persistArr
      *
      * @return mixed
@@ -27,20 +27,21 @@ class AppRepository extends ServiceEntityRepository
     {
         foreach ($params as $key => $param) {
             if (array_key_exists($key, $persistArr)) {
-                if (gettype($persistArr[$key]) === 'string') {
-                    $persistArr[$key] = trim($persistArr[$key]) ? trim($persistArr[$key]) : null;
+                if (is_string($persistArr[$key])) {
+                    $persistArr[$key] = trim($persistArr[$key]) ?: null;
                 }
                 $method = 'set'.ucfirst($key);
                 $entity->{$method}($persistArr[$key]);
                 continue;
             }
-            if (gettype($param) === 'string') {
+            if (is_string($param)) {
                 $param = trim($param) !== '' ? trim($param) : null;
             }
             $method = 'set'.ucfirst($key);
             $entity->{$method}($param);
         }
         $this->getEntityManager()->persist($entity);
+
         return $entity;
     }
 
@@ -57,6 +58,7 @@ class AppRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+
         return $lastEntity ? $lastEntity->getId() + 1 : 1;
     }
 }

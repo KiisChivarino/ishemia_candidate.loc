@@ -76,13 +76,13 @@ class MedicalHistory
     private $patientAppointments;
 
     /**
-     * @ORM\OneToOne(targetEntity=PatientDischargeEpicrisis::class, mappedBy="medicalHistory",cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=PatientDischargeEpicrisis::class, mappedBy="medicalHistory", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $patientDischargeEpicrisis;
 
     /**
-     * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalHistory", orphanRemoval=true,cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=PatientNotification::class, mappedBy="medicalHistory", orphanRemoval=true, cascade={"persist"})
      */
     private $patientNotifications;
 
@@ -91,6 +91,7 @@ class MedicalHistory
      * @ORM\JoinColumn(nullable=false)
      */
     private $clinicalDiagnosis;
+
     /**
      * MedicalHistory constructor.
      */
@@ -127,6 +128,7 @@ class MedicalHistory
     public function setPatient(Patient $patient): self
     {
         $this->patient = $patient;
+
         return $this;
     }
 
@@ -146,6 +148,7 @@ class MedicalHistory
     public function setDateBegin(DateTimeInterface $dateBegin): self
     {
         $this->dateBegin = $dateBegin;
+
         return $this;
     }
 
@@ -165,6 +168,7 @@ class MedicalHistory
     public function setDateEnd(?DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
+
         return $this;
     }
 
@@ -184,6 +188,7 @@ class MedicalHistory
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+
         return $this;
     }
 
@@ -206,6 +211,7 @@ class MedicalHistory
             $this->medicalRecords[] = $medicalRecord;
             $medicalRecord->setMedicalHistory($this);
         }
+
         return $this;
     }
 
@@ -223,6 +229,7 @@ class MedicalHistory
                 $medicalRecord->setMedicalHistory(null);
             }
         }
+
         return $this;
     }
 
@@ -245,6 +252,7 @@ class MedicalHistory
             $this->prescriptions[] = $prescription;
             $prescription->setMedicalHistory($this);
         }
+
         return $this;
     }
 
@@ -262,6 +270,7 @@ class MedicalHistory
                 $prescription->setMedicalHistory(null);
             }
         }
+
         return $this;
     }
 
@@ -284,6 +293,7 @@ class MedicalHistory
             $this->patientTestings[] = $patientTesting;
             $patientTesting->setMedicalHistory($this);
         }
+
         return $this;
     }
 
@@ -301,6 +311,7 @@ class MedicalHistory
                 $patientTesting->setMedicalHistory(null);
             }
         }
+
         return $this;
     }
 
@@ -341,6 +352,7 @@ class MedicalHistory
                 $patientAppointment->setMedicalHistory(null);
             }
         }
+
         return $this;
     }
 
@@ -360,6 +372,7 @@ class MedicalHistory
     public function setDiseaseHistory(?string $diseaseHistory): self
     {
         $this->diseaseHistory = $diseaseHistory;
+
         return $this;
     }
 
@@ -383,6 +396,7 @@ class MedicalHistory
         if ($patientDischargeEpicrisis->getMedicalHistory() !== $this) {
             $patientDischargeEpicrisis->setMedicalHistory($this);
         }
+
         return $this;
     }
 
@@ -396,11 +410,13 @@ class MedicalHistory
 
     /**
      * @param TextByTemplate|null $lifeHistory
+     *
      * @return $this
      */
     public function setLifeHistory(?TextByTemplate $lifeHistory): self
     {
         $this->lifeHistory = $lifeHistory;
+
         return $this;
     }
 
@@ -414,6 +430,7 @@ class MedicalHistory
 
     /**
      * @param PatientNotification $patientNotification
+     *
      * @return $this
      */
     public function addPatientNotification(PatientNotification $patientNotification): self
@@ -428,6 +445,7 @@ class MedicalHistory
 
     /**
      * @param PatientNotification $patientNotification
+     *
      * @return $this
      */
     public function removePatientNotification(PatientNotification $patientNotification): self
@@ -438,6 +456,7 @@ class MedicalHistory
                 $patientNotification->setMedicalHistory(null);
             }
         }
+
         return $this;
     }
 
@@ -451,11 +470,13 @@ class MedicalHistory
 
     /**
      * @param ClinicalDiagnosis $clinicalDiagnosis
+     *
      * @return $this
      */
     public function setClinicalDiagnosis(ClinicalDiagnosis $clinicalDiagnosis): self
     {
         $this->clinicalDiagnosis = $clinicalDiagnosis;
+
         return $this;
     }
 

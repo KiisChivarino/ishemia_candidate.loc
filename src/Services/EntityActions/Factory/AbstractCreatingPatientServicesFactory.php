@@ -64,6 +64,21 @@ abstract class AbstractCreatingPatientServicesFactory
     private $patientAppointmentCreator;
 
     /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
+     * @var PlanTestingRepository
+     */
+    private $planTestingRepository;
+
+    /**
+     * @var PlanAppointmentRepository
+     */
+    private $planAppointmentRepository;
+
+    /**
      * AbstractCreatingPatientServicesFactory constructor.
      * @param EntityManagerInterface $entityManager
      * @param AuthUserCreatorService $authUserCreator
@@ -74,50 +89,66 @@ abstract class AbstractCreatingPatientServicesFactory
      * @param PlanAppointmentRepository $planAppointmentRepository
      * @param ClinicalDiagnosisCreatorService $clinicalDiagnosisCreator
      * @param $roles
-     * @throws NonUniqueResultException
      * @throws Exception
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
-        AuthUserCreatorService $authUserCreator,
-        PatientCreatorService $patientCreator,
-        MedicalHistoryCreatorService $medicalHistoryCreator,
+        EntityManagerInterface                $entityManager,
+        AuthUserCreatorService                $authUserCreator,
+        PatientCreatorService                 $patientCreator,
+        MedicalHistoryCreatorService          $medicalHistoryCreator,
         FirstPatientAppointmentCreatorService $patientAppointmentCreator,
-        PlanTestingRepository $planTestingRepository,
-        PlanAppointmentRepository $planAppointmentRepository,
-        ClinicalDiagnosisCreatorService $clinicalDiagnosisCreator,
-        $roles
+        PlanTestingRepository                 $planTestingRepository,
+        PlanAppointmentRepository             $planAppointmentRepository,
+        ClinicalDiagnosisCreatorService       $clinicalDiagnosisCreator,
+                                              $roles
     )
     {
+        $this->entityManager = $entityManager;
+        $this->authUserCreator = $authUserCreator;
+        $this->patientCreator = $patientCreator;
+        $this->medicalHistoryCreator = $medicalHistoryCreator;
+        $this->patientAppointmentCreator = $patientAppointmentCreator;
+        $this->planTestingRepository = $planTestingRepository;
+        $this->planAppointmentRepository = $planAppointmentRepository;
+        $this->clinicalDiagnosisCreator = $clinicalDiagnosisCreator;
         self::$ROLES = $roles;
-        $this->authUserCreator = $authUserCreator->before(
+    }
+
+    /**
+     * Creating a patient using form data and loading fixtures
+     * @throws NonUniqueResultException
+     * @throws Exception
+     */
+    public function createPatient(): void
+    {
+        $this->authUserCreator->before(
             [
                 AuthUserCreatorService::ROLE_OPTION => self::$ROLES[3]['techName'],
             ]
         );
-        $this->patientCreator = $patientCreator->before(
+        $this->patientCreator->before(
             [
                 PatientCreatorService::AUTH_USER_OPTION => $this->getAuthUser(),
             ]
         );
-        $this->clinicalDiagnosisCreator = $clinicalDiagnosisCreator->execute();
-        $this->medicalHistoryCreator = $medicalHistoryCreator->before(
+        $this->clinicalDiagnosisCreator->before();
+        $this->medicalHistoryCreator->before(
             [
                 MedicalHistoryCreatorService::PATIENT_OPTION => $this->getPatient(),
                 MedicalHistoryCreatorService::CLINICAL_DIAGNOSIS_OPTION => $this->getClinicalDiagnosis(),
                 MedicalHistoryCreatorService::DISCHARGE_EPICRISIS_OPTION => new PatientDischargeEpicrisis(),
             ]
         );
-        $this->patientAppointmentCreator = $patientAppointmentCreator->before(
+        $this->patientAppointmentCreator->before(
             [
                 PatientAppointmentCreatorService::MEDICAL_HISTORY_OPTION => $this->getMedicalHistory(),
                 FirstPatientAppointmentCreatorService::FIRST_APPOINTMENT_PLAN_OPTION =>
-                    $planAppointmentRepository->getPlanOfFirstAppointment(),
+                    $this->planAppointmentRepository->getPlanOfFirstAppointment(),
             ]
         );
         /** @var PlanTesting $planTesting */
-        foreach ($planTestingRepository->getPlanOfFirstTestings() as $planTesting) {
-            $patientTestingCreator = (new FirstPatientTestingCreatorService($entityManager))->execute(
+        foreach ($this->planTestingRepository->getPlanOfFirstTestings() as $planTesting) {
+            $patientTestingCreator = (new FirstPatientTestingCreatorService($this->entityManager))->execute(
                 [
                     PatientTestingCreatorService::MEDICAL_HISTORY_OPTION => $this->getMedicalHistory(),
                     FirstPatientTestingCreatorService::PLAN_TESTING_OPTION => $planTesting,
@@ -127,7 +158,7 @@ abstract class AbstractCreatingPatientServicesFactory
             $patientTesting = $patientTestingCreator->getEntity();
             /** @var Analysis $analysis */
             foreach ($patientTesting->getAnalysisGroup()->getAnalyses() as $analysis) {
-                (new PatientTestingResultsCreatorService($entityManager))->execute(
+                (new PatientTestingResultsCreatorService($this->entityManager))->execute(
                     [
                         PatientTestingResultsCreatorService::ANALYSIS_OPTION => $analysis,
                         PatientTestingResultsCreatorService::PATIENT_TESTING_OPTION => $patientTesting,

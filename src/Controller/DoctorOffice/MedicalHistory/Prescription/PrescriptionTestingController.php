@@ -13,7 +13,6 @@ use App\Services\EntityActions\Creator\DoctorOfficePrescriptionTestingCreatorSer
 use App\Services\EntityActions\Creator\PatientTestingCreatorService;
 use App\Services\EntityActions\Creator\PrescriptionTestingCreatorService;
 use App\Services\EntityActions\Creator\SpecialPatientTestingCreatorService;
-use App\Services\InfoService\AuthUserInfoService;
 use App\Services\MultiFormService\FormData;
 use App\Services\TemplateBuilders\DoctorOffice\PatientTestingTemplate;
 use Exception;
@@ -27,7 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/doctor_office")
  * Class AddingSurveyController
  * @IsGranted("ROLE_DOCTOR_HOSPITAL")
  * @package App\Controller\DoctorOffice\MedicalHistory\Prescription
@@ -77,10 +75,6 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         SpecialPatientTestingCreatorService $specialPatientTestingCreatorService
     ): Response
     {
-        if ($prescription->getIsCompleted()) {
-            return $this->redirectToMedicalHistory($patient);
-        }
-
         $patientTesting = $specialPatientTestingCreatorService->execute(
             [
                 PatientTestingCreatorService::MEDICAL_HISTORY_OPTION => $prescription->getMedicalHistory(),
@@ -91,7 +85,7 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
             PrescriptionTestingCreatorService::PRESCRIPTION_OPTION => $prescription,
             PrescriptionTestingCreatorService::PATIENT_TESTING_OPTION => $patientTesting
         ]);
-        $this->setRedirectRouteToNewPrescription($patient, $prescription);
+
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -102,6 +96,8 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
                     ],
                     function () use (
                         $patientTesting,
+                        $prescription,
+                        $specialPatientTestingCreatorService,
                         $patient
                     ): array {
                         return [
@@ -139,12 +135,6 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
         PrescriptionTesting $prescriptionTesting
     ): Response
     {
-        $prescription = $prescriptionTesting->getPrescription();
-        $patient = $prescription->getMedicalHistory()->getPatient();
-        if ($prescription->getIsCompleted()) {
-            return $this->redirectToMedicalHistory($patient);
-        }
-        $this->setRedirectRouteToNewPrescription($patient, $prescription);
         return $this->responseEditMultiForm(
             $request,
             $prescriptionTesting,
@@ -159,53 +149,5 @@ class PrescriptionTestingController extends DoctorOfficeAbstractController
                 ),
             ]
         );
-    }
-
-    /**
-     * Show prescription testing
-     * @Route(
-     *     "/prescriptionTesting/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/show",
-     *     name="show_prescription_testing_by_doctor",
-     *     )
-     * @param PrescriptionTesting $prescriptionTesting
-     * @return Response
-     * @throws Exception
-     */
-    public function show(
-        PrescriptionTesting $prescriptionTesting
-    ): Response
-    {
-        return $this->responseShow(
-            self::TEMPLATE_PATH,
-            $prescriptionTesting, [
-                'staffTitle' =>
-                    AuthUserInfoService::getFIO($prescriptionTesting->getStaff()->getAuthUser()),
-            ]
-        );
-    }
-
-    /**
-     * Delete prescription testing
-     * @Route(
-     *     "/prescriptionTesting/{patient}/prescription/{prescription}/testing/{prescriptionTesting}/delete",
-     *     name="delete_prescription_testing_by_doctor",
-     *     methods={"DELETE"},
-     *     )
-     * @param Request $request
-     * @param PrescriptionTesting $prescriptionTesting
-     * @param Patient $patient
-     * @param Prescription $prescription
-     * @return Response
-     * @throws Exception
-     */
-    public function delete(
-        Request $request,
-        PrescriptionTesting $prescriptionTesting,
-        Patient $patient,
-        Prescription $prescription
-    ): Response
-    {
-        $this->setRedirectRouteToNewPrescription($patient, $prescription);
-        return $this->responseDelete($request, $prescriptionTesting);
     }
 }

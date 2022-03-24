@@ -71,10 +71,10 @@ class CustomNotificationController extends DoctorOfficeAbstractController
     /**
      * Creates new custom notification for patient
      * @Route(
-     *     "/{id}/notifications/create_notification",
+     *     "/{patient}/notifications/create_notification",
      *     name="doctor_create_notification",
      *     methods={"GET","POST"},
-     *     requirements={"id"="\d+"}
+     *     requirements={"patient"="\d+"}
      *     )
      * @param Request $request
      * @param Patient $patient

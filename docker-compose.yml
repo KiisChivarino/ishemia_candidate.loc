@@ -37,6 +37,7 @@ services:
             - ./.docker/conf/postgres/db-data:/var/lib/postgresql/data
         networks:
             back:
+                ipv4_address: 10.5.0.7
     pgadmin4:
         image: dpage/pgadmin4
         depends_on:

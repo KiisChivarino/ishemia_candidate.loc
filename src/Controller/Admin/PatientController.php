@@ -52,18 +52,19 @@ class PatientController extends AdminAbstractController
     /**
      * PatientController constructor.
      *
-     * @param Environment $twig
-     * @param RouterInterface $router
+     * @param Environment                  $twig
+     * @param RouterInterface              $router
      * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface          $translator
+     *
+     * @throws Exception
      */
     public function __construct(
         Environment $twig,
         RouterInterface $router,
         UserPasswordEncoderInterface $passwordEncoder,
         TranslatorInterface $translator
-    )
-    {
+    ) {
         parent::__construct($translator);
         $this->passwordEncoder = $passwordEncoder;
         $this->templateService = new PatientTemplate($router->getRouteCollection(), get_class($this));
@@ -74,7 +75,7 @@ class PatientController extends AdminAbstractController
      * Список пациентов
      * @Route("/", name="patient_list", methods={"GET","POST"})
      *
-     * @param Request $request
+     * @param Request                 $request
      * @param PatientDataTableService $dataTableService
      *
      * @return Response
@@ -89,7 +90,7 @@ class PatientController extends AdminAbstractController
      * Новый пациент
      * @Route("/new", name="patient_new", methods={"GET","POST"})
      *
-     * @param Request $request
+     * @param Request                               $request
      * @param ByAdminCreatingPatientServicesFactory $patientCreatingFactory
      *
      * @return Response
@@ -98,12 +99,12 @@ class PatientController extends AdminAbstractController
     public function new(
         Request $request,
         ByAdminCreatingPatientServicesFactory $patientCreatingFactory
-    ): Response
-    {
+    ): Response {
         $authUser = $patientCreatingFactory->getAuthUser();
         $patient = $patientCreatingFactory->getPatient();
         $clinicalDiagnosis = $patientCreatingFactory->getClinicalDiagnosis();
         $patientAppointment = $patientCreatingFactory->getPatientAppointment();
+
         return $this->responseNewMultiFormWithActions(
             $request,
             [
@@ -139,7 +140,7 @@ class PatientController extends AdminAbstractController
      * Информация о пациенте
      * @Route("/{patient}", name="patient_show", methods={"GET","POST"}, requirements={"patient"="\d+"})
      *
-     * @param Patient $patient
+     * @param Patient       $patient
      * @param FilterService $filterService
      *
      * @return Response
@@ -151,7 +152,7 @@ class PatientController extends AdminAbstractController
             self::TEMPLATE_PATH,
             $patient,
             [
-                'bodyMassIndex' => PatientInfoService::getBodyMassIndex($patient),
+                'bodyMassIndex'            => PatientInfoService::getBodyMassIndex($patient),
                 'medicalHistoryFilterName' =>
                     $filterService->generateFilterName('medical_history_list', Patient::class),
             ]
@@ -162,8 +163,8 @@ class PatientController extends AdminAbstractController
      * Редактирование пациента
      * @Route("/{patient}/edit", name="patient_edit", methods={"GET","POST"}, requirements={"patient"="\d+"})
      *
-     * @param Request $request
-     * @param Patient $patient
+     * @param Request                  $request
+     * @param Patient                  $patient
      * @param MedicalHistoryRepository $medicalHistoryRepository
      *
      * @return Response
@@ -174,14 +175,14 @@ class PatientController extends AdminAbstractController
         Request $request,
         Patient $patient,
         MedicalHistoryRepository $medicalHistoryRepository
-    ): Response
-    {
+    ): Response {
         if (!$medicalHistory = $this->getCurrentMedicalHistory($patient, $medicalHistoryRepository)) {
             return $this->redirectToPatient($patient);
         }
         $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
         $entityManager = $this->getDoctrine()->getManager();
         $authUser = $patient->getAuthUser();
+
         return $this->responseEditMultiFormWithActions(
             $request,
             [

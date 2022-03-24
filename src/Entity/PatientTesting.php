@@ -63,7 +63,7 @@ class PatientTesting
     private $prescriptionTesting;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientTestings")
+     * @ORM\ManyToOne(targetEntity=MedicalHistory::class, inversedBy="patientTestings", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $medicalHistory;

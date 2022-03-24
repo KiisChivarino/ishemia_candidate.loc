@@ -33,18 +33,18 @@ class DataSowing
 
     /**
      * DataSowing constructor.
+     *
      * @param EntityManagerInterface $entityManager
-     * @param array $channelTypes
-     * @param array $notificationReceiverTypeNames
-     * @param array $notificationReceiverTypeTitles
+     * @param array                  $channelTypes
+     * @param array                  $notificationReceiverTypeNames
+     * @param array                  $notificationReceiverTypeTitles
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         array $channelTypes,
         array $notificationReceiverTypeNames,
         array $notificationReceiverTypeTitles
-    )
-    {
+    ) {
         $this->entityManager = $entityManager;
         $this->channelTypes = $channelTypes;
         $this->notificationReceiverTypeNames = $notificationReceiverTypeNames;
@@ -61,12 +61,12 @@ class DataSowing
      * $foreignKeyArr: массив [поле=>entity класс...] для получения объектов по внешнему ключу
      *
      * @param ObjectManager $manager
-     * @param string $file
-     * @param string $entityClass
-     * @param string $delimiter
-     * @param array $replaceFieldNameArr
-     * @param array $persistArr
-     * @param array $foreignkeyArr
+     * @param string        $file
+     * @param string        $entityClass
+     * @param string        $delimiter
+     * @param array         $replaceFieldNameArr
+     * @param array         $persistArr
+     * @param array         $foreignkeyArr
      */
     public function setEntitiesFromCsv(
         ObjectManager $manager,
@@ -76,10 +76,9 @@ class DataSowing
         array $replaceFieldNameArr = [],
         array $persistArr = [],
         array $foreignkeyArr = []
-    )
-    {
+    ): void {
         if (!(is_readable($file))) {
-            throw new RuntimeException(sprintf('Не удалось прочитать файл ' . $file . '!'));
+            throw new RuntimeException(sprintf('Не удалось прочитать файл '.$file.'!'));
         }
         if (($handle = fopen($file, "r")) !== false) {
             $headers = array_flip(fgetcsv($handle, null, $delimiter)); //заголовки csv файла
@@ -97,7 +96,8 @@ class DataSowing
                         }
                     } else {
                         //добавляем свойство с именем из заголовка csv файла
-                        $entityData[lcfirst($headerKeyName)] = trim($data[$headerValueId]) !== '' ? trim($data[$headerValueId]) : null;
+                        $entityData[lcfirst($headerKeyName)] =
+                            trim($data[$headerValueId]) !== '' ? trim($data[$headerValueId]) : null;
                     }
                 }
                 //добавляем дополнительные свойства, которых нет в csv
@@ -107,7 +107,10 @@ class DataSowing
 
                 //меняем внешние ключи на объекты
                 foreach ($foreignkeyArr as $property => $class) {
-                    $entityData[lcfirst($property)] = $manager->getRepository($class)->find($entityData[lcfirst($property)]);
+                    $entityData[lcfirst($property)] =
+                        $manager
+                            ->getRepository($class)
+                            ->find($entityData[lcfirst($property)]);
                 }
 
                 //выполнение сеттеров по подготовленным свойствам
@@ -118,7 +121,6 @@ class DataSowing
                 );
             }
             fclose($handle);
-            $manager->flush();
         }
     }
 
@@ -126,7 +128,7 @@ class DataSowing
      * Добавляет роли из yaml файла
      * Adds roles from yaml file
      */
-    public function addRoles()
+    public function addRoles(): void
     {
         $const = Yaml::parseFile('config/services/roles.yaml');
         foreach ($const['parameters']['roles'] as $roleData) {
@@ -148,7 +150,7 @@ class DataSowing
         foreach ($this->channelTypes as $channelType) {
             $this->addEntityFormYaml(
                 [
-                    'id' => $i,
+                    'id'   => $i,
                     'name' => $channelType,
                 ],
                 new ChannelType()
@@ -160,7 +162,8 @@ class DataSowing
     /**
      * Добавляет новую сущность
      * Adds new entity
-     * @param array $insertData
+     *
+     * @param array  $insertData
      * @param object $entity
      */
     public function addEntityFormYaml(array $insertData, object $entity): void
@@ -182,11 +185,12 @@ class DataSowing
         foreach ($namesAndTitles as $name => $title) {
             $this->addEntityFormYaml(
                 [
-                    'id' => $i,
-                    'name' => $name,
+                    'id'    => $i,
+                    'name'  => $name,
                     'title' => $title
                 ],
-                new NotificationReceiverType());
+                new NotificationReceiverType()
+            );
             $i++;
         }
     }
@@ -199,18 +203,19 @@ class DataSowing
      * $catalog - объекты справочника
      * $entityClass - класс заполняемой сущности
      * $params - массив параметров: ключ - свойство заполняемой сущности, значение - свойство справочника, имя класса справочника или любое другое значение
-     * @param array $catalog
+     *
+     * @param array  $catalog
      * @param string $entityClass
-     * @param array $params
+     * @param array  $params
      */
-    public function addEntitiesFromCatalog(array $catalog, string $entityClass, array $params)
+    public function addEntitiesFromCatalog(array $catalog, string $entityClass, array $params): void
     {
         foreach ($catalog as $catalogItem) {
             $data = [];
             //подготовка массива данных
             foreach ($params as $key => $value) {
                 if (is_string($value)) {
-                    $method = 'get' . ucfirst($value);
+                    $method = 'get'.ucfirst($value);
                     if (method_exists($catalogItem, $method)) {
                         //выполнение геттера
                         $data[$key] = $catalogItem->{$method}();

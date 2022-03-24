@@ -2,6 +2,7 @@
 
 namespace App\AppBundle\Menu;
 
+use App\Entity\AuthUser;
 use App\Entity\Patient;
 use App\Entity\PatientSMS;
 use App\Entity\Staff;
@@ -49,9 +50,9 @@ class MenuBuilder
     const DOCTOR_OFFICE_FLAG = 'admin';
 
     /**
-     * @param FactoryInterface $factory
-     * @param ContainerInterface $container
-     * @param Security $security
+     * @param FactoryInterface       $factory
+     * @param ContainerInterface     $container
+     * @param Security               $security
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
@@ -59,8 +60,7 @@ class MenuBuilder
         ContainerInterface $container,
         Security $security,
         EntityManagerInterface $entityManager
-    )
-    {
+    ) {
         $this->factory = $factory;
         $this->container = $container;
         $this->security = $security;
@@ -456,8 +456,8 @@ class MenuBuilder
         if ($this->isMenuForEntity(Patient::class, self::PATIENT_GET_PARAMETER_NAME)) {
             $menu->addChild(
                 'add_prescription', [
-                    'label' => 'Добавить назначение',
-                    'route' => 'adding_prescriprion_by_doctor',
+                    'label'           => 'Добавить назначение',
+                    'route'           => 'adding_prescriprion_by_doctor',
                     'routeParameters' => [
                         self::PATIENT_GET_PARAMETER_NAME => $patientId
                     ]
@@ -465,14 +465,15 @@ class MenuBuilder
             );
             $menu->addChild(
                 'create_doctor_notification', [
-                    'label' => 'Сообщение пациенту',
-                    'route' => 'doctor_create_notification',
+                    'label'           => 'Сообщение пациенту',
+                    'route'           => 'doctor_create_notification',
                     'routeParameters' => [
-                        'id' => $patientId
+                        self::PATIENT_GET_PARAMETER_NAME => $patientId
                     ]
                 ]
             );
         }
+
         return $menu;
     }
 
@@ -484,15 +485,16 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'main-nav__list');
         $menu->setAttribute('templateName', 'admin_knp_menu.html.twig');
+
         return $menu;
     }
 
     /**
      * Меню кабинета врача в sidebar
      *
-     * @param RequestStack $requestStack
+     * @param RequestStack                    $requestStack
      * @param PatientTestingCounterRepository $patientTestingCounterRepository
-     * @param PrescriptionRepository $prescriptionRepository
+     * @param PrescriptionRepository          $prescriptionRepository
      *
      * @return ItemInterface
      */
@@ -500,8 +502,7 @@ class MenuBuilder
         RequestStack $requestStack,
         PatientTestingCounterRepository $patientTestingCounterRepository,
         PrescriptionRepository $prescriptionRepository
-    ): ItemInterface
-    {
+    ): ItemInterface {
         /** @var AuthUser $authUser */
         $authUser = $this->security->getUser();
         $hospital = AuthUserInfoService::isDoctorHospital($authUser)
@@ -573,11 +574,11 @@ class MenuBuilder
                 ->getOverdueTestingsCount($patientId);
             $menu->addChild(
                 'patient', [
-                    'label' => '<strong>' . AuthUserInfoService::getFIO(
+                    'label'           => '<strong>'.AuthUserInfoService::getFIO(
                             $this->entityManager->getRepository(Patient::class)->find($patientId)->getAuthUser(),
                             true
-                        ) . '</strong>',
-                    'route' => 'doctor_medical_history',
+                        ).'</strong>',
+                    'route'           => 'doctor_medical_history',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
@@ -591,52 +592,52 @@ class MenuBuilder
             )->setAttribute('class', 'sublist');
             $menu['patientTestings']->addChild(
                 'patient_testing_list', [
-                    'label' => 'Все',
-                    'route' => 'doctor_patient_testing_list',
+                    'label'           => 'Все',
+                    'route'           => 'doctor_patient_testing_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
                 'patient_testing_no_processed_list', [
-                    'label' => $this->getLabelWithNotificationNumber(
+                    'label'           => $this->getLabelWithNotificationNumber(
                         'Обработать',
                         $noProcessedTestingsCounter
                     ),
-                    'route' => 'doctor_patient_testing_not_processed_list',
+                    'route'           => 'doctor_patient_testing_not_processed_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
                 'patient_testing_planned_list', [
-                    'label' => $this->getLabelWithNotificationNumber(
+                    'label'           => $this->getLabelWithNotificationNumber(
                         'По плану',
                         $plannedTestingsCounter
                     ),
-                    'route' => 'doctor_patient_testing_planned_list',
+                    'route'           => 'doctor_patient_testing_planned_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
                 'patient_testing_overdue_list', [
-                    'label' => $this->getLabelWithNotificationNumber(
+                    'label'           => $this->getLabelWithNotificationNumber(
                         'Просроченные',
                         $overdueTestingsCounter
                     ),
-                    'route' => 'doctor_patient_testing_overdue_list',
+                    'route'           => 'doctor_patient_testing_overdue_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu['patientTestings']->addChild(
                 'patient_testing_history_list', [
-                    'label' => 'История',
-                    'route' => 'doctor_patient_testing_history_list',
+                    'label'           => 'История',
+                    'route'           => 'doctor_patient_testing_history_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
             $menu->addChild(
                 'notifications_list', [
-                    'label' => 'Уведомления пациенту',
-                    'route' => 'notifications_list',
+                    'label'           => 'Уведомления пациенту',
+                    'route'           => 'notifications_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
@@ -644,12 +645,12 @@ class MenuBuilder
                 ->getPatientSMSMenu($patientId);
             $menu->addChild(
                 'patient_sms_list', [
-                    'label' => $this->getLabelWithNotificationNumber(
+                    'label'           => $this->getLabelWithNotificationNumber(
                         'Сообщения от пациента',
                         $patientSmsCounter,
                         'patientSMSCount'
                     ),
-                    'route' => 'received_sms_from_patient_list',
+                    'route'           => 'received_sms_from_patient_list',
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
@@ -669,6 +670,7 @@ class MenuBuilder
                 ]
             );
         }
+
         return $menu;
     }
 
@@ -681,8 +683,7 @@ class MenuBuilder
      */
     public function createPatientOfficeSidebarMenu(
         RequestStack $requestStack
-    ): ItemInterface
-    {
+    ): ItemInterface {
         $menu = $this->factory->createItem('root');
         $menu->setAttribute('templateName', 'patient_office_knp_menu.html.twig');
         $menu->setAttribute('sidebar_disable', true);
@@ -723,13 +724,14 @@ class MenuBuilder
             ]
         );
         $this->activateStoringSelectedMenuItemPatientOffice($menu, $requestStack);
+
         return $menu;
     }
 
 
     /**
-     * @param string $label
-     * @param int $number
+     * @param string      $label
+     * @param int         $number
      * @param string|null $customClasses
      *
      * @return string
@@ -737,7 +739,7 @@ class MenuBuilder
     private function getLabelWithNotificationNumber(string $label, int $number, string $customClasses = ""): string
     {
         return $number
-            ? $label . '<div class="notificationNumber ' . $customClasses . '">' . $number . '</div>'
+            ? $label.'<div class="notificationNumber '.$customClasses.'">'.$number.'</div>'
             : $label;
     }
 
@@ -756,6 +758,7 @@ class MenuBuilder
             return false;
         }
         $entity = $this->getEntityById($entityId, $entityClass);
+
         return ($entity && is_a($entity, $entityClass));
     }
 
@@ -772,13 +775,14 @@ class MenuBuilder
         if (is_object($entityId)) {
             return $entityId->getId();
         }
+
         return $entityId;
     }
 
     /**
      * Returns entity object by id
      *
-     * @param int $entityId
+     * @param int    $entityId
      * @param string $entityClass
      *
      * @return object|null
@@ -792,7 +796,8 @@ class MenuBuilder
      * Activates storing the selected menu item
      *
      * @param ItemInterface $menu
-     * @param RequestStack $requestStack
+     * @param RequestStack  $requestStack
+     * @param               $flag
      *
      * @return void
      */
@@ -819,7 +824,7 @@ class MenuBuilder
      * Activates storing the selected menu item
      *
      * @param ItemInterface $menu
-     * @param RequestStack $requestStack
+     * @param RequestStack  $requestStack
      *
      * @return void
      */

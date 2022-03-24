@@ -24,8 +24,10 @@ class AuthUserCreatorService extends AbstractCreatorService
 
     /**
      * AuthUserCreatorService constructor.
-     * @param EntityManagerInterface $entityManager
+     *
+     * @param EntityManagerInterface       $entityManager
      * @param UserPasswordEncoderInterface $passwordEncoder
+     *
      * @throws Exception
      */
     public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder)
@@ -35,7 +37,10 @@ class AuthUserCreatorService extends AbstractCreatorService
     }
 
     /**
+     * Actions with entity before submit form
+     *
      * @param array $options
+     *
      * @return EntityActionsInterface
      * @throws Exception
      */
@@ -44,12 +49,15 @@ class AuthUserCreatorService extends AbstractCreatorService
         parent::before($options);
         $authUser = $this->getEntity();
         $authUser->setRoles($this->options[self::ROLE_OPTION]);
+
         return $this;
     }
 
+    /**
+     * Actions with entity before persist
+     */
     protected function prepare(): void
     {
-        parent::prepare();
         $authUser = $this->getEntity();
         $authUser
             ->setPassword(
@@ -62,6 +70,11 @@ class AuthUserCreatorService extends AbstractCreatorService
             ->setPhone(AuthUserInfoService::clearUserPhone($authUser->getPhone()));
     }
 
+    /**
+     * Options of Auth user creator service
+     *
+     * @return void
+     */
     protected function configureOptions(): void
     {
         $this->addOptionCheck('string', self::ROLE_OPTION);

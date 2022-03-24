@@ -53,10 +53,9 @@ class MedicalHistoryController extends AdminAbstractController
     /**
      * CountryController constructor.
      *
-     * @param Environment $twig
-     * @param RouterInterface $router
+     * @param Environment         $twig
+     * @param RouterInterface     $router
      * @param TranslatorInterface $translator
-     * @throws Exception
      */
     public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
@@ -69,9 +68,9 @@ class MedicalHistoryController extends AdminAbstractController
      * MedicalHistory list
      * @Route("/", name="medical_history_list", methods={"GET","POST"})
      *
-     * @param Request $request
+     * @param Request                        $request
      * @param MedicalHistoryDataTableService $dataTableService
-     * @param FilterService $filterService
+     * @param FilterService                  $filterService
      *
      * @return Response
      * @throws Exception
@@ -80,10 +79,10 @@ class MedicalHistoryController extends AdminAbstractController
         Request $request,
         MedicalHistoryDataTableService $dataTableService,
         FilterService $filterService
-    ): Response
-    {
+    ): Response {
         return $this->responseList(
-            $request, $dataTableService,
+            $request,
+            $dataTableService,
             (new FilterLabels($filterService))->setFilterLabelsArray(
                 [self::FILTER_LABELS['PATIENT'],]
             )
@@ -107,10 +106,11 @@ class MedicalHistoryController extends AdminAbstractController
      * Show medical history info
      * @Route("/{id}", name="medical_history_show", methods={"GET"}, requirements={"id"="\d+"})
      *
-     * @param MedicalHistory $medicalHistory
-     * @param FilterService $filterService
+     * @param MedicalHistory         $medicalHistory
+     * @param FilterService          $filterService
      *
      * @param PrescriptionRepository $prescriptionRepository
+     *
      * @return Response
      * @throws Exception
      */
@@ -118,24 +118,26 @@ class MedicalHistoryController extends AdminAbstractController
         MedicalHistory $medicalHistory,
         FilterService $filterService,
         PrescriptionRepository $prescriptionRepository
-    ): Response
-    {
+    ): Response {
         return $this->responseShow(
             self::TEMPLATE_PATH,
             $medicalHistory,
             [
-                'patientFio' => AuthUserInfoService::getFIO($medicalHistory->getPatient()->getAuthUser(), true),
-                'medicalRecordFilterName' =>
+                'patientFio'                   => AuthUserInfoService::getFIO(
+                    $medicalHistory->getPatient()->getAuthUser(),
+                    true
+                ),
+                'medicalRecordFilterName'      =>
                     $filterService->generateFilterName(
                         'medical_record_list',
                         MedicalHistory::class
                     ),
-                'patientTestingFilterName' =>
+                'patientTestingFilterName'     =>
                     $filterService->generateFilterName(
                         'patient_testing_list',
                         MedicalHistory::class
                     ),
-                'prescriptionFilterName' =>
+                'prescriptionFilterName'       =>
                     $filterService->generateFilterName(
                         'prescription_list',
                         MedicalHistory::class
@@ -145,9 +147,9 @@ class MedicalHistoryController extends AdminAbstractController
                         'patient_appointment_list',
                         MedicalHistory::class
                     ),
-                'allPrescriptionsCompleted' =>
+                'allPrescriptionsCompleted'    =>
                     !$prescriptionRepository->findNotCompletedPrescription($medicalHistory),
-                'notificationFilterName' =>
+                'notificationFilterName'       =>
                     $filterService->generateFilterName(
                         'notification_list',
                         MedicalHistory::class
@@ -160,11 +162,12 @@ class MedicalHistoryController extends AdminAbstractController
      * Edit medical history
      * @Route("/{id}/edit", name="medical_history_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      *
-     * @param Request $request
-     * @param MedicalHistory $medicalHistory
+     * @param Request                      $request
+     * @param MedicalHistory               $medicalHistory
      *
      * @param PatientTestingFileRepository $patientTestingFileRepository
-     * @param FileService $fileService
+     * @param FileService                  $fileService
+     *
      * @return Response
      * @throws ReflectionException
      * @throws Exception
@@ -174,9 +177,9 @@ class MedicalHistoryController extends AdminAbstractController
         MedicalHistory $medicalHistory,
         PatientTestingFileRepository $patientTestingFileRepository,
         FileService $fileService
-    ): Response
-    {
+    ): Response {
         $clinicalDiagnosis = $medicalHistory->getClinicalDiagnosis();
+
         return $this->responseEditMultiForm(
             $request,
             $medicalHistory,
@@ -204,7 +207,7 @@ class MedicalHistoryController extends AdminAbstractController
      * Delete medical history
      * @Route("/{id}", name="medical_history_delete", methods={"DELETE"}, requirements={"id"="\d+"})
      *
-     * @param Request $request
+     * @param Request        $request
      * @param MedicalHistory $medicalHistory
      *
      * @return Response

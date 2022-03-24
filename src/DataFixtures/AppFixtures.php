@@ -32,16 +32,17 @@ use App\Entity\TemplateParameter;
 use App\Entity\TemplateParameterText;
 use App\Entity\TemplateType;
 use App\Entity\TimeRange;
+use App\Services\EntityActions\Factory\FixturesCreatingPatientServicesFactory;
 use App\Services\FixtureService\AddUserFixtureService;
-use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\ORMException;
+use Exception;
 
 class AppFixtures extends Fixture
 {
     /** @var string PATH_TO_CSV */
-    const PATH_TO_CSV = 'data/AppFixtures/';
+    private const PATH_TO_CSV = 'data/AppFixtures/';
 
     /** @var DataSowing $dataSowing */
     private $dataSowing;
@@ -50,45 +51,79 @@ class AppFixtures extends Fixture
     private $addUserFixtureService;
 
     /**
+     * @var FixturesCreatingPatientServicesFactory
+     */
+    private $fixturesCreatingPatientServicesFactory;
+
+    /**
      * AppFixtures constructor.
      * @param DataSowing $dataSowing
      * @param AddUserFixtureService $addUserFixtureService
+     * @param FixturesCreatingPatientServicesFactory $fixturesCreatingPatientServicesFactory
      */
-    public function __construct(DataSowing $dataSowing, AddUserFixtureService $addUserFixtureService)
+    public function __construct(
+        DataSowing $dataSowing,
+        AddUserFixtureService $addUserFixtureService,
+        FixturesCreatingPatientServicesFactory $fixturesCreatingPatientServicesFactory
+    )
     {
         $this->dataSowing = $dataSowing;
         $this->addUserFixtureService = $addUserFixtureService;
+        $this->fixturesCreatingPatientServicesFactory = $fixturesCreatingPatientServicesFactory;
+
     }
 
     /**
      * @param ObjectManager $manager
      * @throws ORMException
+     * @throws Exception
      */
     public function load(ObjectManager $manager)
     {
         /** begin Должности */
         echo "Заполнение справочника \"Должности\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'position.csv', Position::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'position.csv',
+            Position::class,
+            '|',
+            [],
+            ['enabled' => true]
+        );
         /** end Должности */
 
         /** begin Виды приема */
         echo "Заполнение справочника \"Вид приема\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'appointment_type.csv', AppointmentType::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'appointment_type.csv',
+            AppointmentType::class,
+            '|',
+            [],
+            ['enabled' => true]
+        );
         /** end Виды приема */
 
         /** begin Точки отсчета */
         echo "Добавление точек отсчета\n";
-        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(1, 'dateBegin', 'Включение в историю болезни');
-        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(2, 'heartAttackDate', 'Дата возникновения инфаркта');
+        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(
+            1,
+            'dateBegin',
+            'Включение в историю болезни'
+        );
+        $manager->getRepository(StartingPoint::class)->addStartingPointFromFixtures(
+            2,
+            'heartAttackDate',
+            'Дата возникновения инфаркта'
+        );
         /** end Точки отсчета */
 
         /** begin Пол */
         echo "Добавление пола\n";
-        $manager->getRepository(Gender::class)->addGenderFromFixtures('м', 'мужчина');
-        $manager->flush();
-        $manager->getRepository(Gender::class)->addGenderFromFixtures('ж', 'женщина');
-        $manager->flush();
-        $manager->getRepository(Gender::class)->addGenderFromFixtures('н', 'не важен');
+        $genderRepository = $manager->getRepository(Gender::class);
+        $genderRepository->addGenderFromFixtures('м', 'мужчина', $genderRepository::MALE_GENDER_ID);
+        $genderRepository->addGenderFromFixtures('ж', 'женщина', $genderRepository::FEMALE_GENDER_ID);
+        $genderRepository->addGenderFromFixtures('н', 'не важен', $genderRepository::LACK_OF_GENDER_ID);
         /** end Пол */
 
         /** begin Роли*/
@@ -109,6 +144,7 @@ class AppFixtures extends Fixture
         /** begin OKSM */
         echo "Заполнение справочника ОКСМ\n";
         $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'OKSM.csv', OKSM::class);
+        $manager->flush();
         /** end OKSM */
 
         /** begin Страна */
@@ -148,7 +184,14 @@ class AppFixtures extends Fixture
         /** begin Адреса */
         //todo Изменить запрос с использованием "in"
         echo "Заполнение справочника адресов\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'Oktmo.csv', Oktmo::class, ';', ['ID' => null]);
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'Oktmo.csv',
+            Oktmo::class,
+            ';',
+            ['ID' => null]
+        );
+        $manager->flush();
         /** end Адреса */
 
         /** begin Районы */
@@ -178,11 +221,17 @@ class AppFixtures extends Fixture
                 'oktmo' => Oktmo::class,
             ]
         );
+        $manager->flush();
         /** end Города */
 
         /** begin LPU */
         echo "Заполнение справочника ЛПУ\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'LPU.csv', LPU::class, '|');
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'LPU.csv',
+            LPU::class,
+            '|'
+        );
         $manager->flush();
         /** end LPU */
 
@@ -242,42 +291,52 @@ class AppFixtures extends Fixture
             true,
             'Врач'
         );
-        $this->addUserFixtureService->addPatient(
-            '6666666666',
-            'Пациент',
-            'Пациентов',
-            'ROLE_PATIENT',
-            '111111',
-            true,
-            'НЕФРОСОВЕТ',
-            'Курск',
-            'address',
-            true,
-            true,
-            DateTime::createFromFormat('j-M-Y', '15-Feb-2001'),
-            DateTime::createFromFormat('j-M-Y', '15-Feb-2021')
-        );
         /** end Пользователи */
 
         /** begin Патологии (диагнозы) */
         echo "Добавление патологий (диагнозов)\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'mkb10.csv', Diagnosis::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'mkb10.csv',
+            Diagnosis::class,
+            '|',
+            [],
+            ['enabled' => true]
+        );
+        $manager->flush();
         /** end Патологии */
 
         /** begin Группы анализов (тестирования) */
         echo "Заполнение справочника \"Группы анализов\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'analysis_group.csv', AnalysisGroup::class, '|', [], ['enabled' => true]);
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager,
+            self::PATH_TO_CSV . 'analysis_group.csv',
+            AnalysisGroup::class,
+            '|',
+            [],
+            ['enabled' => true]
+        );
         /** end Группы анализов (тестирования) */
 
         /** begin Интервал даты */
         echo "Заполнение справочника \"Интервал даты\"\n";
-        $this->dataSowing->setEntitiesFromCsv($manager, self::PATH_TO_CSV . 'date_interval.csv', DateInterval::class, '|');
+        $this->dataSowing->setEntitiesFromCsv(
+            $manager, self::PATH_TO_CSV . 'date_interval.csv',
+            DateInterval::class,
+            '|'
+        );
         /** end Интервал даты */
 
         /** begin Временной диапазон */
         echo "Заполнение справочника \"Временной диапазон\"\n";
         $this->dataSowing->setEntitiesFromCsv(
-            $manager, self::PATH_TO_CSV . 'time_range.csv', TimeRange::class, '|', [], [], [
+            $manager,
+            self::PATH_TO_CSV . 'time_range.csv',
+            TimeRange::class,
+            '|',
+            [],
+            [],
+            [
                 'dateInterval' => DateInterval::class,
             ]
         );
@@ -314,6 +373,7 @@ class AppFixtures extends Fixture
                 'startingPoint' => StartingPoint::class,
             ]
         );
+        $manager->flush();
         /** end Стандартный план приемов */
 
         /** begin Анализы */
@@ -359,6 +419,27 @@ class AppFixtures extends Fixture
             ]
         );
         /** end Референтные значения */
+
+        $manager->flush();
+
+        /** begin Добавление пациента */
+        echo "Добавление пациента\n";
+        $this->fixturesCreatingPatientServicesFactory->createPatient();
+        $this->fixturesCreatingPatientServicesFactory->afterCreatePatient(
+            '111111',
+            'ИмяТест',
+            'ФамилияТест',
+            '3333333333',
+            'адресТест',
+        'ОБУЗ "КУРСКАЯ ЦРБ"',
+        'Курск',
+            \DateTime::createFromFormat('j-M-Y', '15-Feb-2001'),
+            new \DateTime(),
+            'Тестовое описание клинического диагноза',
+        'B01');
+
+        echo "Пациент добавлен \n";
+        /** end Добавление пациента */
 
         /** begin Типы шаблонов */
         echo "Заполнение справочника \"Типы шаблонов\"\n";
@@ -449,5 +530,6 @@ class AppFixtures extends Fixture
             ]
         );
         /** end Тексты шаблонов уведомлений */
+        $manager->flush();
     }
 }
