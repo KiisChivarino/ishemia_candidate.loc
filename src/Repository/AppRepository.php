@@ -28,7 +28,7 @@ class AppRepository extends ServiceEntityRepository
         foreach ($params as $key => $param) {
             if (array_key_exists($key, $persistArr)) {
                 if (gettype($persistArr[$key]) === 'string') {
-                    $persistArr[$key] = trim($persistArr[$key]) ? trim($persistArr[$key]) : null;
+                    $persistArr[$key] = trim($persistArr[$key]) ?: null;
                 }
                 $method = 'set'.ucfirst($key);
                 $entity->{$method}($persistArr[$key]);

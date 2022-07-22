@@ -7,7 +7,6 @@ use App\Entity\PatientSMS;
 use App\Services\InfoService\AuthUserInfoService;
 use App\Services\TemplateItems\ListTemplateItem;
 use Closure;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
@@ -16,9 +15,7 @@ use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
-use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTableState;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class DataTableService
@@ -28,23 +25,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class ReceivedSmsFromPatientDataTableService extends DoctorOfficeDatatableService
 {
-
-    /**
-     * DataTableService constructor.
-     *
-     * @param DataTableFactory $dataTableFactory
-     * @param UrlGeneratorInterface $router
-     * @param EntityManagerInterface $em
-     */
-    public function __construct(
-        DataTableFactory $dataTableFactory,
-        UrlGeneratorInterface $router,
-        EntityManagerInterface $em
-    )
-    {
-        parent::__construct($dataTableFactory, $router, $em);
-    }
-
     /**
      * Таблица принятых смс от пациента
      *

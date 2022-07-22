@@ -24,3 +24,11 @@
 .dropdown-content a:hover{
     background: #425262;
 }
+
+/** Статусы в дататейблы */
+.greenStatus{
+    background-color: #9eff9c;
+}
+.redStatus{
+    background-color: #ff9c9c;
+}

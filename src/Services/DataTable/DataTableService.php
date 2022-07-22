@@ -20,6 +20,7 @@ abstract class DataTableService
 {
     /** @var DataTableFactory $dataTableFactory */
     protected $dataTableFactory;
+
     /** @var DataTable $dataTable */
     protected $dataTable;
 

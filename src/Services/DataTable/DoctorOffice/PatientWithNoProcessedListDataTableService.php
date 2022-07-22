@@ -74,13 +74,11 @@ class PatientWithNoProcessedListDataTableService extends DoctorOfficeDatatableSe
                     'field' => 'u.lastName',
                     'render' => function (string $data, Patient $patient) {
                         return
-                            $patient
-                                ? $this->getLink(
-                                $this->authUserInfoService->getFIO($patient->getAuthUser()),
-                                $patient->getId(),
-                                'doctor_medical_history'
-                            )
-                                : '';
+                            $this->getLink(
+                            $this->authUserInfoService->getFIO($patient->getAuthUser()),
+                            $patient->getId(),
+                            'doctor_medical_history'
+                        );
                     },
                     'orderable' => true,
                     'orderField' => 'u.lastName',

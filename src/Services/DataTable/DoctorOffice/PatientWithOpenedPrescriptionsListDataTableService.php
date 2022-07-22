@@ -74,13 +74,11 @@ class PatientWithOpenedPrescriptionsListDataTableService extends DoctorOfficeDat
                     'field' => 'u.lastName',
                     'render' => function (string $data, Patient $patient) {
                         return
-                            $patient
-                                ? $this->getLink(
-                                $this->authUserInfoService->getFIO($patient->getAuthUser()),
-                                $patient->getId(),
-                                'doctor_medical_history'
-                            )
-                                : '';
+                            $this->getLink(
+                            $this->authUserInfoService->getFIO($patient->getAuthUser()),
+                            $patient->getId(),
+                            'doctor_medical_history'
+                        );
                     },
                     'orderable' => true,
                     'orderField' => 'u.lastName',
@@ -134,7 +132,7 @@ class PatientWithOpenedPrescriptionsListDataTableService extends DoctorOfficeDat
                     'label' => $listTemplateItem->getContentValue('hospital'),
                     'field' => 'h.name',
                     'render' => function (string $data, Patient $patient) {
-                        return $patient ? $patient->getHospital()->getName() : '';
+                        return $patient->getHospital()->getName();
                     },
                     'orderable' => true,
                     'orderField' => 'h.name',
@@ -145,13 +143,12 @@ class PatientWithOpenedPrescriptionsListDataTableService extends DoctorOfficeDat
                     'label' => $listTemplateItem->getContentValue('city'),
                     'field' => 'h.name',
                     'render' => function (string $data, Patient $patient) {
-                        return $patient ? $patient->getCity()->getName() : '';
+                        return $patient->getCity()->getName();
                     },
                     'orderable' => true,
                     'orderField' => 'h.name',
                 ]
-            )
-        ;
+            );
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
             ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
             : ($options

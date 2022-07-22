@@ -33,7 +33,9 @@ abstract class PatientAppointmentCreatorService extends AbstractCreatorService
         $patientAppointment = $this->getEntity();
         $patientAppointment
             ->setIsConfirmed(false)
-            ->setMedicalHistory($this->options[self::MEDICAL_HISTORY_OPTION]);
+            ->setMedicalHistory($this->options[self::MEDICAL_HISTORY_OPTION])
+            ->setIsProcessedByStaff(false)
+            ->setIsMissed(false);
     }
 
     protected function configureOptions(): void

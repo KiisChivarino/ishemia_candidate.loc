@@ -14,6 +14,8 @@ use Knp\Menu\ItemInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
+use App\Entity\AuthUser;
+use App\Repository\PatientAppointmentCounterRepository;
 
 /**
  * Class MenuBuilder
@@ -55,9 +57,9 @@ class MenuBuilder
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
-        FactoryInterface $factory,
-        ContainerInterface $container,
-        Security $security,
+        FactoryInterface       $factory,
+        ContainerInterface     $container,
+        Security               $security,
         EntityManagerInterface $entityManager
     )
     {
@@ -484,6 +486,12 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'main-nav__list');
         $menu->setAttribute('templateName', 'admin_knp_menu.html.twig');
+        $menu->addChild(
+            'logout', [
+                'label' => 'Выйти',
+                'route' => 'logout_from_app'
+            ]
+        );
         return $menu;
     }
 
@@ -492,14 +500,16 @@ class MenuBuilder
      *
      * @param RequestStack $requestStack
      * @param PatientTestingCounterRepository $patientTestingCounterRepository
+     * @param PatientAppointmentCounterRepository $patientAppointmentCounterRepository
      * @param PrescriptionRepository $prescriptionRepository
      *
      * @return ItemInterface
      */
     public function createDoctorOfficeSidebarMenu(
-        RequestStack $requestStack,
-        PatientTestingCounterRepository $patientTestingCounterRepository,
-        PrescriptionRepository $prescriptionRepository
+        RequestStack                        $requestStack,
+        PatientTestingCounterRepository     $patientTestingCounterRepository,
+        PatientAppointmentCounterRepository $patientAppointmentCounterRepository,
+        PrescriptionRepository              $prescriptionRepository
     ): ItemInterface
     {
         /** @var AuthUser $authUser */
@@ -563,7 +573,7 @@ class MenuBuilder
                 'route' => 'patients_with_processed_results_list'
             ]
         );
-        if ($this->isMenuForEntity(Patient::class, 'id')) {
+        if ($this->isMenuForEntity(Patient::class, 'id') || $this->isMenuForEntity(Patient::class, 'patient')) {
             $patientId = $this->getEntityId(self::PATIENT_QUERY_PARAMETER);
             $noProcessedTestingsCounter = $patientTestingCounterRepository
                 ->getNoProcessedTestingsCount($patientId);
@@ -571,6 +581,8 @@ class MenuBuilder
                 ->getPlannedTestingsCount($patientId);
             $overdueTestingsCounter = $patientTestingCounterRepository
                 ->getOverdueTestingsCount($patientId);
+            $noProcessedAppointmentsCounter = $patientAppointmentCounterRepository
+                ->NotProcessedPatientAppointmentCounter($patientId);
             $menu->addChild(
                 'patient', [
                     'label' => '<strong>' . AuthUserInfoService::getFIO(
@@ -633,6 +645,35 @@ class MenuBuilder
                     'routeParameters' => ['id' => $patientId]
                 ]
             );
+
+            /** Patient appointments */
+            $menu->addChild(
+                'patientAppointment', [
+                    'label' => $this->getLabelWithNotificationNumber(
+                        'Приёмы пациента',
+                        $noProcessedAppointmentsCounter
+                    )
+                ]
+            )->setAttribute('class', 'sublist');
+            $menu['patientAppointment']->addChild(
+                'doctor_patient_appointment_no_processed', [
+                    'label' => $this->getLabelWithNotificationNumber(
+                        'Обработать',
+                        $noProcessedAppointmentsCounter
+                    ),
+                    'route' => 'doctor_patient_appointment_no_processed',
+                    'routeParameters' => ['patient' => $patientId]
+                ]
+            );
+            $menu['patientAppointment']->addChild(
+                'patient_appointment_history_list', [
+                    'label' => 'История',
+                    'route' => 'doctor_patient_appointment_history',
+                    'routeParameters' => ['patient' => $patientId]
+                ]
+            );
+
+            /** Patient notifications */
             $menu->addChild(
                 'notifications_list', [
                     'label' => 'Уведомления пациенту',

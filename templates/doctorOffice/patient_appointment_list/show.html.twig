@@ -1,0 +1,53 @@
+{% extends 'doctorOffice/common_template/show.html.twig' %}
+{% block title %}{{ template.items.show.content.title }}{% endblock %}
+{% block content %}
+    <div class="adm-users-edit adm-users-view">
+        <h2>{{ template.items.show.content.h1 }}</h2>
+        {{ include('flashmessages.html.twig') }}
+        <ul>
+            <li>
+                <span class="title">ID</span>
+                <p>{{ entity.id }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.recommendation }}</span>
+                <p>{{ entity.recommendation ? entity.recommendation|raw : template.items.list.content.empty }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.appointmentTime }}</span>
+                <p>{{ entity.appointmentTime ? entity.appointmentTime|date('d.m.Y') : template.items.list.content.empty }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.complaints }}</span>
+                {% if entity.complaints is empty %}
+                    <p>{{ template.items.show.content.complaintsNotFound }}</p>
+                {% endif %}
+                {% for complaint in entity.complaints %}
+                    <p>{{ complaint.name }}</p>
+                {% endfor %}
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.complaintsComment }}</span>
+                <p>{{ entity.complaintsComment ? entity.complaintsComment|raw : template.items.list.content.empty }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.therapy }}</span>
+                <p>{{ entity.therapy ? entity.therapy|raw : template.items.list.content.empty }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.objectiveStatus }}</span>
+                <p>{{ entity.objectiveStatus ? entity.objectiveStatus|raw : template.items.list.content.empty }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.appointmentType }}</span>
+                <p>{{ entity.appointmentType ? entity.appointmentType.name : template.items.list.content.empty }}</p>
+            </li>
+            <li>
+                <span class="title">{{ template.items.show.content.isProcessedByStaff }}</span>
+                <p>{{ entity.isProcessedByStaff ?
+                    template.items.show.content.trueValue :
+                    template.items.show.content.falseValue }}</p>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

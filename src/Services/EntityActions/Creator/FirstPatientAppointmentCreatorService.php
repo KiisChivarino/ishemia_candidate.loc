@@ -25,6 +25,7 @@ class FirstPatientAppointmentCreatorService extends PatientAppointmentCreatorSer
             ->setIsFirst(true)
             ->setIsByPlan(false)
             ->setAppointmentTime(new DateTime())
+            ->setIsProcessedByStaff(true)
             ->setPlanAppointment($this->options[self::FIRST_APPOINTMENT_PLAN_OPTION]);
     }
 

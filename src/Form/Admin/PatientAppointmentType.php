@@ -47,7 +47,6 @@ class PatientAppointmentType extends AbstractType
                     'widget' => 'single_text',
                     'format' => 'yyyy-MM-dd',
                     'required' => true,
-                    'empty_data' => null,
                     'by_reference' => true,
                 ]
             )

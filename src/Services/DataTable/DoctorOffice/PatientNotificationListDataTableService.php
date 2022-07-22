@@ -28,26 +28,20 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PatientNotificationListDataTableService extends DoctorOfficeDatatableService
 {
-    /** @var AuthUserInfoService */
-    private $authUserInfoService;
-
     /**
      * DataTableService constructor.
      *
      * @param DataTableFactory $dataTableFactory
      * @param UrlGeneratorInterface $router
      * @param EntityManagerInterface $em
-     * @param AuthUserInfoService $authUserInfoService
      */
     public function __construct(
         DataTableFactory $dataTableFactory,
         UrlGeneratorInterface $router,
-        EntityManagerInterface $em,
-        AuthUserInfoService $authUserInfoService
+        EntityManagerInterface $em
     )
     {
         parent::__construct($dataTableFactory, $router, $em);
-        $this->authUserInfoService = $authUserInfoService;
     }
 
     /**
@@ -125,36 +119,36 @@ class PatientNotificationListDataTableService extends DoctorOfficeDatatableServi
                         foreach ($notifications as $notification) {
                             if ($notification->getWebNotification()) {
                                 $webNotification = $notification->getWebNotification()->getNotification();
-                                $channels .= $notification ? $this->getLinkMultiParam(
+                                $channels .= $this->getLinkMultiParam(
                                         "web",
                                         [
                                             'notification' => $webNotification->getId(),
                                             'patient' => $webNotification->getPatientNotification()->getPatient()->getId(),
                                         ],
                                         'doctor_office_patient_notification_show'
-                                    ) . "<br>" : '';
+                                    ) . "<br>";
                             }
                             elseif ($notification->getEmailNotification()) {
                                 $emailNotification = $notification->getEmailNotification()->getNotification();
-                                $channels .= $notification ? $this->getLinkMultiParam(
+                                $channels .= $this->getLinkMultiParam(
                                         "email",
                                         [
                                             'notification' => $emailNotification->getId(),
                                             'patient' => $emailNotification->getPatientNotification()->getPatient()->getId(),
                                         ],
                                         'doctor_office_patient_notification_show'
-                                    ) . "<br>" : '';
+                                    ) . "<br>";
                             }
                             elseif ($notification->getSmsNotification()) {
                                 $smsNotification = $notification->getSmsNotification()->getNotification();
-                                $channels .= $notification ? $this->getLinkMultiParam(
+                                $channels .= $this->getLinkMultiParam(
                                         "sms",
                                         [
                                             'notification' => $smsNotification->getId(),
                                             'patient' => $smsNotification->getPatientNotification()->getPatient()->getId(),
                                         ],
                                         'doctor_office_patient_notification_show'
-                                    ) . "<br>" : '';
+                                    ) . "<br>";
                             }
                         }
                         return $channels;

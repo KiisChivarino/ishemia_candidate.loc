@@ -34,7 +34,8 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
         'isConfirmed' => 'Подтверждено',
         'staff' => 'Врач создавший назначение',
         'appointmentType' => 'Вид приема',
-        'plannedDateTime' => 'Дата приема по плану'
+        'plannedDateTime' => 'Дата приема по плану',
+        'isProcessedByStaff' => 'Обработано врачом',
     ];
 
     /** @var string[] Common LIST_CONTENT */
@@ -77,6 +78,7 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
     protected const EDIT_CONTENT = [
         'h1' => 'Редактирование приема пациета',
         'title' => 'Редактирование приема пациета',
+        'missingButton' => 'Приём пропущен',
     ];
 
     protected const FILTER_CONTENT = [
@@ -111,6 +113,10 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
         );
     }
 
+    /**
+     * @param FilterService|null $filterService
+     * @return AppTemplateBuilder
+     */
     public function new(?FilterService $filterService = null): AppTemplateBuilder
     {
         parent::new($filterService);
@@ -170,6 +176,10 @@ class PatientAppointmentTemplate extends DoctorOfficeTemplateBuilder
         return $this;
     }
 
+    /**
+     * @param object|null $entity
+     * @return AppTemplateBuilder
+     */
     public function show(?object $entity = null): AppTemplateBuilder
     {
         parent::show($entity);

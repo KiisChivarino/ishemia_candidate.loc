@@ -15,6 +15,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Exception;
 
 /**
  * Class DoctorOfficeDatatableService
@@ -54,7 +55,7 @@ abstract class DoctorOfficeDatatableService extends DataTableService
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function generateTableForPatientTestingsInDoctorOffice(
         Closure $renderOperationsFunction,

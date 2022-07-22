@@ -17,7 +17,10 @@ class TextTemplateService
 
     private $entityManager;
 
-    public function __construct(TemplateManyToManyTemplateParameterTextRepository $manyToManyTemplateParameterTextRepository, EntityManagerInterface $entityManager)
+    public function __construct(
+        TemplateManyToManyTemplateParameterTextRepository $manyToManyTemplateParameterTextRepository,
+        EntityManagerInterface $entityManager
+    )
     {
         $this->manyToManyTemplateParameterTextRepository = $manyToManyTemplateParameterTextRepository;
         $this->entityManager = $entityManager;

@@ -9,7 +9,8 @@
                 ><img src="{{ asset('build/images/operation-icon-1.svg') }}" alt=""/></a></span>
         {% endif %}
         {% if template.items.edit.isEnabled %}
-            <span><a
+            <span>
+                <a
                     href="{{ path(
                         template.items.edit.templateItemRoute.routeName,
                         template.items.edit.templateItemRoute.routeParams

@@ -1,0 +1,10 @@
+{{ form_start(form) }}
+{% import "recursive_form_macro.html.twig" as recursive_form_macro %}
+<ul>
+    {{ recursive_form_macro.recursiveForm(form) }}
+</ul>
+<div class="buttons">
+    <button class="btn btn--mode">{{ button_label|default(template.items.form.content.formButtonLabel) }}</button>
+    <button class="btn" id="confirmedByStaff">{{ template.items.form.content.endAppointmentButton }}</button>
+</div>
+{{ form_end(form) }}

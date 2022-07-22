@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\PatientAppointmentRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class PatientAppointment
- * @ORM\Entity(repositoryClass=PatientAppointmentRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\PatientAppointmentRepository")
  * @ORM\Table(options={"comment":"Прием пациента"});
  *
  * @package App\Entity
@@ -110,6 +110,16 @@ class PatientAppointment
      * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $planAppointment;
+
+    /**
+     * @ORM\Column(type="boolean", options={"comment"="Статус принятия в работу врачом", "default"=false})
+     */
+    private $isProcessedByStaff;
+
+    /**
+     * @ORM\Column(type="boolean", options={"comment"="Статус пропущенного назначения", "default"=false})
+     */
+    private $isMissed;
 
     /**
      * PatientAppointment constructor.
@@ -444,6 +454,43 @@ class PatientAppointment
     public function setPlanAppointment(?PlanAppointment $planAppointment): self
     {
         $this->planAppointment = $planAppointment;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsProcessedByStaff(): ?bool
+    {
+        return $this->isProcessedByStaff;
+    }
+
+    /**
+     * @param bool $isProcessedByStaff
+     * @return $this
+     */
+    public function setIsProcessedByStaff(bool $isProcessedByStaff): self
+    {
+        $this->isProcessedByStaff = $isProcessedByStaff;
+        return $this;
+    }
+
+
+    /**
+     * @return bool|null
+     */
+    public function getIsMissed(): ?bool
+    {
+        return $this->isMissed;
+    }
+
+    /**
+     * @param bool $isMissed
+     * @return $this
+     */
+    public function setIsMissed(bool $isMissed): self
+    {
+        $this->isMissed = $isMissed;
         return $this;
     }
 }

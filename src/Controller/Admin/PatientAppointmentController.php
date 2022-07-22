@@ -20,10 +20,16 @@ use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use App\Form\PatientAppointment\PatientAppointmentConfirmedByStaffType;
+use App\Form\PatientAppointment\PatientAppointmentIsMissedType;
+use App\Services\EntityActions\Core\Builder\EditorEntityActionsBuilder;
+use App\Services\EntityActions\Creator\MedicalRecordCreatorService;
+use App\Services\EntityActions\Editor\PatientAppointmentEditorService;
+
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
@@ -44,6 +50,8 @@ class PatientAppointmentController extends AdminAbstractController
      * @param Environment $twig
      * @param RouterInterface $router
      * @param TranslatorInterface $translator
+     *
+     * @throws Exception
      */
     public function __construct(Environment $twig, RouterInterface $router, TranslatorInterface $translator)
     {
@@ -54,6 +62,7 @@ class PatientAppointmentController extends AdminAbstractController
 
     /**
      * List of patient appointments
+     *
      * @Route("/", name="patient_appointment_list", methods={"GET","POST"})
      *
      * @param Request $request
@@ -61,6 +70,7 @@ class PatientAppointmentController extends AdminAbstractController
      * @param FilterService $filterService
      *
      * @return Response
+     *
      * @throws Exception
      */
     public function list(
@@ -81,11 +91,13 @@ class PatientAppointmentController extends AdminAbstractController
 
     /**
      * Show patient appointment
+     *
      * @Route("/{patientAppointment}", name="patient_appointment_show", methods={"GET"}, requirements={"id"="\d+"})
      *
      * @param PatientAppointment $patientAppointment
      *
      * @return Response
+     *
      * @throws Exception
      */
     public function show(PatientAppointment $patientAppointment): Response
@@ -109,23 +121,45 @@ class PatientAppointmentController extends AdminAbstractController
      *
      * @param Request $request
      * @param PatientAppointment $patientAppointment
+     * @param MedicalRecordCreatorService $medicalRecordCreatorService
      *
      * @return Response
+     *
      * @throws ReflectionException
+     *
+     * @throws Exception
      */
     public function edit(
         Request $request,
-        PatientAppointment $patientAppointment
+        PatientAppointment $patientAppointment,
+        MedicalRecordCreatorService $medicalRecordCreatorService
     ): Response
     {
-        return $this->responseEditMultiForm(
+        $entityManager = $this->getDoctrine()->getManager();
+        return $this->responseEditMultiFormWithActions(
             $request,
-            $patientAppointment,
+            [
+                new EditorEntityActionsBuilder(
+                    new PatientAppointmentEditorService(
+                        $entityManager, $patientAppointment
+                    ),
+                    [],
+                    function () use ($medicalRecordCreatorService): array {
+                        return
+                            [
+                                PatientAppointmentEditorService::MEDICAL_RECORD_CREATOR_OPTION_NAME =>
+                                    $medicalRecordCreatorService,
+                            ];
+                    }
+                ),
+            ],
             [
                 new FormData(PatientAppointmentType::class, $patientAppointment),
                 new FormData(StaffType::class, $patientAppointment),
                 new FormData(AppointmentTypeType::class, $patientAppointment),
                 new FormData(ConfirmedType::class, $patientAppointment),
+                new FormData(PatientAppointmentConfirmedByStaffType::class, $patientAppointment),
+                new FormData(PatientAppointmentIsMissedType::class, $patientAppointment),
                 new FormData(EnabledType::class, $patientAppointment),
             ]
         );
@@ -133,12 +167,14 @@ class PatientAppointmentController extends AdminAbstractController
 
     /**
      * Delete patient appointment
+     *
      * @Route("/{id}", name="patient_appointment_delete", methods={"DELETE"}, requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param PatientAppointment $patientAppointment
      *
      * @return Response
+     *
      * @throws Exception
      */
     public function delete(Request $request, PatientAppointment $patientAppointment): Response

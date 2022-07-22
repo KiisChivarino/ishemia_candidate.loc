@@ -3,7 +3,6 @@
 namespace App\Services\Template;
 
 use Exception;
-use RuntimeException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -129,6 +128,7 @@ class TemplateService
     public function setTemplatePath(string $templatePath): self
     {
         $this->templatePath = $templatePath;
+
         return $this;
     }
 
@@ -269,13 +269,18 @@ class TemplateService
     {
         $templatePathFullName = $this->templatePath . $templateName . '.html.twig';
         $commonPathFullName = $this->getCommonTemplatePath() . $templateName . '.html.twig';
-        if (is_file($projectDir . '/templates/' . $commonPathFullName)) {
-            return $commonPathFullName;
-        } elseif (is_file($projectDir . '/templates/' . $templatePathFullName)) {
+        if (is_file($projectDir . '/templates/' . $templatePathFullName)) {
             return $templatePathFullName;
+        } elseif (is_file($projectDir . '/templates/' . $commonPathFullName)) {
+            return $commonPathFullName;
         } else {
-            throw new RuntimeException(
-                'Файл шаблона не найден! Искали по адресам: "' . $templatePathFullName . '", "' . $commonPathFullName . '"');
+            throw new Exception(
+                'Файл шаблона не найден! Искали по адресам: "'
+                . $templatePathFullName
+                . '", "'
+                . $commonPathFullName
+                . '"'
+            );
         }
     }
 

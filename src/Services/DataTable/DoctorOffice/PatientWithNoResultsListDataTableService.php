@@ -37,7 +37,12 @@ class PatientWithNoResultsListDataTableService extends DoctorOfficeDatatableServ
      * @param EntityManagerInterface $em
      * @param AuthUserInfoService $authUserInfoService
      */
-    public function __construct(DataTableFactory $dataTableFactory, UrlGeneratorInterface $router, EntityManagerInterface $em, AuthUserInfoService $authUserInfoService)
+    public function __construct(
+        DataTableFactory $dataTableFactory,
+        UrlGeneratorInterface $router,
+        EntityManagerInterface $em,
+        AuthUserInfoService $authUserInfoService
+    )
     {
         parent::__construct($dataTableFactory, $router, $em);
         $this->authUserInfoService = $authUserInfoService;
@@ -48,16 +53,18 @@ class PatientWithNoResultsListDataTableService extends DoctorOfficeDatatableServ
      *
      * @param Closure $renderOperationsFunction
      * @param ListTemplateItem $listTemplateItem
-     * @param array $filters
+     * @param array|null $filters
+     * @param array $options
      *
      * @return DataTable
+     *
      * @throws Exception
      */
     public function getTable(
-        Closure $renderOperationsFunction,
+        Closure          $renderOperationsFunction,
         ListTemplateItem $listTemplateItem,
-        ?array $filters,
-        array $options
+        ?array           $filters,
+        array            $options
     ): DataTable
     {
         $patientInfoService = new PatientInfoService();
@@ -69,13 +76,11 @@ class PatientWithNoResultsListDataTableService extends DoctorOfficeDatatableServ
                     'field' => 'u.lastName',
                     'render' => function (string $data, Patient $patient) {
                         return
-                            $patient
-                                ? $this->getLink(
-                                $this->authUserInfoService->getFIO($patient->getAuthUser()),
-                                $patient->getId(),
-                                'doctor_medical_history'
-                            )
-                                : '';
+                            $this->getLink(
+                            $this->authUserInfoService->getFIO($patient->getAuthUser()),
+                            $patient->getId(),
+                            'doctor_medical_history'
+                        );
                     },
                     'orderable' => true,
                     'orderField' => 'u.lastName',
@@ -129,7 +134,7 @@ class PatientWithNoResultsListDataTableService extends DoctorOfficeDatatableServ
                     'label' => $listTemplateItem->getContentValue('hospital'),
                     'field' => 'h.name',
                     'render' => function (string $data, Patient $patient) {
-                        return $patient ? $patient->getHospital()->getName() : '';
+                        return $patient->getHospital()->getName();
                     },
                     'orderable' => true,
                     'orderField' => 'h.name',
@@ -140,13 +145,12 @@ class PatientWithNoResultsListDataTableService extends DoctorOfficeDatatableServ
                     'label' => $listTemplateItem->getContentValue('city'),
                     'field' => 'h.name',
                     'render' => function (string $data, Patient $patient) {
-                        return $patient ? $patient->getCity()->getName() : '';
+                        return $patient->getCity()->getName();
                     },
                     'orderable' => true,
                     'orderField' => 'h.name',
                 ]
-            )
-        ;
+            );
 
         $hospital = $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']] !== ""
             ? $filters[AppAbstractController::FILTER_LABELS['HOSPITAL']]
@@ -168,8 +172,7 @@ class PatientWithNoResultsListDataTableService extends DoctorOfficeDatatableServ
                                 'patients',
                                 $this->entityManager
                                     ->getRepository(PatientTesting::class)->getNoResultsTestings()
-                            )
-                        ;
+                            );
 
                         if ($hospital) {
                             $builder

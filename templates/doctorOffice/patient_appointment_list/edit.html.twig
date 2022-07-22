@@ -1,0 +1,36 @@
+{% extends 'doctorOffice/index.html.twig' %}
+{% block title %}{{ template.items.edit.content.h1 }}{% endblock %}
+{% block content %}
+    <div class="content-wrapper__top">
+        <ul>
+            <li>
+                <h1>{{ template.items.edit.content.h1 }}</h1>
+            </li>
+            <li>
+                {% if template.items.list.isEnabled %}
+                    <a
+                            class="back-page"
+                            href="{{ path('doctor_medical_history', {id: entity.medicalHistory.patient.id}) }}"
+                    >История болезни</a>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
+    <div class="buttons">
+        <button class="button main-button" onclick="location.href='{{
+        path(
+            'doctor_edit_patient_appointment_missing',
+            {'id' : entity.medicalHistory.patient.id, 'patientAppointment' : entity.id}
+        )
+        }}';">
+            {{ template.items.edit.content.missingButton }}
+        </button>
+    </div>
+    <hr>
+
+    <div class="adm-users-edit">
+        {{ include(template.items.form.path~'_form.html.twig') }}
+    </div>
+    {{ encore_entry_script_tags('PatientAppoinmentCheckConfirmedByStaff') }}
+{% endblock %}
